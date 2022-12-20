@@ -1,0 +1,214 @@
+{% load static %}
+{% load cart_template_tags %}
+
+<div class="nav-container" id="nav-container">
+  <!--Navbar 1 Level -->
+<nav class="navbar navbar-dark default-color main-nav" role="navigation" id="main-nav">
+
+  <!-- Logo -->
+  <a class="navbar-brand" href="{% url 'store:home' %}">
+    <img src="{% static 'images/bonetta.png' %}" class="d-inline-block align-top" alt="Gastrodichtungen.ch Logo">
+  </a>
+    
+    <a type="button" class="btn btn-success" href="https://bonetta.ch/" rel="nofollow" title="Gastrozubehör">Gastrozubehör  </a>
+
+
+    <!-- Topnav -->
+    <ul class="nav justify-content-end topnav">
+      
+      <li class="nav-item">
+      <a class="nav-link" href="{% url 'store:kontakt' %}">Kontakt</a>
+      </li>
+
+      <li class="nav-item">
+      <a class="nav-link" href="#">Firma</a>
+      </li>
+        
+    </ul>
+
+  <!-- Search form -->
+  <div class="suchform">
+  <form class="form-inline d-flex justify-content-center" action="{% url 'store:searchbar' %}">
+  {% csrf_token %}
+  
+  <button type="submit" class="bg-transparent" style="border: none;">
+    <i class="fas fa-search" style="color:var(--white)"></i>
+  </button>
+  
+  <input class="form-control form-control-sm searchbar" type="text" placeholder="Suche"
+    aria-label="Search" name="search">
+
+  </form>
+  </div>
+
+  
+
+  {% if request.user.is_authenticated %}   
+      <!-- Bestellungen Login Logout -->
+    
+    <div id="divider" class="divider">
+      <a href="{% url 'store:order_summary' %}" class="btn btn-outline-warning warenkorb">
+        <i id="cart-icon" class="fas fa-shopping-cart"></i>Warenkorb <span id="cart-total">{{ request.user|cart_item_count}}</span></a>
+      </div>
+
+      <div id="divider-mobile" class="divider-mobile">
+      <a href="{% url 'store:order_summary' %}" class="btn btn-outline-warning warenkorb">
+        <i id="cart-icon" class="fas fa-shopping-cart"></i><span id="cart-total">{{ request.user|cart_item_count}}</span></a>
+      </div>
+
+ 
+      <!--- Sidebar Start --->
+       <nav class="navbar navbar-expand-lg navbar-light">
+    
+      <button type="button" id="sidebarCollapse" class="btn btn-outline-warning btn-desktop">
+        <i class="fas fa-arrow-circle-down"></i>
+        Mein Konto</button>
+   
+        </nav>
+
+          <div class="wrapper" id="wrapper">
+          <nav class="sidebar" id="sidebar">
+          
+          <ul class="components">
+
+          <li>
+            <a href="{% url 'store:einstellungen' %}">Profil bearbeiten</a>
+            </li> 
+        
+            <li>
+              <a href="{% url 'store:bestellungen' %}">Bestellungen</a>
+            </li>
+            <li>
+              <a href="{% url 'account_logout' %}">Abmelden</a>
+            </li>
+
+          </ul>
+         
+       </nav>
+      </div>
+       <!--- Sidebar End --->
+      
+      {% else %}
+
+      <!-- Warenkorb Bestellungen Login Logout -->
+     
+      <div id="divider" class="divider">
+      <a href="{% url 'store:order_summary' %}" class="btn btn-outline-warning warenkorb">
+        <i id="cart-icon" class="fas fa-shopping-cart"></i>Warenkorb <span id="cart-total">{{ request.user|cart_item_count}}</span></a>
+      </div>
+
+      <div id="divider-mobile" class="divider-mobile">
+      <a href="{% url 'store:order_summary' %}" class="btn btn-outline-warning warenkorb">
+        <i id="cart-icon" class="fas fa-shopping-cart"></i><span id="cart-total">{{ request.user|cart_item_count}}</span></a>
+      </div>
+
+      <a href="{% url 'account_login' %}" class="btn btn-outline-warning">Kunden-Login</a>
+      
+      {% endif %}
+
+      <!-- Navbar END --> 
+      </nav>
+
+      <!--Navbar 2 Level MOBILE -->
+<nav class="navbar navbar-expand-xl navbar-light sticky-top product-nav-mobile" role="navigation">
+<div class="container-fluid">
+
+  
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">    
+                <span class="navbar-toggler-icon"></span>
+    </button>     
+
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+           <ul class="navbar-nav">
+             {% for menuitem in cat_menu %}
+             {% if menuitem.name == 'Weitere Dichtungen' %}
+              <li class="nav-item dropdown show">
+              <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Weitere Dichtungen</a>
+              
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                {% for submenuitem in subcat_menu %}
+                <a class="dropdown-item" href="{% url 'store:subcategory' 'weitere-dichtungen' submenuitem|slugify %}">{{ submenuitem.sub_name }}</a>
+                {% endfor %}
+              </div>
+              
+            </li>
+              
+             {% else %}
+              <li class="nav-item"><a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">{{ menuitem.name }}</a>
+              </li>
+              {% endif %}
+              {% endfor %}
+             <!-- <li class="nav-item"><a class="nav-link" href="">Gummidichtung</a></li>
+              <li class="nav-item"><a class="nav-link" href="">EPDM/Moosgummi</a></li>-->
+              {% if request.user.is_authenticated %}
+              {% if request.user.profile.firmenname %}
+              <li class="nav-item"><a class="nav-link btn btn-outline-warning " href="{% url 'store:mydichtungen' %}">Inventar</a>
+              </li>
+                {% else %}
+                {% endif %}
+                {% else %}
+              {% endif %}
+         </ul>       
+      </div>  
+      
+       </div>
+              
+</nav>
+<!-- Navbar END --> 
+
+
+
+<!--Navbar 2 Level -->
+<nav class="navbar navbar-expand-xl navbar-light sticky-top product-nav" role="navigation">
+<div class="container-fluid">
+
+  
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">    
+                <span class="navbar-toggler-icon"></span>
+    </button>     
+
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+           <ul class="navbar-nav">
+             {% for menuitem in cat_menu %}
+             {% if menuitem.name == 'Weitere Dichtungen' %}
+              <li class="nav-item dropdown show">
+              <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Weitere Dichtungen</a>
+              
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                {% for submenuitem in subcat_menu %}
+                <a class="dropdown-item" href="{% url 'store:subcategory' 'weitere-dichtungen' submenuitem|slugify %}">{{ submenuitem.sub_name }}</a>
+                {% endfor %}
+              </div>
+              
+            </li>
+              
+             {% else %}
+              <li class="nav-item"><a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">{{ menuitem.name }}</a>
+              </li>
+              {% endif %}
+              {% endfor %}
+             <!-- <li class="nav-item"><a class="nav-link" href="">Gummidichtung</a></li>
+              <li class="nav-item"><a class="nav-link" href="">EPDM/Moosgummi</a></li>-->
+              {% if request.user.is_authenticated %}
+              {% if request.user.profile.firmenname %}
+              <li class="nav-item"><a class="nav-link btn btn-outline-warning " href="{% url 'store:mydichtungen' %}">Inventar</a>
+              </li>
+                {% else %}
+                {% endif %}
+                {% else %}
+              {% endif %}
+         </ul>       
+      </div>  
+      
+       </div>
+              
+</nav>
+<!-- Navbar END --> 
+
+
+
+
+
+
+</div>
+

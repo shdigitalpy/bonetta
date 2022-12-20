@@ -1,0 +1,103 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}CMS User{% endblock %}
+
+{% block content %}
+
+		
+			<div class="flexbox">
+				<div class="h2">Bestellungen im Webshop</div>
+				
+			</div>
+
+			<p>Hier finden Sie alle Bestellungen aus dem Webshop.</p>
+
+			<div class="flexbox">
+				<!--<a class="btn btn-secondary btn-sm" href="">Erfassen</a>-->
+			</div>
+
+			<table class="table table-striped">
+			  <thead>
+			    <tr>
+			      <th scope="col">Datum</th>
+			      <th scope="col">Name</th>
+			      <th scope="col">Adressen</th>
+			      <th scope="col">Zahlungsmethode</th>
+			      <th scope="col">Versandkosten</th>
+			      <th scope="col">Rabatt</th>
+			      <th scope="col">Skonto</th>
+			      <th scope="col">Total</th>
+			      <th scope="col">Details</th>
+			    </tr>
+			  </thead>
+			  {% for bestellungen in order %}
+			  <tbody>
+			    <tr>
+			    	<th scope="row">{{ bestellungen.ordered_date|date:"d.m.Y" }}</th>
+			      <td>{{ bestellungen.user.profile.firmenname }} // {{ bestellungen.user.username }} </td>
+			      <td><small>
+			      	{% if bestellungen.billing_address.rechnung_strasse == None  %}
+			      	
+			      	{% else %}
+			      	Rechnungsadresse:
+			      {{ bestellungen.billing_address.rechnung_strasse }}
+			      {{ bestellungen.billing_address.rechnung_nr }},
+			      {{ bestellungen.billing_address.rechnung_plz }}
+			      {{ bestellungen.billing_address.rechnung_ort }}
+			      {{ bestellungen.billing_address.rechnung_land }}
+			      {% endif %}
+			      <br>
+			      {% if bestellungen.shipping_address.lieferung_strasse == 'keineStrasse' or bestellungen.shipping_address.lieferung_strasse == None  %}
+			      {% else %}
+			      Lieferadresse:
+			      {{ bestellungen.shipping_address.lieferung_strasse }}
+			      {{ bestellungen.shipping_address.lieferung_nr }},
+			      {{ bestellungen.shipping_address.lieferung_plz }}
+			      {{ bestellungen.shipping_address.lieferung_ort }}
+			      {{ bestellungen.shipping_address.lieferung_land }}
+			      {% endif %}
+			  		</small>
+			  		</td>
+			      <td>
+			      	
+			      	{% if bestellungen.payment_method == 'R' %}
+			      	Rechnung
+			      	{% else %}
+			      	Vorkasse
+			      	{% endif %}
+			      </td>	 
+			      <td>
+			      	{% if bestellungen.shippingcost %}
+			      CHF {{ bestellungen.shippingcost|floatformat:2 }}
+			      {% endif %}
+			  		</td>
+			  		<td>
+			  		
+			  		{% if bestellungen.skonto == None %}
+			      	Kein Skonto
+			      {% else %}
+			      CHF {{ bestellungen.skonto|floatformat:2 }} / 2%
+			      {% endif %}
+			  		</td>
+			  		<td>
+			  		{% if bestellungen.discount == None %}
+			      	Kein Rabatt
+			      {% else %}
+			      CHF {{ bestellungen.discount|floatformat:2 }} / {{ bestellungen.discount_pct|floatformat:0 }}%
+			      {% endif %}
+			  		</td>
+			      <td>
+			      	
+			      {% if bestellungen.total %}
+			  		CHF {{ bestellungen.total|floatformat:2 }}
+			  		{% endif %}</td>  
+			      <td><a href="{% url 'store:cms_bestellung_confirmation' bestellungen.pk %}">Bestätigung anzeigen</a></td>      
+			    </tr>
+			    
+			  </tbody>
+			  {% endfor %}
+
+			</table>
+
+ {% endblock %}
+

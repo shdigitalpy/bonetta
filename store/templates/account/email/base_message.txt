@@ -1,0 +1,8 @@
+{% load i18n %}{% autoescape off %}{% blocktrans with site_name=current_site.name %}Sehr geehrte Damen und Herren{% endblocktrans %}
+
+{% block content %}{% endblock %}
+
+{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}Danke, dass Sie Gebo Shop Bonetta nutzen!
+{{ site_domain }}{% endblocktrans %}
+Gebo Shop Inh. Livio Bonetta, Neumühlestrasse 19, 8406 Winterthur, www.gastrodichtung.ch/impressum
+{% endautoescape %}

@@ -1,0 +1,15 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}CMS Benutzerdaten{% endblock %}
+
+{% block content %}
+
+<br><br>
+		<h1>Benutzerdaten</h1>
+		<p>
+    	Nachfolgend finden Sie Ihre Angaben:<br><br>
+    	Username: {{ user.username }}<br>
+    	E-Mail: {{ user.email }}
+       	</p>
+
+{% endblock %}

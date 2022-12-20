@@ -1,0 +1,68 @@
+{% load static %}
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>{% block title %} Spezialist für Gastro- und Kühlschrankdichtungen | gastrodichtung.ch {% endblock %}</title>
+    <meta name="robots" content="index, follow">
+    <meta name="description" content="{% block meta_description %}Spezialist für Gastro- und Kühlschrankdichtungen | gastrodichtung.ch{% endblock %}">
+
+    <link rel="canonical" href="https://www.gastrodichtung.ch{{ request.get_full_path }}" />
+
+    <style>
+    </style>
+
+     <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+       <!-- Navbar critical -->
+   <link href="{% static 'css/navbar-atf.css' %}" rel="stylesheet">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static '/css/main-desktop.css' %}">  
+
+    <!-- Mobile CSS -->
+    <link rel="stylesheet" stype="text/css" href="{% static '/css/main-mobile.css' %}">
+
+     
+
+    <!-- Tablet CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static '/css/main-tablet.css' %}" >
+
+    <!-- Laptop CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static '/css/main-laptop.css' %}" >
+
+    <!-- ahrefs -->
+    <meta name="ahrefs-site-verification" content="8162a025a3bc72091444d9b238111afecbf78a669573b66c10fa8a989516ccab">
+
+
+  </head>
+  <body>
+
+
+
+
+{% include 'navbar.html' %}
+
+
+{% block content %}
+
+
+{% endblock %}
+
+<!--Footer -->
+{% include 'footer.html' %}
+
+{% block scripts %}
+
+  
+  {% endblock %}
+
+
+
+</body>
+</html>

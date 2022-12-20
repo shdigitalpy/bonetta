@@ -1,0 +1,122 @@
+{% load static %}
+
+<footer class="container-fluid" id="footer">
+	<div class="flex">
+
+		<div class="flex-item">
+		<h4>Kontakt</h4>
+		<p class="p-white">gastrodichtung.ch<br>
+		Langmattstrasse 10, 8152 Hochfelden<br><br>
+		Tel. +41 79 333 61 57<br>
+		E-Mail: livio.bonetta@geboshop.ch<br>
+		</p>
+		</div>
+		
+		<div class="flex-item">
+		<h4>Mein Konto</h4>
+		<ul>
+		<li><a style="color:var(--white)" href="{% url 'account_login' %}">Anmelden</a></li>
+		<li><a style="color:var(--white)" href="{% url 'account_signup' %}">Registrieren</a></li>
+		<li><a style="color:var(--white)" href="{% url 'account_reset_password' %}">Passwort vergessen</a></li>
+		</ul>
+		
+         <small>© <span id="year"></span> Gastrodichtungen.ch</small>
+		<br><a style="color:var(--white)" href="{% url 'store:cms' %}">CMS-Login</a>
+		<a style="color:var(--white);" href="{% url 'store:impressum' %}">Impressum</a> <a style="color:var(--white);" href="">Datenschutz</a>
+		</div>
+
+
+
+		<div class="flex-item">
+			<a href="{% url 'store:home' %}"><img src="{% static 'images/bonetta.png' %}" class="bonettabild"></a>
+			<br><br>
+			<!--Social Icons -->
+			{% include 'social-icons.html' %}
+		
+		</div>
+
+		
+		
+
+	</div>
+
+</footer>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	<script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+	
+
+	<!-- FontAwesome -->
+     <script src="https://kit.fontawesome.com/a7ed36fd84.js" crossorigin="anonymous"></script>
+
+     <script>
+    document.getElementById("year").innerHTML = new Date().getFullYear();
+	</script>
+
+     <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y2JQKHHQ2B"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-Y2JQKHHQ2B');
+
+    </script>
+    <!-- Clicky -->
+    <script>var clicky_site_ids = clicky_site_ids || []; clicky_site_ids.push(101296101);</script>
+    <script async src="//static.getclicky.com/js"></script>
+
+
+
+
+	<script>
+
+	$(document).ready(function () {
+	            $('#sidebarCollapse').on('click', function () {
+	            	$('#sidebar').toggleClass('active');
+	            });
+	        });	
+
+	</script>
+
+	<script>
+
+		
+		$(document).ready(function () {
+	            $('#different_shipping_address').change(function() {
+				   if($(this).is(":checked")) {
+				      $('#hideable_shipping_form').show();
+				      return;
+				   }
+				   $('#hideable_shipping_form').hide();
+		});
+
+	 });
+
+		$(document).ready(function () {
+	            $('#use_default_shipping').change(function() {
+				   if($(this).is(":checked")) {
+				      $('#hideable_sub_shipping_form').hide();
+				      return;
+				   }
+				   $('#hideable_sub_shipping_form').show();
+		});
+
+	 });
+
+
+</script>
+
+
+
+
+
+
+  

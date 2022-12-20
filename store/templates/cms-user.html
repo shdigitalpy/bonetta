@@ -1,0 +1,45 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}CMS User{% endblock %}
+
+{% block content %}
+
+		
+			<div class="flexbox">
+				<div class="h2">Webseiten user</div>
+				
+			</div>
+
+			<p>Wenn ein Kunde sich auf der Webseite registriert, wird er hier aufgeführt.</p>
+
+			<div class="flexbox">
+				<!--<a class="btn btn-secondary btn-sm" href="">Erfassen</a>-->
+			</div>
+
+			<table class="table table-striped">
+			  <thead>
+			    <tr>
+			      <th scope="col">Benutzername</th>
+			      <th scope="col">Name</th>
+			      <th scope="col">E-Mail Adresse</th>
+			      <th scope="col">Letztes Login</th>
+			      <th scope="col">Datum Registrierung</th>
+			    </tr>
+			  </thead>
+			  {% for data in user %}
+			  <tbody>
+			    <tr>
+			      <th scope="row">{{ data.username }}</th>
+			      <td>{{ data.first_name }} {{ data.last_name }}</td>
+			      <td>{{ data.email }}</td>
+			      <td>{{ data.last_login }}</td>
+			      <td>{{ data.date_joined }}</td>	      
+			    </tr>
+			    
+			  </tbody>
+			  {% endfor %}
+
+			</table>
+
+ {% endblock %}
+

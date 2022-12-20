@@ -1,0 +1,40 @@
+{% extends "shop/main.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+  <main>
+    <div class="container wow fadeIn">
+        <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'store:order_summary' %}">Warenkorb</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'store:checkout' %}">Adresse</a></li>
+      <li class="breadcrumb-item"><a class="active" href="{% url 'store:payment' %}">Zahlung</a></li>
+      </ol> 
+      <h1>Zahlungsoptionen</h1>
+      <div class="row">
+        <div class="col-md-8 mb-4">
+          <div class="card">
+              <form method="POST" class="card-body">
+                {% csrf_token %}
+                {{ payment_form.as_p }}
+               
+
+                <p style="font-size: 0.8rem !important;font-style: italic">*Eine separate Rechnung erhalten Sie nach diesem Bestellvorgang per E-Mail oder Post.</p>
+              
+
+              <hr class="mb-4">
+              <button type="submit" class="btn btn-primary btn-lg btn-block" type="submit">Weiter</button>
+
+            </form>
+          </div><!-- end card -->
+          </div>
+          </div>
+
+        </div>
+
+        
+  </main>
+
+{% endblock content %}
+
+

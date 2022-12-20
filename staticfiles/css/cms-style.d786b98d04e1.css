@@ -1,0 +1,293 @@
+
+html, body {
+	height: 100%;
+	width: 100%;
+	font-family: 'Raleway', sans-serif;
+	--main-menu-white: white;
+  	--blue: #29384e;
+  	--lightblue: #BFDAF3;
+  	--white: #ffffff;
+  	--yellow: #ffc107;
+  	--grey: #f6f6f6;
+  	--lightgrey: #e6e6e6;
+  	--darkergrey: #A0A0A0;
+  	--green: #3AAFA9;
+  	--muted: #999999;
+  	--hellblau: #ebf5ff;
+}
+
+
+h1, h2, h3, h4 {
+	margin-left: 2%;
+}
+
+p {
+	font-size: 1em;
+	font-weight: 500;
+	line-height: 1.7em;
+	color: var(--main-cms-blue);
+	margin-left: 2%;
+}
+a,
+a:hover,
+a:focus{
+	color: inherit;
+	text-decoration: none;
+	transition: all 0.3s;
+}
+
+.btn-save {
+	margin-left: 2%;
+}
+
+
+.btn-exit {
+	font-size: 0.9rem;
+	opacity: 0.7;
+}
+
+.btn-exit:hover {
+	opacity: 1;
+}
+
+.sidebar-header img {
+	width: 200px;
+}
+
+
+/* CMS Loginpage */
+
+.form-container {
+	width: 50%;
+	margin: 0 auto;
+}
+
+
+/* Side Bar*/
+#sidebar.active {
+    margin-left: -250px;
+}
+.wrapper{
+	display: flex;
+	text-decoration: none;
+	transition: all 0.3s;
+}
+
+#sidebar{
+	min-width: 250px;
+	max-width: 250px;
+	background: var(--blue);
+	color: var(--main-menu-white);
+	transition: all 0.3s;
+}
+
+
+#sidebar .sidebar-header{
+	padding: 20px;
+	background: var(--blue);
+}
+#sidebar ul.components{
+	padding: 20px 0;
+	border-bottom: 1px solid var(--blue);
+}
+
+#sidebar ul p{
+	color: var(--main-menu-white);
+	padding: 10px;
+}
+
+#sidebar ul li a{
+	padding: 15px;
+	font-size: 1em;
+	display: block;
+}
+
+#sidebar ul li a:hover{
+	color: #7386D5;
+	background: #fff;
+}
+
+#sidebar ul li.active>a,
+a[aria-expanded="true"] {
+	color: var(--main-menu-white);;
+	background: var(--blue);
+}
+
+a[data-toggle="collapse"]{
+	position: relative;
+}
+
+.dropdown-toggle::after{
+	display: block;
+	position: absolute;
+	top: 50%;
+	right: 20%;
+	transform: translateY(-50%);
+}
+ul ul a{
+	font-size: 0.9em !important;
+	padding-left: 30px !important;
+	background: var(--main-cms-blue);
+	border: 1px solid var(--blue);
+}
+
+.notactive {
+	font-weight: 200;
+	color: var(--grey);
+}
+
+#sidebar .nohover:hover {
+	color: transparent !important;
+	background-color: transparent !important;
+}
+
+
+#content{
+	width: 100%;
+	padding: 10px;
+	min-height: 100vh;
+	transition: all 0.3s;
+}
+
+.button .btn {
+	background-color: var(--blue);
+}
+
+.produkt {
+	width: 90%;
+	margin: 4% 0 0 3%;
+	background-color: var(--grey);
+	padding: 1.5%;
+}
+
+.produkt h2 {
+	font-size: 1.5rem;
+}
+
+.produkt .form-group p {
+	display: flex;	
+}
+
+.produkt .form-group label {
+	font-size: 0.9rem;
+	flex: 0 0 30%;
+}
+
+.produkt .form-group input, 
+.produkt .form-group select,
+.produkt .form-group textarea,
+.produkt .form-group .buttonfl {
+	font-size: 0.9rem;
+	flex: 0 0 50%;
+}
+
+.produkt-header {
+	display: flex;
+	justify-content: space-between;
+}
+
+.produkt-header h2 {
+	flex: 0	0 90%,
+}
+
+.produkt-header button {
+	flex: 0	0 10%,
+}
+
+
+
+/* Style Widget CheckboxSelectMultiple in Elemente Edit */
+
+.elementcheckbox {
+   list-style-type: none;
+}
+
+
+/*Flexbox Start*/
+
+.flexbox {
+	width: 95%;
+	margin: 2%;
+}
+
+.flexbox {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: stretch;
+	justify-content: space-between; 
+}
+
+.flexelement {
+	background: var(--lightblue);
+	color: var(--blue);
+	width: 29%;
+	padding: 2rem;
+	font-size: 1.5rem;
+	margin: 2%;
+}
+
+.flexelement:hover {
+	border: 5px solid var(--yellow);
+}
+
+.flexelement a {
+    border-bottom: 0.5px solid var(--blue);
+}
+
+.flexelement ul li {
+	font-size: 0.6em !important;
+	display: block;
+	padding: 2%;
+}
+
+
+/*Flexbox End*/
+
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -250px;
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+    #sidebarCollapse span {
+        display: none;
+    }
+    .flexelement {
+    	font-size: 75%;
+    }
+
+    .flexbox-wv {
+	flex-wrap: wrap; 
+}
+}
+
+/* Register Flex */ 
+
+.register-flex {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+.register-flex-item {
+ flex: 0 0 72%;
+}
+
+.register-flex-label {
+  flex: 0 0 28%;
+}
+
+
+/* Flexbox Chart */
+
+.flexbox-chart {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center; 
+}

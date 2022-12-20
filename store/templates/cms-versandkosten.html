@@ -1,0 +1,51 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}CMS User{% endblock %}
+
+{% block content %}
+
+		
+			<div class="flexbox">
+				<div class="h2">Versandkosten</div>
+				
+			</div>
+
+			<p>Definieren Sie hier die Versandkosten für den Webshop.</p>
+
+			<div class="flexbox">
+				<a class="btn btn-secondary btn-sm" href="{% url 'store:cms_versandkosten_erfassen' %}">Erfassen</a>
+			</div>
+
+			<table class="table table-striped">
+			  <thead>
+			    <tr>
+			      <th scope="col">Warnkorb-Total von</th>
+			      <th scope="col">Warnkorb-Total bis</th>
+			      <th scope="col">Versandkosten</th>
+			      <th scope="col">Löschen</th>
+			     
+			      
+			      
+
+			    </tr>
+			  </thead>
+			  {% for data in object %}
+			  <tbody>
+			    <tr>
+			      <th scope="row">CHF {{ data.price_from|floatformat:2 }}</th>
+			      <td>CHF {{ data.price_to|floatformat:2 }}</td>
+			      <td>CHF {{ data.shipping_price|floatformat:2 }}</td>
+			   	<td>
+			   		<a href="{% url 'store:cms_remove_versandkosten' data.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i>
+					 </a>
+
+			   	</td>
+			    </tr>
+			    
+			  </tbody>
+			{% endfor %}
+
+			</table>
+
+ {% endblock %}
+

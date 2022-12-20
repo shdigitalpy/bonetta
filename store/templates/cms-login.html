@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+  <head>
+    <title>CMS Login</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/sign-in/">
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'shwebsite/css/style-login.css' %}" rel="stylesheets">
+   
+  </head>
+
+{% block content %}          
+
+<br>
+	<div class="container h-100">
+	<!-- Message info -->
+    {% if messages %}
+    {% for message in messages %}
+
+    <div class="alert alert-warning" role="alert">
+      <button class="close" data-dismiss="alert"><small>x</small></button>
+      {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    <!-- Message info end -->
+
+    {% if user.is_authenticated %}
+    <p>Sie sind bereits eingeloggt - <a href="{% url 'store:cms' %}">hier geht's zum CMS</a>
+    <p>Wollen Sie ausloggen? - <a href="{% url 'store:logout_user' %}">Logout</a>
+ 
+    {% else %}
+
+ <br> <br>
+    <!-- LOGIN FORM BOOTSTRAP -->
+    <div class="form-container">
+	 <form method="POST" class="form-signin">
+ 		{% csrf_token %}
+      <img style="width:50%" src="{% static '/images/bonetta-blau.png' %}" alt="Logo Bonetta" >
+      <br><br> <br>
+      <h2>Login CMS</h2>
+      <p>Das Login steht nur für Mitarbeiter von Bonetta Ihr Spezialist für den Gastro- und Kühlbereich zur Verfügung.</p>
+      <label for="inputEmail" class="sr-only">Benutzername</label>
+      <input type="text" name="username" class="form-control" value="" placeholder="Benutzername" id="inputEmail" required autofocus>
+      <br>
+      <label for="inputPassword" class="sr-only">Password</label>
+      <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Passwort" required>
+      <br>
+      <div class="checkbox mb-3"><label><input type="checkbox" value="remember-me"> Login merken</label></div>
+      <button name="button" class="btn btn-lg btn-primary btn-block" type="submit">Anmelden</button>
+      <p class="mt-5 mb-3 text-muted">&copy; {{ year }} SH Digital</p>
+    </form>
+    </div>     
+	{% endif %}
+	<!-- LOGIN FORM BOOTSTRAP END -->
+
+
+	</div>
+	<br><br>
+
+{% endblock %}
+
+{% include 'footer.html' %}

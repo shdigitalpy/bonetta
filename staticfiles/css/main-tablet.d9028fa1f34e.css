@@ -1,0 +1,55 @@
+
+@media only screen and (min-width: 769px) and (max-width: 1200px) { 
+
+	/* ----------------------------------- Navigation START */
+
+
+.navbar-brand {
+	width: 30%;
+}
+
+.topnav {
+	margin-left: 0;
+}
+
+.suchform {
+	display: none;
+	}
+
+#divider {
+	display: none;
+	}
+
+#divider-mobile {
+	display: block;
+}
+
+#sidebar {
+	display: none;
+	margin-right: -250px;
+	top: 50%;
+	right: 0;
+}
+
+#sidebar.active {
+	min-width: 150px;
+	max-width: 150px;
+	top: 50%;
+	right: 0;
+	margin: 0;
+	transition: all 0.3s;
+	position: absolute;
+}
+
+
+.product-nav-mobile {
+	display: block;
+}
+
+.product-nav {
+	display: none;
+}
+
+
+}
+

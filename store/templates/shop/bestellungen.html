@@ -1,0 +1,66 @@
+{% extends "shop/main.html" %}
+
+{% block content %}
+
+  <main>
+     <br> <br>
+     <div class="container">
+
+      <h2>Übersicht Bestellungen</h2>
+      <br>
+           	<table class="table">
+			  <thead>
+			    <tr>
+			    <th>Datum</th>
+			    <th>Bestellung</th>
+			    <th>Status</th>
+			    <th>Details</th>
+			    <th>Totalbetrag</th>
+			    <th>Benutzer</th>
+			    </tr>
+			  </thead>
+			  {% if object %}
+			  {% for order in object %}
+			  <tbody>
+			    <tr>
+			    <td>{{ order.ordered_date|date:"d.m.Y H:i " }} </td>
+			    <td>{{ order.pk }}</td>
+			    <td>
+			    {% if order.ordered == True %}
+			    Erledigt
+			    {% else %}
+			    Offen
+			    {% endif %}
+				</td>
+			    
+			    <td>
+			    {% if order.ordered == False %}
+			    Noch nicht abgeschlossen.<a href="{% url 'store:order_summary' %}"> Zum Warenkorb</a>
+			    {% else %}
+			    <a href="{% url 'store:email' order.pk %}">Bestätigung anzeigen</a>
+			    {% endif %}
+			    
+				</td>
+			
+				<td>CHF {{ order.grandtotal|floatformat:2 }}</td>
+			    <td>{{ order.user.first_name }} {{ order.user.last_name }} </td>
+			    </tr>
+			  </tbody>
+			  {% endfor %}
+			  {% else %}
+			  <tbody>
+			  	<tr>
+			  <td>Es gibt keine Bestellungen.</td>
+			    </tr>
+			  </tbody>
+			   {% endif %}
+			</table>
+
+			
+
+			          </div>
+			          <br> <br> <br> <br> <br> <br> <br> <br>
+			  </main>
+
+{% endblock content %}
+

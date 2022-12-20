@@ -1,0 +1,198 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap');
+
+/* ----------------------------------- Main CSS elements */
+
+.bgcolor {
+  background-color: var(--white);
+  min-height: 500px;
+}
+
+.dichtflex-container {
+  display: flex;
+  padding: 3% 0 1.5% 0;
+}
+
+.dichtflex-element {
+  flex: 0 0 40%;
+  padding: 0 1%;
+}
+
+.dichtflex-element img {
+  height: auto; 
+  width: auto; 
+  max-width: 250px; 
+  max-height: 250px;
+  object-fit: contain;
+}
+
+.dichtflex-element .top {
+  font-size: 1.4rem !important;
+  font-weight: 700;
+}
+
+.artikeluebersicht {
+  margin: 0 !important;
+}
+
+/*Storepreview */
+
+.storepreview {
+  padding: 5% 0;
+}
+
+
+/* Store Preview Product */ 
+
+.product-flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.box-element{
+  flex: 1;
+  display: flex ;
+  flex-wrap: wrap;
+  padding: 5%;
+  width: 100%;
+  height: auto;
+}
+
+.box-element-sub h4, .box-element-sub p {
+  width: 100%;
+  height: 70px;
+}
+
+.box-element-sub {
+  flex: 1;
+  width: 100%;
+}
+
+.thumbnail{
+  flex: 0 0 100%;
+  height: auto; 
+  width: auto; 
+  max-width: 150px; 
+  max-height: 150px;
+  object-fit: contain;
+  margin: 2%;
+}
+
+.anzahl {
+  color: var(--black) !important;
+}
+
+.col-lg-4, .col-lg-6, .col-lg-8, .col-lg-12{
+  margin-top: 10px;
+}
+
+/* Store Preview Product END */ 
+
+.ptitel {
+  margin: 5% 0 !important;
+} 
+
+.preis {
+    color: var(--red)!important;
+    font-weight: bold !important;
+    font-size: 1.5rem !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.muted {
+  color: var(--muted) !important;
+  padding: 0 !important;
+  margin: -3% 0 0 0 !important;
+}
+
+.preis small {
+  font-size: 0.9rem !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+
+.btn-dicht {
+  padding: 4% 8%;
+
+}
+
+.fa-check-circle {
+  color: var(--green);
+}
+
+.gummi {
+  display: none;
+}
+
+.aussenmass-flex {
+  display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+  display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+  display: -ms-flexbox;      /* TWEENER - IE 10 */
+  display: -webkit-flex;     /* NEW - Chrome */
+  display: flex;             /* NEW, Spec - Opera 12.1, Firefox 20+ */
+}
+
+.aussenmass-flex-item {
+  flex: 45% 0 0;
+}
+
+.menge-flex {
+  display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+  display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+  display: -ms-flexbox;      /* TWEENER - IE 10 */
+  display: -webkit-flex;     /* NEW - Chrome */
+  display: flex;             /* NEW, Spec - Opera 12.1, Firefox 20+ */
+}
+}
+
+.menge-flex-item {
+  flex: 100% 0 0;
+}
+
+#aussenmass-bild {
+  box-shadow: none;
+  width: 200px;
+  height: auto;
+}
+
+/* Checkout Flex */ 
+
+.checkout-flex {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+.checkout-flex-item {
+ flex: 0 0 85%;
+}
+
+.checkout-flex-label {
+  flex: 0 0 15%;
+}
+
+.small-adresse {
+  font-size: 1rem !important;
+  font-weight: 600;
+}
+
+/* Register Flex */ 
+
+.register-flex {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+.register-flex-item {
+ flex: 0 0 72%;
+}
+
+.register-flex-label {
+  flex: 0 0 28%;
+}

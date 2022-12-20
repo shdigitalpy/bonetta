@@ -1,0 +1,27 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}CMS Produkte erfassen{% endblock %}
+
+{% block content %}
+
+		
+			<div class="container">
+			
+			<h2>Versandkosten erfassen</h2>
+
+			<div class="form-group">
+		    
+		    <form method="POST" enctype="multipart/form-data">
+		     {% csrf_token %}
+		      {{ form.media }}
+		      {{ form.as_p }}
+		      <button class="btn btn-warning btn-md ml-4">Erfassen</button>
+		      <button class="btn btn-secondary btn-md ml-4"><a href="{% url 'store:cms_versandkosten' %}">Zurück</a></button>
+  			</div>
+			<br/>
+			   </form>
+			   </div>
+
+			</div>
+
+ {% endblock %}

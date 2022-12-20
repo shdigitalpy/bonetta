@@ -1,0 +1,220 @@
+{% extends "shop/main.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+  <main>
+    <div class="container wow fadeIn">
+      <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'store:order_summary' %}">Warenkorb</a></li>
+      <li class="breadcrumb-item"><a class="active" href="{% url 'store:checkout' %}">Adresse</a></li>
+      </ol> 
+      <h2>Bestellung abschliessen</h2>
+       <br> <br>
+      <div class="row">
+        <div class="col-md-8 mb-4">
+          <div class="card ">
+            <form method="POST" class="card-body">
+              {% csrf_token %}
+
+              <h3><strong>Rechnungs- und Lieferadresse</strong></h3>
+                <br>
+                {% if billing_address %}
+                {{ billing_address.user.profile.firmenname }} <br>
+                {{ billing_address.user.first_name }} {{ billing_address.user.last_name }}<br> 
+                {{ billing_address.rechnung_strasse }} {{ billing_address.rechnung_nr }}<br>
+               {% if billing_address.rechnung_land %} {{ billing_address.rechnung_land }} - {% endif %} {{ billing_address.rechnung_plz }} {{ billing_address.rechnung_ort }}
+                <br><br><br>
+
+                {% else %}
+              
+              <div id ="billing_address_notexist">
+                <br>
+                <div class="checkout-flex">
+
+                  <div class="checkout-flex-label">
+                    Firma
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.rechnung_firmenname }}
+                </div>
+
+                 <div class="checkout-flex-label">
+                    Vorname *
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.rechnung_vorname }}
+                </div>
+
+                 <div class="checkout-flex-label">
+                    Nachname *
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.rechnung_nachname }}
+                </div>
+
+                <div class="checkout-flex-label">
+                    Strasse *
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.rechnung_strasse }}
+                  <div class="invalid-feedback">
+                      Eine Strasse muss angegeben werden.
+                    </div>
+                </div>
+
+                <div class="checkout-flex-label">
+                    Nr. *
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.rechnung_nr }}
+                  <div class="invalid-feedback">
+                      Eine Haus-Nr. muss angegeben werden.
+                    </div>
+                </div>
+
+                <div class="checkout-flex-label">
+                    PLZ *
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.rechnung_plz }}
+                  <div class="invalid-feedback">
+                      PLZ muss angegeben werden.
+                    </div>
+                </div>
+
+                <div class="checkout-flex-label">
+                    Ort *
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.rechnung_ort }}
+                  <div class="invalid-feedback">
+                      Ort muss angegeben werden.
+                    </div>
+                </div>
+
+                <div class="checkout-flex-label">
+                    Land *
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.rechnung_land }}
+                  <div class="invalid-feedback">
+                      Das Land wird benötigt.
+                    </div>
+                </div>
+
+                 </div><!-- end checkout-flex-->
+               </div><!-- end billing_form-flex-->
+
+              {% endif %}
+              
+               <br> 
+               <div class="custom-control custom-checkbox" id="formparent">
+                  <p class="small-adresse">Lieferadresse:<br><input type="checkbox" class="custom-control-input" name="different_shipping_address" id="different_shipping_address">
+                  <label class="custom-control-label" for="different_shipping_address"><small>Abweichende Adresse angeben.</small></label></p>
+               
+               <div id="hideable_shipping_form" style="display:none">             <br>    
+              <div class="checkout-flex">
+
+                  <div class="checkout-flex-label">
+                    Firma
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.firmenname }}
+                </div>
+
+                 <div class="checkout-flex-label">
+                    Vorname *
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.vorname }}
+                </div>
+
+                 <div class="checkout-flex-label">
+                    Nachname *
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.nachname }}
+                </div>
+
+                <div class="checkout-flex-label">
+                    Strasse *
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.lieferung_strasse }}
+                  <div class="invalid-feedback">
+                      Eine Strasse muss angegeben werden.
+                    </div>
+                </div>
+
+                <div class="checkout-flex-label">
+                    Nr. *
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.lieferung_nr }}
+                  <div class="invalid-feedback">
+                      Eine Haus-Nr. muss angegeben werden.
+                    </div>
+                </div>
+
+                <div class="checkout-flex-label">
+                    PLZ *
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.lieferung_plz }}
+                  <div class="invalid-feedback">
+                      PLZ muss angegeben werden.
+                    </div>
+                </div>
+
+                <div class="checkout-flex-label">
+                    Ort *
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.lieferung_ort }}
+                  <div class="invalid-feedback">
+                      Ort muss angegeben werden.
+                    </div>
+                </div>
+
+                <div class="checkout-flex-label">
+                    Land *
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.lieferung_land }}
+                  <div class="invalid-feedback">
+                      Das Land wird benötigt.
+                    </div>
+                </div>
+
+
+
+                 </div><!-- end checkout-flex-->
+                
+                <p>* Pflichtfelder</p>
+
+              </div><!-- end hideable shipping form -->
+              </div><!-- end custom-checkbox -->
+
+              <hr class="mb-4">
+              <button type="submit" class="btn btn-primary btn-lg btn-block" type="submit">Weiter</button>
+
+            </form>
+
+
+          </div><!-- end card -->
+
+        </div><!-- end column -->
+
+        
+
+      </div>
+
+    </div>
+  </main>
+
+{% endblock content %}
+
+{% block extra_scripts %}
+
+{% endblock extra_scripts %}

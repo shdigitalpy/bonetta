@@ -1,0 +1,44 @@
+{% extends 'shop/main.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<div class="container">
+    <div class="storepreview">
+      <div class="row">
+
+  {% for product in items %}
+
+  <div class="col-lg-3">
+
+    <div class="product-flex">
+    {% if product.titelbild %}
+    <a href="{% url 'store:product-detail' product.slug %}"><img class="thumbnail" src="{{ product.titelbild.url }}"></a>
+    {% endif %}
+    
+    <div class="box-element">
+
+    
+    <div class="box-element-sub">
+    <h4><strong>{{ product.artikelnr }} </strong></h4>
+    
+    <hr>
+    
+    
+      
+    <a class="btn btn-warning" href="{% url 'store:product-detail' product.slug %}">Preis Berechnung</a>
+    </div>
+
+    </div>
+
+    </div>
+  </div>
+
+  {% endfor %}
+
+  </div><!-- row end -->
+  </div><!-- storepreview end -->
+</div><!-- container end -->
+
+{% endblock content %}

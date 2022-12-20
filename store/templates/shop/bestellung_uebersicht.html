@@ -1,0 +1,358 @@
+{% load static %}
+
+
+<html lang="de">
+  <head> 
+  <style type="text/css">
+
+    /*
+      --blue: #29384e;
+      --lightblue: #BFDAF3;
+      --white: #ffffff;
+      --yellow: #ffc107;
+      --grey: #f6f6f6;
+      --lightgrey: #e6e6e6;
+      --darkergrey: #A0A0A0;
+      --green: #73C44D;
+      --muted: #999999;
+      --hellblau: #ebf5ff;
+    */
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      font-family: 'Raleway', sans-serif;
+      background-color: #e6e6e6;
+  }
+
+    .container {
+      width: 90%;
+      margin: 2% auto;
+      padding: 3%;
+      background-color: white;
+
+    }
+
+    h2 {
+      margin: 2.5% 0 0.5% 0;
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin: 0.5% 0;
+    }
+
+    .table-big {
+      width: 70%;
+      background-color: #f6f6f6;
+      text-align: center;
+      border-spacing: 0;
+      border-collapse: collapse;
+    }
+
+    .table-big thead th {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #ffffff;
+      border-left: 0.25px solid #ffffff;
+    }
+
+    .table-big td, .table-big th {
+      border: 0.1px solid #29384e;
+      padding: 1%;
+  
+    }
+
+    .table-big tbody td {
+      font-size: 1.1rem;
+      padding: 1%;
+
+    }
+
+    .table-big thead {
+      background: #29384e;
+      
+    }
+
+     .table-small {
+      width: 50%;
+      text-align: left !important;
+      border: none;
+      background-color: white;
+      table-layout: fixed;
+    }
+
+      .table-small thead th {
+        font-size: 1rem;
+        font-weight: 400;
+        color: #29384e;
+        border: none;
+      }
+
+      .table-small td, .table-small th {
+        border: none;
+        padding: 1%;
+    
+      }
+
+      .table-small tbody td {
+        font-size: 1rem;
+        padding: 1%;
+
+      }
+
+      .table-small thead {
+        background: #ffffff;
+        
+      }
+
+      img {
+        width: 15vw;
+        height: auto;
+      }
+
+      .flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .flex-item1 {
+        flex: 20% 0 0;
+        font-size: 1.5rem;
+        text-decoration: none;
+        background-color: #29384e;
+        text-align: center;
+        padding: 1%;
+        color: white;
+      }
+
+      .flex-item2 {
+        flex: 20% 0 0;
+      }
+
+      
+
+</style>  
+  </head>
+  <body>
+
+<div class="container">
+
+{% block content %}
+
+{% include 'shop/header_bestellungen.html' %}
+
+{% endblock %}
+
+<h2>Bestellbestätigung zur Bestellung-Nr. 206505{{ object.id }}</h2>
+<p>Vielen Dank für Ihre Bestellung 206505{{ object.id }}. Die Artikel erhalten Sie in den nächsten Tagen mit einer Rechnung per Post.</p>
+<p>Diese Bestätigung erhalten Sie auch per E-Mail.</p>
+<br>
+
+<table class="table-small">
+  <thead>
+    <tr>
+    <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <td>Datum:</td>
+    <td>{{ object.ordered_date|date:"d.m.Y H:i " }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="table-small">
+  <thead>
+    <tr>
+        <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <td>Zahlungsmethode:</td>
+    <td>Rechnung</td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="table-small">
+  <thead>
+    <tr>
+        <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Name:</td>
+      <td>{{ object.billing_address.user.profile.firmenname }} {{ object.billing_address.user.first_name }} {{ object.billing_address.user.last_name }}
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="table-small">
+  <thead>
+    <tr>
+        <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+      {% if object.shipping_address.lieferung_strasse == 'keineStrasse' %}
+      Rechnungs- und Lieferadresse:
+      {% else %}
+      Rechnungsadresse:
+      {% endif %}
+      </td>
+      <td>{{ object.billing_address.user.profile.firmenname }}<br>
+        {{ object.billing_address.user.first_name }} {{ object.billing_address.user.last_name }}<br>
+        {{ object.billing_address.rechnung_strasse }} {{ object.billing_address.rechnung_nr }}<br>{% if object.billing_address.rechnung_land %} {{ object.billing_address.rechnung_land }} - {% endif %}   {{ object.billing_address.rechnung_plz }} {{ object.billing_address.rechnung_ort }}
+    </td>
+   
+    </tr>
+  </tbody>
+</table>
+
+<table class="table-small">
+  <thead>
+    <tr>
+        <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+        <td>
+     {% if object.shipping_address.lieferung_strasse %}
+      Lieferadresse:
+      {% else %}
+      <small style="font-style:italic;">Lieferadresse ist gleich Rechnungsadresse.</small>
+      {% endif %}
+      </td>
+      <td>
+      {% if object.shipping_address.lieferung_strasse %}
+      {{ object.shipping_address.firmenname }} <br>
+      {{ object.shipping_address.vorname }} {{ object.shipping_address.nachname }}<br>
+      {{ object.shipping_address.lieferung_strasse }} {{ object.shipping_address.lieferung_nr }}<br>{% if object.shipping_address.lieferung_land %} {{ object.shipping_address.lieferung_land }} - {% endif %}  {{ object.shipping_address.lieferung_plz }} {{ object.shipping_address.lieferung_ort }}
+        
+      
+      {% else %}
+
+      {% endif %}
+      </td>
+
+    </tr>
+  </tbody>
+</table>
+<br><br>
+<table class="table-big">
+  <thead>
+    <tr>
+        <th scope="col" style="width: auto;">Artikel</th>
+        <th scope="col">Bild</th>
+        <th scope="col">Stk / Lfm</th>
+        <th scope="col">Preis</th>
+        <th scope="col">Total</th>
+    </tr>
+  </thead>
+  <tbody>
+  	{% for order_item in order_items %}
+    <tr>
+      <td>
+          {% if order_item.aussenbreite == 250 and order_item.aussenhöhe == 250 %}
+          {% if order_item.item.subkategorie %} {{ order_item.item.subkategorie }} {% else %} {{ order_item.item.kategorie }} {% endif %} {{ order_item.item.artikelnr }}
+          {% else %}
+          {% if order_item.item.subkategorie %} {{ order_item.item.subkategorie }} {% else %} {{ order_item.item.kategorie }} {% endif %} {{ order_item.item.artikelnr }} 
+        <br>{{ order_item.aussenbreite }}mm / {{ order_item.aussenhöhe }}mm<br>
+        {% if order_item.element %}
+        Element-Nr.: {{ order_item.element }}
+        {% endif %} 
+          {% endif %}
+       </td>
+      <td><img class="img-thumbnail" src="{{MEDIA_URL}}{{ order_item.item.titelbild.url }}" alt="image" style="width: 5em;"></td>
+        <td>
+            <a href="{% url 'store:remove_single_item_from_cart' order_item.item.slug order_item.pk %}"><i class="fas fa-minus mr-1"></i></a>
+            {{ order_item.quantity }}
+            <a href="{% url 'store:add_to_cart' order_item.item.slug order_item.pk %}"><i class="fas fa-plus ml-1"></i></a>
+        </td>
+        <td>{% if order_item.item.kategorie|lower == 'pvc mit magnet' or order_item.item.kategorie|lower == 'pvc ohne magnet'  %}
+        CHF {{ order_item.get_total_item_price_pvc|floatformat:2 }}
+        {% else %}
+        CHF {{ order_item.get_price|floatformat:2 }}
+        {% endif %}</td>
+        <td>CHF {{ order_item.get_total_item_price|floatformat:2}}</td>
+    </tr>
+    {% endfor %}
+
+    </tbody>
+    </table>
+
+     <br><br>
+
+     {% block table %}
+    <table class="final-table-summary" style="font-size: 1.2rem">
+      <thead>
+        <tr>
+        </tr>
+      </thead>
+        {% if object.get_total %}
+        <tr>
+         <td><i>Online-Rabatt {{ object.discount_pct|floatformat:0 }}%</i></td>
+        <td><i>CHF -{{ object.discount|floatformat:2 }}</i></td>
+        </tr>
+
+        <tr>
+        <td>Versand-und Verpackungskosten</td>
+        <td>CHF {{ object.shippingcost|floatformat:2 }}</td>
+        </tr>
+
+         <tr>
+         <td><i>
+        {% if object.payment_method == 'V' %}
+          Rabatt auf Zahlungsmethode 2%
+          {% else %}
+
+          {% endif %}
+         </i></td>
+        <td><i>{% if object.payment_method == 'V' %}
+          CHF -{{ object.skonto|floatformat:2 }}
+          {% else %}
+          
+          {% endif %}
+        </i></td>
+        </tr>
+        
+        <tr>
+         <td><b>Gesamtsumme zzgl. MwSt. </b></td>
+        <td>CHF {{ object.get_total_pre_mwst|floatformat:2 }}</td>
+        </tr>
+        <tr>
+         <td>MwSt (7.7%)</td>
+        <td>CHF {{ object.mwst|floatformat:2 }}</td>
+        </tr>
+        <tr>
+         <td><b>Gesamtsumme</b></td>
+        <td>CHF {{ object.grandtotal|floatformat:2 }}</td>
+        </tr>
+       {% endif %}
+  </tbody>
+</table>
+{% endblock %}
+<br><br>
+<p>Bei Fragen stehen wir gerne zur Verfügung.</p>
+<br>
+<p>Freundliche Grüsse</p>
+<p style="font-weight:bold">Gebo Shop Bonetta</p>
+<p>Langmattstrasse 10<br>
+8182 Hochfelden</p>
+<p>Telefon: +41 (0)79 333 61 57</p>
+<p>E-Mail: livio.bonetta@geboshop.ch </p>
+<p><a href="{% url 'store:home' %}">www.gastrodichtungen.ch</a></p>
+
+</div><!--end container-->
+</body>
+</html>

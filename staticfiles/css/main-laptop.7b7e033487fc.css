@@ -1,0 +1,39 @@
+@media only screen and (min-width: 1201px) and (max-width: 1600px) { 
+
+	/* ----------------------------------- Navigation START */
+
+.navbar-nav li {
+	margin-right: 0;
+}
+
+.nav-link {
+	font-size: 1.1rem !important;
+}
+
+.navbar-brand {
+	width: 30%;
+}
+
+.navbar-brand img {
+	width: 50%;
+}
+
+.topnav {
+	margin-left: 1% !important;
+}
+	
+
+#divider {
+	display: none;
+	}
+
+#divider-mobile {
+	display: block;
+
+}
+
+
+
+
+}
+

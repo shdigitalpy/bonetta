@@ -1,0 +1,58 @@
+{% extends "shop/main.html" %}
+{% load i18n %}
+{% load account socialaccount %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{% trans "Online Shop Anmeldung" %}{% endblock %}
+
+{% block content %}
+
+
+<div class="container">
+<div class="row padding storepreview form ">
+  <div class="col-sm-10 bggrey">
+
+<h1>{% trans "Anmelden" %}</h1>
+
+{% get_providers as socialaccount_providers %}
+
+{% if socialaccount_providers %}
+<p>{% blocktrans with site.name as site_name %}Please sign in with one
+of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
+for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
+
+<div class="socialaccount_ballot">
+
+  <ul class="socialaccount_providers">
+    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+  </ul>
+
+  <div class="login-or">{% trans 'or' %}</div>
+
+</div>
+
+{% include "socialaccount/snippets/login_extra.html" %}
+
+{% else %}
+<p>{% blocktrans %}Falls Sie noch kein Kunden-Login haben, registrieren Sie sich unter <a href="{{ signup_url }}">hier</a>.
+{% endblocktrans %}</p>
+{% endif %}
+
+<form class="login" method="POST" action="{% url 'account_login' %}">
+  {% csrf_token %}
+  {{ form|crispy }}
+  {% if redirect_field_value %}
+  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+  {% endif %}
+  <button class="btn btn-md btn-primary" type="submit">{% trans "Anmelden" %}</button>
+  
+  <a class="btn btn-md btn-secondary" href="{% url 'account_reset_password' %}">{% trans "Passwort vergessen" %}</a>
+</form>
+
+</div>
+</div>
+</div><!-- end container -->
+
+<br><br><br><br>
+
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}CMS Elemente{% endblock %}
+
+{% block content %}
+
+		
+			<div class="flexbox">
+				<div class="h2">Elemente<br><br> {{ kunde_data.firmenname }}</div>
+
+				
+
+				<!-- Search form -->
+				<form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="">
+				  {% csrf_token %}
+
+				  <div style="display: flex">
+
+				  	<div style="flex: 0 0 20%">
+				  <input id="textsuche" class="form-control" type="text" placeholder="Text"
+				    aria-label="Search" name="search">
+					</div>
+		            <div style="flex: 0 0 15%">
+		            <button type="submit" style="border: none;" class="btn btn-outline-secondary">
+				    <span class="fas fa-search"></span> Suche
+				  </button>
+				</div>
+				<div style="flex: 0 0 20%">
+				    <a href="" style="border: none;" class="btn btn-outline-secondary"><span class="fas fa-times"></span> zurücksetzen</a>
+				
+				   </div>
+				</form>
+			</div>
+			<div class="flexbox">
+				<a class="btn btn-secondary btn-sm" href="{% url 'store:cms_kunden' %}">Zurück zur Kundenliste</a>
+			</div>
+
+			<table class="table table-striped">
+			  <thead>
+			    <tr>
+			      <th scope="col">Kühlposition</th>
+			      <th scope="col">Element-Nr.</th>
+			      <th scope="col">Kühlunterbau</th>
+			      <th scope="col">Typ</th>
+			      <th scope="col">Aussenmass Breite / Höhe</th>
+			      <th scope="col">Bearbeiten</th>
+			      <th scope="col">Löschen</th>
+			     
+			    </tr>
+			  </thead>
+			 {% for data in kunde_data.kunden_elemente.all %}
+			  <tbody>
+			    <tr>
+			      <td>
+			      	{{ data.kuehlposition }}
+			  		</td>
+			      <td>{{ data.elementnr }}</td>
+			      <td>{{ data.bemerkung }}</td>
+			      <td>{{ data.dichtungen.titel }}</td>
+			      <td>{{ data.aussenbreite }}mm / {{ data.aussenhöhe }}mm </td>
+			      <td><a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente_edit' data.pk %}">
+  					Bearbeiten</a></td>
+  					<td>
+  					<a href="{% url 'store:cms_elemente_löschen' data.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i>
+					 </a>
+					</td> 
+			      {% endfor %}
+			    </tr>
+			    
+			  </tbody>
+			 
+
+			</table>
+
+ {% endblock %}

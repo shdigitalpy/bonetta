@@ -1,0 +1,206 @@
+{% extends "shop/main.html" %}
+
+{% block content %}
+    
+<br> <br>
+     <div class="container meinprofil">  
+      <div class="row">
+        <div class="col-md-8 mb-4">
+          <div class="card">
+
+            <form method="POST" class="card-body">
+              {% csrf_token %}
+
+
+            <h2>Mein Profil</h2>
+
+            <div class="checkout-flex">
+
+              <!-- checkout flex item 1 -->
+            <div class="checkout-flex-label">
+              User
+            </div>
+            <div class="checkout-flex-item">
+             {{ user.username }}
+            <br>
+             </div>
+             <!-- checkout flex item end 1 -->
+
+             <div class="checkout-flex-label">
+              E-Mail
+             </div>
+             <div class="checkout-flex-item">
+             {{ user.email }}
+             <br>
+             </div>
+
+                <div class="checkout-flex-label">
+                    Rabatt
+                  </div>
+                <div class="checkout-flex-item">
+                    {{ user.profile.rabatt |floatformat:0 }}%
+                    <br>
+                </div>
+
+              </div>
+  
+        <br><br>  
+              
+              <div id ="billing_address_notexist">
+                <br>
+                <h3>Meine Angaben</h3>
+                <br>
+                <div class="checkout-flex">
+
+                  <div class="checkout-flex-label">
+                    Firma
+                  </div>
+                <div class="checkout-flex-item">
+                    <input class="form-control" type="text" name="firmenname" value="{{ address.user.profile.firmenname }}" >
+                    <br>
+                </div>
+
+                 <div class="checkout-flex-label">
+                    Vorname 
+                  </div>
+                <div class="checkout-flex-item">
+                    <input class="form-control" type="text" name="vorname" value="{{ address.user.first_name }}" >
+                <br>
+                </div>
+
+                 <div class="checkout-flex-label">
+                    Nachname 
+                  </div>
+                <div class="checkout-flex-item">
+                    <input class="form-control" type="text" name="nachname" value="{{ address.user.last_name }}" >
+                <br>
+                </div>
+
+                <div class="checkout-flex-label">
+                    Geburtstag (freiwillig)
+                  </div>
+                <div class="checkout-flex-item">
+                    <input class="form-control" type="text" name="birthday" value="{% if address.user.profile.birthday %}{{ address.user.profile.birthday }} {% endif %}" >
+                <br>
+                </div>
+
+                <div class="checkout-flex-label">
+                    Telefon
+                  </div>
+                <div class="checkout-flex-item">
+                    <input class="form-control" type="text" name="phone" value="{% if address.user.profile.phone %}{{ address.user.profile.phone }} {% endif %}" >
+                <br>
+                </div>
+                
+                <div class="checkout-flex-label">
+                    Mobile
+                  </div>
+                <div class="checkout-flex-item">
+                    <input class="form-control" type="text" name="mobile" value="{% if address.user.profile.mobile %}{{ address.user.profile.mobile }} {% endif %}" >
+                    <br>
+                    <div class="checkout-flex-label">
+                    
+                  </div>
+                <div class="checkout-flex-item">
+                  <button class="btn btn-warning" type="submit">Speichern</button>
+                </div>
+                
+                </div>
+
+
+                </div><!-- end checkout-flex-->
+                <br><br>
+                <h3>Rechnungs- und Lieferadresse</h3>
+                <br>
+                <div class="checkout-flex">
+
+                <div class="checkout-flex-label">
+                    Strasse 
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.rechnung_strasse }}
+                  <div class="invalid-feedback">
+                      Eine Strasse muss angegeben werden.
+                    </div>
+                <br>
+                </div>
+
+                <div class="checkout-flex-label">
+                    Nr. 
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.rechnung_nr }}
+                  <div class="invalid-feedback">
+                      Eine Haus-Nr. muss angegeben werden.
+                    </div>
+                <br>
+                </div>
+
+                <div class="checkout-flex-label">
+                    PLZ 
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.rechnung_plz }}
+                  <div class="invalid-feedback">
+                      PLZ muss angegeben werden.
+                    </div>
+                <br>
+                </div>
+
+                <div class="checkout-flex-label">
+                    Ort
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.rechnung_ort }}
+                  <div class="invalid-feedback">
+                      Ort muss angegeben werden.
+                    </div>
+                <br>
+                </div>
+
+                <div class="checkout-flex-label">
+                    Land 
+                  </div>
+                <div class="checkout-flex-item">
+                  {{ form.rechnung_land }}
+                  <div class="invalid-feedback">
+                      Das Land wird benötigt.
+                    </div>
+                <br>
+                </div>
+
+                <div class="checkout-flex-label">
+                    
+                  </div>
+                <div class="checkout-flex-item">
+                  <button class="btn btn-warning" type="submit">Speichern</button>
+                </div>
+ 
+                
+                
+              </div><!-- end checkout-flex-->
+               </div><!-- end billing_form-flex-->
+
+               
+
+            </form>
+
+
+          </div><!-- end card -->
+
+        </div><!-- end column -->
+
+        
+
+      </div>
+
+         
+      </p>
+    
+    </div>
+
+  <br> <br><br> 
+  
+
+{% endblock %}
+

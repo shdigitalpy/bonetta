@@ -1,0 +1,149 @@
+{% extends 'shop/main.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+
+<br><br>
+  <h1>Aktueller Warenkorb</h1>
+<div class="row padding storepreview">
+  <div class="table-responsive">
+  <table class="table" >
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col" style="width: auto;">Artikel</th>
+        <th scope="col">Bild</th>
+        <th scope="col">Stk / Lfm</th>
+        <th scope="col">Preis</th>
+        <th scope="col">Total</th>
+        <th scope="col">Löschen</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for order_item in object.items.all %}
+      <tr>
+        <th scope="row">{{ forloop.counter }}</td>
+        <td>
+          {% if order_item.aussenbreite == 250 and order_item.aussenhöhe == 250 %}
+          {% if order_item.item.subkategorie %} {{ order_item.item.subkategorie }} {% else %} {{ order_item.item.kategorie }} {% endif %} {{ order_item.item.artikelnr }} 
+          {% else %}
+          {% if order_item.item.subkategorie %} {{ order_item.item.subkategorie }} {% else %} {{ order_item.item.kategorie }} {% endif %} {{ order_item.item.artikelnr }}
+        <br>{{ order_item.aussenbreite }}mm / {{ order_item.aussenhöhe }}mm<br>
+        {% if order_item.element %}
+        Element-Nr.: {{ order_item.element }}
+        {% endif %}
+          
+          {% endif %}
+        
+       </td>
+        <td><img class="img-thumbnail" src="{{MEDIA_URL}}{{ order_item.item.titelbild.url }}" alt="image" style="width: 5em;"></td>
+        <td>
+            <a href="{% url 'store:remove_single_item_from_cart' order_item.item.slug order_item.pk %}"><i class="fas fa-minus mr-1"></i></a>
+            {{ order_item.quantity }}
+            <a href="{% url 'store:add_to_cart' order_item.item.slug order_item.pk %}"><i class="fas fa-plus ml-1"></i></a>
+        </td>
+        <td>
+          {% if order_item.item.kategorie|lower == 'pvc mit magnet' or order_item.item.kategorie|lower == 'pvc ohne magnet'  %}
+        CHF {{ order_item.get_total_item_price_pvc|floatformat:2 }}
+        {% else %}
+        CHF {{ order_item.get_price|floatformat:2 }}
+        {% endif %}
+      </td>
+        <td>
+          {% if order_item.item.kategorie|lower == 'pvc mit magnet' or order_item.item.kategorie|lower == 'pvc ohne magnet'  %}
+      CHF {{ order_item.get_total_item_price_pvc_total|floatformat:2 }}
+          {% else %}
+        CHF {{ order_item.get_total_pre|floatformat:2 }}
+      {% endif %}</td>
+      <td>
+      <a href="{% url 'store:remove_from_cart' order_item.item.slug order_item.pk %}">
+        <i style="color:var(--red)" class="far fa-trash-alt"></i>
+        </a>
+        </td>
+      </tr>
+        {% empty %}
+
+        <tr>
+          <td colspan="5">Der Warenkorb ist leer</td>
+        </tr>
+
+        <tr>
+        <td colspan="6"></td>
+        <td><a href="{% url 'store:searchbar' %}" class="btn btn-md btn-secondary">Weiter einkaufen</a></td>
+        </tr>
+
+    {% endfor %}
+    {% if object.get_total %}
+
+      <tr>
+        <td colspan="1"></td>
+         <td colspan="1"><b>Total Produkte</b></td>
+        <td>CHF {{ object.get_total|floatformat:2 }}</td>
+        </tr>
+
+        {% if object.get_rabatt %}
+        <tr>
+          <td colspan="1"></td>
+         <td colspan="1"><i>Online-Rabatt {{ object.user.profile.rabatt|floatformat:0 }}%</i></td>
+        <td><i>CHF -{{ object.get_rabatt|floatformat:2 }}</i></td>
+        </tr>
+        {% else %}
+        {% endif %}
+
+        <tr>
+        <td colspan="1"></td>
+         <td colspan="1">Versand-und Verpackungskosten</td>
+        <td>CHF {{ object.get_shipping|floatformat:2 }}</td>
+        </tr>
+        {% if zuschlag %}
+        <tr>
+          <td colspan="1"></td>
+        <td colspan="1" style="font-size: 0.9rem; font-style:italic; color:var(--darkergrey)"> Versand enthält Sperrgutzuschlag</td>
+        <td style="font-size: 0.9rem; font-style:italic; color:var(--darkergrey)">CHF {{ zuschlag|floatformat:2 }}
+        </td>
+        </tr>
+        {% endif %}
+
+         <tr>
+          {% if object.sperrgutzuschlag %}
+        <td colspan="1"></td>
+         <td colspan="1">Sperrgutzuschlag</td>
+        <td>CHF {{ object.sperrgutzuschlag|floatformat:2 }}</td>
+        {% endif %}
+        </tr>
+        <tr>
+          <tr>
+        <td colspan="1"></td>
+         <td colspan="1"><b>Gesamtsumme zzgl. MwSt. </b></td>
+        <td>CHF {{ object.get_total_pre_mwst_withoutskonto|floatformat:2 }}</td>
+        </tr>
+        <td colspan="1"></td>
+         <td colspan="1">MwSt (7.7%)</td>
+        <td>CHF {{ object.get_pre_mwst_warenkorb|floatformat:2 }}</td>
+        </tr>
+        <tr>
+        <td colspan="1"></td>
+         <td colspan="1"><b>Total Warenkorb inkl. MwSt.</b></td>
+        <td>CHF {{ object.get_total_mwst_warenkorb|floatformat:2 }}</td>
+        </tr>
+        <tr>
+        <td colspan="1"></td>
+        <td><a href="{% url 'store:home' %}" class="btn btn-md btn-secondary">Weiter einkaufen</a></td>
+        <td><a href="{% url 'store:checkout' %}" class="btn btn-md btn-primary">Zur Kasse</a></td>
+        </tr>
+    {% endif %}
+
+    </tbody>
+  </table>
+  <br><br><br>
+    
+</div>
+
+
+  
+</div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,51 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}CMS Dichtung Masse{% endblock %}
+
+{% block content %}
+
+		
+			<div class="flexbox">
+				<div class="h2">Dichtung Masse</div>
+
+				<!-- Search form -->
+				<form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="{% url 'store:cms_dichtungsmasse' %}">
+				  {% csrf_token %}
+				  <button type="submit" style="border: none;">
+				    <i class="fas fa-search" style="color:var(--white)"></i>
+				  </button>
+				  <input class="form-control form-control-sm mr-3" type="text" placeholder="Suche"
+				    aria-label="Search" name="search">
+				    <a href="{% url 'store:cms_dichtungsmasse' %}" class="btn btn-outline-secondary btn-sm">Suche zurücksetzen</a>
+				</form>
+			</div>
+			<div class="flexbox">
+				<a class="btn btn-secondary btn-sm" href="{% url 'store:cms_dichtungsmasse_erfassen' %}">Erfassen</a>
+			</div>
+
+			<table class="table table-striped">
+			  <thead>
+			    <tr>
+			      <th scope="col">Dichtungen</th>
+			      <th scope="col">Aussenbreite</th>
+			      <th scope="col">Aussenhöhe</th>
+			      <th scope="col">Bearbeiten</th>			     
+			    </tr>
+			  </thead>
+			  {% for data in dichtungsmasse %}
+			  <tbody>
+			    <tr>
+			      <th scope="row">{{ data.dichtungen }}</th>
+			      <td>{{ data.aussenbreite }}mm</td>
+			      <td>{{ data.aussenhöhe }}mm</td>
+			      <td><a class="btn btn-secondary btn-sm" href="{% url 'store:cms_dichtungsmasse_edit' data.pk %}">
+  					Bearbeiten</a></td>
+			      
+			    </tr>
+			    
+			  </tbody>
+			  {% endfor %}
+
+			</table>
+
+ {% endblock %}

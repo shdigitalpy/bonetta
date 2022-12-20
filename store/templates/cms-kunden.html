@@ -1,0 +1,84 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}CMS Kunden{% endblock %}
+
+{% block content %}
+
+		
+			<div class="flexbox">
+				<div class="h2">Kunden</div>
+				
+			</div>
+			
+
+			<div class="flexbox">
+				<a class="btn btn-secondary btn-sm" href="{% url 'store:cms_kunden_erfassen' %}">Kunden erfassen</a>
+				
+			</div>
+
+			<table class="table table-striped">
+			  <thead>
+			    <tr>
+			    	<th scope="col">Webshop<br>Kunden-Nr.</th>
+			    	<th scope="col">Profil</th>
+			      <th scope="col">Profildaten <br>bearbeiten</th>
+			       <th scope="col">Firma</th>
+			      <th scope="col">Rabatt</th>
+			      <th scope="col">Newsletter</th>
+			      <th scope="col">Firmendaten<br> bearbeiten</th>
+			      <th scope="col">Adresse<br> bearbeiten</th>
+			      <th scope="col">Elemente<br> Übersicht</th>
+			      <th scope="col">Elemente<br> erfassen</th>
+			      <th scope="col">Kunde löschen</th>	
+			     			      
+
+			    </tr>
+			  </thead>
+			  {% for data in user %}
+			  <tbody>
+			    <tr>
+			      <th scope="row">{{ data.pk }}</th>
+			      <td>
+			      E-Mail: {{ data.email }}<br>Benutzername: {{ data.username }}</form>
+			  		</td>
+			      <td><form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{% url 'store:cms_user_bearbeiten' data.pk %}"><i class="fas fa-edit"></i></a></form></td>
+			      <td>{{ data.profile.firmenname }}<br>
+			      Telefon: {% if data.profile.phone %}{{ data.profile.phone }}{% endif %}<br>
+			      
+			      <td>{{ data.profile.rabatt }}%</td>
+			      <td>
+			      	{% if data.profile.newsletter == False %}
+			      	<p>Nein</p>
+			      	{% else %}
+			      	<p>Ja</p>
+			      	{% endif %}
+			  	</td>
+			  	
+			  	<td><form method="POST" enctype="multipart/form-data">{% csrf_token %}
+
+
+			  	<a type="submit"  href="{{ data.profile.get_absolute_url }}"><i class="fas fa-edit"></i></a>
+
+			  	</form></td>
+
+			  	<td><form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{{ data.profile.get_absolute_address_url }}"><i class="fas fa-edit"></i></a></form>
+			  	</td>
+
+
+			  	{% if data.profile.get_absolute_elemente_url %}
+			  	<td><form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{{ data.profile.get_absolute_elemente_url }}"><i class="fas fa-info-circle"></i></i></a></form></td>
+			  	{% endif %}
+
+			  	<td><form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{% url 'store:cms_elemente_create' data.profile.pk %}"><i class="fas fa-plus"></i></a></form></td>
+
+			  	<td><form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{% url 'store:cms_kunde_löschen' data.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i></a></form></td>
+			    
+			    </tr>
+			  </tbody>
+			  {% endfor %}
+
+			</table>
+
+			
+ {% endblock %}
+

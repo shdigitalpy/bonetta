@@ -1,0 +1,7 @@
+{% extends "account/email/base_message.txt" %}
+{% load account %}
+{% load i18n %}
+
+{% block content %}{% autoescape off %}{% user_display user as user_display %}{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}Sie haben sich mit dem Benutzername {{ user_display }} bei {{ site_domain }} angemeldet.
+
+Um den Anmeldeprozess abzuschliessen, rufen Sie bitte folgenden Link auf: {{ activate_url }}{% endblocktrans %}{% endautoescape %}{% endblock %}

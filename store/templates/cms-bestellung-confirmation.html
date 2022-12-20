@@ -1,0 +1,10 @@
+{% extends 'shop/bestellung_uebersicht.html' %}
+{% load static %}
+
+{% block content %}
+<div class="flex">
+<img src="{% static 'images/bonetta-blau.png' %}" alt="">
+
+<a class="flex-item1" href="{% url 'store:cms_bestellungen' %}">Zurück</a>
+</div>
+{% endblock %}

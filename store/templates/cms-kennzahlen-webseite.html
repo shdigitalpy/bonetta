@@ -1,0 +1,135 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% load django_template_maths %}
+{% block title %}CMS Kennzahlen{% endblock %}
+
+{% block content %}
+
+		<div class="container">
+			<div class="flexbox">
+				<div class="h2">Webseite Kennzahlen</div>
+				
+			</div>
+
+			<div class="table-wv" style="margin-left:2%">
+  <table class="table table-responsive">
+    <tbody>
+      <tr>
+        <td scope="col">URL:</td>
+        <td scope="col">www.gastrodichtungen.ch</td>
+        <td scope="col">Ziele pro Tag:</td>
+      </tr>
+        <tr>
+        <td scope="col">Datum:</td>
+        <td scope="col">{{ time }}</td>
+        <td scope="col">500 Besucher</td>
+        <td scope="col">Absprungrate: <30% </td>
+        <td scope="col">Zeit auf Webseite: >200s </td>
+         </tr>
+     </tbody>
+  </table>
+  </div>
+  <div class="flexbox-wv">
+  <!-- WEBSITE VISITORS TABLE START -->
+  <div class="flexelement-wv">
+  <table class="table table-responsive">
+    <thead>
+      <tr>
+        <th scope="col"></th>
+        <th scope="col">Besucher</th>
+        <th scope="col">Absprungrate</th>
+        <th scope="col">Zeit auf Website</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">{{ time }}</th>
+        <td>{{ api_today.1.dates.0.items.0.value }}</td>
+        <td>{{ api_today.1.dates.0.items.0.value }}%*</td>
+        <td>{{ api_today.2.dates.0.items.0.value }}s</td>
+      </tr>
+      <tr>
+        <th scope="row">7 TAGE</th>
+        <td>{{ api_7day.0.dates.0.items.0.value }}</td>
+        <td>{{ api_7day.1.dates.0.items.0.value }}%*</td>
+        <td>{{ api_7day.2.dates.0.items.0.value }}s</td>
+      </tr>
+      <tr>
+        <th scope="row">{{ api_month.0.dates.0.date }}</th> <!--|date: "d M Y"-->
+        <td>{{ api_month.0.dates.0.items.0.value }}</td>
+        <td>{{ api_month.1.dates.0.items.0.value }}%*</td>
+        <td>{{ api_month.2.dates.0.items.0.value }}s</td>
+      </tr>
+       <tr>
+        <th class="text-success" scope="row">TREND 7 TAGE</th>
+      	<td class="text-success">{{ api_lastweek.0.dates.0.items.0.value|sub:api_7day.0.dates.0.items.0.value|div:api_lastweek.2.dates.0.items.0.value|mul:100|add_decimal:2}}%</td>
+        <td class="text-success">{{ api_lastweek.1.dates.0.items.0.value|sub:api_7day.1.dates.0.items.0.value|add_decimal:2}}%</td>
+        <td class="text-success">{{ api_lastweek.2.dates.0.items.0.value|sub:api_7day.2.dates.0.items.0.value|div:api_lastweek.2.dates.0.items.0.value|mul:100|add_decimal:2}}%</td>
+      </tr>
+      </tbody>
+      </table>
+    <small>*Absprungrate Trend = negativ ist gut!</small>
+    </div>
+    <!-- WEBSITE VISITORS TABLE END -->
+    
+    <!-- WEBSITE HISTORY CHART START -->
+    <div class="flexelement-wv">
+    <div style="width:100%;">
+    <canvas id="myChart"></canvas>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+    <script>
+      var myChartObject = document.getElementById('myChart');
+
+var chart = new Chart(myChartObject, {
+  type: 'bar',
+  data: {
+    labels: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", {{ month_string|safe }}, "Oktober", "November", "Dezember"],
+    datasets: [{
+      label: "Besucher pro Monat",
+      backgroundColor: [
+      'rgba(65, 105, 225, 0.7)',
+      'rgba(54, 162, 235, 0.7)', 
+      'rgba(255, 206, 86, 0.7)', 
+      'rgba(75, 192, 192, 0.7)', 
+      'rgba(153, 102, 255, 0.7)', 
+      'rgba(255, 159, 64, 0.7)', 
+      'rgba(22, 105, 225, 0.7)', 
+      'rgba(93, 180, 225, 0.7)'],
+      borderColor: [
+      'rgba(65, 105, 225, 0.7)',
+      'rgba(54, 162, 235, 0.7)', 
+      'rgba(255, 206, 86, 0.7)', 
+      'rgba(75, 192, 192, 0.7)', 
+      'rgba(153, 102, 255, 0.7)', 
+      'rgba(255, 159, 64, 0.7)', 
+      'rgba(22, 105, 225, 0.7)', 
+      'rgba(93, 180, 225, 0.7)'],
+      data: [474,300,500,600,800,900,1000,5000,{{ t|safe }}, 6000, 7000, 8000]
+    }]
+      }, 
+
+  options: {
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }]
+    }
+
+
+  }
+});     
+    </script>
+    </div>
+    <!-- WEBSITE HISTORY CHART END -->
+    
+
+   
+
+
+ {% endblock %}
+

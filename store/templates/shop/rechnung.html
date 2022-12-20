@@ -1,0 +1,22 @@
+{% extends "shop/main.html" %}
+
+{% block content %}
+
+  <main>
+     <br> <br> <br> <br> <br> <br> <br> <br> <br>
+     <div class="container">
+      
+
+      <h2>Vielen Dank - Die Bestellung wurde verarbeitet.</h2>
+      
+
+            <p>Falls Sie Vorkasse gewählt haben, versenden wir den Artikel nach dem Zahlungseingang. Wenn Sie Rechnung gewählt haben, werden Sie den Artikel in den nächsten Tage in der Post haben. </p>
+
+            <a href="{% url 'store:bestellungen' %}">Zu Übersicht Ihrer Bestellungen</a>
+
+          </div>
+          <br> <br> <br> <br> <br> <br> <br> <br>
+  </main>
+
+{% endblock content %}
+

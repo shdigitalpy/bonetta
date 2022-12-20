@@ -1,0 +1,47 @@
+{% extends "shop/main.html" %}
+
+{% block content %}
+
+
+<br><br><br>
+<main>
+    <div class="container wow fadeIn">
+     
+      <div class="row">
+        <div class="col-md-8 mb-4">
+          <div class="card ">
+            <form method="POST" class="card-body">
+              {% csrf_token %}
+
+              <h3>Rechnungsadresse erfassen</h3>
+                           
+              
+              <div class='hideable_billing_form' id="hideable_billing_form">
+                
+                {{ form.as_table }}
+                <br>
+                <button class="btn btn-warning" type="submit">Speichern</button>
+                <a class="btn btn-outline-secondary" href="{% url 'store:einstellungen' %}">Zurück</a>
+
+              </div><!-- end hideable_billing_form -->
+              </div><!-- end Standard-Adresse verwenden -->
+
+               
+
+            </form>
+
+
+          </div><!-- end card -->
+
+        </div><!-- end column -->
+
+        
+
+      </div>
+
+    </div>
+  </main>
+
+  <br><br><br>
+{% endblock %}
+

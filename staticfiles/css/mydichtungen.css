@@ -1,0 +1,21 @@
+
+.mydichtungen {
+	padding: 4% 0;
+	color: var(--blue);
+}
+
+.click-zoom input[type=checkbox] {
+  display: none
+}
+
+.click-zoom img {
+	width: 12rem;
+  	margin: 0 20px;
+  	transition: transform 0.25s ease;
+  	cursor: zoom-in
+}
+
+.click-zoom input[type=checkbox]:checked~img {
+  transform: scale(2);
+  cursor: zoom-out
+}

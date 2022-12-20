@@ -1,0 +1,29 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}CMS Kunden erfassen{% endblock %}
+
+{% block content %}
+<br><br><br><br>
+        
+            <div class="container">
+            
+            <h2>Kunden erfassen</h2>
+            <br>
+            <div class="form-group">
+            
+            <form method="POST" enctype="multipart/form-data">
+             {% csrf_token %}
+              {{ form.as_p }}
+              <button class="btn btn-warning btn-md ml-4">Erfassen</button>
+              <button class="btn btn-secondary btn-md ml-4"><a href="{% url 'store:cms_kunden' %}">Zurück</a></button>
+            </div>
+            <br>
+
+               </form>
+            
+               <small>Weitere Angaben wie Adresse, Rabatt, etc. können nach der Erfassung der Basisdaten des Users vorgenommen werden.</small>
+               </div>
+
+            </div>
+
+ {% endblock %}

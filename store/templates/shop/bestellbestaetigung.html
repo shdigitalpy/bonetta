@@ -1,0 +1,58 @@
+{% extends 'shop/bestellung_uebersicht.html' %}
+{% load static %}
+
+{% block content %}
+<img src="{% static 'images/bonetta-blau.png' %}" alt="">
+
+{% endblock %}
+
+{% block table %}
+
+<table class="final-table-summary" style="font-size: 1.2rem">
+      <thead>
+        <tr>
+        </tr>
+      </thead>
+        {% if object.get_total %}
+        {% if object.get_rabatt %}
+        <tr>
+         <td><i>Kunden-Rabatt {{ object.discount_pct|floatformat:0 }}%</i></td>
+        <td><i>CHF -{{ object.get_rabatt|floatformat:2 }}</i></td>
+        </tr>
+        {% endif %}
+        <tr>
+        <td>Versand-und Verpackungskosten</td>
+        <td>CHF {{ object.get_shipping|floatformat:2 }}</td>
+        </tr>
+         <tr>
+         <td><i>
+        {% if object.payment_method == 'V' %}
+          Rabatt auf Zahlungsmethode 2%
+          {% else %}
+
+          {% endif %}
+         </i></td>
+        <td><i>{% if object.payment_method == 'V' %}
+          CHF -{{ object.get_skonto|floatformat:2 }}
+          {% else %}
+          
+          {% endif %}
+        </i></td>
+        </tr>
+        
+        <tr>
+         <td><b>Gesamtsumme zzgl. MwSt. </b></td>
+        <td>CHF {{ object.pre_total|floatformat:2 }}</td>
+        </tr>
+        <tr>
+         <td>MwSt (7.7%)</td>
+        <td>CHF {{ object.order_mwst|floatformat:2 }}</td>
+        </tr>
+        <tr>
+         <td><b>Gesamtsumme</b></td>
+        <td>CHF {{ object.total|floatformat:2 }}</td>
+        </tr>
+       {% endif %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends 'shop/main.html' %}
+{% load static %}
+
+{% block content %}
+
+
+{% if user.is_authenticated %}
+<div class="container padding">
+  <h1>Alle Dichtungen von {{ request.user.profile.firmenname }}</h1><br>
+  <h2>Zuständig: {{ request.user.first_name }} {{ request.user.last_name }}</h2>
+
+  <p>Das ist Ihr persönliches Dichtungsinventar. Dies ist nur ersichtlich, wenn dies von unseren Mitarbeitern bei Ihnen vor Ort aufgenommen wurde. </p>
+ 
+<div class="row padding storepreview">
+      <div class="mydichtungen">
+      <div class="table-responsive">
+        <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">Kühl-Pos</th>
+          <th scope="col">Element</th>
+          <th scope="col">Bemerkungen</th>
+          <th scope="col">Typ</th>
+          <th scope="col">Bild</th>
+          <th scope="col">Aussenmass-Breite</th>
+          <th scope="col">Aussenmass-Höhe</th>
+          <th scope="col"></th>
+          <th scrop="col">Anzahl</th>
+          <th scope="col">Bestellen</th>
+        </tr>
+      </thead>
+      <tbody>
+         {% for element in allelements %}
+        <tr> 
+             
+        <form method="POST" action="{{ orderitem.get_add_to_cart_url_myd }}" enctype="multipart/form-data">
+            {% csrf_token %}      
+          <th scope="row">{{ element.kuehlposition }}</th>
+          <td><input style="border:0; background-color: white; " type="text" class="form-control" placeholder="{{ element.elementnr }}mm" value="{{ element.elementnr }}" name="elementnr" readonly></td>
+          <td>{{ element.bemerkung }}</td>
+          <td>{{ element.dichtungen.artikelnr }}</td>
+           <td>
+
+            <div class="click-zoom">
+
+              <label>
+
+              <input type="checkbox">
+
+              
+
+            <img class="img-thumbnail" src="{{MEDIA_URL}}{{ element.dichtungen.titelbild.url }}" alt="image">
+
+            </label>
+
+            </div>
+
+          </td>
+          <td><input style="border:0; background-color: white; " type="text" class="form-control" placeholder="{{ element.aussenbreite }}mm" value="{{ element.aussenbreite }}" name="aussenbreite" readonly></td>
+          <td><input style="border:0; background-color: white; " type="text" class="form-control" placeholder="{{ element.aussenhöhe }}mm" value="{{ element.aussenhöhe }}" name="aussenhöhe" readonly></td>
+          <td><input style="border:0; background-color: white; color:white; " type="text" class="form-control" placeholder="{{ element.dichtungen.slug }}mm" value="{{ element.dichtungen.slug }}" name="mydslug" readonly></td>
+          <td><input type="number" class="form-control" value="1" name="anzahl" required></td>
+          <td><button type="submit" class="btn btn-primary btn-sm">In den Warenkorb</button></td>
+        </form>
+      </tr>
+        {% endfor %}
+      </tbody>
+        </table>
+      </div><!-- end table responsive -->
+      
+    </div><!-- end mydichtungen -->
+
+
+
+
+  </div><!-- storepreview end -->
+  </div><!-- container end -->
+
+
+  {% else %}
+  
+  <div class="container">
+  
+  <p>Sie müssen ein Kunden von uns sein um diese Seite zu sehen</p>
+
+  </div><!-- container end -->
+
+{% endif %}
+
+{% endblock content %}

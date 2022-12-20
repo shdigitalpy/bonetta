@@ -1,0 +1,724 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap');
+
+/* ----------------------------------- Main CSS elements */
+:root {
+  --blue: #29384e;
+  --lightblue: #BFDAF3;
+  --white: #ffffff;
+  --yellow: #f8e570;
+  --grey: #f6f6f6;
+  --lightgrey: #e6e6e6;
+  --darkergrey: #A0A0A0;
+  --green: #73C44D;
+  --muted: #999999;
+  --hellblau: #ebf5ff;
+  --black: #000000;
+}
+
+html, body {
+	height: 100%;
+	width: 100%;
+	font-family: 'Raleway', sans-serif;
+	box-sizing: border-box;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+
+@media only screen and (max-width: 1024px) {
+	.container-fluid, 
+	.container {
+	padding: 4% !important;
+}
+
+}
+
+
+h1 {
+  	font-size: clamp(2rem, 2.5vw, 2.5rem);
+	font-weight: 900;
+	margin: 1% 0;
+}
+
+h2 {
+	font-size: clamp(1rem, 1.8vw, 1.8rem);
+	font-weight: 800;
+	margin: 1% 0;
+}
+
+h3, h4 {
+	font-size: clamp(1.1rem, 1.3vw, 1.3rem);
+	font-weight: 700;
+	margin: 1% 0;
+}
+
+h5 {
+	font-size: clamp(1rem, 1.2vw, 1.2rem);
+	font-weight: 500;
+	margin: 1% 0;
+}
+
+p {
+	font-size: 1em !important;
+	color: var(--black) !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+a {
+	color: var(--blue);
+	text-decoration: none !important;
+	cursor: pointer;
+}
+
+.p-white {
+	color: var(--white) !important;
+}
+
+.alert {
+	margin-bottom: 0 !important;
+}
+
+
+table {
+	font-size: 1rem;
+}
+
+thead {
+	background-color: var(--blue);
+	color: var(--white)
+}
+
+img {
+	max-width: 100%;
+}
+
+.break {
+	line-break: strict;
+}
+
+.fa-caret-down {
+	width: 100%;
+	color: var(--black);
+	font-size: 3rem;
+	animation-name: shake-vertical;
+	animation-duration: 7.2s;
+	animation-timing-function: ease;
+	animation-delay: 0s;
+	animation-iteration-count: infinite;
+	animation-direction: normal;
+	animation-fill-mode: none;
+}
+
+@keyframes shake-vertical {
+  0%{
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  10%{
+    -webkit-transform: translateY(-8px);
+    transform: translateY(-8px);
+  }
+  20%{
+    -webkit-transform: translateY(8px);
+    transform: translateY(8px);
+  }
+  30%{
+    -webkit-transform: translateY(-8px);
+    transform: translateY(-8px);
+  }
+  40%{
+    -webkit-transform: translateY(8px);
+    transform: translateY(8px);
+  }
+  50%{
+    -webkit-transform: translateY(-8px);
+    transform: translateY(-8px);
+  }
+  60%{
+    -webkit-transform: translateY(8px);
+    transform: translateY(8px);
+  }
+  70%{
+    -webkit-transform: translateY(-8px);
+    transform: translateY(-8px);
+  }
+  80%{
+    -webkit-transform: translateY(6.4px);
+    transform: translateY(6.4px);
+  }
+  90%{
+    -webkit-transform: translateY(-6.4px);
+    transform: translateY(-6.4px);
+  }
+  100%{
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+.padding {
+	padding: 65px 0;
+}
+
+.padding img {
+	width: 100%;
+}
+
+/* ----------------------------------- Navigation START */
+
+/* Side Bar - Mein Konto */
+
+#sidebar.active {
+	display: block;
+	background-color: var(--blue);
+	color: var(--white);
+    min-width: 250px;
+	max-width: 250px;
+	top: 0;
+	right: 0;
+	margin: 10% 0 0 0;
+	transition: all 0.3s;
+	position: absolute;
+}
+
+.wrapper{
+	display: flex;
+	text-decoration: none;
+	transition: all 0.3s;
+}
+
+#sidebar {
+	display: none;
+	margin-right: -250px;
+	top: 0;
+	right: 0;
+}
+
+#sidebar ul.components{
+	padding: 5% 0 0 0;
+	margin: 5% 0 0 0;
+	list-style-type: none;
+}
+
+#sidebar ul li a {
+	color: var(--white);
+	padding: 10%;
+	font-size: 1.2em;
+	display: block;
+}
+
+#sidebar ul li a:hover{
+	color: black;
+	background: var(--grey);
+	text-decoration: none;
+}
+
+#sidebar ul li.active>a,
+a[aria-expanded="true"] {
+	color: var(--white);
+	background: var(--blue);
+}
+
+/* END Side Bar - Mein Konto */
+
+
+/* ----------------------------------- Navigation END */
+
+#home {
+	background: url("/static/images/gastro-dichtungen.6852a8964e74.jpg") no-repeat center center fixed;
+	height: 100%;
+	width: 100%;
+	background-size: cover;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+
+@media only screen and (min-width: 769px) and (max-width: 1024px){
+	#home {
+	background: var(--blue);
+}
+}
+@media only screen and (max-width: 768px){
+	#home {
+	background: var(--blue);
+}
+}
+
+
+/* Dichtungen Page start */
+
+.landing-text {
+	color: var(--black);
+}
+
+.landing-text h1 {
+	text-align: center;
+	font-size: 400%;
+	font-weight: 700;
+	
+}
+
+.landing-text h2 {
+	text-align: center;
+	font-size: 250%;
+	font-weight: 500;
+	margin-bottom: 2%;
+}
+
+
+
+.landing-text h3 {
+	display: block;
+  	margin-left: auto;
+  	margin-right: auto;
+  	width: 30%;
+	padding: 2% 0 2% 0;
+	background-color: var(--blue) !important;
+	color: var(--white);
+
+}
+
+#home .fa-caret-down {
+	width: 100%;
+
+}
+
+
+
+
+
+/* ------------------------------------ Dichtungskategorien */
+#boxen {
+	background-color: var(--blue);
+	padding: 5% 0;
+}
+
+#boxen h2 {
+	color: var(--white);
+	margin: 1rem 0;
+}
+
+
+#boxen img:hover {
+	border: 5px solid var(--yellow);
+}
+
+.boxen-flex {
+	display: flex;
+	justify-content: space-between;
+	margin: 3rem auto;
+	flex-wrap: wrap;
+}
+
+.boxen-flex-item {
+	width: 300px;
+	margin: 3rem 0;
+}
+
+#boxen img {
+	width: 300px;
+	height: 300px;
+	-webkit-box-shadow: -4px 7px 20px -3px rgba(0,0,0,0.74);
+	-moz-box-shadow: -4px 7px 20px -3px rgba(0,0,0,0.74);
+	box-shadow: -4px 7px 20px -3px rgba(0,0,0,0.74);
+}
+
+.kategorien a {
+	color: var(--white);
+	text-decoration: none;
+}
+
+.kategorien a:hover {
+	text-decoration: underline;
+	color: var(--yellow);
+}
+
+/* ----------------------------------- Contact Form */
+
+
+.formcontainer {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	
+ 
+}
+
+.contact-flex {
+	display: flex;
+	flex-wrap: wrap;
+	width: 70%;
+	justify-content: flex-start;
+
+}
+
+.contact-flex-label {
+	width: 200px;
+}
+
+.contact-flex-item {
+	width: 400px;
+}
+
+.contact-flex-item input,
+.contact-flex-item textarea {
+	width: 400px;
+}
+
+.contact-flex-item .btn {
+	width:auto;
+}
+
+@media screen only and (max-width: 1024px) {
+	.contact-flex {
+		flex-direction: column;
+	}
+
+}
+
+
+.bgblue {
+	background-color: var(--blue);
+	padding: 3%;
+	color: var(--white);
+}
+
+/* ----------------------------------- Middle section */
+
+#fixed {
+	background: url("/static/images/background.97bace208aad.jpg") no-repeat center center fixed;
+	display: table;
+	height: 70%;
+	position: relative;
+	width: 100%;
+	background-size: cover;
+}
+
+
+
+#ersatzteile {
+	background: linear-gradient(169deg, rgba(41,56,78,0.3393732492997199) 26%, rgba(255,255,255,0.5270483193277311) 67%), url("/static/images/gastro-kueche1.b66c75473f1b.jpg") no-repeat center center fixed;
+	display: table;
+	height: 800px;
+	position: relative;
+	width: 100%;
+	background-size: cover;
+}
+
+@media only screen and (min-width: 769px) and (max-width: 1024px){
+	#ersatzteile {
+	background: var(--blue);
+}
+}
+@media only screen and (max-width: 768px){
+	#ersatzteile {
+	background: var(--blue);
+}
+}
+
+#dichtungen .dichtungen-img {
+	max-width: 100%;
+}
+
+#gastromarkt {
+	background-color: var(--blue) !important;
+	color: var(--white);
+	padding: 3%;
+	font-size: 1.2em !important;
+}
+
+.blog {
+	margin-right: 8%;
+}
+
+.infosection {
+	background-color: var(--white);
+	padding: 3rem 0;
+}
+
+.info-flex {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-items: flex-start;
+}
+
+.info-flex-item {
+	width: 400px;
+	margin: 2rem 0;
+
+}
+
+@media screen only and (max-width: 768px) {
+	
+
+}
+
+.info-flex-item img {
+	max-width: 70%;
+}
+
+.infosection p {
+	font-size: 1.2rem !important;
+}
+
+.btnlink-flex {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 0 auto;
+}
+
+
+
+.btnlink-flex {
+	padding: 10rem;
+	width: 100px;
+}
+
+
+
+/* END MAIN PAGE CSS */
+
+
+
+
+/*Profil bearbeiten */
+
+.bgprofil {
+	border: 2px solid var(--blue);
+}
+
+.meinprofil h2 {
+	font-size: 2rem !important;
+
+}
+
+
+
+/*Signup, Signin, etc. Forms */
+
+.form {
+	color: var(--blue);
+}
+
+.bggrey {
+	padding: 12%;
+	border: 1px solid var(--blue);
+	background-color: var(--grey);
+}
+
+/*Kontakt */
+
+.textarea-contact {
+	padding-top: 2%;
+	padding-bottom: 2%;
+}
+
+/* Checkout Breadcrumb */
+
+.breadcrumb    {
+    background-color: white;
+}
+
+.breadcrumb-item a {
+	font-size: 1rem !important;
+	font-weight: 700 !important;
+	color: var(--blue);
+} 
+
+.breadcrumb-item .active {
+	font-size: 1rem !important;
+	font-weight: 700 !important;
+	color: var(--blue) !important;
+	text-decoration: underline;
+} 
+
+
+
+/* Checkout Form End */
+
+
+/* Adresse und Zahlung */
+
+
+
+/*Final Summary Checkout*/
+.final-table-big {
+  width: 100%;
+  background-color: var(--grey);
+  text-align: center;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.final-table-big thead th {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #ffffff;
+  border-left: 0.25px solid #ffffff;
+}
+
+.final-table-big td, .final-table-big th {
+  border: 0.1px solid var(--blue);
+  padding: 1%;
+}
+
+.final-table-big tbody td {
+  font-size: 1.1rem;
+  padding: 1%;
+}
+
+.final-table-big thead {
+  background: #29384e;
+}
+
+.final-table-big img {
+    width: 15vw;
+    height: auto;
+ }
+
+ .final-table-small {
+  width: 70%;
+  text-align: left !important;
+  border: none;
+  background-color: white;
+  table-layout: fixed;
+}
+
+.final-table-small thead th {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--blue);
+    border: none;
+}
+ 
+.final-table-small td, .final-table-small th {
+    border: none;
+    padding: 1%;
+}
+
+.final-table-small tbody td {
+    font-size: 1rem;
+    padding: 1%;
+}
+
+.final-table-small thead {
+    background: #ffffff;
+}
+
+.final-table-summary {
+  width: 40%;
+  border: none;
+}
+
+.final-table-summary thead th {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.final-table-summary td, .final-table-summary th {
+  padding: 1%;
+}
+
+.final-table-summary tbody td {
+  font-size: 1.1rem;
+  padding: 1%;
+}
+
+.final-table-summary thead {
+  background: var(--blue);
+}
+
+/*Final Summary Checkout END*/
+  
+ /* ----------------------------------- Social Icons */
+
+
+.social a {
+	font-size: 1.3em;
+	padding: 0.5rem;
+}
+
+.social p {
+	height: auto !important;
+}
+
+.fa-facebook:hover {
+	color: #3b5998;
+}
+
+.fa-google:hover {
+	color: #4285f4;
+}
+
+.fa-twitter:hover {
+	color: #00aced;
+}
+
+.fa-linkedin:hover {
+	color: #007bb5;
+}
+
+.fa-youtube:hover {
+	color: #bb0000;
+}
+
+.fa-facebook,
+.fa-google,
+.fa-twitter,
+.fa-linkedin,
+.fa-youtube {
+	color: #d5d5d5;
+
+}
+
+/* ----------------------------------- Social Icons END */
+
+footer {
+	margin: auto 0 0 0;
+	background-color: var(--blue) !important;
+	padding: 0.25%;
+	color: var(--white);
+	border-top: 2px solid var(--white);
+}
+
+footer ul {
+	padding: 0;
+}
+
+footer ul li {
+	list-style-type: none;
+	font-size: 0.9rem;
+}
+
+footer .flex {
+	display: flex;
+	width: 80%;
+	margin: 1% auto;
+}
+
+footer .flex-item {
+	flex: 0 0 33%;
+	padding: 2%;
+}
+
+.bonettabild {
+	max-width: 150px;
+}
+
+
+/* CMS Loginpage */
+
+.form-container {
+	width: 50%;
+	margin: 0 auto;
+}
+
+
+
+

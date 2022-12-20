@@ -1,0 +1,94 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% load django_template_maths %}
+{% block title %}CMS Kennzahlen{% endblock %}
+
+{% block content %}
+
+		<div class="container">
+			<div class="flexbox-chart">
+					   
+<table class="table">
+  <thead>
+    <tr>
+
+      <th scope="col">#</th>
+      <th scope="col">Produkt</th>
+      <th scope="col">Anzahl</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in queryset %}
+    <tr>
+      
+      <th scope="row">{{ forloop.counter }}</th>
+      <td>{{ item.titel }}</td>
+      <td>{{ item.total_sales }}</td>
+     {% endfor %}
+    </tr>
+    
+  </tbody>
+</table>
+      
+    
+    <!-- PRODUKT HISTORY CHART START -->
+    <div class="flexbox-chart-element">
+  
+    <canvas id="myChart"></canvas>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+    <script>
+      var myChartObject = document.getElementById('myChart');
+
+var chart = new Chart(myChartObject, {
+  type: 'bar',
+  data: {
+    labels: {{ labels|safe }},
+    datasets: [{
+      label: "Anzahl verkauft",
+      backgroundColor: [
+      'rgba(65, 105, 225, 0.7)',
+      'rgba(54, 162, 235, 0.7)', 
+      'rgba(255, 206, 86, 0.7)', 
+      'rgba(75, 192, 192, 0.7)', 
+      'rgba(153, 102, 255, 0.7)', 
+      'rgba(255, 159, 64, 0.7)', 
+      'rgba(22, 105, 225, 0.7)', 
+      'rgba(93, 180, 225, 0.7)'],
+      borderColor: [
+      'rgba(65, 105, 225, 0.7)',
+      'rgba(54, 162, 235, 0.7)', 
+      'rgba(255, 206, 86, 0.7)', 
+      'rgba(75, 192, 192, 0.7)', 
+      'rgba(153, 102, 255, 0.7)', 
+      'rgba(255, 159, 64, 0.7)', 
+      'rgba(22, 105, 225, 0.7)', 
+      'rgba(93, 180, 225, 0.7)'],
+      data: {{ data|safe }}
+    }]
+      }, 
+
+  options: {
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }]
+    }
+
+
+  }
+});     
+    </script>
+    </div>
+    <!-- WEBSITE HISTORY CHART END -->
+    
+
+   </div>   
+
+
+ {% endblock %}
+

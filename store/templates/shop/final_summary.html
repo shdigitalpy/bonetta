@@ -1,0 +1,236 @@
+{% extends 'shop/main.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+  <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'store:order_summary' %}">Warenkorb</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'store:checkout' %}">Adresse</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'store:payment' %}">Zahlung</a></li>
+      <li class="breadcrumb-item"><a class="active" href="{{ request.path }}">Bestellung abschliessen</a></li>
+      </ol> 
+  <h1 class="final">Bestellung abschliessen</h1>
+  
+ <table class="final-table-small">
+  <thead>
+    <tr>
+    <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <td>Datum:</td>
+    <td>{{ object.ordered_date|date:"d.m.Y H:i " }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="final-table-small">
+  <thead>
+    <tr>
+        <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <td>Zahlungsmethode:</td>
+    <td>
+    {% if object.payment_method == 'R' %}
+    Rechnung
+    {% else %}
+    {{ object.get_payment_method }}
+    {% endif %}
+    </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="final-table-small">
+  <thead>
+    <tr>
+        <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Name: 
+      </td>
+      <td>{{ object.billing_address.user.profile.firmenname }}, {{ object.billing_address.user.first_name }} {{ object.billing_address.user.last_name }}
+      </td>
+   
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="final-table-small">
+  <thead>
+    <tr>
+        <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+      {% if object.shipping_address.lieferung_strasse == 'keineStrasse' %}
+      Rechnungs- und Lieferadresse:
+      {% else %}
+      Rechnungsadresse:
+      {% endif %}
+      </td>
+      <td>{{ object.billing_address.user.profile.firmenname }}<br>
+        {{ object.billing_address.user.first_name }} {{ object.billing_address.user.last_name }}<br>
+        {{ object.billing_address.rechnung_strasse }} {{ object.billing_address.rechnung_nr }}<br>{% if object.billing_address.rechnung_land %} {{ object.billing_address.rechnung_land }} - {% endif %}   {{ object.billing_address.rechnung_plz }} {{ object.billing_address.rechnung_ort }}
+    </td>
+   
+    </tr>
+  </tbody>
+</table>
+
+<table class="final-table-small">
+  <thead>
+    <tr>
+        <th></th>
+        <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>     
+
+      <td>
+      {% if object.shipping_address.lieferung_strasse %}
+      Lieferadresse:
+      {% else %}
+      <small style="font-style:italic;">Lieferadresse ist gleich Rechnungsadresse.</small>
+      {% endif %}
+      </td>
+      <td>
+      {% if object.shipping_address.lieferung_strasse %}
+      {{ object.shipping_address.firmenname }} <br>
+      {{ object.shipping_address.vorname }} {{ object.shipping_address.nachname }}<br>
+      {{ object.shipping_address.lieferung_strasse }} {{ object.shipping_address.lieferung_nr }}<br>{% if object.shipping_address.lieferung_land %} {{ object.shipping_address.lieferung_land }} - {% endif %}  {{ object.shipping_address.lieferung_plz }} {{ object.shipping_address.lieferung_ort }}
+        
+      
+      {% else %}
+
+      {% endif %}
+      </td>
+      
+    </tr>
+  </tbody>
+</table>
+<br><br>
+<table class="final-table-big">
+  <thead>
+    <tr>
+        <th scope="col" style="width: auto;">Artikel</th>
+        <th scope="col">Bild</th>
+        <th scope="col">Stk / Lfm</th>
+        <th scope="col">Preis</th>
+        <th scope="col">Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for order_item in order_items %}
+    <tr>
+      <td>
+          {% if order_item.aussenbreite == 250 and order_item.aussenhöhe == 250 %}
+          {% if order_item.item.subkategorie %} {{ order_item.item.subkategorie }} {% else %} {{ order_item.item.kategorie }} {% endif %} {{ order_item.item.artikelnr }}
+          {% else %}
+          {% if order_item.item.subkategorie %} {{ order_item.item.subkategorie }} {% else %} {{ order_item.item.kategorie }} {% endif %} {{ order_item.item.artikelnr }}
+        <br>{{ order_item.aussenbreite }}mm / {{ order_item.aussenhöhe }}mm<br>
+        {% if order_item.element %}
+        Element-Nr.: {{ order_item.element }}
+        {% endif %}
+          {% endif %}
+       </td>
+      <td><img class="img-thumbnail" src="{{MEDIA_URL}}{{ order_item.item.titelbild.url }}" alt="image" style="width: 5em;"></td>
+        <td>{{ order_item.quantity }}  
+        </td>
+        <td>
+        {% if order_item.item.kategorie|lower == 'pvc mit magnet' or order_item.item.kategorie|lower == 'pvc ohne magnet'  %}
+        CHF {{ order_item.get_total_item_price_pvc|floatformat:2 }}
+        {% else %}
+        CHF {{ order_item.get_price|floatformat:2 }}
+        {% endif %}
+        </td>
+        <td>
+         {% if order_item.item.kategorie|lower == 'pvc mit magnet' or order_item.item.kategorie|lower == 'pvc ohne magnet'  %}
+      CHF {{ order_item.get_total_item_price_pvc_total|floatformat:2 }}
+          {% else %}
+        CHF {{ order_item.get_total_pre|floatformat:2 }}
+      {% endif %}</td>
+
+    </tr>
+    {% endfor %}
+
+    </tbody>
+    </table>
+    
+    <br><br>
+    <table class="final-table-summary">
+      <thead>
+        <tr>
+        </tr>
+      </thead>
+        {% if object.get_total %}
+        <tr>
+        <td><b>Total Produkte</b></td>
+        <td>CHF {{ object.get_total|floatformat:2 }}</td>
+        </tr>
+
+        {% if object.get_rabatt %}
+        <tr>
+         <td><i>Online-Rabatt {{ object.user.profile.rabatt|floatformat:0 }}%</i></td>
+        <td><i>CHF -{{ object.get_rabatt|floatformat:2 }}</i></td>
+        </tr>
+        {% else %}
+        {% endif %}
+
+        <tr>
+        <td>Versand-und Verpackungskosten</td>
+        <td>CHF {{ object.get_shipping|floatformat:2 }}</td>
+        </tr>
+        
+          <tr>
+         <td><i>
+        {% if object.payment_method == 'V' %}
+          Rabatt auf Zahlungsmethode 2%
+          {% else %}
+
+          {% endif %}
+         </i></td>
+        <td><i>{% if object.payment_method == 'V' %}
+          CHF -{{ object.get_skonto|floatformat:2 }}
+          {% else %}
+          
+          {% endif %}
+        </i></td>
+        </tr>
+
+        <tr>
+         <td><b>Gesamtsumme zzgl. MwSt. </b></td>
+        <td>CHF {{ object.get_total_pre_mwst|floatformat:2 }}</td>
+        </tr>
+        <tr>
+         <td>MwSt (7.7%)</td>
+        <td>CHF {{ object.mwst|floatformat:2 }}</td>
+        </tr>
+        <tr>
+         <td><b>Gesamtsumme</b></td>
+        <td>CHF {{ object.grandtotal|floatformat:2 }}</td>
+        </tr>
+       {% endif %}
+  </tbody>
+</table>
+<br><br>
+<p>Mit dieser Bestellung akzeptieren Sie unsere AGB und Datenschutzerklärung.</p>
+<form method="POST">
+{% csrf_token %}
+<button type="submit" class="btn btn-primary btn-lg" type="submit">Jetzt bestellen</button>
+</form>
+<br><br><br><br><br><br>
+  
+</div><!-- End container -->
+{% endblock content %}

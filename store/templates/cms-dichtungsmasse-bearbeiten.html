@@ -1,0 +1,26 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}CMS Dichtungsmasse bearbeiten{% endblock %}
+
+{% block content %}
+
+		
+			<div class="container">
+			
+			<h2>Dichtungsmasse bearbeiten</h2>
+
+			<div class="form-group">
+		    
+		    <form method="POST" enctype="multipart/form-data">
+		      {% csrf_token %}
+		      {{ form.as_p }}
+		      <button class="btn btn-warning">Speichern</button>
+  			</div>
+			<br/>
+			   </form>
+			   </div>
+
+			</div>
+
+ {% endblock %}
+
