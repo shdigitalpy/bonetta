@@ -53,13 +53,9 @@ else:
     DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.postgresql_psycopg2',
+                'NAME': 'd7ibnto16o82nt',
             }
         }
-
-    db_from_env = dj_database_url.config(conn_max_age=600)
-    DATABASES['default'].update(db_from_env)
-
-    DATABASES['default'] = dj_database_url.config(default='postgres://dypuetygdlomzt:99e7daa753a88010b35e5197d5f213fe548983c17cc77b8aa08d8c0c0c40f73e@ec2-54-75-225-52.eu-west-1.compute.amazonaws.com:5432/d7ibnto16o82nt')
 
     db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
     DATABASES['default'].update(db_from_env)
