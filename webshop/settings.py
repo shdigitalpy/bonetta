@@ -18,7 +18,7 @@ import dj_database_url
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-ALLOWED_HOSTS = ['.gastrodichtung.ch', 'http://127.0.0.1:8000/', 'bonetta.herokuapp.com']
+ALLOWED_HOSTS = ['https://gastrodichtung.ch', 'https://127.0.0.1:8000/', 'https://bonetta.herokuapp.com']
 
 
 if config('STAGE') == 'dev':
@@ -45,7 +45,7 @@ else:
 
     #take out for dev
     CSRF_COOKIE_SECURE = True
-    CSRF_TRUSTED_ORIGINS = ['.gastrodichtung.ch', 'bonetta.herokuapp.com', 'http://127.0.0.1:8000/']
+    CSRF_TRUSTED_ORIGINS = ['https://gastrodichtung.ch', 'https://bonetta.herokuapp.com', 'https://127.0.0.1:8000/']
     CSRF_COOKIE_DOMAIN = '.gastrodichtung.ch'
     SECURE_SSL_REDIRECT = True
     #end
