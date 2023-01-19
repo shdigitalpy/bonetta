@@ -8,12 +8,12 @@
 <div class="container">
     <div class="storepreview">
 
-      <div style="display:flex;flex-wrap:wrap;">
-      <h2>{{ seo_marke.name }}</h2>
       {% if seo_marke.markepic %}
       <img src="{{ seo_marke.markepic.url }}">
       {% endif %}
-    </div>
+      
+      <h2>{{ seo_marke.name }} - Dichtungen</h2>
+      
 
       <p>{{ seo_marke.marketext }}</p>
       <br>
