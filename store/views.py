@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Item, OrderItem, Order, Address, ShippingAddress, Elemente, Kunde, Category, Subcategory, ShippingCost
+from .models import *
 from django.views.generic import ListView, DetailView, View, UpdateView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
@@ -138,6 +138,25 @@ def kontakt(request):
 		context = { }
 		return render(request, 'kontakt.html', context)
 
+#Marke Übersicht
+def marke(request):
+	marken = Marke.objects.all()
+	context = { 
+		'marken' : marken, 
+		}
+	return render(request, 'shop/store-marke.html', context)
+
+
+#Marke Store
+def HomeMarkeView(request, cat_marke):
+	marke_products = Item.objects.filter(marke__slug=cat_marke)
+	seo_marke = get_object_or_404(Marke, slug=cat_marke)
+	context = { 
+		'marke_products' : marke_products, 
+		'cat_marke': cat_marke.replace('-', ''),
+		'seo_marke' : seo_marke,
+		}
+	return render(request, 'shop/store-marke-details.html', context)
 
 #Produktübersichten
 def HomeProduktView(request, cats):

@@ -1,17 +1,29 @@
 {% extends 'shop/main.html' %}
 {% load static %}
-{% block title %}Übersicht {{ seo_cat.name }}: jetzt online kaufen | gastrodichtung.ch{% endblock %}
-{% block meta_description %}<strong>{{ seo_cat }}</strong>: Übersicht über die Dichtungen | gastrodichtung.ch{% endblock %}
+{% block title %}Übersicht {{ seo_marke.name }}: jetzt online kaufen | gastrodichtung.ch{% endblock %}
+{% block meta_description %}<strong>{{ seo_marke }}</strong>: Übersicht über die Dichtungen | gastrodichtung.ch{% endblock %}
 
 {% block content %}
 
 <div class="container">
     <div class="storepreview">
+
+      <div style="display:flex;flex-wrap:wrap;">
+      <h2>{{ seo_marke.name }}</h2>
+      {% if seo_marke.markepic %}
+      <img src="{{ seo_marke.markepic.url }}">
+      {% endif %}
+    </div>
+
+      <p>{{ seo_marke.marketext }}</p>
+      <br>
       <div class="row">
         
+
+
         
 
-        {% for product in category_products %}
+        {% for product in marke_products %}
         
   <div class="col-lg-3">
 

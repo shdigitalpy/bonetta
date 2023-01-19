@@ -1,22 +1,6 @@
 from django.urls import path, re_path
 from . import views
-from .views import (
-	HomeProduktView,
-	HomeSubProduktView,
-	product_detail,
-	weitere_product_detail,
-	CheckoutView,
-	add_to_cart,
-	add_to_cart_myd,
-	remove_from_cart, 
-	OrderSummaryView, 
-	FinalSummaryView,
-	remove_single_item_from_cart,
-	Rechnung,
-	email, 
-	bestellungen,
-	PaymentView,
-)
+from .views import *
 from django.conf.urls.static import static
 from django.conf import settings
 from django.views.generic import TemplateView
@@ -42,6 +26,8 @@ urlpatterns = [
 	path('mydichtungen', views.mydichtungen, name='mydichtungen'),
 	path('dichtung/<str:cats>', HomeProduktView, name="category"),
 	path('dichtung/<str:cats>/<str:subcats>', HomeSubProduktView, name="subcategory"),
+	path('dichtungen/m/<str:cat_marke>', HomeMarkeView, name="marke"),
+	path('dichtungen/marke/', views.marke, name="marke"),
 	path('p/<slug:slug>/', product_detail, name='product-detail'), 
 	path('p/weitere-dichtungen/<slug:slug>/', weitere_product_detail, name='weitere_product_detail'), 
 	path('add-to-cart/<slug:slug>/<int:pk>/', add_to_cart, name='add_to_cart'),

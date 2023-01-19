@@ -1,5 +1,5 @@
 from django.conf import settings
-from store.models import Category, Subcategory, Item
+from store.models import Category, Subcategory, Item, Marke
 
 def extras(request):
 	cat_menu = Category.objects.all()
@@ -11,3 +11,7 @@ def sub_extras(request):
 	return {
 		'subcat_menu': subcat_menu,
 		}
+
+def extras_marke(request):
+	marke_menu = Marke.objects.all().count()
+	return {'marke_menu': marke_menu}

@@ -1,0 +1,50 @@
+{% extends 'shop/main.html' %}
+{% load static %}
+{% block title %}Kühlschrankdichtungen nach Marken | gastrodichtung.ch{% endblock %}
+{% block meta_description %}Kühlschrankdichtungen nach Marken | gastrodichtung.ch{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="storepreview">
+      <div class="row">
+    
+       
+      
+        {% for marke in marken %}
+        
+  <div class="col-lg-3">
+
+    <div class="product-flex">
+      {% if marke.titelbild %}
+    <a href=""><img class="thumbnail" src="{{ marke.markepic.url }}"></a>
+    {% endif %}
+    
+    <div class="box-element">
+
+    
+    <div class="box-element-sub">
+    <h4>{{ marke.name }} - Dichtungen</h4>
+
+    
+      {% if marke.item_marke.all %}
+    <a class="btn btn-primary btn-sm" href="{% url 'store:marke' marke.name|slugify %}">Zu den Produkten</a>
+    <hr>
+    {% else %}
+    <p>Aktuell keine Produkte</p>
+    {% endif %}
+    
+    </div>
+
+    </div>
+
+    </div>
+  </div>
+
+  {% endfor %}
+
+  </div><!-- row end -->
+  </div><!-- storepreview end -->
+</div><!-- container end -->
+
+{% endblock content %}

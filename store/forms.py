@@ -532,6 +532,7 @@ class ProduktEditForm(forms.ModelForm):
 			'sortierung',
 			'kategorie',
 			'subkategorie',
+			'marke',
 			'titel',
 			'artikelnr',
 			'montage',
@@ -554,11 +555,13 @@ class ProduktEditForm(forms.ModelForm):
 			'fuge',
 			'glasdicke',
 			'hersteller',
+
 			
 			
 			)
 
 		labels = {
+			'marke': "Marke",
 			'sortierung': "Sortierung",
 			'titel' : "Bezeichnung",
 			'artikelnr' : "Artikel-Nr",
@@ -594,6 +597,9 @@ class ProduktEditForm(forms.ModelForm):
 				'class': 'form-control',
 				}),
 			'subkategorie': forms.Select(attrs={
+				'class': 'form-control',
+				}),
+			'marke': forms.Select(attrs={
 				'class': 'form-control',}),
 			'titel': forms.TextInput(attrs={
 				'class': 'form-control',

@@ -118,6 +118,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'store.context_processors.extras', #for category display every
                 'store.context_processors.sub_extras', #for category display every
+                'store.context_processors.extras_marke', #for marke display every
             ],
         },
     },

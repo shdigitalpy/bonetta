@@ -122,6 +122,14 @@
 
       <div class="collapse navbar-collapse" id="navbarResponsive">
            <ul class="navbar-nav">
+
+            {% if marke_menu %}
+
+            <li class="nav-item dropdown show"><a class="nav-link" href="{% url 'store:marke' %}">Nach Marke</a></li>            
+
+            {% endif %}
+
+
              {% for menuitem in cat_menu %}
              {% if menuitem.name == 'Weitere Dichtungen' %}
               <li class="nav-item dropdown show">
@@ -138,10 +146,14 @@
              {% else %}
               <li class="nav-item"><a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">{{ menuitem.name }}</a>
               </li>
+
               {% endif %}
+
               {% endfor %}
-             <!-- <li class="nav-item"><a class="nav-link" href="">Gummidichtung</a></li>
-              <li class="nav-item"><a class="nav-link" href="">EPDM/Moosgummi</a></li>-->
+
+
+              
+              <!-- <li class="nav-item"><a class="nav-link" href="">EPDM/Moosgummi</a></li>-->
               {% if request.user.is_authenticated %}
               {% if request.user.profile.firmenname %}
               <li class="nav-item"><a class="nav-link btn btn-outline-warning " href="{% url 'store:mydichtungen' %}">Inventar</a>
@@ -171,7 +183,17 @@
 
       <div class="collapse navbar-collapse" id="navbarResponsive">
            <ul class="navbar-nav">
+            
+
+             {% if marke_menu %}
+
+            <li class="nav-item dropdown show"><a class="nav-link" href="{% url 'store:marke' %}">Nach Marke</a></li>            
+
+            {% endif %}
+
              {% for menuitem in cat_menu %}
+              
+
              {% if menuitem.name == 'Weitere Dichtungen' %}
               <li class="nav-item dropdown show">
               <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Weitere Dichtungen</a>
@@ -185,12 +207,25 @@
             </li>
               
              {% else %}
+
+
+              
+
+             
+
+              
+
+
               <li class="nav-item"><a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">{{ menuitem.name }}</a>
               </li>
+
+          
+
+
+
               {% endif %}
               {% endfor %}
-             <!-- <li class="nav-item"><a class="nav-link" href="">Gummidichtung</a></li>
-              <li class="nav-item"><a class="nav-link" href="">EPDM/Moosgummi</a></li>-->
+             
               {% if request.user.is_authenticated %}
               {% if request.user.profile.firmenname %}
               <li class="nav-item"><a class="nav-link btn btn-outline-warning " href="{% url 'store:mydichtungen' %}">Inventar</a>
