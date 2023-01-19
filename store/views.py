@@ -994,6 +994,16 @@ def cms_kennzahlen_webseite(request):
 @staff_member_required
 def cms_kunden(request):
 	user = User.objects.all().order_by('-id')
+	search_query = request.GET.get('search', '')
+
+
+	if search_query:
+		user = User.objects.filter(Q(profile__firmenname__icontains=search_query))
+
+	else:
+		user = User.objects.all().order_by('-id')
+			
+
 	context = {
 			'user': user,		
 			 }

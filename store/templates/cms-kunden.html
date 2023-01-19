@@ -9,10 +9,34 @@
 				<div class="h2">Kunden</div>
 				
 			</div>
-			
 
 			<div class="flexbox">
-				<a class="btn btn-secondary btn-sm" href="{% url 'store:cms_kunden_erfassen' %}">Kunden erfassen</a>
+				 
+
+				 <a class="btn btn-secondary btn-sm" href="{% url 'store:cms_kunden_erfassen' %}">Kunden erfassen</a>
+
+
+				 <!-- Search form -->
+				<form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="{% url 'store:cms_kunden' %}">
+				  {% csrf_token %}
+				    
+				  <div style="display: flex">
+		            
+		            <div style="flex: 0 0 20%">
+		            <input id="textsuche" class="form-control" type="text" placeholder="Firmenname"
+				    aria-label="Search" name="search">
+					</div>
+		            <div style="flex: 0 0 15%">
+		            <button type="submit" style="border: none;" class="btn btn-outline-secondary">
+				    <span class="fas fa-search"></span> Suche
+				  </button>
+				</div>
+				<div style="flex: 0 0 15%">
+				    <a href="{% url 'store:cms_kunden' %}" style="border: none;" class="btn btn-outline-secondary"><span class="fas fa-times"></span> zurücksetzen</a>
+				</div>
+				</form>
+
+			
 				
 			</div>
 
@@ -69,7 +93,12 @@
 			  	<td><form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{{ data.profile.get_absolute_elemente_url }}"><i class="fas fa-info-circle"></i></i></a></form></td>
 			  	{% endif %}
 
-			  	<td><form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{% url 'store:cms_elemente_create' data.profile.pk %}"><i class="fas fa-plus"></i></a></form></td>
+			  	<td>
+
+			  		<form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{% url 'store:cms_elemente_create' data.profile.pk %}"><i class="fas fa-plus"></i></a></form>
+
+
+			  	</td>
 
 			  	<td><form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{% url 'store:cms_kunde_löschen' data.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i></a></form></td>
 			    
