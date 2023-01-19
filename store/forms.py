@@ -1,5 +1,5 @@
 from django import forms
-from .models import Category, ShippingCost, OrderItem, Item, Kunde, Elemente, Address, ShippingAddress
+from .models import *
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
 from allauth.account.forms import SignupForm
@@ -716,4 +716,31 @@ class AussenmassForm(forms.ModelForm):
 			'aussenhöhe': forms.TextInput(attrs={
 				'class': 'form-control',
 				'placeholder':'z.B. 500mm'})
+		}
+
+
+class MarkeChangeForm(forms.ModelForm):
+	class Meta:
+		model = Marke
+		fields = (
+			'name',
+			'slug',
+			'markepic',
+			'marketext',
+			)
+		widgets = {
+			
+			'name': forms.TextInput(attrs={
+				'class': 'form-control col-3',
+				'placeholder':''}),
+			'markepic' : forms.FileInput(attrs={
+				'class': 'form-control',
+				}),
+			
+			'slug': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder': ''}),
+			'marketext': forms.Textarea(attrs={
+				'class': 'form-control col-3',
+				'placeholder':''}),
 		}

@@ -8,7 +8,7 @@ from .models import *
 from django.views.generic import ListView, DetailView, View, UpdateView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-from .forms import ElementeCreateForm, KundeEditAdvancedForm, KundeCreateForm, VersandkostenCreateForm, AddressForm, RegistrationForm, PaymentForm, ShippingAddressForm, CheckoutForm, AussenmassForm, ProduktEditForm, KundeEditForm, ElementeEditForm
+from .forms import *
 from django.core.mail import EmailMessage
 from django.contrib.auth.models import User
 from django.shortcuts import reverse, HttpResponse
@@ -1011,6 +1011,62 @@ def cms_kennzahlen_webseite(request):
 	return render(request, 'cms-kennzahlen-webseite.html', context)
 
 @staff_member_required
+def cms_marken(request):
+	marken = Marke.objects.all().order_by('-id')			
+
+	context = {
+			'marken': marken,		
+			 }
+	return render(request, 'cms-marken.html', context)
+
+@staff_member_required
+def cms_marke_erfassen(request):
+	if request.method == "POST":
+		form = MarkeChangeForm(request.POST or None, request.FILES or None)
+		if form.is_valid():
+			form.save()
+			return redirect('store:cms_marken')
+
+		else:
+			messages.error(request, "Error")
+
+	else: 
+		form = MarkeChangeForm()
+
+	context = {
+		'form': form,
+				}
+	return render(request, 'cms-marke-erfassen.html', context)
+
+
+@staff_member_required
+def cms_marke_bearbeiten(request, pk):
+	marke = get_object_or_404(Marke, pk=pk)
+	if request.method == "POST":
+		form = MarkeChangeForm(request.POST or None, instance=marke)
+		if form.is_valid():
+			form.save()
+			return redirect('store:cms_marken')
+
+		else:
+			messages.error(request, "Error")
+			
+	else:
+		form = MarkeChangeForm(request.POST or None, request.FILES or None, instance=marke)
+		context = {
+			'form': form,
+			'marke': marke,
+			 }
+		return render(request, 'cms-marke-bearbeiten.html', context)
+
+@staff_member_required
+def cms_marke_löschen(request, pk):
+	eintrag = get_object_or_404(Marke, pk=pk)
+	eintrag.delete()
+	messages.info(request, "Die Marke wurde gelöscht.")
+	return redirect("store:cms_marken")	
+
+@staff_member_required
 def cms_kunden(request):
 	user = User.objects.all().order_by('-id')
 	search_query = request.GET.get('search', '')
@@ -1027,6 +1083,8 @@ def cms_kunden(request):
 			'user': user,		
 			 }
 	return render(request, 'cms-kunden.html', context)
+
+
 
 @staff_member_required
 def cms_kunden_erfassen(request):
