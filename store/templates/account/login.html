@@ -34,7 +34,7 @@ for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
 {% include "socialaccount/snippets/login_extra.html" %}
 
 {% else %}
-<p>{% blocktrans %}Falls Sie noch kein Kunden-Login haben, registrieren Sie sich unter <a href="{{ signup_url }}">hier</a>.
+<p>{% blocktrans %}Falls Sie noch kein Kunden-Login haben, registrieren Sie sich <a href="{{ signup_url }}">hier</a>.
 {% endblocktrans %}</p>
 {% endif %}
 
@@ -47,6 +47,8 @@ for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
   <button class="btn btn-md btn-primary" type="submit">{% trans "Anmelden" %}</button>
   
   <a class="btn btn-md btn-secondary" href="{% url 'account_reset_password' %}">{% trans "Passwort vergessen" %}</a>
+
+  <a class="btn btn-md btn-danger" href="{{ signup_url }}">{% trans "Registrieren" %}</a>
 </form>
 
 </div>
