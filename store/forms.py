@@ -5,7 +5,8 @@ from django_countries.widgets import CountrySelectWidget
 from allauth.account.forms import SignupForm
 from django.contrib.auth.models import User
 from django_countries.fields import CountryField
-
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string, get_template
 
 PAYMENT_CHOICES = (
 	('R', 'Rechnung*'),
@@ -261,6 +262,36 @@ class RegistrationForm(SignupForm):
 		address.rechnung_plz = self.cleaned_data['plz']
 		address.address_type = "B"
 		address.save()
+		#email
+		firmenname = self.cleaned_data['firmenname']
+		username = user.username
+		phone = self.cleaned_data['phone']
+		mobile = self.cleaned_data['mobile']
+		plz = self.cleaned_data['plz']
+		ort = self.cleaned_data['ort']
+		subject = 'Registration Neuer Kunde'
+		template = render_to_string('shop/registration-email.html', {
+			
+			'firmenname': firmenname, 
+			'username': username,
+			'phone': phone,
+			'mobile': mobile,
+			'plz': plz,
+			'ort': ort,			
+			 })
+		
+		#send email for order
+		email = ''
+		email = EmailMessage(
+			subject,
+			template,
+			email,
+			['bestellungen@gastrodichtung.ch', 'livio.bonetta@geboshop.ch', 'sandro@sh-digital.ch'],
+		)
+
+		email.fail_silently=False
+		email.content_subtype = "html"
+		email.send()
 		return user
 
 

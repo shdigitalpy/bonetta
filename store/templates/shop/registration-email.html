@@ -139,47 +139,33 @@
 
 <div class="container">
 
-<h2>Kontaktaufnahme</h2>
-<p>Die nachfolgende Person hat das Kontaktformular ausgefüllt.</p>
+<h2>Registration</h2>
+<p>Die nachfolgende Person hat sich registriert.</p>
 <br>
 
 
 <table class="table-big">
   <thead>
     <tr>
-        <th scope="col">Anrede</th>
-        <th scope="col">Vorname</th>
-        <th scope="col">Nachname</th>
-        <th scope="col">Firma</th>
-        <th scope="col">E-Mail</th>
+        <th scope="col">Firmenname</th>
+        <th scope="col">Benutzer</th>
         <th scope="col">Telefon</th>
+        <th scope="col">Mobile</th>
+        <th scope="col">PLZ</th>
+        <th scope="col">Ort</th>
         
     </tr>
   </thead>
   <tbody>
   	
     <tr>
-      <td>{% if anrede %}{{ anrede }}{% endif %}</td>
-      <td>{{ vorname }}</td>
-      <td>{{ nachname }}</td>
-      <td>{{ firma }}</td>
-      <td>{{ email }}</td>
-      <td>{{ telefon }}</td>
+      <td>{{ firmenname }}</td>
+      <td>{{ username }}</td>
+      <td>{{ phone }}</td>
+      <td>{{ mobile }}</td>
+      <td>{{ plz }}</td>
+      <td>{{ ort }}</td>
 
-    </tr>
-     
-  </tbody>
-</table>
-<br><br><br>
-<table class="table-big">
-  <thead>
-    <tr>
-        <th scope="col">Nachricht</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>{{ nachricht }}</td>
     </tr>
      
   </tbody>
