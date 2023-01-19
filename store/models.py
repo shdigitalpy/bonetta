@@ -348,7 +348,8 @@ class Kunde(models.Model):
 	newsletter = models.BooleanField(null=True, blank=True)
 	mobile = models.CharField(max_length=255, null=True, blank=True) 
 	phone = models.CharField(max_length=255, null=True, blank=True) 
-	birthday = models.CharField(max_length=255, null=True, blank=True) 
+	birthday = models.CharField(max_length=255, null=True, blank=True)
+	interne_nummer = models.IntegerField(null=True, blank=True)
 
 	class Meta:
 		ordering = ['id']

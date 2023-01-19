@@ -385,6 +385,7 @@ class KundeEditAdvancedForm(forms.ModelForm):
 		model = Kunde
 		fields = (
 			'firmenname',
+			'interne_nummer',
 			'rabatt',
 			'newsletter',
 			'phone',
@@ -395,6 +396,9 @@ class KundeEditAdvancedForm(forms.ModelForm):
 		widgets = {
 			
 			'firmenname': forms.TextInput(attrs={
+				'class': 'form-control col-3',
+				'placeholder':''}),
+			'interne_nummer': forms.NumberInput(attrs={
 				'class': 'form-control col-3',
 				'placeholder':''}),
 			'rabatt': forms.TextInput(attrs={

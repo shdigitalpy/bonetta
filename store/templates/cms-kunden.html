@@ -44,6 +44,7 @@
 			  <thead>
 			    <tr>
 			    	<th scope="col">Webshop<br>Kunden-Nr.</th>
+			    	<th scope="col">Interne Nr. <br><small style="font-size:0.7rem;">(bearbeiten bei Firmendaten)</small></th>
 			    	<th scope="col">Firma / Profil</th>
 			    	<th scope="col">Telefon</th>
 			      <th scope="col">Profildaten <br>bearbeiten</th>
@@ -62,6 +63,7 @@
 			  <tbody>
 			    <tr>
 			      <th scope="row">{{ data.pk }}</th>
+			      <td>{% if data.profile.interne_nummer %}{{ data.profile.interne_nummer }}{% endif %}</td>
 			      <td>
 			      	{% if data.profile.firmenname %}{{ data.profile.firmenname }} <br>{% endif %}
 			     Benutzername: {{ data.username }}<br>
