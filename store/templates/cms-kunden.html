@@ -63,8 +63,8 @@
 			    <tr>
 			      <th scope="row">{{ data.pk }}</th>
 			      <td>
-			      	{{ data.profile.firmenname }}
-			      <br>Benutzername: {{ data.username }}<br>
+			      	{% if date.profile.firmenname %}{{ data.profile.firmenname }} <br>{% endif %}
+			     Benutzername: {{ data.username }}<br>
 			  	{{ data.email }}</form>
 			  		</td>
 			  		<td>{% if data.profile.phone %}{{ data.profile.phone }}{% endif %}</td>
