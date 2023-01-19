@@ -14,6 +14,7 @@ urlpatterns = [
 	path('bestätigung/<int:pk>', views.email, name='email'),
 	path('searchbar', views.searchbar, name='searchbar'),
 	path('kontakt', views.kontakt, name='kontakt'),
+	path('firma', views.firma, name='firma'),
 	path('impressum', views.impressum, name='impressum'),
 	path('checkout/', CheckoutView.as_view(), name='checkout'), 
 	path('payment/', PaymentView.as_view(), name='payment'), 

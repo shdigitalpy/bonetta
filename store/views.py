@@ -138,6 +138,12 @@ def kontakt(request):
 		context = { }
 		return render(request, 'kontakt.html', context)
 
+#Kontaktseite
+def firma(request):
+	context = { }
+	return render(request, 'firma.html', context)
+
+
 #Marke Übersicht
 def marke(request):
 	marken = Marke.objects.all()
