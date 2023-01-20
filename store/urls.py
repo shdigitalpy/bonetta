@@ -66,8 +66,13 @@ urlpatterns = [
 	path('cms/logout_user', views.logout_user, name='logout_user'),
 	path('cms/statistik/produkte', views.cms_statistik_produkte, name='cms_statistik_produkte'),
 	re_path(r'^robots.txt$', TemplateView.as_view(template_name="robots.txt", content_type="text/plain"), name="robots_file"),
-	#path('pdf_view/', views.ViewPDF.as_view(), name="pdf_view"),
+	#marktplatz
+    path('marktplatz/main', views.markplatz_main, name='markplatz_main'),
+    path('marktplatz/main/<str:cat>', views.markplatz_main_category, name='markplatz_main_category'),
+    #path('pdf_view/', views.ViewPDF.as_view(), name="pdf_view"),
     #path('pdf_download/', views.DownloadPDF.as_view(), name="pdf_download"),
+
+
 	
 ]
 

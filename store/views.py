@@ -21,6 +21,37 @@ from io import BytesIO
 from datetime import datetime
 from django.contrib.admin.views.decorators import staff_member_required
 
+
+def markplatz_main_category(request, cat):
+
+	mp_inserate = Marketplace.objects.filter(category__name=cat)
+
+	mp_categories = MP_Category.objects.all()
+
+	context = {
+
+	'mp_inserate': mp_inserate,
+	'mp_categories': mp_categories,
+
+	}
+	return render (request, 'marktplatz/markplatz-main.html', context)
+
+
+def markplatz_main(request):
+
+	mp_inserate = Marketplace.objects.all()
+
+	mp_categories = MP_Category.objects.all()
+
+	context = {
+
+	'mp_inserate': mp_inserate,
+	'mp_categories': mp_categories,
+
+	}
+	return render (request, 'marktplatz/markplatz-main.html', context)
+
+
 def error_404(request, exception):
         data = {}
         return render(request,'404.html', data)

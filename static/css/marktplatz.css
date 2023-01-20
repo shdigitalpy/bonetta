@@ -1,0 +1,41 @@
+.mp-flex {
+	display: flex;
+	align-items: stretch;
+	flex-wrap: wrap;
+
+}
+
+.inserat-flex {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-direction: column;
+  
+}
+
+.mp-main {
+	width: 200px;
+}
+
+.mp-main-right {
+	margin:1rem;
+}
+
+.mp-text {
+	padding: 1rem;
+}
+
+.mp-image {
+	width:100%;
+}
+
+.mp-box {
+	background-color: grey;
+	padding: 1rem;
+	width: 100%;
+}
+
+.mp-box p {
+	color: white !important;
+}
+

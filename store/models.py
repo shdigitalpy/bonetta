@@ -15,6 +15,59 @@ PAYMENT_CHOICES = (
 	('V', 'Vorkasse (2% Skonto)'),
 	)
 
+CONDITION_CHOICES = (
+	('G', 'Gebraucht'),
+	('N', 'Neu')
+	)
+
+
+class MP_Category(models.Model):
+	name = models.CharField(max_length=255)
+	slug = models.SlugField(max_length=255)
+
+	class Meta:
+		ordering = ['id']
+		verbose_name = 'MP_Kategorie'
+		verbose_name_plural = 'MP_Kategorien'
+
+	def __str__(self):
+		return self.name
+
+	def get_absolute_url(self):
+		return reverse('home')
+
+		
+class Marketplace(models.Model):
+	user = models.ForeignKey(settings.AUTH_USER_MODEL,null=True, blank=True, on_delete=models.CASCADE)
+	title = models.CharField(max_length=255)
+	slug = models.SlugField(max_length=255)
+	price = models.FloatField(null=True, blank=True,)
+	description = models.CharField(max_length=500, default='')
+	condition = models.CharField(max_length=255, choices=CONDITION_CHOICES, default="G")
+	place = models.CharField(max_length=255, null=True, blank=True)
+	image = models.ImageField(null=True, blank=True, upload_to="inserate/")
+	image1 = models.ImageField(null=True, blank=True, upload_to="inserate/")
+	image2 = models.ImageField(null=True, blank=True, upload_to="inserate/")
+	add_date = models.DateTimeField(auto_now_add=True)
+	category = models.ForeignKey(MP_Category, related_name='mp_category', default=None, on_delete=models.SET_NULL, null=True, blank=True)
+
+	class Meta:
+		ordering = ['add_date']
+		verbose_name = 'Marketplace'
+		verbose_name_plural = 'Marketplaces'
+
+	def mp_firmenname(self):
+		mp_firmenname = self.user.profile.firmenname
+		return mp_firmenname 
+
+	def __str__(self):
+		return self.title
+
+
+
+
+
+
 class Subcategory(models.Model):
 	sub_name = models.CharField(max_length=255)
 	sub_slug = models.SlugField(max_length=255)
