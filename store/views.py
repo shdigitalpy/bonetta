@@ -23,6 +23,47 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 
 @staff_member_required
+def cms_inserat_freigeben(request, pk):
+	mp = get_object_or_404(Marketplace, pk=pk)
+	mp.is_active = True 
+	mp.save()
+	messages.info(request, "Das Inserat wurde freigegeben.")
+	subject = 'Inserat Nr.' + ' ' + str(mp.id) + ' ' + mp.title + ' wurde freigegeben.'
+	if mp.condition == "G":
+		condition = "Gebraucht"
+	else:
+		condition = "Neu"
+	template = render_to_string('marktplatz/inserat-email.html', {
+		'title' : mp.title,
+		'price': mp.price, 
+		'condition': condition,
+		'place': mp.place,
+		'add_date': mp.add_date,
+		'category': mp.category,		
+				 })
+	email = ''	
+	#send email for order
+	email = EmailMessage(
+		subject,
+		template,
+		email,
+		[mp.user.email],
+			)
+
+	email.fail_silently=False
+	email.content_subtype = "html"
+	email.send()
+	return redirect("store:cms_marktplatz")
+
+@staff_member_required
+def cms_inserat_deaktivieren(request, pk):
+	mp = get_object_or_404(Marketplace, pk=pk)
+	mp.is_active = False 
+	mp.save()
+	messages.info(request, "Das Inserat wurde deaktiviert.")
+	return redirect("store:cms_marktplatz")
+
+@staff_member_required
 def cms_marktplatz(request):
 	inserate = Marketplace.objects.all()
 

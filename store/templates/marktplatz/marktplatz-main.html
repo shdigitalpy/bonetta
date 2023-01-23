@@ -12,7 +12,8 @@
      
      <br>
      <a class="btn btn-secondary btn-sm" href="{% url 'store:marktplatz_inserat_erfassen' %}">Inserat erstellen</a>
-     <br><br>
+     <br><br><br><br>
+
 
 
       <div class="mp-flex">
@@ -56,15 +57,20 @@
 
     <div class="inserat-flex">
       
-    <div class="mp-image">
-    <a href=""><img class="thumbnail" src="{% static 'images/inserat.jpg' %}"></a>
-    </div>
+    
+
+    {% if ins.image %}
+    <a href="" class="mp-image-wrapper">
+    <img class="mp-image" src="{{ ins.image.url }}">
+    </a>
+    {% endif %}
+    
     
     <div class="mp-text">
 
     
-    <p>{{ ins.title }}</p>
-    <p>CHF {{ ins.price|floatformat:2 }}</p>
+    <h3>{{ ins.title }}</h3>
+    <p>CHF {{ ins.price|floatformat:2 }} / Einheit</p>
 
     <br>
     <div class="mp-box">

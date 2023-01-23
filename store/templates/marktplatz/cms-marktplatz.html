@@ -63,8 +63,9 @@
 					</td> 
 			      	<td>
 			      		{% if data.is_active == True %}
+			      		<a href="{% url 'store:cms_inserat_deaktivieren' data.id %}">Deaktivieren</a>
 			      		{% else %}
-  					<a href="">Freigeben</a>
+  					<a href="{% url 'store:cms_inserat_freigeben' data.id %}">Freigeben</a>
   					{% endif %}
 					</td> 
 					<td>{{ data.category }}</td>

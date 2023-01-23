@@ -19,15 +19,22 @@
 
 .mp-main-right {
 	margin:1rem;
+	background-color: var(--lightgrey);
 }
 
 .mp-text {
 	padding: 1rem;
 }
 
-.mp-image {
-	width:100%;
+.mp-image-wrapper {
+
 }
+.mp-image { 
+	width:250px;
+	height:220px;
+	object-fit: cover;
+}
+
 
 .mp-box {
 	background-color: grey;
