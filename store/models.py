@@ -4,6 +4,7 @@ from django.shortcuts import reverse
 from django_extensions.db.fields import AutoSlugField
 from django_countries.fields import CountryField
 from django.contrib.auth.models import User
+from django.utils.text import slugify
 
 ADDRESS_CHOICES = (
     ('B', 'Rechnungsadresse'),
@@ -50,6 +51,7 @@ class Marketplace(models.Model):
 	image2 = models.ImageField(null=True, blank=True, upload_to="inserate/")
 	add_date = models.DateTimeField(auto_now_add=True)
 	category = models.ForeignKey(MP_Category, related_name='mp_category', default=None, on_delete=models.SET_NULL, null=True, blank=True)
+	is_active = models.BooleanField(default=False)
 
 	class Meta:
 		ordering = ['add_date']
@@ -57,15 +59,19 @@ class Marketplace(models.Model):
 		verbose_name_plural = 'Marketplaces'
 
 	def mp_firmenname(self):
-		mp_firmenname = self.user.profile.firmenname
-		return mp_firmenname 
+		if self.user.profile.firmenname:
+			mp_firmenname = self.user.profile.firmenname
+			return mp_firmenname 
+		else:
+			mp_firmenname = self.user.username 
+			return mp_firmenname
+
+	def save(self, *args, **kwargs):
+		self.slug = slugify(self.title)
+		super(Marketplace, self).save(*args, **kwargs)
 
 	def __str__(self):
 		return self.title
-
-
-
-
 
 
 class Subcategory(models.Model):

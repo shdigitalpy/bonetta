@@ -1,0 +1,84 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}CMS Inserate{% endblock %}
+
+{% block content %}
+
+		
+			<div class="flexbox">
+				<div class="h2">Inserateverwaltung Gastroverkauf</div>
+				
+			</div>
+
+
+			<table class="table table-striped">
+			  <thead>
+			    <tr>
+			      
+			      <th scope="col">Titel</th>
+			      <th scope="col">Preis</th>
+			      <th scope="col">Zustand</th>
+			      <th scope="col">Standort</th>
+			      <th scope="col">Bild</th>
+			      <th scope="col">Hinzugefügt am</th>
+			      <th scope="col">Status</th>
+			      <th scope="col">Freigeben</th>
+			      <th scope="col">Kategorie</th>
+			      <th scope="col">Löschen</th>
+			     
+			      
+			      
+
+			    </tr>
+			  </thead>
+			  {% for data in produkte %}
+			  <tbody>
+			    <tr>
+			      <th scope="row">{{ data.title }}</th>
+			     
+			      
+			      <td>{{ data.price|floatformat:2 }}</td>
+  					<td>
+  						{% if data.condition == 'G' %}
+  						Gebraucht
+  						{% else %}
+  						Neu
+  						{% endif %}
+  					</td>
+			      <td>{{ data.place }}</td>
+			     <td>{% if data.image %}
+			      	<img style="width:60px" src="{{ data.image.url }}">
+			      	{% else %}
+			      	{% endif %}
+			      </td>
+			      <td>{{ data.add_date }}</td>
+			       <td>
+  					{% if data.is_active == True %}
+  					<button type="button" class="btn btn-success">Aktiv</button>
+
+  					{% else %}
+  					<button type="button" class="btn btn-dark">Offline</button>
+  					{% endif %}
+				
+					</td> 
+			      	<td>
+			      		{% if data.is_active == True %}
+			      		{% else %}
+  					<a href="">Freigeben</a>
+  					{% endif %}
+					</td> 
+					<td>{{ data.category }}</td>
+
+					<td>
+  					<a href=""><i style="color:var(--red)" class="far fa-trash-alt"></i>
+					 </a>
+					</td> 
+			    </tr>
+			    
+			  </tbody>
+			  {% endfor %}
+
+			</table>
+
+ {% endblock %}
+

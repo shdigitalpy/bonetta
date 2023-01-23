@@ -20,6 +20,136 @@ COUNTRY_CHOICES = [
 
 	]
 
+
+class InseratCreateForm(forms.ModelForm):
+	class Meta:
+		model = Marketplace
+		fields = ('category', 'title', 'price', 'description', 'condition', 'place','image','image1','image2'  )
+
+		labels = {
+			'title' : "Titel des Eintrags:",
+			'price' : "Preis",
+			'description' : "Ausführliche Beschreibung",
+			'condition' : "Zustand",
+			'place' : "Standort",
+			'image' : "Bild",
+			'image1' : "Bild",
+			'image2' : "Bild",
+			'category' : "Kategorie"
+
+		}
+		
+
+		widgets = {
+			
+			'title': forms.TextInput(attrs={
+				'class': 'form-control col-3',
+				'placeholder':''}),
+
+			'price': forms.NumberInput(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+			'description': forms.Textarea(attrs={
+				'class': 'form-control col-3',
+				'placeholder':''}),
+			'condition': forms.Select(attrs={
+				'class': 'form-control',
+				}),
+			'place': forms.TextInput(attrs={
+				'class': 'form-control col-3',
+				'placeholder':''}),
+			'image' : forms.FileInput(attrs={
+				'class': 'form-control',
+				}),
+			'image1' : forms.FileInput(attrs={
+				'class': 'form-control',
+				}),
+			'image2' : forms.FileInput(attrs={
+				'class': 'form-control',
+				}),
+			'category' : forms.Select(attrs={
+				'class': 'form-control',
+				}),
+		}
+
+class CheckoutForm(forms.Form):
+	rechnung_firmenname = forms.CharField(required=False, widget=forms.TextInput(attrs={
+		'class': 'form-control',
+		'placeholder': '',
+		}))
+
+	rechnung_vorname = forms.CharField(required=False, widget=forms.TextInput(attrs={
+		'class': 'form-control',
+		'placeholder': '',
+		}))
+
+	rechnung_nachname = forms.CharField(required=False, widget=forms.TextInput(attrs={
+		'class': 'form-control',
+		'placeholder': '',
+		}))
+	rechnung_strasse = forms.CharField(required=False, widget=forms.TextInput(attrs={
+		'class': 'form-control',
+		'placeholder': ''
+		}))
+	rechnung_nr = forms.CharField(required=False, widget=forms.TextInput(attrs={
+		'class': 'form-control',
+		'placeholder': ''
+		}))
+	rechnung_ort = forms.CharField(required=False, widget=forms.TextInput(attrs={
+		'class': 'form-control',
+		'placeholder': ''
+		}))
+	rechnung_land = CountryField(blank_label='(Land auswählen)').formfield(
+        required=False,
+        widget=CountrySelectWidget(attrs={
+            'class': 'custom-select d-block w-100',
+        }))
+	rechnung_plz = forms.CharField(required=False, widget=forms.TextInput(attrs={
+		'class': 'form-control',
+		'placeholder': ''
+		}))
+	lieferung_strasse = forms.CharField(required=False, widget=forms.TextInput(attrs={
+		'class': 'form-control',
+		'placeholder': ''
+		}))
+	lieferung_nr = forms.CharField(required=False, widget=forms.TextInput(attrs={
+		'class': 'form-control',
+		'placeholder': ''
+		}))
+	lieferung_ort = forms.CharField(required=False, widget=forms.TextInput(attrs={
+		'class': 'form-control',
+		'placeholder': ''
+		}))
+	lieferung_land = CountryField(blank_label='(Land auswählen)').formfield(
+        required=False,
+        widget=CountrySelectWidget(attrs={
+            'class': 'custom-select d-block w-100',
+        }))
+	lieferung_plz = forms.CharField(required=False, widget=forms.TextInput(attrs={
+		'class': 'form-control',
+		'placeholder': ''
+		}))
+
+	firmenname = forms.CharField(required=False, widget=forms.TextInput(attrs={
+		'class': 'form-control',
+		'placeholder': '',
+		}))
+
+	vorname = forms.CharField(required=False, widget=forms.TextInput(attrs={
+		'class': 'form-control',
+		'placeholder': '',
+		}))
+
+	nachname = forms.CharField(required=False, widget=forms.TextInput(attrs={
+		'class': 'form-control',
+		'placeholder': '',
+		}))
+
+	different_shipping_address = forms.BooleanField(required=False)
+	use_other_billing = forms.BooleanField(required=False)
+	use_default_shipping = forms.BooleanField(required=False)
+
+
 class KundeCreateForm(forms.ModelForm):
 	class Meta:
 		model = User

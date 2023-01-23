@@ -1,0 +1,20 @@
+{% extends 'shop/main.html' %}
+{% load static %}
+{% block title %}Gastronomie Marktplatz | gastrodichtung.ch{% endblock %}
+{% block meta_description %}Gastronomie Marktplatz | gastrodichtung.ch{% endblock %}
+
+{% block content %}
+
+
+<div class="container">
+    <div class="storepreview">
+      <h1>Inserat erfolgreich erfasst</h1>
+     
+     <p>Sie haben das Inserat erfolgreich erfasst. Nun wird es durch unser Team überprüft. 
+     Sobald wir es freischalten, erscheint es online.</p>
+
+     <a href="{% url 'store:marktplatz_main' %}">Zurück zum Marktplatz</a>
+  </div><!-- storepreview end -->
+</div><!-- container end -->
+
+{% endblock content %}

@@ -9,7 +9,11 @@
 <div class="container">
     <div class="storepreview">
       <h1>Gastroverkauf - Marktplatz</h1>
+     
+     <br>
+     <a class="btn btn-secondary btn-sm" href="{% url 'store:marktplatz_inserat_erfassen' %}">Inserat erstellen</a>
      <br><br>
+
 
       <div class="mp-flex">
         
@@ -20,14 +24,16 @@
      <div class="mp-main">
 
       <div>
-        <a href="{% url 'store:markplatz_main' %}"><h3>Alle Kategorien</h3></a>
+        <a href="{% url 'store:marktplatz_main' %}"><h3>Alle Kategorien</h3></a>
         <br>
 
         {% for category in mp_categories %}
+        
         <ul style="list-style-type: none;padding: 0; margin:0;">
-        <a href="{% url 'store:markplatz_main_category' category.name %}"><li>{{ category.name }}</li></a>
+        <a href="{% url 'store:marktplatz_main_category' category.name %}"><li>{{ category.name }}</li></a>
         
       </ul>
+      
       {% endfor %}
 
       <div>
@@ -42,6 +48,7 @@
 
 
      {% for ins in mp_inserate %}
+     {% if ins.is_active == True %}
      <div class="mp-main-right">
 
       
@@ -61,7 +68,12 @@
 
     <br>
     <div class="mp-box">
-      <p>{{ ins.mp_firmenname }}</p>
+      <p>
+        {% if ins.mp_firmenname %}
+      {{ ins.mp_firmenname }}
+      {% endif %}
+
+    </p>
     </div>
     
   
@@ -70,7 +82,7 @@
 
     </div>
   </div>
-
+{% endif %}
 
   {% endfor %}
 

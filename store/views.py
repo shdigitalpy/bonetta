@@ -22,7 +22,43 @@ from datetime import datetime
 from django.contrib.admin.views.decorators import staff_member_required
 
 
-def markplatz_main_category(request, cat):
+@staff_member_required
+def cms_marktplatz(request):
+	inserate = Marketplace.objects.all()
+
+	context = {
+		'produkte': inserate,
+	 }
+	return render(request, 'marktplatz/cms-marktplatz.html', context)
+
+def marktplatz_inserat_erfolg(request):
+	context = {
+		
+				}
+	return render(request, 'marktplatz/marktplatz-erfolg.html', context)
+
+def marktplatz_inserat_erfassen(request):
+	if request.method == "POST":
+		form = InseratCreateForm(request.POST or None)
+		if form.is_valid():
+			marktplatz = form.save(commit=False)
+			marktplatz.user = request.user
+			marktplatz.save()
+			return redirect('store:marktplatz_inserat_erfolg')
+
+		else:
+			messages.error(request, "Error")
+
+	else: 
+		form = form = InseratCreateForm()
+
+	context = {
+		'form': form,
+				}
+	return render(request, 'marktplatz/marktplatz-inserat-erfassen.html', context)
+
+
+def marktplatz_main_category(request, cat):
 
 	mp_inserate = Marketplace.objects.filter(category__name=cat)
 
@@ -34,10 +70,10 @@ def markplatz_main_category(request, cat):
 	'mp_categories': mp_categories,
 
 	}
-	return render (request, 'marktplatz/markplatz-main.html', context)
+	return render (request, 'marktplatz/marktplatz-main.html', context)
 
 
-def markplatz_main(request):
+def marktplatz_main(request):
 
 	mp_inserate = Marketplace.objects.all()
 
@@ -49,7 +85,7 @@ def markplatz_main(request):
 	'mp_categories': mp_categories,
 
 	}
-	return render (request, 'marktplatz/markplatz-main.html', context)
+	return render (request, 'marktplatz/marktplatz-main.html', context)
 
 
 def error_404(request, exception):
