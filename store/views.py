@@ -120,12 +120,14 @@ def cms_marktplatz(request):
 	 }
 	return render(request, 'marktplatz/cms-marktplatz.html', context)
 
+@login_required
 def marktplatz_inserat_erfolg(request):
 	context = {
 		
 				}
 	return render(request, 'marktplatz/marktplatz-erfolg.html', context)
 
+@login_required
 def marktplatz_inserat_erfassen(request):
 	if request.method == "POST":
 		form = InseratCreateForm(request.POST or None)
