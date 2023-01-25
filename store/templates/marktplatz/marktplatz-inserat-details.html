@@ -1,0 +1,123 @@
+{% extends 'shop/main.html' %}
+{% load static %}
+{% block title %}Gastronomie Inserat {{ inserat.title }} | gastrodichtung.ch{% endblock %}
+{% block meta_description %}Gastronomie Inserat {{ inserat.title }} | gastrodichtung.ch{% endblock %}
+
+{% block content %}
+
+
+<div class="container">
+    <div class="storepreview">
+      <h1>Inserat {{ inserat.title }}</h1>
+
+        <br>
+          <br>
+    
+      <div class="mp-flex">
+        
+     <div class="mp-main">
+
+      <div>
+        
+    
+      
+
+      <div>
+        <h3>Preis</h3>  
+      <p class="preis" style="font-size:1rem !important;">CHF {{ inserat.price|floatformat:2 }} <small>/ Einheit</small></p>
+        <hr>
+      <br>
+      <br>
+
+        <h3>Zustand</h3>  
+
+        {% if inserat.condition == "G" %}
+        <p>Gebraucht</p>
+        {% else %}
+        <p>Neu</p>
+        {% endif %}
+
+        <hr>
+
+      </div>
+    </div>
+
+     </div>
+
+
+     
+     <div style="display:flex;flex-wrap:wrap;">
+
+
+      
+        
+
+    <div style="width:500px;">
+      
+    
+
+    {% if inserat.image %}
+    
+    <img style="width:100%;" src="{{ inserat.image.url }}">
+
+    {% endif %}
+    
+    
+    <div>
+
+    
+    <h3>{{ inserat.title }}</h3>
+    <p>CHF {{ inserat.description }}</p>
+
+    
+
+    </div>
+  </div><!-- end first -->
+
+
+  <div style="width:300px;">
+
+   
+
+
+        <h3>Verkäufer</h3>
+        <br>
+         <p> {% if inserat.mp_firmenname %}
+      {{ inserat.mp_firmenname }}
+      {% endif %}</p>
+      <br>
+      <p> {% if inserat.mp_phone %}
+      Telefon: {{ inserat.mp_phone }}
+      {% endif %}</p>
+      <p> {% if inserat.mp_mobile %}
+      Mobile: {{ inserat.mp_mobile }}
+      {% endif %}</p>
+
+      <p> {% if inserat.mp_email %}
+      E-Mail: {{ inserat.mp_email }}
+      {% endif %}</p>
+          
+
+          <hr>
+
+        <br>
+          <h3>Ort</h3>
+          <br>
+           <p>{{ inserat.place }}</p>
+           <hr>
+  
+
+
+  </div><!-- end second -->
+
+
+    </div>
+
+
+
+  </div><!-- row end -->
+   
+  </div><!-- storepreview end -->
+</div><!-- container end -->
+
+{% endblock content %}

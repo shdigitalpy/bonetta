@@ -22,6 +22,16 @@ from datetime import datetime
 from django.contrib.admin.views.decorators import staff_member_required
 
 
+def marktplatz_inserat_details(request, slug):
+	inserat = get_object_or_404(Marketplace, slug=slug)
+
+	context = {
+
+	'inserat' : inserat,
+
+	}
+	return render (request, 'marktplatz/marktplatz-inserat-details.html', context)
+
 def marktplatz_condition(request, cond):
 
 	if cond == "Gebraucht":

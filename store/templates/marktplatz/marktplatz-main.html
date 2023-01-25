@@ -39,6 +39,8 @@
 
       <div>
         <br><br>
+        <h3>Zustand</h3>
+         <br>
 
         <a href="{% url 'store:marktplatz_condition' 'Gebraucht' %}"><p>Gebraucht</p></a>
        
@@ -71,8 +73,8 @@
     <div class="mp-text">
 
     
-    <h3>{{ ins.title }}</h3>
-    <p>CHF {{ ins.price|floatformat:2 }} / Einheit</p>
+    <h3><a href="{% url 'store:marktplatz_inserat_details' ins.slug %}">{{ ins.title }}</a></h3>
+    <p class="preis" style="font-size:1rem !important;">CHF {{ ins.price|floatformat:2 }} / Einheit</p>
 
     <br>
     <div class="mp-box">
@@ -96,6 +98,10 @@
 
 
   </div><!-- row end -->
+   <br>   <br> <br>
+  <p>Sie suchen nach einer Möglichkeit, Ihre gebrauchten Restaurantausstattungen loszuwerden oder suchen nach einem günstigen Angebot für Ihr neues Restaurant? Dann sind Sie hier genau richtig! Unser Gastronomie Markplatz bietet Restaurants die Möglichkeit, ihre gebrauchten Waren zu verkaufen oder zu kaufen.
+
+Ob Stühle, Küchengeräte oder sogar Vakuummaschinen und Türschliesser, hier finden Sie alles, was Sie für den Betrieb Ihres Restaurants benötigen. Und das Beste daran ist, dass Sie dabei Geld sparen können, indem Sie gebrauchte Waren kaufen.</p>
   </div><!-- storepreview end -->
 </div><!-- container end -->
 

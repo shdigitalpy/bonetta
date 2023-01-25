@@ -66,6 +66,30 @@ class Marketplace(models.Model):
 			mp_firmenname = self.user.username 
 			return mp_firmenname
 
+	def mp_phone(self):
+		if self.user.profile.phone:
+			mp_phone = self.user.profile.phone
+			return mp_phone 
+		else:
+			mp_phone = " "
+			return mp_phone
+
+	def mp_mobile(self):
+		if self.user.profile.phone:
+			mp_mobile = self.user.profile.mobile
+			return mp_mobile 
+		else:
+			mp_mobile = " "
+			return mp_mobile
+
+	def mp_email(self):
+		if self.user.email:
+			mp_email = self.user.email
+			return mp_email 
+		else:
+			mp_email = " "
+			return mp_email
+
 	def save(self, *args, **kwargs):
 		self.slug = slugify(self.title)
 		super(Marketplace, self).save(*args, **kwargs)
