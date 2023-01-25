@@ -21,6 +21,22 @@ from io import BytesIO
 from datetime import datetime
 from django.contrib.admin.views.decorators import staff_member_required
 
+@login_required
+def myinserate_löschen(request, pk):
+	eintrag = get_object_or_404(Marketplace, pk=pk)
+	eintrag.delete()
+	messages.info(request, "Das Inserat wurde gelöscht.")
+	return redirect("store:myinserate")
+
+@login_required
+def myinserate(request):
+	myinserat = Marketplace.objects.filter(user=request.user)
+
+	context = { 
+			'myinserat': myinserat,
+			
+			}
+	return render(request, 'marktplatz/marktplatz-inserate-benutzer.html', context)
 
 def marktplatz_inserat_details(request, slug):
 	inserat = get_object_or_404(Marketplace, slug=slug)

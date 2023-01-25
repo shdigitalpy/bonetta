@@ -68,6 +68,8 @@ urlpatterns = [
 	re_path(r'^robots.txt$', TemplateView.as_view(template_name="robots.txt", content_type="text/plain"), name="robots_file"),
 	#marktplatz
     path('marktplatz', views.marktplatz_main, name='marktplatz_main'),
+    path('inserate', views.myinserate, name="myinserate"),
+    path('inserate/löschen/<int:pk>', views.myinserate_löschen, name="myinserate_löschen"),
     path('marktplatz/main/<str:cat>', views.marktplatz_main_category, name='marktplatz_main_category'),
     path('marktplatz/condition/<str:cond>', views.marktplatz_condition, name='marktplatz_condition'),
     path('marktplatz/inserat/erfassen', views.marktplatz_inserat_erfassen, name='marktplatz_inserat_erfassen'),

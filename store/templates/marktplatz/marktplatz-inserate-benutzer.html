@@ -1,0 +1,63 @@
+{% extends 'shop/main.html' %}
+{% load static %}
+
+{% block content %}
+
+
+{% if user.is_authenticated %}
+<div class="container padding">
+  <h1>Alle Inserate von {{ request.user.profile.firmenname }}</h1><br>
+  <h2>Zuständig: {{ request.user.first_name }} {{ request.user.last_name }}</h2>
+
+  <p>Das ist die Übersicht von Ihnen veröffentlichte Inserate.</p>
+ 
+<div class="row padding storepreview">
+      <div class="mydichtungen">
+      <div class="table-responsive">
+        <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">Titel</th>
+          <th scope="col">Preis</th>
+          <th scope="col">Datum</th>
+        
+          <th scope="col">Löschen</th>
+          
+        </tr>
+      </thead>
+      <tbody>
+         {% for element in myinserat %}
+        <tr> 
+             
+        
+          <th scope="row">{{ element.title }}</th>
+          <td>{{ element.price|floatformat:2 }}</td>
+          <td>{{ element.add_date }}</td>
+          <td><a href="{% url 'store:myinserate_löschen' element.id %}"><i style="color:var(--red)" class="far fa-trash-alt"></i>
+           </a></td>
+      </tr>
+        {% endfor %}
+      </tbody>
+        </table>
+      </div><!-- end table responsive -->
+      
+    </div><!-- end mydichtungen -->
+
+
+
+
+  </div><!-- storepreview end -->
+  </div><!-- container end -->
+
+
+  {% else %}
+  
+  <div class="container">
+  
+  <p>Sie müssen ein Kunden von uns sein um diese Seite zu sehen</p>
+
+  </div><!-- container end -->
+
+{% endif %}
+
+{% endblock content %}

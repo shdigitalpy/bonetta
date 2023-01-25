@@ -162,6 +162,16 @@
                 {% endif %}
                 {% else %}
               {% endif %}
+
+
+              {% if request.user.is_authenticated %}
+              {% if request.user.profile.firmenname %}
+              <li class="nav-item"><a class="nav-link btn btn-outline-warning " href="{% url 'store:myinserate' %}">Inserate</a>
+              </li>
+                {% else %}
+                {% endif %}
+                {% else %}
+              {% endif %}
          </ul>       
       </div>  
       
@@ -229,6 +239,15 @@
               {% if request.user.is_authenticated %}
               {% if request.user.profile.firmenname %}
               <li class="nav-item"><a class="nav-link btn btn-outline-warning " href="{% url 'store:mydichtungen' %}">Inventar</a>
+              </li>
+                {% else %}
+                {% endif %}
+                {% else %}
+              {% endif %}
+
+              {% if request.user.is_authenticated %}
+              {% if request.user.profile.firmenname %}
+              <li class="nav-item"><a class="nav-link btn btn-outline-warning " href="{% url 'store:myinserate' %}">Inserate</a>
               </li>
                 {% else %}
                 {% endif %}
