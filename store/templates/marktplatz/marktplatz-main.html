@@ -11,7 +11,7 @@
       <h1>Gastroverkauf - Marktplatz</h1>
      
      <br>
-     <a class="btn btn-secondary btn-sm" href="{% url 'store:marktplatz_inserat_erfassen' %}">Inserat erstellen</a>
+     <a class="btn btn-success btn-sm" href="{% url 'store:marktplatz_inserat_erfassen' %}">Inserat erstellen</a>
      <br><br><br><br>
 
 
@@ -39,8 +39,10 @@
 
       <div>
         <br><br>
-        <p>Gebraucht</p>
-        <p>Neu</p>
+
+        <a href="{% url 'store:marktplatz_condition' 'Gebraucht' %}"><p>Gebraucht</p></a>
+       
+         <a href="{% url 'store:marktplatz_condition' 'Neu' %}"><p>Neu</p></a>
 
       </div>
     </div>

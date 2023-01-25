@@ -22,6 +22,28 @@ from datetime import datetime
 from django.contrib.admin.views.decorators import staff_member_required
 
 
+def marktplatz_condition(request, cond):
+
+	if cond == "Gebraucht":
+		mp_inserate = Marketplace.objects.filter(condition="G")
+
+	elif cond == "Neu":
+		mp_inserate = Marketplace.objects.filter(condition="N")
+
+	else: 
+		mp_inserate = Marketplace.objects.all()
+
+	mp_categories = MP_Category.objects.all()
+
+	context = {
+
+	'mp_categories' : mp_categories,
+	'mp_inserate': mp_inserate,
+
+	}
+	return render (request, 'marktplatz/marktplatz-main.html', context)
+
+
 @staff_member_required
 def cms_inserat_freigeben(request, pk):
 	mp = get_object_or_404(Marketplace, pk=pk)

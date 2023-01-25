@@ -4,11 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Item, OrderItem, Order, Address, ShippingAddress, Elemente, Kunde, Category, ShippingCost
+from .models import *
 from django.views.generic import ListView, DetailView, View, UpdateView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-from .forms import KundeEditAdvancedForm, KundeCreateForm, VersandkostenCreateForm, AddressForm, RegistrationForm, PaymentForm, ShippingAddressForm, CheckoutForm, AussenmassForm, ProduktEditForm, KundeEditForm, ElementeEditForm
+from .forms import *
 from django.core.mail import EmailMessage
 from django.contrib.auth.models import User
 from django.shortcuts import reverse, HttpResponse
@@ -19,6 +19,119 @@ from django.conf import settings
 from xhtml2pdf import pisa
 from io import BytesIO
 from datetime import datetime
+from django.contrib.admin.views.decorators import staff_member_required
+
+
+@staff_member_required
+def cms_inserat_freigeben(request, pk):
+	mp = get_object_or_404(Marketplace, pk=pk)
+	mp.is_active = True 
+	mp.save()
+	messages.info(request, "Das Inserat wurde freigegeben.")
+	subject = 'Inserat Nr.' + ' ' + str(mp.id) + ' ' + mp.title + ' wurde freigegeben.'
+	if mp.condition == "G":
+		condition = "Gebraucht"
+	else:
+		condition = "Neu"
+	template = render_to_string('marktplatz/inserat-email.html', {
+		'title' : mp.title,
+		'price': mp.price, 
+		'condition': condition,
+		'place': mp.place,
+		'add_date': mp.add_date,
+		'category': mp.category,		
+				 })
+	email = ''	
+	#send email for order
+	email = EmailMessage(
+		subject,
+		template,
+		email,
+		[mp.user.email],
+			)
+
+	email.fail_silently=False
+	email.content_subtype = "html"
+	email.send()
+	return redirect("store:cms_marktplatz")
+
+@staff_member_required
+def cms_inserat_deaktivieren(request, pk):
+	mp = get_object_or_404(Marketplace, pk=pk)
+	mp.is_active = False 
+	mp.save()
+	messages.info(request, "Das Inserat wurde deaktiviert.")
+	return redirect("store:cms_marktplatz")
+
+@staff_member_required
+def cms_marktplatz(request):
+	inserate = Marketplace.objects.all()
+
+	context = {
+		'produkte': inserate,
+	 }
+	return render(request, 'marktplatz/cms-marktplatz.html', context)
+
+def marktplatz_inserat_erfolg(request):
+	context = {
+		
+				}
+	return render(request, 'marktplatz/marktplatz-erfolg.html', context)
+
+def marktplatz_inserat_erfassen(request):
+	if request.method == "POST":
+		form = InseratCreateForm(request.POST or None)
+		if form.is_valid():
+			marktplatz = form.save(commit=False)
+			marktplatz.user = request.user
+			marktplatz.save()
+			return redirect('store:marktplatz_inserat_erfolg')
+
+		else:
+			messages.error(request, "Error")
+
+	else: 
+		form = form = InseratCreateForm()
+
+	context = {
+		'form': form,
+				}
+	return render(request, 'marktplatz/marktplatz-inserat-erfassen.html', context)
+
+
+def marktplatz_main_category(request, cat):
+
+	mp_inserate = Marketplace.objects.filter(category__name=cat)
+
+	mp_categories = MP_Category.objects.all()
+
+	context = {
+
+	'mp_inserate': mp_inserate,
+	'mp_categories': mp_categories,
+
+	}
+	return render (request, 'marktplatz/marktplatz-main.html', context)
+
+
+def marktplatz_main(request):
+
+	mp_inserate = Marketplace.objects.all()
+
+	mp_categories = MP_Category.objects.all()
+
+	context = {
+
+	'mp_inserate': mp_inserate,
+	'mp_categories': mp_categories,
+
+	}
+	return render (request, 'marktplatz/marktplatz-main.html', context)
+
+
+def error_404(request, exception):
+        data = {}
+        return render(request,'404.html', data)
 
 #Hauptseite
 def home(request):
@@ -52,7 +165,7 @@ def home(request):
 				subject,
 				template,
 				email,
-				['sandro@sh-digital.ch'],
+				['bestellungen@gastrodichtung.ch', 'livio.bonetta@geboshop.ch'],
 			)
 
 			email.fail_silently=False
@@ -84,6 +197,11 @@ def searchbar(request):
 	return render(request, 'shop/searchbar.html', context)
 
 
+def impressum(request):
+	context = {}
+	return render(request, 'impressum.html', context)
+
+
 #Kontaktseite
 def kontakt(request):
 
@@ -112,7 +230,7 @@ def kontakt(request):
 			subject,
 			template,
 			email,
-			['sandro@sh-digital.ch'],
+			['bestellungen@gastrodichtung.ch', 'livio.bonetta@geboshop.ch'],
 		)
 
 		email.fail_silently=False
@@ -128,15 +246,40 @@ def kontakt(request):
 		context = { }
 		return render(request, 'kontakt.html', context)
 
+#Kontaktseite
+def firma(request):
+	context = { }
+	return render(request, 'firma.html', context)
 
 
+#Marke Übersicht
+def marke(request):
+	marken = Marke.objects.all()
+	context = { 
+		'marken' : marken, 
+		}
+	return render(request, 'shop/store-marke.html', context)
+
+
+#Marke Store
+def HomeMarkeView(request, cat_marke):
+	marke_products = Item.objects.filter(marke__slug=cat_marke)
+	seo_marke = get_object_or_404(Marke, slug=cat_marke)
+	context = { 
+		'marke_products' : marke_products, 
+		'cat_marke': cat_marke.replace('-', ''),
+		'seo_marke' : seo_marke,
+		}
+	return render(request, 'shop/store-marke-details.html', context)
 
 #Produktübersichten
 def HomeProduktView(request, cats):
 	category_products = Item.objects.filter(kategorie__slug=cats)
+	seo_cat = get_object_or_404(Category, slug=cats)
 	context = { 
 		'category_products' : category_products, 
 		'cats': cats.replace('-', ''),
+		'seo_cat' : seo_cat,
 		}
 	return render(request, 'shop/store.html', context)
 
@@ -145,11 +288,13 @@ def HomeProduktView(request, cats):
 def HomeSubProduktView(request, subcats, cats):
 	category_products = Item.objects.filter(kategorie__slug=cats)
 	subcategory_products = Item.objects.filter(subkategorie__sub_slug=subcats)
+	seo_subcat = get_object_or_404(Subcategory, sub_slug=subcats)
 	context = { 
 		'category_products' : category_products, 
 		'cats': cats.replace('-', ''),
 		'subcategory_products' : subcategory_products, 
 		'subcats': subcats.replace('-', ''),
+		'seo_subcat' : seo_subcat,
 		}
 	return render(request, 'shop/store-subcat.html', context)
 
@@ -345,6 +490,7 @@ def mydichtungen(request):
 		aussenbreite = request.POST['aussenbreite']
 		aussenhöhe = request.POST['aussenhöhe']
 		anzahl = request.POST['anzahl']
+		element = request.POST['elementnr']
 		item = get_object_or_404(Item, slug=mydslug)
 		orderitem, created = OrderItem.objects.get_or_create(
 				item=item,
@@ -352,8 +498,9 @@ def mydichtungen(request):
 				ordered=False,
 				aussenbreite=aussenbreite, 
 				aussenhöhe=aussenhöhe,
+				element=element,
 			)
-		return redirect("store:add_to_cart_myd", slug=mydslug, pk=item.pk, aussenbreite=aussenbreite, aussenhöhe=aussenhöhe, anzahl=anzahl)
+		return redirect("store:add_to_cart_myd", slug=mydslug, pk=item.pk, aussenbreite=aussenbreite, aussenhöhe=aussenhöhe, anzahl=anzahl, element=element)
 	else:
 		orderitem = ' '
 		context = { 
@@ -365,7 +512,7 @@ def mydichtungen(request):
 
 #add to cart for mydichtungen
 @login_required
-def add_to_cart_myd(request, slug, pk, aussenbreite, aussenhöhe, anzahl):
+def add_to_cart_myd(request, slug, pk, aussenbreite, aussenhöhe, anzahl, element):
 	#get the right product
 	item = get_object_or_404(Item, slug=slug)
 		
@@ -381,12 +528,13 @@ def add_to_cart_myd(request, slug, pk, aussenbreite, aussenhöhe, anzahl):
 				ordered=False,
 				aussenbreite=aussenbreite,
 				aussenhöhe=aussenhöhe,
+				element=element,
 				)
 
 			#check if the order item is in the order
 
 		#if the order item exist adjust quantity
-		if order.items.filter(item__slug=item.slug, aussenbreite=aussenbreite, aussenhöhe=aussenhöhe).exists():
+		if order.items.filter(item__slug=item.slug, aussenbreite=aussenbreite, aussenhöhe=aussenhöhe, element=element).exists():
 			order_item.quantity += anzahl
 			order_item.save()
 			messages.info(request, "Die Menge wurde aktualisiert.")
@@ -398,6 +546,7 @@ def add_to_cart_myd(request, slug, pk, aussenbreite, aussenhöhe, anzahl):
 			order_item.aussenbreite = aussenbreite
 			order_item.aussenhöhe = aussenhöhe
 			order_item.quantity = anzahl
+			order_item.element = element
 			order_item.save()
 			order.items.add(order_item)
 			messages.info(request, "Das Produkt wurde erfolgreich in den Warenkorb gelegt.")
@@ -416,6 +565,7 @@ def add_to_cart_myd(request, slug, pk, aussenbreite, aussenhöhe, anzahl):
 					ordered=False,
 					aussenbreite=aussenbreite,
 					aussenhöhe=aussenhöhe,
+					element=element,
 						)
 		order.items.add(order_item)
 		messages.info(request, "Das Produkt wurde erfolgreich in den Warenkorb gelegt.")
@@ -565,7 +715,7 @@ class FinalSummaryView(View):
 					subject,
 					template,
 					settings.EMAIL_HOST_USER,
-					[self.request.user.email],
+					[self.request.user.email, 'livio.bonetta@geboshop.ch'],
 							)
 
 			email.fail_silently=False
@@ -884,15 +1034,17 @@ def create_lieferadresse(request):
 	return render(request, 'shop/lieferadresse-erfassen.html', context)
 
 
-#CMS related fields
-@login_required
+
+
+#CMS related fields --- only for staff available
+@staff_member_required
 def cms(request):
 
 	context = { }
 	return render(request, 'cms.html', context)
 
 
-@login_required
+@staff_member_required
 def cms_bestellungen(request):
 	order = Order.objects.filter(ordered=True)
 	context = {
@@ -901,7 +1053,7 @@ def cms_bestellungen(request):
 	return render(request, 'cms-bestellungen.html', context)
 
 #Success Page2
-@login_required
+@staff_member_required
 def cms_bestellung_confirmation(request, pk):
 	order = Order.objects.get(pk=pk)
 	order_items = order.items.all()
@@ -914,7 +1066,7 @@ def cms_bestellung_confirmation(request, pk):
 
 
 
-@login_required
+@staff_member_required
 def cms_kennzahlen_webseite(request):
 	import json
 	import requests
@@ -972,21 +1124,89 @@ def cms_kennzahlen_webseite(request):
 		'time': today }
 	return render(request, 'cms-kennzahlen-webseite.html', context)
 
-@login_required
+@staff_member_required
+def cms_marken(request):
+	marken = Marke.objects.all().order_by('-id')			
+
+	context = {
+			'marken': marken,		
+			 }
+	return render(request, 'cms-marken.html', context)
+
+@staff_member_required
+def cms_marke_erfassen(request):
+	if request.method == "POST":
+		form = MarkeChangeForm(request.POST or None, request.FILES or None)
+		if form.is_valid():
+			form.save()
+			return redirect('store:cms_marken')
+
+		else:
+			messages.error(request, "Error")
+
+	else: 
+		form = MarkeChangeForm()
+
+	context = {
+		'form': form,
+				}
+	return render(request, 'cms-marke-erfassen.html', context)
+
+
+@staff_member_required
+def cms_marke_bearbeiten(request, pk):
+	marke = get_object_or_404(Marke, pk=pk)
+	if request.method == "POST":
+		form = MarkeChangeForm(request.POST or None, instance=marke)
+		if form.is_valid():
+			form.save()
+			return redirect('store:cms_marken')
+
+		else:
+			messages.error(request, "Error")
+			
+	else:
+		form = MarkeChangeForm(request.POST or None, request.FILES or None, instance=marke)
+		context = {
+			'form': form,
+			'marke': marke,
+			 }
+		return render(request, 'cms-marke-bearbeiten.html', context)
+
+@staff_member_required
+def cms_marke_löschen(request, pk):
+	eintrag = get_object_or_404(Marke, pk=pk)
+	eintrag.delete()
+	messages.info(request, "Die Marke wurde gelöscht.")
+	return redirect("store:cms_marken")	
+
+@staff_member_required
 def cms_kunden(request):
 	user = User.objects.all().order_by('-id')
+	search_query = request.GET.get('search', '')
+
+
+	if search_query:
+		user = User.objects.filter(Q(profile__firmenname__icontains=search_query))
+
+	else:
+		user = User.objects.all().order_by('-id')
+			
+
 	context = {
 			'user': user,		
 			 }
 	return render(request, 'cms-kunden.html', context)
 
-@login_required
+
+
+@staff_member_required
 def cms_kunden_erfassen(request):
 	if request.method == "POST":
 		form = KundeCreateForm(request.POST or None)
 		if form.is_valid():
 			new_user = User.objects.create_user(**form.cleaned_data)
-			new_kunde = Kunde.objects.create(user=new_user, firmenname=request.POST['username'], rabatt=3)
+			new_kunde = Kunde.objects.create(user=new_user, firmenname=request.POST['username'], rabatt=0)
 			new_kunde.save()
 			new_address = Address.objects.create(user=new_user, rechnung_strasse='Bitte ändern')
 			
@@ -1003,7 +1223,7 @@ def cms_kunden_erfassen(request):
 				}
 	return render(request, 'cms-kunden-erfassen.html', context)
 
-@login_required
+@staff_member_required
 def cms_user_bearbeiten(request, pk):
 	kunde = get_object_or_404(User, pk=pk)
 	if request.method == "POST":
@@ -1024,7 +1244,7 @@ def cms_user_bearbeiten(request, pk):
 		return render(request, 'cms-user-bearbeiten.html', context)
 
 
-@login_required
+@staff_member_required
 def cms_kunde_bearbeiten(request, pk):
 	kunde = get_object_or_404(Kunde, pk=pk)
 	if request.method == "POST":
@@ -1044,7 +1264,7 @@ def cms_kunde_bearbeiten(request, pk):
 			 }
 		return render(request, 'cms-kunden-bearbeiten.html', context)
 
-@login_required
+@staff_member_required
 def cms_kundenadresse_bearbeiten(request, pk):
 	kunde = get_object_or_404(User, pk=pk)
 	address = Address.objects.get(user=kunde)
@@ -1066,7 +1286,7 @@ def cms_kundenadresse_bearbeiten(request, pk):
 		return render(request, 'cms-kundenadresse-bearbeiten.html', context)
 
 
-@login_required
+@staff_member_required
 def cms_kunde_löschen(request, pk):
 	eintrag = get_object_or_404(User, pk=pk)
 	eintrag.delete()
@@ -1074,7 +1294,7 @@ def cms_kunde_löschen(request, pk):
 	return redirect("store:cms_kunden")	
 
 
-@login_required
+@staff_member_required
 def cms_produkte(request):
 	category = Category.objects.all()
 	filter_query = request.GET.get('category', '')
@@ -1101,7 +1321,7 @@ def cms_produkte(request):
 	 }
 	return render(request, 'cms-produkte.html', context)
 
-@login_required
+@staff_member_required
 def product_cms_edit(request, pk):
 	item = get_object_or_404(Item, pk=pk)
 	
@@ -1122,7 +1342,7 @@ def product_cms_edit(request, pk):
 				}
 	return render(request, 'cms-produkte-bearbeiten.html', context)
 
-@login_required
+@staff_member_required
 def product_cms_create(request):
 	if request.method == "POST":
 		form = ProduktEditForm(request.POST or None, request.FILES or None)
@@ -1141,7 +1361,7 @@ def product_cms_create(request):
 				}
 	return render(request, 'cms-produkte-erfassen.html', context)
 
-@login_required
+@staff_member_required
 def cms_remove_product(request, pk):
 	eintrag = get_object_or_404(Item, pk=pk)
 	eintrag.delete()
@@ -1149,7 +1369,7 @@ def cms_remove_product(request, pk):
 	return redirect("store:cms_produkte")	
 
 
-@login_required
+@staff_member_required
 def cms_elemente(request, pk):
 	search_query = request.GET.get('search', '')
 	if search_query:
@@ -1164,10 +1384,13 @@ def cms_elemente(request, pk):
 	return render(request, 'cms-elemente.html', context)
 
 
-@login_required
-def cms_elemente_create(request):
+@staff_member_required
+def cms_elemente_create(request, pk):
+
+	form = ElementeCreateForm(request.POST or None)
+	form.fields["kunde"].queryset = Kunde.objects.filter(pk=pk)
+	
 	if request.method == "POST":
-		form = ElementeEditForm(request.POST or None)
 		if form.is_valid():
 			form.save()
 			return redirect('store:cms_kunden')
@@ -1176,14 +1399,14 @@ def cms_elemente_create(request):
 			messages.error(request, "Error")
 
 	else: 
-		form = ElementeEditForm()
+		pass
 
 	context = {
 		'form': form,
 				}
 	return render(request, 'cms-elemente-erfassen.html', context)
 
-@login_required
+@staff_member_required
 def cms_elemente_edit(request, pk):
 	element = get_object_or_404(Elemente, pk=pk)
 	
@@ -1206,7 +1429,7 @@ def cms_elemente_edit(request, pk):
 	return render(request, 'cms-elemente-bearbeiten.html', context)
 
 
-@login_required
+@staff_member_required
 def cms_elemente_löschen(request, pk):
 	eintrag = get_object_or_404(Elemente, pk=pk)
 	eintrag.delete()
@@ -1214,7 +1437,7 @@ def cms_elemente_löschen(request, pk):
 	return redirect("store:cms_kunden")	
 
 
-@login_required
+@staff_member_required
 def cms_versandkosten(request):
 	shippingcost = ShippingCost.objects.all()
 	context = {
@@ -1222,7 +1445,7 @@ def cms_versandkosten(request):
 	}
 	return render(request, 'cms-versandkosten.html', context)
 
-@login_required
+@staff_member_required
 def cms_versandkosten_erfassen(request):
 	if request.method == "POST":
 		form = VersandkostenCreateForm(request.POST or None, request.FILES or None)
@@ -1241,14 +1464,14 @@ def cms_versandkosten_erfassen(request):
 				}
 	return render(request, 'cms-versandkosten-erfassen.html', context)
 
-@login_required
+@staff_member_required
 def cms_remove_versandkosten(request, pk):
 	eintrag = get_object_or_404(ShippingCost, pk=pk)
 	eintrag.delete()
 	messages.info(request, "Der Eintrag wurde gelöscht.")
 	return redirect("store:cms_versandkosten")	
 
-@login_required
+@staff_member_required
 def cms_statistik_produkte(request):
 	labels = []
 	data = []
@@ -1272,7 +1495,7 @@ def cms_statistik_produkte(request):
 
 	return render(request, 'cms-statistik-produkte.html', context)
 
-@login_required
+@staff_member_required
 def cms_benutzerdaten(request):
 	context = { }
 	return render(request, 'cms-benutzerdaten.html', context)
