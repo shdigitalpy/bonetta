@@ -45,14 +45,26 @@
      </div>
 
 
+
      
      <div style="display:flex;flex-wrap:wrap;">
+
 
 
       
         
 
     <div style="width:500px;">
+
+      <div>
+      <br><br>
+    
+    <h3>{{ inserat.title }}</h3>
+    <p>{{ inserat.description }}</p>
+
+    
+
+    </div>
       
     
 
@@ -62,8 +74,11 @@
 
     {% endif %}
 
+    <br><br>
 
-    <div style="max-width:50%">
+    <div style="display:flex;flex-wrap:wrap;">
+    
+    <div style="max-width:50%;margin:15px;">
 
      {% if inserat.image1 %}
     
@@ -74,22 +89,16 @@
 
      {% if inserat.image2 %}
     
-    <img style="width:80%;" src="{{ inserat.image2.url }}">
+    <img style="width:80%;margin:15px;" src="{{ inserat.image2.url }}">
 
     {% endif %}
 
     </div>
-    
-    
-    <div>
-      <br><br>
-    
-    <h3>{{ inserat.title }}</h3>
-    <p>{{ inserat.description }}</p>
 
+    </div><!-- end flex -->
     
-
-    </div>
+    
+    
   </div><!-- end first -->
 
 
