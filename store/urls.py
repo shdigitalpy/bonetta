@@ -79,6 +79,7 @@ urlpatterns = [
     path('cms/marktplatz/inserat/freigegeben/<int:pk>', views.cms_inserat_freigeben, name="cms_inserat_freigeben"),
     path('cms/marktplatz/inserat/deaktivieren/<int:pk>', views.cms_inserat_deaktivieren, name="cms_inserat_deaktivieren"),
 	path('cms/marktplatz/inserat/bearbeiten/<int:pk>', views.cms_mp_bearbeiten, name="cms_mp_bearbeiten"),
+	path('cms/marktplatz/inserat/löschen/<int:pk>', views.cms_mp_löschen, name="cms_mp_löschen"),
     #path('pdf_view/', views.ViewPDF.as_view(), name="pdf_view"),
     #path('pdf_download/', views.DownloadPDF.as_view(), name="pdf_download"),
 

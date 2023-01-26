@@ -42,6 +42,12 @@ def cms_mp_bearbeiten(request, pk):
 			 }
 		return render(request, 'marktplatz/cms-marktplatz-edit.html', context)
 
+@staff_member_required
+def cms_mp_löschen(request, pk):
+	eintrag = get_object_or_404(Marketplace, pk=pk)
+	eintrag.delete()
+	messages.info(request, "Das Inserat wurde gelöscht.")
+	return redirect("store:cms_marktplatz")
 
 @login_required
 def myinserate_löschen(request, pk):
