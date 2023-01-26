@@ -182,7 +182,7 @@ def marktplatz_inserat_erfassen(request):
 				subject,
 				template,
 				email,
-				['sandro@sh-digital.ch'],
+				['sandro@sh-digital.ch','livio.bonetta@geboshop.ch'],
 					)
 
 			email.fail_silently=False
