@@ -21,6 +21,28 @@ from io import BytesIO
 from datetime import datetime
 from django.contrib.admin.views.decorators import staff_member_required
 
+
+@staff_member_required
+def cms_mp_bearbeiten(request, pk):
+	mp = get_object_or_404(Marketplace, pk=pk)
+	if request.method == "POST":
+		form = InseratCreateForm(request.POST or None, instance=mp)
+		if form.is_valid():
+			form.save()
+			return redirect('store:cms_marktplatz')
+
+		else:
+			messages.error(request, "Error")
+			
+	else:
+		form = InseratCreateForm(request.POST or None, request.FILES or None, instance=mp)
+		context = {
+			'form': form,
+			'mp': mp,
+			 }
+		return render(request, 'marktplatz/cms-marktplatz-edit.html', context)
+
+
 @login_required
 def myinserate_löschen(request, pk):
 	eintrag = get_object_or_404(Marketplace, pk=pk)
@@ -132,9 +154,34 @@ def marktplatz_inserat_erfassen(request):
 	if request.method == "POST":
 		form = InseratCreateForm(request.POST or None)
 		if form.is_valid():
-			marktplatz = form.save(commit=False)
-			marktplatz.user = request.user
-			marktplatz.save()
+			mp = form.save(commit=False)
+			mp.user = request.user
+			mp.save()
+			subject = 'Inserat Nr.' + ' ' + str(mp.id) + ' ' + mp.title + ' wurde erstellt.'
+			if mp.condition == "G":
+				condition = "Gebraucht"
+			else:
+				condition = "Neu"
+			template = render_to_string('marktplatz/inserat-email-erfolg.html', {
+				'title' : mp.title,
+				'price': mp.price, 
+				'condition': mp.condition,
+				'place': mp.place,
+				'add_date': mp.add_date,
+				'category': mp.category,		
+						 })
+			email = ''	
+			#send email for order
+			email = EmailMessage(
+				subject,
+				template,
+				email,
+				['sandro@sh-digital.ch'],
+					)
+
+			email.fail_silently=False
+			email.content_subtype = "html"
+			email.send()
 			return redirect('store:marktplatz_inserat_erfolg')
 
 		else:
