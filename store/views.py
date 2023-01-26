@@ -26,7 +26,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 def cms_mp_bearbeiten(request, pk):
 	mp = get_object_or_404(Marketplace, pk=pk)
 	if request.method == "POST":
-		form = InseratCreateForm(request.POST or None, instance=mp)
+		form = InseratCreateForm(request.POST or None,request.FILES or None, instance=mp)
 		if form.is_valid():
 			form.save()
 			return redirect('store:cms_marktplatz')
