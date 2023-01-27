@@ -52,6 +52,9 @@ class Marketplace(models.Model):
 	add_date = models.DateTimeField(auto_now_add=True)
 	category = models.ForeignKey(MP_Category, related_name='mp_category', default=None, on_delete=models.SET_NULL, null=True, blank=True)
 	is_active = models.BooleanField(default=False)
+	payment = models.BooleanField(default=False)
+	tid = models.IntegerField(null=True, blank=True)
+
 
 	class Meta:
 		ordering = ['add_date']

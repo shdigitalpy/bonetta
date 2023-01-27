@@ -21,6 +21,186 @@ from io import BytesIO
 from datetime import datetime
 from django.contrib.admin.views.decorators import staff_member_required
 
+@login_required
+def marktplatz_zahlung(request, pk, tid):
+	
+	mp = get_object_or_404(Marketplace, id=pk)
+
+
+
+
+	#### regular
+
+	context = {
+
+			'inserat' : mp,
+		
+				}
+	return render(request, 'marktplatz/marktplatz-zahlung.html', context)
+
+@login_required
+def marktplatz_inserat_summary(request, pk):
+	import urllib.request
+	import hmac
+	import hashlib
+	import base64
+	import json
+
+	mp = get_object_or_404(Marketplace, id=pk)
+
+	betrag = 1500
+	sku = int(mp.id) + 1000
+
+	post_data = {
+	"amount": betrag,
+	"vatRate": 7.7,
+	"currency": "CHF",
+	"sku": sku,
+	"preAuthorization": 0,
+	"reservation": 0,
+	"successRedirectUrl": settings.PAYMENT_SUCCESS_URL,
+	"failedRedirectUrl": settings.PAYMENT_DECLINE_URL
+
+			}
+
+	data = urllib.parse.urlencode(post_data).encode('UTF-8')
+
+	string = settings.INSTANCE_API_SECRET
+	as_bytes = bytes(string, 'UTF-8')
+
+	dig = hmac.new(as_bytes, msg=data, digestmod=hashlib.sha256).digest()
+	post_data['ApiSignature'] = base64.b64encode(dig).decode()
+	post_data['instance'] = settings.INSTANCE_NAME
+
+	data = urllib.parse.urlencode(post_data, quote_via=urllib.parse.quote).encode('UTF-8')
+
+	try:
+		payment_url = settings.PAYMENT_URL_OPEN
+
+		url = urllib.request.urlopen(payment_url, data) 
+		
+		content = url.read().decode('UTF-8')
+		response = json.loads(content)
+		result = response['data'][0]['id']
+		link = response['data'][0]['link']
+
+	except Exception as exc:
+		result = "Wrong"
+
+	mp.tid = result
+	mp.save()
+
+	if request.method == "POST":
+		#return redirect(link)
+		return redirect ("store:marktplatz_inserat_erfolg", pk=mp.id)
+
+	else:
+		context = {	
+			'inserat' : mp,
+			'result' : result,
+			'tid' : result,
+		
+				}
+	
+		return render(request, 'marktplatz/marktplatz-summary.html', context)
+
+@login_required
+def marktplatz_inserat_erfolg(request, pk):
+	mp = get_object_or_404(Marketplace, id=pk)
+
+	subject = 'Inserat Nr.' + ' ' + str(mp.id) + ' ' + mp.title + ' wurde erstellt.'
+	if mp.condition == "G":
+		condition = "Gebraucht"
+	else:
+		condition = "Neu"
+	template = render_to_string('marktplatz/inserat-email-erfolg.html', {
+			'title' : mp.title,
+			'price': mp.price, 
+			'condition': mp.condition,
+			'place': mp.place,
+			'add_date': mp.add_date,
+			'category': mp.category,		
+					 })
+	email = ''	
+	#send email for order
+	email = EmailMessage(
+			subject,
+			template,
+			email,
+			['sandro@sh-digital.ch'],
+				)
+	email.fail_silently=False
+	email.content_subtype = "html"
+	email.send()
+
+	context = {
+
+	'mp' : mp,
+		
+				}
+	return render(request, 'marktplatz/marktplatz-erfolg.html', context)
+
+@login_required
+def marktplatz_inserat_erfassen(request):
+	if request.method == "POST":
+		form = InseratCreateForm(request.POST or None)
+		if form.is_valid():
+			mp = form.save(commit=False)
+			mp.user = request.user
+			mp.save()
+			
+			return redirect('store:marktplatz_inserat_summary', pk=mp.id)
+
+		else:
+			messages.error(request, "Error")
+
+	else: 
+		form = form = InseratCreateForm()
+
+	context = {
+		'form': form,
+				}
+	return render(request, 'marktplatz/marktplatz-inserat-erfassen.html', context)
+
+@login_required
+def marktplatz_inserat_ändern(request, pk):
+	inserat = get_object_or_404(Marketplace, id=pk)
+	
+	if request.method == "POST":
+		form = InseratCreateForm(request.POST or None, instance=inserat)
+		if form.is_valid():
+			mp = form.save(commit=False)
+			mp.user = request.user
+			mp.save()
+			return redirect('store:marktplatz_inserat_summary', pk=mp.id)
+
+		else:
+			messages.error(request, "Error")
+
+	else: 
+		form = form = InseratCreateForm(instance=inserat)
+
+	context = {
+		'form': form,
+				}
+	return render(request, 'marktplatz/marktplatz-inserat-erfassen.html', context)
+
+def marktplatz_main(request):
+	
+
+	mp_inserate = Marketplace.objects.all()
+
+	mp_categories = MP_Category.objects.all()
+
+	context = {
+
+	'mp_inserate': mp_inserate,
+	'mp_categories': mp_categories,
+	
+
+	}
+	return render (request, 'marktplatz/marktplatz-main.html', context)
+
 
 @staff_member_required
 def cms_mp_bearbeiten(request, pk):
@@ -148,58 +328,7 @@ def cms_marktplatz(request):
 	 }
 	return render(request, 'marktplatz/cms-marktplatz.html', context)
 
-@login_required
-def marktplatz_inserat_erfolg(request):
-	context = {
-		
-				}
-	return render(request, 'marktplatz/marktplatz-erfolg.html', context)
 
-@login_required
-def marktplatz_inserat_erfassen(request):
-	if request.method == "POST":
-		form = InseratCreateForm(request.POST or None)
-		if form.is_valid():
-			mp = form.save(commit=False)
-			mp.user = request.user
-			mp.save()
-			subject = 'Inserat Nr.' + ' ' + str(mp.id) + ' ' + mp.title + ' wurde erstellt.'
-			if mp.condition == "G":
-				condition = "Gebraucht"
-			else:
-				condition = "Neu"
-			template = render_to_string('marktplatz/inserat-email-erfolg.html', {
-				'title' : mp.title,
-				'price': mp.price, 
-				'condition': mp.condition,
-				'place': mp.place,
-				'add_date': mp.add_date,
-				'category': mp.category,		
-						 })
-			email = ''	
-			#send email for order
-			email = EmailMessage(
-				subject,
-				template,
-				email,
-				['sandro@sh-digital.ch','livio.bonetta@geboshop.ch'],
-					)
-
-			email.fail_silently=False
-			email.content_subtype = "html"
-			email.send()
-			return redirect('store:marktplatz_inserat_erfolg')
-
-		else:
-			messages.error(request, "Error")
-
-	else: 
-		form = form = InseratCreateForm()
-
-	context = {
-		'form': form,
-				}
-	return render(request, 'marktplatz/marktplatz-inserat-erfassen.html', context)
 
 
 def marktplatz_main_category(request, cat):
@@ -217,19 +346,7 @@ def marktplatz_main_category(request, cat):
 	return render (request, 'marktplatz/marktplatz-main.html', context)
 
 
-def marktplatz_main(request):
 
-	mp_inserate = Marketplace.objects.all()
-
-	mp_categories = MP_Category.objects.all()
-
-	context = {
-
-	'mp_inserate': mp_inserate,
-	'mp_categories': mp_categories,
-
-	}
-	return render (request, 'marktplatz/marktplatz-main.html', context)
 
 
 def error_404(request, exception):

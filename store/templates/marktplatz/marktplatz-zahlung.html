@@ -1,0 +1,23 @@
+{% extends 'shop/main.html' %}
+{% load static %}
+{% block title %}Zahlung Inserat {{ inserat.title }} | gastrodichtung.ch{% endblock %}
+{% block meta_description %}Zahlung Inserat {{ inserat.title }} | gastrodichtung.ch{% endblock %}
+
+
+{% block content %}
+
+
+<div class="container">
+    <div class="storepreview">
+      <h1>Zahlung Inserat {{ inserat.title }}</h1>
+         <br><br>
+    
+      <iframe src="https://demo.payrexx.com/pay?tid=345a142d" width="530" height="700">
+      </iframe>
+   
+   
+
+  </div><!-- storepreview end -->
+</div><!-- container end -->
+
+{% endblock content %}

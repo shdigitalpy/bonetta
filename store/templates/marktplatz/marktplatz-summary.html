@@ -1,0 +1,179 @@
+{% extends 'shop/main.html' %}
+{% load static %}
+{% block title %}Gastronomie Inserat {{ inserat.title }} | gastrodichtung.ch{% endblock %}
+{% block meta_description %}Gastronomie Inserat {{ inserat.title }} | gastrodichtung.ch{% endblock %}
+
+
+{% block content %}
+
+
+<div class="container">
+    <div class="storepreview">
+      <h1>Überprüfen Sie Ihr Inserat {{ inserat.title }}</h1>
+
+        <br>
+          <br>
+
+          <div style="display:flex;flex-wrap: wrap;">
+
+          <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          
+          <button class="btn btn-success btn-save">Kostenlos veröffentlichen<span class="fas fa-check-circle"></span></button>
+          
+           
+         </form>
+
+         <a class="btn btn-secondary ml-1" href="{% url 'store:marktplatz_inserat_ändern' inserat.id %}">Inserat anpassen <i class="fas fa-times-circle"></i></a>
+
+       </div>
+
+
+         <br><br>
+    
+      <div class="mp-flex">
+        
+     <div class="mp-main">
+
+      <div>
+        
+
+      <div>
+        <h3>Verkaufspreis</h3>  
+      <p class="preis" style="font-size:1rem !important;">CHF {{ inserat.price|floatformat:2 }} <small>/ Einheit</small></p>
+        <hr>
+      <br>
+      <br>
+
+        <h3>Zustand</h3>  
+
+        {% if inserat.condition == "G" %}
+        <p>Gebraucht</p>
+        {% else %}
+        <p>Neu</p>
+        {% endif %}
+
+        <hr>
+
+      </div>
+    </div>
+
+     </div>
+
+
+
+     
+     <div style="display:flex;flex-wrap:wrap;">
+
+
+
+      
+        
+
+    <div style="width:500px;">
+
+      <div>
+      
+    
+    <h3>{{ inserat.title }}</h3>
+    <p>{{ inserat.description }}</p>
+
+    <br><br>
+
+    
+
+    </div>
+      
+    
+
+    {% if inserat.image %}
+    
+    <img style="width:80%;" src="{{ inserat.image.url }}">
+
+    {% endif %}
+
+    <br><br>
+
+    
+    
+    <div style="max-width:80%;">
+
+    
+     
+    <div>
+     {% if inserat.image1 %}
+    
+    <img src="{{ inserat.image1.url }}">
+
+    {% endif %}
+    </div>
+
+    <br>
+
+    <div>
+     {% if inserat.image2 %}
+    
+    <img style="width:80%;" src="{{ inserat.image2.url }}">
+
+    {% endif %}
+    </div>
+
+     
+
+    </div>
+
+   
+    
+    
+    
+  </div><!-- end first -->
+
+
+  <div style="width:300px;">
+
+   
+
+
+        <h3>Ihre Angaben</h3>
+        <br>
+         <p> {% if inserat.mp_firmenname %}
+      {{ inserat.mp_firmenname }}
+      {% endif %}</p>
+      <br>
+      <p> {% if inserat.mp_phone %}
+      Telefon: {{ inserat.mp_phone }}
+      {% endif %}</p>
+      <p> {% if inserat.mp_mobile %}
+      Mobile: {{ inserat.mp_mobile }}
+      {% endif %}</p>
+
+      <p> {% if inserat.mp_email %}
+      E-Mail: {{ inserat.mp_email }}
+      {% endif %}</p>
+          
+
+          <hr>
+
+        <br>
+          <h3>Standort</h3>
+          <br>
+           <p>{{ inserat.place }}</p>
+           <hr>
+  
+
+
+  </div><!-- end second -->
+
+
+    </div>
+
+
+
+  </div><!-- row end -->
+   
+   
+
+  </div><!-- storepreview end -->
+</div><!-- container end -->
+
+{% endblock content %}
