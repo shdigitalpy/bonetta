@@ -1166,7 +1166,7 @@ def email(request, pk):
 
 @login_required
 def bestellungen(request):
-	order = Order.objects.filter(user=request.user).order_by('-ordered_date')
+	order = Order.objects.filter(user=request.user).order_by('ordered_date')
 	
 	context = {
 		'object' : order,
