@@ -1166,7 +1166,7 @@ def email(request, pk):
 
 @login_required
 def bestellungen(request):
-	order = Order.objects.filter(user=request.user).order_by('ordered_date')
+	order = Order.objects.filter(user=request.user).order_by('-ordered_date')
 	
 	context = {
 		'object' : order,
@@ -1266,7 +1266,7 @@ def cms(request):
 
 @staff_member_required
 def cms_bestellungen(request):
-	order = Order.objects.filter(ordered=True)
+	order = Order.objects.filter(ordered=True).order_by('-ordered_date')
 	context = {
 			'order': order,
 			 }

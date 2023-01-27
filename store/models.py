@@ -347,6 +347,7 @@ class Order(models.Model):
 	class Meta:
 		verbose_name = 'Bestellung'
 		verbose_name_plural = 'Bestellungen'
+		ordering = ['-ordered_date']
 
 	def __str__(self):
 		return self.user.username + ' ' + str(self.start_date) + ' ' + str(self.ordered)
