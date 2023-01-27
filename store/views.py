@@ -167,7 +167,7 @@ def marktplatz_inserat_ändern(request, pk):
 	inserat = get_object_or_404(Marketplace, id=pk)
 	
 	if request.method == "POST":
-		form = InseratCreateForm(request.POST or None, instance=inserat)
+		form = InseratCreateForm(request.POST or None, request.FILES or None, instance=inserat)
 		if form.is_valid():
 			mp = form.save(commit=False)
 			mp.user = request.user
