@@ -127,7 +127,7 @@ def marktplatz_inserat_erfolg(request, pk):
 			subject,
 			template,
 			email,
-			['sandro@sh-digital.ch'],
+			['sandro@sh-digital.ch','livio.bonetta@geboshop.ch'],
 				)
 	email.fail_silently=False
 	email.content_subtype = "html"
