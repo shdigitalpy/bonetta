@@ -143,7 +143,7 @@ def marktplatz_inserat_erfolg(request, pk):
 @login_required
 def marktplatz_inserat_erfassen(request):
 	if request.method == "POST":
-		form = InseratCreateForm(request.POST or None)
+		form = InseratCreateForm(request.POST or None,request.FILES or None,)
 		if form.is_valid():
 			mp = form.save(commit=False)
 			mp.user = request.user
