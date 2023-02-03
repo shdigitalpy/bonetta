@@ -21,6 +21,11 @@ COUNTRY_CHOICES = [
 	]
 
 
+class ProductMarkeLinkForm(forms.Form):
+    item_marke = forms.ModelChoiceField(queryset=Marke.objects.all())
+
+		
+
 class InseratCreateForm(forms.ModelForm):
 	class Meta:
 		model = Marketplace
@@ -656,13 +661,13 @@ class ElementeEditForm(forms.ModelForm):
 		}
 
 class ProduktEditForm(forms.ModelForm):
+
 	class Meta:
 		model = Item
 		fields = (
 			'sortierung',
 			'kategorie',
 			'subkategorie',
-			'marke',
 			'titel',
 			'artikelnr',
 			'montage',
@@ -691,7 +696,7 @@ class ProduktEditForm(forms.ModelForm):
 			)
 
 		labels = {
-			'marke': "Marke",
+			
 			'sortierung': "Sortierung",
 			'titel' : "Bezeichnung",
 			'artikelnr' : "Artikel-Nr",
@@ -729,8 +734,6 @@ class ProduktEditForm(forms.ModelForm):
 			'subkategorie': forms.Select(attrs={
 				'class': 'form-control',
 				}),
-			'marke': forms.Select(attrs={
-				'class': 'form-control',}),
 			'titel': forms.TextInput(attrs={
 				'class': 'form-control',
 				'placeholder':''}),

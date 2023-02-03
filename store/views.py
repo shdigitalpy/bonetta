@@ -23,14 +23,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 @login_required
 def marktplatz_zahlung(request, pk, tid):
-	
 	mp = get_object_or_404(Marketplace, id=pk)
-
-
-
-
 	#### regular
-
 	context = {
 
 			'inserat' : mp,
@@ -483,8 +477,8 @@ def marke(request):
 
 #Marke Store
 def HomeMarkeView(request, cat_marke):
-	marke_products = Item.objects.filter(marke__slug=cat_marke)
 	seo_marke = get_object_or_404(Marke, slug=cat_marke)
+	marke_products = Item.objects.filter(item_marken__slug=cat_marke)
 	context = { 
 		'marke_products' : marke_products, 
 		'cat_marke': cat_marke.replace('-', ''),
@@ -1399,6 +1393,66 @@ def cms_marke_löschen(request, pk):
 	eintrag.delete()
 	messages.info(request, "Die Marke wurde gelöscht.")
 	return redirect("store:cms_marken")	
+
+@staff_member_required
+def cms_product_marke_overview(request, pk):
+	product = get_object_or_404(Item, id=pk)
+
+	product_marke = product.item_marken.all
+
+	context = {
+			'product': product,
+			'product_marke' : product_marke,		
+			 }
+	return render(request, 'cms-produkt-marken.html', context)
+
+@staff_member_required
+def cms_product_marke_erfassen(request, pk):
+
+	product = get_object_or_404(Item, id=pk)
+
+	if request.method == 'POST':
+		form = ProductMarkeLinkForm(request.POST or None)
+		if form.is_valid():
+			cleaned_data = form.cleaned_data
+			item_marke = cleaned_data['item_marke']
+			marke = get_object_or_404(Marke, name=item_marke)
+			marke.item.add(product)
+			marke.save()
+			return redirect('store:cms_product_marke_overview', pk=product.id)
+	else:
+    		form = ProductMarkeLinkForm()
+
+	context = {
+
+		'product' : product,
+		'form': form,
+				}
+
+	return render(request, 'cms-produkt-marke-erfassen.html', context)
+
+
+@staff_member_required
+def cms_product_marke_löschen(request, pkk, pk):
+	product = get_object_or_404(Item, id=pkk)
+	item_marke = get_object_or_404(Marke, id=pk)
+	marke = get_object_or_404(Marke, name=item_marke)
+	marke.item.remove(product)
+	marke.save()
+			
+	return redirect('store:cms_product_marke_overview', pk=product.id)
+	
+
+	context = {
+
+		'product' : product,
+		'form': form,
+				}
+
+	return render(request, 'cms-produkt-marke-erfassen.html', context)
+
+
+
 
 @staff_member_required
 def cms_kunden(request):

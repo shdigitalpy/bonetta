@@ -27,8 +27,8 @@
     <h4>{{ marke.name }} - Dichtungen</h4>
 
     
-      {% if marke.item_marke.all %}
-    <a class="btn btn-primary btn-sm" href="{% url 'store:marke' marke.name|slugify %}">Zu den Produkten</a>
+      {% if marke.item.all %}
+    <a class="btn btn-primary btn-sm" href="{% url 'store:markedetails' marke.slug %}">Zu den Produkten</a>
     <hr>
     {% else %}
     <p>Aktuell keine Produkte</p>

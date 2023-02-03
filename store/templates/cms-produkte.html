@@ -51,6 +51,7 @@
 			      <th scope="col">Preis</th>
 			      <th scope="col">Kategorie</th>
 			      <th scope="col">Subkategorie</th>
+			       <th scope="col">Marke</th>
 			      <th scope="col">Sortierung</th>
 			      <th scope="col">Bearbeiten</th>
 			      <th scope="col">Löschen</th>
@@ -71,6 +72,8 @@
 			      <td>CHF {{ data.preis|floatformat:2 }}</td>
 			      <td>{{ data.kategorie }}</td>
 			      <td>{{ data.subkategorie }}</td>
+			      <td><a href="{% url 'store:cms_product_marke_overview' data.pk %}"><i class="fas fa-info-circle"></i>
+					 </a></td>
 			      <td>{{ data.sortierung }}</td>
 			      <td>
 			      	<a href="{% url 'store:cms_produkte_edit' data.pk %}"><i style="color:var(--red)" class="far fa-edit"></i>

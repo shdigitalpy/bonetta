@@ -131,22 +131,7 @@ class Category(models.Model):
 		return reverse('home')
 
 
-class Marke(models.Model):
-	name = models.CharField(max_length=255)
-	slug = models.SlugField(max_length=255)
-	markepic = models.ImageField(null=True, blank=True, upload_to="markebilder/")
-	marketext = models.TextField(blank=True)
 
-	class Meta:
-		ordering = ['id']
-		verbose_name = 'Marke'
-		verbose_name_plural = 'Marken'
-
-	def __str__(self):
-		return self.name
-
-	def get_absolute_url(self):
-		return reverse('home')
 
 
 
@@ -177,7 +162,6 @@ class Item(models.Model):
 	material = models.CharField(max_length=255, null=True, blank=True,)
 	hersteller = models.CharField(max_length=255, null=True, blank=True,)
 	sortierung = models.IntegerField(null=True, blank=True)
-	marke = models.ForeignKey(Marke, related_name='item_marke', default=None, on_delete=models.SET_NULL, null=True, blank=True)
 
 	class Meta:
 		verbose_name = 'Produkte'
@@ -193,7 +177,24 @@ class Item(models.Model):
 	def get_remove_from_cart_url(self):
 		return reverse('store:remove_from_cart', kwargs={"slug": self.slug})
 
+class Marke(models.Model):
+	name = models.CharField(max_length=255)
+	slug = models.SlugField(max_length=255)
+	markepic = models.ImageField(null=True, blank=True, upload_to="markebilder/")
+	marketext = models.TextField(blank=True)
+	item = models.ManyToManyField(Item, related_name='item_marken', blank=True)
 
+	class Meta:
+		ordering = ['id']
+		verbose_name = 'Marke'
+		verbose_name_plural = 'Marken'
+
+	def __str__(self):
+		return self.name
+
+	def get_absolute_url(self):
+		return reverse('home')
+		
 class OrderItem(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 	ordered = models.BooleanField(default=False)

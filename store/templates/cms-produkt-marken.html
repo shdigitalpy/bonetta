@@ -1,0 +1,48 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}CMS Produkt Marken{% endblock %}
+
+{% block content %}
+
+		
+			<div class="flexbox">
+				<div class="h2">CMS Produkt Marken {{ product.id }}</div>
+				
+			</div>
+
+			<div class="flexbox">
+				 
+
+				 <a class="btn btn-secondary btn-sm" href="{% url 'store:cms_product_marke_erfassen' product.id %}">Marke zuweisen</a>
+
+
+					
+				
+			</div>
+
+			<table class="table table-striped">
+			  <thead>
+			    <tr>
+			    	<th scope="col">Name</th>
+			      <th scope="col">Löschen</th>	
+			     			      
+
+			    </tr>
+			  </thead>
+			  {% for data in product_marke %}
+			  <tbody>
+			    <tr>
+			      <th scope="row">{{ data.name }}</th>
+			      
+
+			  	<td><a type="submit"  href="{% url 'store:cms_product_marke_löschen' product.id data.id %}"><i style="color:var(--red)" class="far fa-trash-alt"></i></a></td>
+			    
+			    </tr>
+			  </tbody>
+			  {% endfor %}
+
+			</table>
+
+			
+ {% endblock %}
+
