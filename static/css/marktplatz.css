@@ -3,6 +3,22 @@
 	align-items: stretch;
 }
 
+
+@media only screen and (max-width: 900px) {
+	.mp-flex {
+	flex-direction: column;
+}
+
+.verkauefer {
+	margin-top: 2rem;
+}
+
+
+}
+
+
+
+
 .inserat-flex {
   display: -webkit-box;
   display: -ms-flexbox;
