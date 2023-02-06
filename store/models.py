@@ -54,10 +54,12 @@ class Marketplace(models.Model):
 	is_active = models.BooleanField(default=False)
 	payment = models.BooleanField(default=False)
 	tid = models.IntegerField(null=True, blank=True)
+	numberof = models.IntegerField(null=True, blank=True)
+	brand = models.CharField(max_length=255,null=True, blank=True)
 
 
 	class Meta:
-		ordering = ['add_date']
+		ordering = ['-add_date']
 		verbose_name = 'Marketplace'
 		verbose_name_plural = 'Marketplaces'
 

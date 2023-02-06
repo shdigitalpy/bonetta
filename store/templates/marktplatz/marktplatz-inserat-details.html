@@ -24,7 +24,14 @@
 
       <div>
         <h3>Preis</h3>  
-      <p class="preis" style="font-size:1rem !important;">CHF {{ inserat.price|floatformat:2 }} <small>/ Einheit</small></p>
+      <p class="preis" style="font-size:1rem !important;">CHF {{ inserat.price|floatformat:2 }} <small>/ Stück</small><br>
+
+      </p>
+      {% if inserat.numberof %}
+      <p>Anzahl: {{ inserat.numberof }}</p>
+      {% else %}
+      <p>Anzahl: 1</p>
+      {% endif %}
         <hr>
       <br>
       <br>
@@ -134,8 +141,12 @@
       <p> {% if inserat.mp_email %}
       E-Mail: {{ inserat.mp_email }}
       {% endif %}</p>
-          
 
+      {% if inserat.add_date %}
+      <p>{{ ins.add_date|date:"d.m.Y H:i " }}</p>
+      {% endif %}
+          
+      
           <hr>
 
         <br>

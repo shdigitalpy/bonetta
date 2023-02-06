@@ -42,6 +42,8 @@
         <h3>Zustand</h3>
          <br>
 
+         <a href="{% url 'store:marktplatz_main' %}"><p>Alle</p></a>
+
         <a href="{% url 'store:marktplatz_condition' 'Gebraucht' %}"><p>Gebraucht</p></a>
        
          <a href="{% url 'store:marktplatz_condition' 'Neu' %}"><p>Neu</p></a>
@@ -73,8 +75,10 @@
 
     
     <h3><a href="{% url 'store:marktplatz_inserat_details' ins.slug %}">{{ ins.title }}</a></h3>
-    <p class="preis" style="font-size:1rem !important;">CHF {{ ins.price|floatformat:2 }} / Einheit</p>
-
+    <p class="preis" style="font-size:1rem !important;">CHF {{ ins.price|floatformat:2 }} / Stück</p>
+    <p>{% if ins.add_date %}
+      
+      {% endif %}</p>
     <br>
     <div class="mp-box">
       <p>

@@ -29,10 +29,11 @@ class ProductMarkeLinkForm(forms.Form):
 class InseratCreateForm(forms.ModelForm):
 	class Meta:
 		model = Marketplace
-		fields = ('category', 'title', 'price', 'description', 'condition', 'place','image','image1','image2'  )
+		fields = ('category','numberof', 'title', 'price', 'description', 'condition', 'brand', 'place','image','image1','image2'  )
 
 		labels = {
 			'title' : "Titel des Eintrags:",
+			'numberof' : "Stückzahl",
 			'price' : "Preis",
 			'description' : "Ausführliche Beschreibung",
 			'condition' : "Zustand",
@@ -40,7 +41,8 @@ class InseratCreateForm(forms.ModelForm):
 			'image' : "Bild",
 			'image1' : "Bild",
 			'image2' : "Bild",
-			'category' : "Kategorie"
+			'category' : "Kategorie",
+			'brand' : "Marke"
 
 		}
 		
@@ -49,11 +51,17 @@ class InseratCreateForm(forms.ModelForm):
 			
 			'title': forms.TextInput(attrs={
 				'class': 'form-control col-3',
-				'placeholder':''}),
+				'placeholder':'Einen Titel eingeben'}),
+			'brand': forms.TextInput(attrs={
+				'class': 'form-control col-3',
+				'placeholder':'Markenname'}),
+			'numberof': forms.NumberInput(attrs={
+				'class': 'form-control col-3',
+				'placeholder':'Stückzahl'}),
 
 			'price': forms.NumberInput(attrs={
 				'class': 'form-control',
-				'placeholder':''}),
+				'placeholder':'z.B. 100'}),
 			'description': forms.Textarea(attrs={
 				'class': 'form-control col-3',
 				'placeholder':''}),
@@ -62,7 +70,7 @@ class InseratCreateForm(forms.ModelForm):
 				}),
 			'place': forms.TextInput(attrs={
 				'class': 'form-control col-3',
-				'placeholder':''}),
+				'placeholder':'Wo'}),
 			'image' : forms.FileInput(attrs={
 				'class': 'form-control',
 				}),

@@ -40,7 +40,14 @@
 
       <div>
         <h3>Verkaufspreis</h3>  
-      <p class="preis" style="font-size:1rem !important;">CHF {{ inserat.price|floatformat:2 }} <small>/ Einheit</small></p>
+      <p class="preis" style="font-size:1rem !important;">CHF {{ inserat.price|floatformat:2 }} <small>/ Stück</small><br>
+
+      </p>
+      {% if inserat.numberof %}
+      <p>Anzahl: {{ inserat.numberof }}</p>
+      {% else %}
+      <p>Anzahl: 1</p>
+      {% endif %}
         <hr>
       <br>
       <br>
