@@ -12,18 +12,23 @@
   
 }
 
+.mp-main {
+	margin-right:1.5rem;
+}
+
+
+
 .right-flex {
 	display: flex;
 	align-items: stretch;
 	flex-wrap: wrap;
+	justify-content: space-between;
 }
 
-.mp-main {
-	width: 200px;
-}
+
 
 .mp-main-right {
-	margin:1rem;
+	margin: 15px;
 	background-color: var(--lightgrey);
 }
 
