@@ -16,15 +16,12 @@
 
 }
 
-
-
-
 .inserat-flex {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   flex-wrap:wrap;
-  width: 180px;
+  width: 215px;
   
 }
 
