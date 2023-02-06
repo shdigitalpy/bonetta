@@ -67,22 +67,22 @@
       
      <div class="slider">
 
-      {% if inserat.image %}
+      {% if inserat1.image %}
   <input type="radio" name="slide_switch" id="id1"/>
   <label for="id1">
-    <img src="{{ inserat.image.url }}" width="100"/>
+    <img src="{{ inserat.image1.url }}" width="100"/>
   </label>
-  <img src="{{ inserat.image.url }}"/>
+  <img src="{{ inserat.image1.url }}"/>
 
    {% endif %}
   
   <!--Lets show the second image by default on page load-->
-  {% if inserat.image1 %}
+  {% if inserat.image %}
   <input type="radio" name="slide_switch" id="id2" checked="checked"/>
   <label for="id2">
-    <img src="{{ inserat.image1.url }}" width="100"/>
+    <img src="{{ inserat.image.url }}" width="100"/>
   </label>
-  <img src="{{ inserat.image1.url }}"/>
+  <img src="{{ inserat.image.url }}"/>
 
   {% endif %}
 
