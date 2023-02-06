@@ -56,8 +56,8 @@
       <table class="table table-sm table-borderless">
         <tbody>  
           <div class="form-group gummi">
-          <input type="text" class="form-control" placeholder="z.B. 800mm" name="aussenbreite" value='250'>
-          <input type="text" class="form-control" placeholder="z.B. 500mm" name="aussenhöhe" value='250'>
+          <input type="text" class="form-control" placeholder="z.B. 800mm" name="aussenbreite" minlength="3" value='250'>
+          <input type="text" class="form-control" placeholder="z.B. 500mm" name="aussenhöhe" minlength="3" value='250'>
           </div>
           </tbody>
       </table>
@@ -180,8 +180,8 @@
       <table class="table table-sm table-borderless">
         <tbody>  
           <div class="form-group gummi">
-          <input type="text" class="form-control" placeholder="z.B. 800mm" name="aussenbreite" value='250'>
-          <input type="text" class="form-control" placeholder="z.B. 500mm" name="aussenhöhe" value='250'>
+          <input type="text" class="form-control" placeholder="z.B. 800mm" minlength="3" name="aussenbreite" value='250'>
+          <input type="text" class="form-control" placeholder="z.B. 500mm" minlength="3" name="aussenhöhe" value='250'>
           </div>
           </tbody>
     </table>
@@ -210,12 +210,12 @@
     <div class="form-group aussenmass-flex-item">
     <br>
     <label>Aussenbreite:</label>
-    <input type="text" class="form-control" placeholder="z.B. 800mm" name="aussenbreite" required>
+    <input type="text" class="form-control" placeholder="z.B. 800mm" minlength="3" name="aussenbreite" required>
     </div><!-- end flex item -->
     <div class="form-group warenkorb-flex-item">
     <br>
     <label>Aussenhöhe:</label>
-    <input type="text" class="form-control" placeholder="z.B. 500mm" name="aussenhöhe" required>
+    <input type="text" class="form-control" placeholder="z.B. 500mm" minlength="3" name="aussenhöhe" required>
     </div><!-- end flex item -->
     </div><!-- end aussenmass-flex-->
     <img id="aussenmass-bild" src="{% static 'images/aussenmass-beispiel.png'%}">
