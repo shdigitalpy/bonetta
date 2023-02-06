@@ -18,10 +18,6 @@
      <div class="mp-main">
 
       <div>
-        
-    
-      
-
       <div>
         <h3>Preis</h3>  
       <p class="preis" style="font-size:1rem !important;">CHF {{ inserat.price|floatformat:2 }} <small>/ Stück</small><br>
@@ -69,49 +65,42 @@
     <h3>{{ inserat.title }}</h3>
     <p>{{ inserat.description }}</p>
 
-    <br><br>
-
-    
+  
 
     </div>
       
-    
+     <div class="slider">
 
-    {% if inserat.image %}
-    
-    <img style="width:80%;" src="{{ inserat.image.url }}">
+      {% if inserat.image1 %}
+  <input type="radio" name="slide_switch" id="id1"/>
+  <label for="id1">
 
-    {% endif %}
+    <img src="{{ inserat.image1.url }}" width="100"/>
+  </label>
+  <img src="{{ inserat.image1.url }}"/>
 
-    <br><br>
+   {% endif %}
+  
+  <!--Lets show the second image by default on page load-->
+  {% if inserat.image2 %}
+  <input type="radio" name="slide_switch" id="id2" checked="checked"/>
+  <label for="id2">
+    <img src="{{ inserat.image2.url }}" width="100"/>
+  </label>
+  <img src="{{ inserat.image2.url }}"/>
 
-    
-    
-    <div style="max-width:80%;">
+  {% endif %}
 
-    
-     
-    <div>
-     {% if inserat.image1 %}
-    
-    <img src="{{ inserat.image1.url }}">
-
-    {% endif %}
-    </div>
-
-    <br>
-
-    <div>
-     {% if inserat.image2 %}
-    
-    <img style="width:80%;" src="{{ inserat.image2.url }}">
-
-    {% endif %}
-    </div>
-
-     
-
-    </div>
+  {% if inserat.image3 %}
+  <input type="radio" name="slide_switch" id="id3"/>
+  <label for="id3">
+    <img src="{{ inserat.image3.url }}" width="100"/>
+  </label>
+  <img src="{{ inserat.image3.url }}"/>
+  {% endif %}
+  
+  
+</div>
 
    
     

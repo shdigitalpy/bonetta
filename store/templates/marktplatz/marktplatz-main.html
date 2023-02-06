@@ -76,10 +76,7 @@
     
     <h3><a href="{% url 'store:marktplatz_inserat_details' ins.slug %}">{{ ins.title }}</a></h3>
     <p class="preis" style="font-size:1rem !important;">CHF {{ ins.price|floatformat:2 }} / Stück</p>
-    <p>{% if ins.add_date %}
-      
-      {% endif %}</p>
-    <br>
+    
     <div class="mp-box">
       <p>
         {% if ins.mp_firmenname %}
