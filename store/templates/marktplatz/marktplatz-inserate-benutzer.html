@@ -20,6 +20,7 @@
           <th scope="col">Titel</th>
           <th scope="col">Preis</th>
           <th scope="col">Datum</th>
+          <th scope="col">Ändern</th>
         
           <th scope="col">Löschen</th>
           
@@ -33,6 +34,8 @@
           <th scope="row">{{ element.title }}</th>
           <td>{{ element.price|floatformat:2 }}</td>
           <td>{{ element.add_date }}</td>
+          <td><a href="{% url 'store:myinserate_ändern' element.id %}"><i style="color:var(--red)" class="far fa-edit"></i>
+           </a></td>
           <td><a href="{% url 'store:myinserate_löschen' element.id %}"><i style="color:var(--red)" class="far fa-trash-alt"></i>
            </a></td>
       </tr>

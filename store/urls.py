@@ -72,6 +72,7 @@ urlpatterns = [
 	#marktplatz
     path('marktplatz', views.marktplatz_main, name='marktplatz_main'),
     path('inserate', views.myinserate, name="myinserate"),
+    path('inserate/change/<int:pk>', views.myinserate_ändern, name="myinserate_ändern"),
     path('inserate/löschen/<int:pk>', views.myinserate_löschen, name="myinserate_löschen"),
     path('marktplatz/main/<str:cat>', views.marktplatz_main_category, name='marktplatz_main_category'),
     path('marktplatz/condition/<str:cond>', views.marktplatz_condition, name='marktplatz_condition'),

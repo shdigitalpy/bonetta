@@ -231,6 +231,29 @@ def myinserate_löschen(request, pk):
 	return redirect("store:myinserate")
 
 @login_required
+def myinserate_ändern(request, pk):
+	inserat = get_object_or_404(Marketplace, id=pk)
+	
+	if request.method == "POST":
+		form = InseratCreateForm(request.POST or None, request.FILES or None, instance=inserat)
+		if form.is_valid():
+			mp = form.save(commit=False)
+			mp.user = request.user
+			mp.save()
+			return redirect('store:myinserate')
+
+		else:
+			messages.error(request, "Error")
+
+	else: 
+		form = form = InseratCreateForm(instance=inserat)
+
+	context = {
+		'form': form,
+				}
+	return render(request, 'marktplatz/marktplatz-inserate-benutzer-edit.html', context)
+
+@login_required
 def myinserate(request):
 	myinserat = Marketplace.objects.filter(user=request.user)
 

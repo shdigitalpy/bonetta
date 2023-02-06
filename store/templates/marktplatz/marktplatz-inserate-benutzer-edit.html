@@ -1,0 +1,34 @@
+{% extends 'marktplatz/main.html' %}
+{% load static %}
+{% block title %}Marktplatz Inserat ändern{% endblock %}
+
+{% block content %}
+
+		<div class="container">
+			<div class="storepreview produkt">
+				
+			<div class="produkt-header">
+			<h2>Inserat ändern</h2><button class="btn btn-danger btn-exit"><a href="{% url 'store:myinserate' %}">Zurück <span class="fas fa-times"></span></a></button>
+			</div>
+			<br>
+			<div class="form-group">
+		    
+		    <form method="POST" enctype="multipart/form-data">
+		      {% csrf_token %}
+		      {{ form.media }}
+		      {{ form.as_p }}
+		     <br><br>
+		      <button class="btn btn-success btn-save">Speichern <span class="fas fa-check-circle"></span></button>
+		      
+  			</div>
+  			</div>
+			
+			   </form>
+			   </div>
+			   
+				</div>
+
+			</div>
+
+ {% endblock %}
+
