@@ -89,7 +89,7 @@
 /* Slider CSS */
 
 .slider{
-	background-color: grey;
+
 	width: 100%; /*Same as width of the large image*/
 	position: relative;
 	/*Instead of height we will use padding*/
