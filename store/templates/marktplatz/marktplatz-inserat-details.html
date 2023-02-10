@@ -32,10 +32,10 @@
       <br>
       <br>
 
-
+      {% if inserat.marke_ins %}
       <h3>Marke</h3>  
 
-        {% if inserat.marke_ins %}
+       
         <p>{{ inserat.marke_ins }}</p>
         
         {% endif %}
@@ -46,10 +46,10 @@
         <br>
       <br>
 
-
+      {% if inserat.typ_marke_ins %}
       <h3>Typ</h3>  
 
-        {% if inserat.typ_marke_ins %}
+        
         <p>{{ inserat.typ_marke_ins }}</p>
         {% endif %}
 
@@ -117,9 +117,7 @@
   
 </div><!-- end slider -->
 
-<div>
-
-  <br><br>
+    <div style="margin-top: 5rem;">
       
     
     <h3>{{ inserat.title }}</h3>
