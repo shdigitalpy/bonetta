@@ -28,7 +28,7 @@ class ProductMarkeLinkForm(forms.Form):
 class InseratCreateForm(forms.ModelForm):
 	class Meta:
 		model = Marketplace
-		fields = ('category','numberof', 'title', 'price', 'description', 'condition', 'place','image','image1','image2',  )
+		fields = ('category','numberof', 'title', 'price', 'description', 'condition', 'marke_ins', 'typ_marke_ins', 'place','image','image1','image2','anonym_ins'  )
 
 		labels = {
 			'title' : "Titel des Eintrags:",
@@ -41,7 +41,9 @@ class InseratCreateForm(forms.ModelForm):
 			'image1' : "Bild",
 			'image2' : "Bild",
 			'category' : "Kategorie",
-			
+			'anonym_ins' : "Veröffentlichung Adresse & Angaben",
+			'marke_ins' : "Marke",
+			'typ_marke_ins' : "Typ Bezeichnung"
 
 
 		}
@@ -52,7 +54,12 @@ class InseratCreateForm(forms.ModelForm):
 			'title': forms.TextInput(attrs={
 				'class': 'form-control col-3',
 				'placeholder':'z.B. Küchenmaschine'}),
-			
+			'marke_ins': forms.TextInput(attrs={
+				'class': 'form-control col-3',
+				'placeholder':'Markenname'}),
+			'typ_marke_ins': forms.TextInput(attrs={
+				'class': 'form-control col-3',
+				'placeholder':'Typ Bezeichnung'}),
 			'numberof': forms.NumberInput(attrs={
 				'class': 'form-control col-3',
 				'placeholder':'Stückzahl'}),
@@ -84,7 +91,9 @@ class InseratCreateForm(forms.ModelForm):
 				'class': 'form-control',
 				}),
 
-			
+			'anonym_ins' : forms.Select(attrs={
+				'class': 'form-control',
+				}),
 		}
 
 class CheckoutForm(forms.Form):

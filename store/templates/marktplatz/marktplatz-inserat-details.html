@@ -33,7 +33,28 @@
       <br>
 
 
-      
+      <h3>Marke</h3>  
+
+        {% if inserat.marke_ins %}
+        <p>{{ inserat.marke_ins }}</p>
+        
+        {% endif %}
+
+
+        <hr>
+
+        <br>
+      <br>
+
+
+      <h3>Typ</h3>  
+
+        {% if inserat.typ_marke_ins %}
+        <p>{{ inserat.typ_marke_ins }}</p>
+        {% endif %}
+
+
+        <hr>
 
         <br>
       <br>
@@ -118,7 +139,7 @@
   <div class="verkauefer" style="width:300px;">
 
    
-   {% if inserat.anonym == "Nein" %}
+   {% if inserat.anonym_ins == "Ja" %}
 
         <h3>Verkäufer</h3>
         <br>
