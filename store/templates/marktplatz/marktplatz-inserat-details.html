@@ -8,7 +8,7 @@
 
 <div class="container">
     <div class="storepreview">
-      <h1>Inserat {{ inserat.title }}</h1>
+      <h1>Inserat Nr. {{ inserat.id }} - {{ inserat.title }}</h1>
 
         <br>
           <br>
@@ -32,6 +32,34 @@
       <br>
       <br>
 
+
+      <h3>Marke</h3>  
+
+        {% if inserat.brand %}
+        <p>{{ inserat.brand }}</p>
+        
+        {% endif %}
+
+
+        <hr>
+
+        <br>
+      <br>
+
+
+      <h3>Typ</h3>  
+
+        {% if inserat.typ %}
+        <p>{{ inserat.typ }}</p>
+        {% endif %}
+
+
+        <hr>
+
+        <br>
+      <br>
+
+
         <h3>Zustand</h3>  
 
         {% if inserat.condition == "G" %}
@@ -50,20 +78,12 @@
 
 
      
-     <div style="display:flex;flex-wrap:wrap;">
+     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;">
 
 
-    <div style="width:500px;">
+    <div class="right-wrapper-slider">
 
-      <div>
       
-    
-    <h3>{{ inserat.title }}</h3>
-    <p>{{ inserat.description }}</p>
-
-  
-
-    </div>
       
      <div class="slider">
 
@@ -95,7 +115,19 @@
   {% endif %}
   
   
-</div>
+</div><!-- end slider -->
+
+<div>
+
+  <br><br>
+      
+    
+    <h3>{{ inserat.title }}</h3>
+    <p>{{ inserat.description }}</p>
+
+  
+
+    </div>
 
    
     
@@ -107,11 +139,14 @@
   <div class="verkauefer" style="width:300px;">
 
    
-
+   {% if inserat.anonym == "Nein" %}
 
         <h3>Verkäufer</h3>
         <br>
+
+        
          <p> {% if inserat.mp_firmenname %}
+        
       {{ inserat.mp_firmenname }}
       {% endif %}</p>
       <br>
@@ -128,6 +163,51 @@
 
       {% if inserat.add_date %}
       <p>{{ ins.add_date|date:"d.m.Y H:i " }}</p>
+      {% endif %}
+
+      {% else %}
+
+        <!-- messages start -->
+      {% if messages %}
+
+
+      {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+
+        </div>
+        <br>
+         <a href="{% url 'store:marktplatz_inserat_details' inserat.slug %}" >Zurück</a>
+
+        {% endfor %}
+
+        {% else %}
+
+      
+        <h3>Verkäufer kontaktieren</h3>
+        <br>
+        <!-- Form -->
+            <form action="{% url 'store:marktplatz_inserat_details' inserat.slug %}" method="POST">
+              {% csrf_token %}
+
+                <div class="col-12 textarea-contact" style="padding:0;">
+                  <textarea name="message" class="form-control"  placeholder="Bitte geben Sie Ihre Nachricht ein."></textarea>
+                </div>
+                <br>
+                
+                  <button type="submit" class="btn btn-secondary">Senden</button>
+       
+
+            </form>
+
+
+    
+    {% endif %}
+    <!-- messages end -->
+
       {% endif %}
           
       

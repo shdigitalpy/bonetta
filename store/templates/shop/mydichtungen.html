@@ -48,9 +48,9 @@
               <input type="checkbox">
 
               
-
+              {% if element.dichtungen.titelbild %}
             <img class="img-thumbnail" src="{{MEDIA_URL}}{{ element.dichtungen.titelbild.url }}" alt="image">
-
+            {% endif %}
             </label>
 
             </div>

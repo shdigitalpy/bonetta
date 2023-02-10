@@ -21,6 +21,10 @@ CONDITION_CHOICES = (
 	('N', 'Neu')
 	)
 
+ANONYM_CHOICES = (
+	('Ja', 'Ja'),
+	('Nein', 'Nein')
+	)
 
 class MP_Category(models.Model):
 	name = models.CharField(max_length=255)
@@ -43,7 +47,7 @@ class Marketplace(models.Model):
 	title = models.CharField(max_length=255)
 	slug = models.SlugField(max_length=255)
 	price = models.FloatField(null=True, blank=True,)
-	description = models.CharField(max_length=500, default='')
+	description = models.CharField(max_length=255, default='')
 	condition = models.CharField(max_length=255, choices=CONDITION_CHOICES, default="G")
 	place = models.CharField(max_length=255, null=True, blank=True)
 	image = models.ImageField(null=True, blank=True, upload_to="inserate/")
@@ -56,6 +60,8 @@ class Marketplace(models.Model):
 	tid = models.IntegerField(null=True, blank=True)
 	numberof = models.IntegerField(null=True, blank=True)
 	brand = models.CharField(max_length=255,null=True, blank=True)
+	typ_marke = models.CharField(max_length=255,null=True, blank=True)
+	anonym = models.CharField(max_length=255, choices=ANONYM_CHOICES, default="Ja")
 
 
 	class Meta:

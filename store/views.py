@@ -223,8 +223,36 @@ def cms_mp_löschen(request, pk):
 	messages.info(request, "Das Inserat wurde gelöscht.")
 	return redirect("store:cms_marktplatz")
 
+
+#myinserate benutzer übersicht
+
+@login_required
+def myinserate(request):
+	myinserat = Marketplace.objects.filter(user=request.user)
+
+	context = { 
+			'myinserat': myinserat,
+			
+			}
+	return render(request, 'marktplatz/marktplatz-inserate-benutzer.html', context)
+
+
 @login_required
 def myinserate_löschen(request, pk):
+	element = get_object_or_404(Marketplace, pk=pk)
+	if request.method == "POST":
+		return redirect("store:myinserate-wirklich", pk=pk)
+
+	else:
+		messages.info(request, "Achtung!")
+		context = {
+		'element': element,
+				}
+		return render(request, 'marktplatz/marktplatz-inserate-wirklich-loeschen.html', context)
+
+
+@login_required
+def myinserate_wirklich(request, pk):
 	eintrag = get_object_or_404(Marketplace, pk=pk)
 	eintrag.delete()
 	messages.info(request, "Das Inserat wurde gelöscht.")
@@ -253,25 +281,52 @@ def myinserate_ändern(request, pk):
 				}
 	return render(request, 'marktplatz/marktplatz-inserate-benutzer-edit.html', context)
 
-@login_required
-def myinserate(request):
-	myinserat = Marketplace.objects.filter(user=request.user)
-
-	context = { 
-			'myinserat': myinserat,
-			
-			}
-	return render(request, 'marktplatz/marktplatz-inserate-benutzer.html', context)
+#myinserate benutzer übersicht end
 
 def marktplatz_inserat_details(request, slug):
 	inserat = get_object_or_404(Marketplace, slug=slug)
+	user = request.user 
+	kunde = Kunde.objects.get(user=user)
 
-	context = {
+	inserat_kunde = Kunde.objects.get(user=inserat.user)
 
-	'inserat' : inserat,
+	if request.method =="POST":
+		nachricht = request.POST['message']
+		
 
-	}
-	return render (request, 'marktplatz/marktplatz-inserat-details.html', context)
+		subject = 'Anfrage für Inserat Nr. ' + str(inserat.id)
+		template = render_to_string('marktplatz/inserat-verk-email.html', {
+			'benutzer': user.username,
+			'firma': kunde.firmenname,
+			'nachricht': nachricht,	
+			'inserat' : inserat,
+			'email' : kunde.user.email,
+			'telefon' : kunde.phone,		
+			 })
+
+		email = ''
+		
+		#send email for order
+		email = EmailMessage(
+			subject,
+			template,
+			email,
+			[inserat.user.email],
+		)
+
+		email.fail_silently=False
+		email.content_subtype = "html"
+		email.send()
+		messages.error(request, "Die Nachricht wurde erfolgreich gesendet")
+		return redirect('store:marktplatz_inserat_details', slug=inserat.slug)
+
+	else:
+		context = {
+
+		'inserat' : inserat,
+
+		}
+		return render (request, 'marktplatz/marktplatz-inserat-details.html', context)
 
 def marktplatz_condition(request, cond):
 
@@ -1484,7 +1539,7 @@ def cms_kunden(request):
 
 
 	if search_query:
-		user = User.objects.filter(Q(profile__firmenname__icontains=search_query))
+		user = User.objects.filter(Q(profile__firmenname__icontains=search_query) | Q(profile__interne_nummer__icontains=search_query))
 
 	else:
 		user = User.objects.all().order_by('-id')

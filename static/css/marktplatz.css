@@ -70,15 +70,29 @@
 }
 
 
+.right-wrapper-slider {
+	width:500px;
+	margin: 0 2rem;
+}
+
+
+@media only screen and (max-width: 1200px) {
+	.right-wrapper-slider {
+	margin: 0;
+	margin: 1rem 0;
+}
+}
+
+
 /* Slider CSS */
 
 .slider{
-	width: 640px; /*Same as width of the large image*/
+	background-color: grey;
+	width: 100%; /*Same as width of the large image*/
 	position: relative;
 	/*Instead of height we will use padding*/
 	padding-top: 320px; /*That helps bring the labels down*/
-	
-	margin: 15px auto;
+	margin: 0 auto;
 
 }
 

@@ -1,0 +1,26 @@
+{% extends 'shop/main.html' %}
+{% load static %}
+
+{% block content %}
+
+
+{% if user.is_authenticated %}
+<div class="container padding ">
+
+  <div class="bg-light p-5">
+  <h2>Wollen Sie das Inserat {{ element.id }} wirklich löschen?</h2><br>
+  
+
+  <h2>{{ element.title }}</h2>
+  <br>
+  <a class="btn btn-danger" href="{% url 'store:myinserate_wirklich' element.id %}">Endültig löschen <i style="color:var(--white)" class="far fa-trash-alt"></i>
+           </a>
+
+
+           </div>
+
+         </div>
+
+{% endif %}
+
+{% endblock content %}

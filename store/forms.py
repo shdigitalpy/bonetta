@@ -24,25 +24,26 @@ COUNTRY_CHOICES = [
 class ProductMarkeLinkForm(forms.Form):
     item_marke = forms.ModelChoiceField(queryset=Marke.objects.all())
 
-		
 
 class InseratCreateForm(forms.ModelForm):
 	class Meta:
 		model = Marketplace
-		fields = ('category','numberof', 'title', 'price', 'description', 'condition', 'brand', 'place','image','image1','image2'  )
+		fields = ('category','numberof', 'title', 'price', 'description', 'condition', 'brand', 'typ_marke', 'place','image','image1','image2','anonym'  )
 
 		labels = {
 			'title' : "Titel des Eintrags:",
 			'numberof' : "Stückzahl",
 			'price' : "Preis",
-			'description' : "Ausführliche Beschreibung",
+			'description' : "Beschreibung",
 			'condition' : "Zustand",
 			'place' : "Standort",
 			'image' : "Bild",
 			'image1' : "Bild",
 			'image2' : "Bild",
 			'category' : "Kategorie",
-			'brand' : "Marke"
+			'brand' : "Marke",
+			'typ_marke' : "Typ",
+			'anonym' : "Veröffentlichung Verkäuferangaben"
 
 		}
 		
@@ -51,10 +52,13 @@ class InseratCreateForm(forms.ModelForm):
 			
 			'title': forms.TextInput(attrs={
 				'class': 'form-control col-3',
-				'placeholder':'Einen Titel eingeben'}),
+				'placeholder':'z.B. Küchenmaschine'}),
 			'brand': forms.TextInput(attrs={
 				'class': 'form-control col-3',
 				'placeholder':'Markenname'}),
+			'typ_marke': forms.TextInput(attrs={
+				'class': 'form-control col-3',
+				'placeholder':'Typ Bezeichnung'}),
 			'numberof': forms.NumberInput(attrs={
 				'class': 'form-control col-3',
 				'placeholder':'Stückzahl'}),
@@ -63,6 +67,8 @@ class InseratCreateForm(forms.ModelForm):
 				'class': 'form-control',
 				'placeholder':'z.B. 100'}),
 			'description': forms.Textarea(attrs={
+				'maxlength': '100',
+				'rows': '3',
 				'class': 'form-control col-3',
 				'placeholder':''}),
 			'condition': forms.Select(attrs={
@@ -81,6 +87,10 @@ class InseratCreateForm(forms.ModelForm):
 				'class': 'form-control',
 				}),
 			'category' : forms.Select(attrs={
+				'class': 'form-control',
+				}),
+
+			'anonym' : forms.Select(attrs={
 				'class': 'form-control',
 				}),
 		}

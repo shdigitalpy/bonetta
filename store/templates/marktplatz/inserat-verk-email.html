@@ -139,39 +139,48 @@
 
 <div class="container">
 
-<h2>Ein Inserat wurde von einem Nutzer erfasst</h2>
-<p>Bitte loggen Sie sich ins CMS ein und geben Sie es frei.</p>
+  <p>Hallo {{ inserat.user.username }}</p>
+
+<h2>Anfrage für Inserat Nr. {{ inserat.id }} </h2>
+<p>Folgende Person hat eine Frage zu <strong>"{{ inserat.title }}"</strong> :</p>
 <br>
 
 
 <table class="table-big">
   <thead>
     <tr>
-        <th scope="col">Titel</th>
-        <th scope="col">Preis</th>
-        <th scope="col">Zustand</th>
-        <th scope="col">Standort</th>
-        <th scope="col">Hinzugefügt am</th>
-        <th scope="col">Kategorie</th>
+        <th scope="col">Benutzer</th>
+        <th scope="col">Firma</th>
+        <th scope="col">Nachricht</th>
+        <th scope="col">E-Mail</th>
+        <th scope="col">Telefon</th>
+        
         
     </tr>
   </thead>
   <tbody>
   	
     <tr>
-      <td>{{ title }}</td>
-      <td>{{ price }}</td>
-      <td>{{ condition }}</td>
-      <td>{{ place }}</td>
-      <td>{{ add_date }}</td>
-      <td>{{ category }}</td>
-
+      <td>{{ benutzer }}</td>
+      <td>{{ firma }}</td>
+      <td>{{ nachricht }}</td>
+       <td>{{ email }}</td>
+        <td>{{ telefon }}</td>
     </tr>
      
   </tbody>
 </table>
-<br>
 
+
+<p>Bitte kontaktieren Sie die Person unter den obigen Angaben.</p>
+<br>
+<p>Freundliche Grüsse</p>
+<p style="font-weight:bold">Gebo Shop Bonetta</p>
+<p>Langmattstrasse 10<br>
+8182 Hochfelden</p>
+<p>Telefon: +41 (0)79 333 61 57</p>
+<p>E-Mail: livio.bonetta@geboshop.ch </p>
+<p><a href="{% url 'store:home' %}">www.gastrodichtungen.ch</a></p>
 
 </div><!--end container-->
 </body>
