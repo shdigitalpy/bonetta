@@ -59,7 +59,9 @@ class Marketplace(models.Model):
 	payment = models.BooleanField(default=False)
 	tid = models.IntegerField(null=True, blank=True)
 	numberof = models.IntegerField(null=True, blank=True)
-
+	marke_ins = models.CharField(max_length=255,null=True, blank=True)
+	typ_marke_ins = models.CharField(max_length=255,null=True, blank=True)
+	anonym_ins = models.CharField(max_length=255, choices=ANONYM_CHOICES, default="Ja")
 
 
 	class Meta:
