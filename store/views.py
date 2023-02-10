@@ -285,48 +285,59 @@ def myinserate_ändern(request, pk):
 
 def marktplatz_inserat_details(request, slug):
 	inserat = get_object_or_404(Marketplace, slug=slug)
-	user = request.user 
-	kunde = Kunde.objects.get(user=user)
 
-	inserat_kunde = Kunde.objects.get(user=inserat.user)
+	if request.user.is_authenticated:
+		user = request.user 
+		kunde = Kunde.objects.get(user=user)
 
-	if request.method =="POST":
-		nachricht = request.POST['message']
-		
+		inserat_kunde = Kunde.objects.get(user=inserat.user)
 
-		subject = 'Anfrage für Inserat Nr. ' + str(inserat.id)
-		template = render_to_string('marktplatz/inserat-verk-email.html', {
-			'benutzer': user.username,
-			'firma': kunde.firmenname,
-			'nachricht': nachricht,	
+		if request.method =="POST":
+			nachricht = request.POST['message']
+			
+
+			subject = 'Anfrage für Inserat Nr. ' + str(inserat.id)
+			template = render_to_string('marktplatz/inserat-verk-email.html', {
+				'benutzer': user.username,
+				'firma': kunde.firmenname,
+				'nachricht': nachricht,	
+				'inserat' : inserat,
+				'email' : kunde.user.email,
+				'telefon' : kunde.phone,		
+				 })
+
+			email = ''
+			
+			#send email for order
+			email = EmailMessage(
+				subject,
+				template,
+				email,
+				[inserat.user.email],
+			)
+
+			email.fail_silently=False
+			email.content_subtype = "html"
+			email.send()
+			messages.error(request, "Die Nachricht wurde erfolgreich gesendet")
+			return redirect('store:marktplatz_inserat_details', slug=inserat.slug)
+
+		else:
+			context = {
+
 			'inserat' : inserat,
-			'email' : kunde.user.email,
-			'telefon' : kunde.phone,		
-			 })
 
-		email = ''
-		
-		#send email for order
-		email = EmailMessage(
-			subject,
-			template,
-			email,
-			[inserat.user.email],
-		)
-
-		email.fail_silently=False
-		email.content_subtype = "html"
-		email.send()
-		messages.error(request, "Die Nachricht wurde erfolgreich gesendet")
-		return redirect('store:marktplatz_inserat_details', slug=inserat.slug)
+			}
+			return render (request, 'marktplatz/marktplatz-inserat-details.html', context)
 
 	else:
 		context = {
 
-		'inserat' : inserat,
+			'inserat' : inserat,
 
-		}
+			}
 		return render (request, 'marktplatz/marktplatz-inserat-details.html', context)
+
 
 def marktplatz_condition(request, cond):
 
