@@ -73,6 +73,8 @@
 .right-wrapper-slider {
 	width:500px;
 	margin: 0 2rem;
+	display: flex;
+	flex-direction: column;
 }
 
 
