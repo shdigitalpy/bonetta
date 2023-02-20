@@ -84,9 +84,18 @@
     
     <div class="mp-box">
       <p>
+
+
+        {% if ins.anonym_ins == 'Ja' %}
+
+        <small>Anbieter nicht öffentlich</small>
+
+        {% else %}
         {% if ins.mp_firmenname %}
-      {{ ins.mp_firmenname }}
-      {% endif %}
+        {{ ins.mp_firmenname }}
+        {% endif %}
+
+       {% endif %}
 
     </p>
     </div>
