@@ -21,6 +21,17 @@ from io import BytesIO
 from datetime import datetime
 from django.contrib.admin.views.decorators import staff_member_required
 
+
+
+def marktplatz_overview(request):
+	
+	context = {
+
+			
+		
+				}
+	return render(request, 'marktplatz/marktplatz-overview.html', context)
+
 @login_required
 def marktplatz_zahlung(request, pk, tid):
 	mp = get_object_or_404(Marketplace, id=pk)

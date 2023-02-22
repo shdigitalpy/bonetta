@@ -70,7 +70,8 @@ urlpatterns = [
 	path('cms/statistik/produkte', views.cms_statistik_produkte, name='cms_statistik_produkte'),
 	re_path(r'^robots.txt$', TemplateView.as_view(template_name="robots.txt", content_type="text/plain"), name="robots_file"),
 	#marktplatz
-    path('marktplatz', views.marktplatz_main, name='marktplatz_main'),
+	path('marktplatz', views.marktplatz_overview, name='marktplatz_overview'),
+    path('marktplatz-occasionen', views.marktplatz_main, name='marktplatz_main'),
     path('inserate', views.myinserate, name="myinserate"),
     path('inserate/change/<int:pk>', views.myinserate_ändern, name="myinserate_ändern"),
     path('inserate/löschen/<int:pk>', views.myinserate_löschen, name="myinserate_löschen"),
@@ -90,9 +91,6 @@ urlpatterns = [
 	path('cms/marktplatz/inserat/löschen/<int:pk>', views.cms_mp_löschen, name="cms_mp_löschen"),
     #path('pdf_view/', views.ViewPDF.as_view(), name="pdf_view"),
     #path('pdf_download/', views.DownloadPDF.as_view(), name="pdf_download"),
-
-
-	
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

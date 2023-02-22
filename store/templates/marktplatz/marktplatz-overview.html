@@ -1,0 +1,71 @@
+{% extends 'shop/main.html' %}
+{% load static %}
+{% block title %}Gastronomie Online Marktplatz | gastrodichtung.ch{% endblock %}
+{% block meta_description %}Gastronomie Online Marktplatz | gastrodichtung.ch{% endblock %}
+
+{% block content %}
+
+
+<div class="container">
+    <div class="storepreview">
+      <h1>Online-Marktplatz für das Gastgewerbe</h1>
+     
+    
+
+      <div class="mp-overview">
+
+        <div class="mp-overview-box">
+
+          <div class="mp-overview-box-image">
+
+
+    
+              <img style="width:80%;" src="{% static '/images/jobs.png' %}">
+
+              
+
+          </div><!-- mp overview box image end -->
+
+          <div style="background-color:var(--lightgrey);" class="mp-overview-box-bottom">
+            <h2>Jobs</h2>
+            <br>
+            <p>Aktuelle Stellen in der Schweizer Gastronomie.</p>
+
+          </div><!-- mp overview box bottom end -->
+
+        </div><!-- mp overview box end -->
+
+
+
+        <div class="mp-overview-box">
+
+          <div class="mp-overview-box-image">
+
+
+    
+              <img style="width:80%;" src="{% static '/images/marktplatz.png' %}">
+
+              
+
+          </div><!-- mp overview box image end -->
+
+          <div style="background-color:var(--grey);" class="mp-overview-box-bottom">
+
+             <h2>Occasionen Marktplatz</h2>
+            <br>
+            <p>Gastronomie Occasionen für Maschinen, Kleininventar und Restposten.</p>
+
+          </div><!-- mp overview box bottom end -->
+
+        </div><!-- mp overview box end -->
+
+
+      </div><!-- mp overview end -->
+        
+        
+
+
+  </div><!-- storepreview end -->
+</div><!-- container end -->
+
+{% endblock content %}

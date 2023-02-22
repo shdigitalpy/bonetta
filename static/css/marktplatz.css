@@ -1,3 +1,27 @@
+.mp-overview {
+	margin-top:3rem;
+	display:flex;
+
+}
+
+
+.mp-overview-box {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap:wrap;
+  width: 500px;
+  
+  
+}
+
+.mp-overview-box-bottom {
+
+	padding: 1rem;
+
+}
+
+
 .mp-flex {
 	display: flex;
 	align-items: stretch;
