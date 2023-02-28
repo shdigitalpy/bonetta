@@ -8,52 +8,55 @@
 
 <div class="container">
     <div class="storepreview">
-      <h1>Online-Marktplatz für das Gastgewerbe</h1>
+      <h1>Online-Portal für das Gastgewerbe</h1>
      
     
 
       <div class="mp-overview">
 
+        
+
+
+
         <div class="mp-overview-box">
 
           <div class="mp-overview-box-image">
 
-
+            <a href="{% url 'store:marktplatz_main' %}">
     
-              <img style="width:80%;" src="{% static '/images/jobs.png' %}">
+              <img class="mp-image" src="{% static '/images/marktplatz.png' %}">
 
+            </a>
               
 
           </div><!-- mp overview box image end -->
 
-          <div style="background-color:var(--lightgrey);" class="mp-overview-box-bottom">
-            <h2>Jobs</h2>
+          <div class="mp-overview-box-bottom">
+
+             <a href="{% url 'store:marktplatz_main' %}"><h2>Occasionen Marktplatz</h2></a>
             <br>
-            <p>Aktuelle Stellen in der Schweizer Gastronomie.</p>
+            <a href="{% url 'store:marktplatz_main' %}"><p>Gastronomie Occasionen für Maschinen, Kleininventar und Restposten.</p></a>
 
           </div><!-- mp overview box bottom end -->
 
         </div><!-- mp overview box end -->
 
-
-
         <div class="mp-overview-box">
 
           <div class="mp-overview-box-image">
 
 
     
-              <img style="width:80%;" src="{% static '/images/marktplatz.png' %}">
+              <img class="mp-image" src="{% static '/images/gastro-kueche1.jpg' %}">
 
               
 
           </div><!-- mp overview box image end -->
 
-          <div style="background-color:var(--grey);" class="mp-overview-box-bottom">
-
-             <h2>Occasionen Marktplatz</h2>
+          <div class="mp-overview-box-bottom">
+            <h2>Jobs (Demnächst)</h2>
             <br>
-            <p>Gastronomie Occasionen für Maschinen, Kleininventar und Restposten.</p>
+            <p>Aktuelle Stellen in der Schweizer Gastronomie.</p>
 
           </div><!-- mp overview box bottom end -->
 

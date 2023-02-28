@@ -1,7 +1,7 @@
 .mp-overview {
 	margin-top:3rem;
 	display:flex;
-
+	flex-wrap:wrap;
 }
 
 
@@ -10,15 +10,20 @@
   display: -ms-flexbox;
   display: flex;
   flex-wrap:wrap;
-  width: 500px;
-  
+  width:100%;
+  background-color:var(--grey);
+  margin: 15px;
   
 }
 
 .mp-overview-box-bottom {
 
-	padding: 1rem;
+	padding: 30px;
 
+}
+
+.mp-image {
+	max-height:400px;
 }
 
 
