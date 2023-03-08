@@ -26,6 +26,82 @@ ANONYM_CHOICES = (
 	('Nein', 'Nein')
 	)
 
+
+class MP_JobsCategory(models.Model):
+	name = models.CharField(max_length=255)
+	slug = models.SlugField(max_length=255)
+
+	class Meta:
+		ordering = ['id']
+		verbose_name = 'MP_JobsKategorie'
+		verbose_name_plural = 'MP_JobsKategorien'
+
+	def __str__(self):
+		return self.name
+
+	def get_absolute_url(self):
+		return reverse('home')
+
+
+class JobsMarketplace(models.Model):
+	user = models.ForeignKey(settings.AUTH_USER_MODEL,null=True, blank=True, on_delete=models.CASCADE)
+	title = models.CharField(max_length=255)
+	slug = models.SlugField(max_length=255)
+	jobdescription = models.CharField(max_length=255, default='')
+	add_date = models.DateTimeField(auto_now_add=True)
+	category = models.ForeignKey(MP_JobsCategory, related_name='mp_jobscategory', default=None, on_delete=models.SET_NULL, null=True, blank=True)
+	is_active = models.BooleanField(default=False)
+	payment = models.BooleanField(default=False)
+	tid = models.IntegerField(null=True, blank=True)
+	requirements = models.CharField(max_length=255, default='')
+	language = models.CharField(max_length=255, default='')
+	res_description = models.CharField(max_length=255, default='')
+	contact_person = models.CharField(max_length=255, default='')
+
+	class Meta:
+		ordering = ['-add_date']
+		verbose_name = 'JobMarketplace'
+		verbose_name_plural = 'JobMarketplaces'
+
+	def mp_firmenname(self):
+		if self.user.profile.firmenname:
+			mp_firmenname = self.user.profile.firmenname
+			return mp_firmenname 
+		else:
+			mp_firmenname = self.user.username 
+			return mp_firmenname
+
+	def mp_phone(self):
+		if self.user.profile.phone:
+			mp_phone = self.user.profile.phone
+			return mp_phone 
+		else:
+			mp_phone = " "
+			return mp_phone
+
+	def mp_mobile(self):
+		if self.user.profile.phone:
+			mp_mobile = self.user.profile.mobile
+			return mp_mobile 
+		else:
+			mp_mobile = " "
+			return mp_mobile
+
+	def mp_email(self):
+		if self.user.email:
+			mp_email = self.user.email
+			return mp_email 
+		else:
+			mp_email = " "
+			return mp_email
+
+	def save(self, *args, **kwargs):
+		self.slug = slugify(self.title)
+		super(JobsMarketplace, self).save(*args, **kwargs)
+
+	def __str__(self):
+		return self.title
+
 class MP_Category(models.Model):
 	name = models.CharField(max_length=255)
 	slug = models.SlugField(max_length=255)

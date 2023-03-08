@@ -21,7 +21,30 @@ from io import BytesIO
 from datetime import datetime
 from django.contrib.admin.views.decorators import staff_member_required
 
+def marktplatz_video(request):
+	
 
+	context = {
+	
+
+	}
+	return render (request, 'marktplatz/marktplatz-video.html', context)
+
+def marktplatz_jobs(request):
+	
+
+	mp_inserate = JobsMarketplace.objects.all()
+
+	mp_categories = MP_JobsCategory.objects.all()
+
+	context = {
+
+	'mp_inserate': mp_inserate,
+	'mp_categories': mp_categories,
+	
+
+	}
+	return render (request, 'marktplatz/marktplatz-jobs.html', context)
 
 def marktplatz_overview(request):
 	

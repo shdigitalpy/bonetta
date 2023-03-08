@@ -15,6 +15,8 @@ admin.site.register(ShippingAddress)
 admin.site.register(Marke)
 admin.site.register(Marketplace)
 admin.site.register(MP_Category)
+admin.site.register(MP_JobsCategory)
+admin.site.register(JobsMarketplace)
 
 admin.site.site_header = 'Bonetta CMS'                    # default: "Django Administration"
 admin.site.index_title = 'Übersicht Module'                 # default: "Site administration"
