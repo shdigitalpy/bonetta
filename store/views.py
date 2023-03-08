@@ -21,6 +21,15 @@ from io import BytesIO
 from datetime import datetime
 from django.contrib.admin.views.decorators import staff_member_required
 
+def anleitung_videos(request):
+	
+
+	context = {
+	
+
+	}
+	return render (request, 'anleitung-videos.html', context)
+
 def marktplatz_video(request):
 	
 

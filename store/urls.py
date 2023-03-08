@@ -15,6 +15,7 @@ urlpatterns = [
 	path('searchbar', views.searchbar, name='searchbar'),
 	path('kontakt', views.kontakt, name='kontakt'),
 	path('montage', views.firma, name='firma'),
+	path('anleitungen', views.anleitung_videos, name='anleitung_videos'),
 	path('impressum', views.impressum, name='impressum'),
 	path('checkout/', CheckoutView.as_view(), name='checkout'), 
 	path('payment/', PaymentView.as_view(), name='payment'), 

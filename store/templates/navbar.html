@@ -10,13 +10,19 @@
     <img src="{% static 'images/bonetta.png' %}" class="d-inline-block align-top" alt="Gastrodichtungen.ch Logo">
   </a>
     
+    <div class="nav-buttons">
     <a type="button" target="__blank" style="font-size:0.8rem;" class="btn btn-success" href="https://bonetta.ch/" rel="nofollow" title="Gastrozubehör">Gastrozubehör  </a>
 
     <a type="button" style="margin-left:5px;font-size:0.8rem;" class="btn btn-success" href="{% url 'store:marktplatz_overview' %}" title="Marktplatz">Marktplatz  </a>
-
+    </div>
 
     <!-- Topnav -->
     <ul class="nav justify-content-end topnav">
+
+      <li class="nav-item">
+      <a class="nav-link" href="{% url 'store:anleitung_videos' %}">Anleitungen & Videos</a>
+      </li>
+
       
       <li class="nav-item">
       <a class="nav-link" href="{% url 'store:kontakt' %}">Kontakt</a>
