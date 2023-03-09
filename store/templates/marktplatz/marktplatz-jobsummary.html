@@ -1,0 +1,155 @@
+{% extends 'shop/main.html' %}
+{% load static %}
+{% block title %}Gastronomie Jobinserat {{ inserat.title }} | gastrodichtung.ch{% endblock %}
+{% block meta_description %}Gastronomie Jobinserat {{ inserat.title }} | gastrodichtung.ch{% endblock %}
+
+
+{% block content %}
+
+
+<div class="container">
+    <div class="storepreview">
+      <h1>Überprüfen Sie Ihr Jobinserat {{ inserat.title }}</h1>
+
+        <br>
+          <br>
+
+          <div style="display:flex;flex-wrap: wrap;">
+
+          <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          
+          <button class="btn btn-success btn-save">Kostenlos veröffentlichen<span class="fas fa-check-circle"></span></button>
+          
+           
+         </form>
+
+         <a class="btn btn-secondary ml-1" href="{% url 'store:marktplatz_jobinserat_ändern' inserat.id %}">Inserat anpassen <i class="fas fa-times-circle"></i></a>
+
+       </div>
+
+
+         <br><br>
+    
+      <div class="mp-flex">
+        
+
+     
+     <div style="display:flex;flex-wrap:wrap;">
+
+
+
+      
+        
+
+    <div style="width:70%;">
+
+      <div>
+      
+    
+    <h3>{{ inserat.title }} {% if inserat.mp_firmenname %} / {{ inserat.mp_firmenname }} {% endif %} </h3>
+    <br><br>
+
+    <table class="table">
+  
+  <tbody>
+      
+    <tr>
+      <th scope="row">Pensum</th>
+      <td>{% if inserat.pensum %}
+      {{ inserat.pensum }}
+      {% endif %}</td>
+      
+    </tr>
+    <tr>
+      <th scope="row">Anstellungsart</th>
+      <td>{% if inserat.kindof %}
+      {{ inserat.kindof }}
+      {% endif %}</td>
+      
+    </tr>
+    <tr>
+      <th scope="row">Stellenantritt</th>
+      <td>{% if inserat.datejob %}
+      {{ inserat.datejob }}
+      {% endif %}</td>
+      
+    </tr>
+
+    <tr>
+      <th scope="row">Arbeitsort</th>
+      <td>{% if inserat.place %}
+      {{ inserat.place }}
+      {% endif %}</td>
+      
+    </tr>
+  </tbody>
+</table>
+
+<br><br>
+  
+    <h3>Beschreibung</h3>
+    <br>
+    <p>{{ inserat.jobdescription|linebreaks }}</p>
+    <br>
+    <h3>Anforderungen</h3>
+    <br>
+     <p>{{ inserat.requirements|linebreaks }}</p>
+
+     <br>
+    <h3>Wer wir sind</h3>
+    <br>
+     <p>{{ inserat.res_description|linebreaks }}</p>
+       <br>
+      <hr>
+     <br>
+
+    <h3>Kontakt</h3>
+         <p> {% if inserat.mp_firmenname %}
+      {{ inserat.mp_firmenname }}
+      {% endif %}</p>
+      <p>{{ inserat.place|linebreaks }}</p>
+      
+          <br>
+          <hr>
+
+        <br>
+          <h3>Bewerbung an:</h3>
+           <p> {% if inserat.contact_person %}
+            {{ inserat.contact_person }}
+              {% endif %}</p>
+      <p> {% if inserat.mp_phone %}
+      Telefon: {{ inserat.mp_phone }}
+      {% endif %}</p>
+      <p> {% if inserat.mp_mobile %}
+      Mobile: {{ inserat.mp_mobile }}
+      {% endif %}</p>
+
+      <p> {% if inserat.mp_email %}
+      E-Mail: {{ inserat.mp_email }}
+      {% endif %}</p>
+        <br>
+           <hr>
+
+
+    </div>
+      
+    
+    
+    
+  </div><!-- end first -->
+
+
+
+    </div>
+
+
+
+  </div><!-- row end -->
+   
+   
+
+  </div><!-- storepreview end -->
+</div><!-- container end -->
+
+{% endblock content %}

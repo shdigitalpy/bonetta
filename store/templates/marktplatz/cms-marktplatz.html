@@ -63,22 +63,46 @@
 				
 					</td> 
 			      	<td>
-			      		{% if data.is_active == True %}
-			      		<a href="{% url 'store:cms_inserat_deaktivieren' data.id %}">Deaktivieren</a>
-			      		{% else %}
-  					<a href="{% url 'store:cms_inserat_freigeben' data.id %}">Freigeben</a>
+			      	{% if data.check_portal %}
+
+			      	{% if data.is_active == True %}
+			      	<a href="{% url 'store:cms_inserat_deaktivieren' data.id data.check_portal %}">Deaktivieren</a>
+			      	{% else %}
+  					<a href="{% url 'store:cms_inserat_freigeben' data.id data.check_portal %}">Freigeben</a>
   					{% endif %}
+
+  					{% else %}
+			      	
+			      	{% if data.is_active == True %}
+			      	<a href="{% url 'store:cms_inserat_deaktivieren' data.id ' ' %}">Deaktivieren</a>
+			      	{% else %}
+  					<a href="{% url 'store:cms_inserat_freigeben' data.id ' ' %}">Freigeben</a>
+  					{% endif %}
+
+  					{% endif %}
+
+
 					</td> 
 					<td>{{ data.category }}</td>
 
 					<td>
+					{% if data.check_portal %}
+
+					{% else %}
   					<a href="{% url 'store:cms_mp_bearbeiten' data.id %}"><i style="color:var(--red)" class="fas fa-edit"></i>
 					 </a>
+
+					 {% endif %}
 					</td> 
 
 					<td>
+						{% if data.check_portal %}
+
+						{% else %}
   					<a href="{% url 'store:cms_mp_löschen' data.id %}"><i style="color:var(--red)" class="far fa-trash-alt"></i>
+
 					 </a>
+					  {% endif %}
 					</td> 
 			    </tr>
 			    

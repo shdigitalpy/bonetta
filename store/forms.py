@@ -21,6 +21,67 @@ COUNTRY_CHOICES = [
 	]
 
 
+class InseratJobsCreateForm(forms.ModelForm):
+	class Meta:
+		model = JobsMarketplace
+		fields = ('category','title','datejob','kindof','pensum', 'jobdescription', 'requirements','language','res_description','contact_person', 'place'  )
+
+		labels = {
+			'title' : "Titel des Eintrags:",
+			'jobdescription' : "Job Beschreibung",
+			'category' : "Kategorie",
+			'requirements' : "Anforderungen",
+			'res_description' : "Restaurant Beschreibung",
+			'contact_person' : "Kontaktperson",
+			'language' : "Sprachen",
+			'place' : "Adresse",
+			'datejob' : "Stellenantritt",
+			'kindof' : "Anstellungsart",
+			'pensum' : "Pensum"
+		}
+		
+		widgets = {
+			
+			'title': forms.TextInput(attrs={
+				'class': 'form-control col-6',
+				'placeholder':'z.B. Küchenchef'}),
+			'jobdescription': forms.Textarea(attrs={
+
+				'class': 'form-control col-6',
+				'placeholder':'Beschreibung Aufgaben'}),
+			'datejob': forms.TextInput(attrs={
+				'class': 'form-control col-6',
+				'placeholder':'z.B. per sofort oder nach Vereinbarung'}),
+			'kindof': forms.TextInput(attrs={
+				'class': 'form-control col-6',
+				'placeholder':'z.B. Dauerstelle/Teilzeitstelle'}),
+			'pensum': forms.TextInput(attrs={
+				'class': 'form-control col-6',
+				'placeholder':'z.B. 100%'}),
+			'language': forms.TextInput(attrs={
+				'class': 'form-control col-6',
+				'placeholder':'z.B. Deutsch, Englisch erwünscht'}),
+			'category' : forms.Select(attrs={
+				'class': 'form-control col-6',
+				}),
+			'requirements': forms.Textarea(attrs={
+				'class': 'form-control col-6',
+				'placeholder':'z.B. Kochlehre und Erfahrung in ähnlicher führender Position'}),
+			'res_description': forms.Textarea(attrs={
+				'class': 'form-control col-6',
+				'placeholder':'z.B. Bestens frequentierter Betrieb.'}),
+			'contact_person': forms.TextInput(attrs={
+				'class': 'form-control col-6',
+				'placeholder':'z.B. Herr Markus Müller, Geschäftsführer'}),
+			'place': forms.TextInput(attrs={
+				'class': 'form-control col-6',
+				'placeholder':'z.B. Landstrasse 4, 8447 Dachsen'}),
+
+			
+		}
+
+
+
 class ProductMarkeLinkForm(forms.Form):
     item_marke = forms.ModelChoiceField(queryset=Marke.objects.all())
 

@@ -1,25 +1,24 @@
 {% extends 'shop/main.html' %}
 {% load static %}
-{% block title %}Gastronomie Marktplatz | gastrodichtung.ch{% endblock %}
-{% block meta_description %}Gastronomie Marktplatz | gastrodichtung.ch{% endblock %}
+{% block title %}Gastronomie Marktplatz Inserat Erfolg | gastrodichtung.ch{% endblock %}
+{% block meta_description %}Gastronomie Marktplatz Inserat Erfolg | gastrodichtung.ch{% endblock %}
 
 {% block content %}
 
 
 <div class="container">
     <div class="storepreview">
-      <h1>Inserat {{ mp.title }} erfolgreich erfasst</h1>
+      <h1>Inserat erfolgreich erfasst</h1>
         <br>
-      <h2>{{ mp.title }}</h2>
       <h3>Inserate-Nr.: {{ mp.id }}</h3>
-      <h3>Verkaufspreis: CHF {{ mp.price|floatformat:2 }}</h3>
+      <h3>Stelle: {{ mp.title }}</h3>
       <br>
       <h3>Inseratepreis: <p class="text-success">kostenlos</p></h3>
       <br>
      <p>Sie haben das Inserat erfolgreich erfasst. Nun wird es durch unser Team überprüft. 
      Sobald wir es freischalten, erscheint es online.</p>
      <br>
-     <a class="btn btn-secondary" href="{% url 'store:marktplatz_main' %}">Zurück zum Marktplatz</a>
+     <a class="btn btn-secondary" href="{% url 'store:marktplatz_jobs' %}">Zurück zum Marktplatz</a>
   </div><!-- storepreview end -->
 </div><!-- container end -->
 

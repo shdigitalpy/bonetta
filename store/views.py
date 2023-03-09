@@ -20,6 +20,108 @@ from xhtml2pdf import pisa
 from io import BytesIO
 from datetime import datetime
 from django.contrib.admin.views.decorators import staff_member_required
+from itertools import chain
+
+@login_required
+def marktplatz_jobinserat_erfolg(request, pk):
+	mp = get_object_or_404(JobsMarketplace, id=pk)
+
+	'''subject = 'Inserat Nr.' + ' ' + str(mp.id) + ' ' + mp.title + ' wurde erstellt.'
+	if mp.condition == "G":
+		condition = "Gebraucht"
+	else:
+		condition = "Neu"
+	template = render_to_string('marktplatz/inserat-email-erfolg.html', {
+			'title' : mp.title,
+			'price': mp.price, 
+			'condition': mp.condition,
+			'place': mp.place,
+			'add_date': mp.add_date,
+			'category': mp.category,		
+					 })
+	email = ''	
+	#send email for order
+	email = EmailMessage(
+			subject,
+			template,
+			email,
+			['sandro@sh-digital.ch','livio.bonetta@geboshop.ch'],
+				)
+	email.fail_silently=False
+	email.content_subtype = "html"
+	email.send()'''
+
+	context = {
+
+	'mp' : mp,
+		
+				}
+	return render(request, 'marktplatz/marktplatz-jobs-erfolg.html', context)
+
+
+@login_required
+def marktplatz_jobinserat_summary(request, pk):
+	mp = get_object_or_404(JobsMarketplace, id=pk)
+
+	if request.method == "POST":
+		#return redirect(link)
+		return redirect ("store:marktplatz_jobinserat_erfolg", pk=mp.id)
+
+	else:
+		context = {	
+			'inserat' : mp,
+				
+				}
+	
+		return render(request, 'marktplatz/marktplatz-jobsummary.html', context)
+
+@login_required
+def marktplatz_jobinserat_ändern(request, pk):
+	inserat = get_object_or_404(JobsMarketplace, id=pk)
+	
+	if request.method == "POST":
+		form = InseratJobsCreateForm(request.POST or None, request.FILES or None, instance=inserat)
+		if form.is_valid():
+			mp = form.save(commit=False)
+			mp.user = request.user
+			mp.save()
+			return redirect('store:marktplatz_jobinserat_summary', pk=mp.id)
+
+		else:
+			messages.error(request, "Error")
+
+	else: 
+		form = form = InseratJobsCreateForm(instance=inserat)
+
+	context = {
+		'form': form,
+				}
+	return render(request, 'marktplatz/marktplatz-inserat-erfassen.html', context)
+
+
+@login_required
+def marktplatz_jobinserat_erfassen(request):
+	if request.method == "POST":
+		form = InseratJobsCreateForm(request.POST or None,request.FILES or None,)
+		if form.is_valid():
+			mp = form.save(commit=False)
+			mp.user = request.user
+			mp.save()
+			
+			return redirect('store:marktplatz_jobinserat_summary', pk=mp.id)
+
+		else:
+			messages.error(request, "Error")
+
+	else: 
+		form = form = InseratJobsCreateForm()
+
+	context = {
+		'form': form,
+				}
+	return render(request, 'marktplatz/marktplatz-jobs-erstellen.html', context)
+
+
 
 def anleitung_videos(request):
 	
@@ -239,32 +341,7 @@ def marktplatz_main(request):
 	return render (request, 'marktplatz/marktplatz-main.html', context)
 
 
-@staff_member_required
-def cms_mp_bearbeiten(request, pk):
-	mp = get_object_or_404(Marketplace, pk=pk)
-	if request.method == "POST":
-		form = InseratCreateForm(request.POST or None,request.FILES or None, instance=mp)
-		if form.is_valid():
-			form.save()
-			return redirect('store:cms_marktplatz')
 
-		else:
-			messages.error(request, "Error")
-			
-	else:
-		form = InseratCreateForm(request.POST or None, request.FILES or None, instance=mp)
-		context = {
-			'form': form,
-			'mp': mp,
-			 }
-		return render(request, 'marktplatz/cms-marktplatz-edit.html', context)
-
-@staff_member_required
-def cms_mp_löschen(request, pk):
-	eintrag = get_object_or_404(Marketplace, pk=pk)
-	eintrag.delete()
-	messages.info(request, "Das Inserat wurde gelöscht.")
-	return redirect("store:cms_marktplatz")
 
 
 #myinserate benutzer übersicht
@@ -325,6 +402,17 @@ def myinserate_ändern(request, pk):
 	return render(request, 'marktplatz/marktplatz-inserate-benutzer-edit.html', context)
 
 #myinserate benutzer übersicht end
+
+def marktplatz_jobinserat_details(request, pk, slug):
+	inserat = get_object_or_404(JobsMarketplace, id=pk, slug=slug)
+
+	context = {
+
+			'inserat' : inserat,
+
+			}
+
+	return render (request, 'marktplatz/marktplatz-jobinserat-details.html', context)
 
 def marktplatz_inserat_details(request, slug):
 	inserat = get_object_or_404(Marketplace, slug=slug)
@@ -404,42 +492,81 @@ def marktplatz_condition(request, cond):
 	return render (request, 'marktplatz/marktplatz-main.html', context)
 
 
+# Marktplatz CMS
+
 @staff_member_required
-def cms_inserat_freigeben(request, pk):
-	mp = get_object_or_404(Marketplace, pk=pk)
-	mp.is_active = True 
-	mp.save()
-	messages.info(request, "Das Inserat wurde freigegeben.")
-	subject = 'Inserat Nr.' + ' ' + str(mp.id) + ' ' + mp.title + ' wurde freigegeben.'
-	if mp.condition == "G":
-		condition = "Gebraucht"
+def cms_inserat_freigeben(request, pk, portal):
+	
+	if portal == "Jobs":
+		mp = get_object_or_404(JobsMarketplace, pk=pk)
+		mp.is_active = True 
+		mp.save()
+		'''messages.info(request, "Das Inserat wurde freigegeben.")
+		subject = 'Inserat Nr.' + ' ' + str(mp.id) + ' ' + mp.title + ' wurde freigegeben.'
+		if mp.condition == "G":
+			condition = "Gebraucht"
+		else:
+			condition = "Neu"
+		template = render_to_string('marktplatz/inserat-email.html', {
+			'title' : mp.title,
+			'price': mp.price, 
+			'condition': condition,
+			'place': mp.place,
+			'add_date': mp.add_date,
+			'category': mp.category,		
+					 })
+		email = ''	
+		#send email for order
+		email = EmailMessage(
+			subject,
+			template,
+			email,
+			[mp.user.email],
+				)
+
+		email.fail_silently=False
+		email.content_subtype = "html"
+		email.send()'''
+		return redirect("store:cms_marktplatz")
 	else:
-		condition = "Neu"
-	template = render_to_string('marktplatz/inserat-email.html', {
-		'title' : mp.title,
-		'price': mp.price, 
-		'condition': condition,
-		'place': mp.place,
-		'add_date': mp.add_date,
-		'category': mp.category,		
-				 })
-	email = ''	
-	#send email for order
-	email = EmailMessage(
-		subject,
-		template,
-		email,
-		[mp.user.email],
-			)
+		mp = get_object_or_404(Marketplace, pk=pk)
+		mp.is_active = True 
+		mp.save()
+		messages.info(request, "Das Inserat wurde freigegeben.")
+		subject = 'Inserat Nr.' + ' ' + str(mp.id) + ' ' + mp.title + ' wurde freigegeben.'
+		if mp.condition == "G":
+			condition = "Gebraucht"
+		else:
+			condition = "Neu"
+		template = render_to_string('marktplatz/inserat-email.html', {
+			'title' : mp.title,
+			'price': mp.price, 
+			'condition': condition,
+			'place': mp.place,
+			'add_date': mp.add_date,
+			'category': mp.category,		
+					 })
+		email = ''	
+		#send email for order
+		email = EmailMessage(
+			subject,
+			template,
+			email,
+			[mp.user.email],
+				)
 
-	email.fail_silently=False
-	email.content_subtype = "html"
-	email.send()
-	return redirect("store:cms_marktplatz")
+		email.fail_silently=False
+		email.content_subtype = "html"
+		email.send()
+		return redirect("store:cms_marktplatz")
 
 @staff_member_required
-def cms_inserat_deaktivieren(request, pk):
-	mp = get_object_or_404(Marketplace, pk=pk)
+def cms_inserat_deaktivieren(request, pk, portal):
+
+	if portal == "Jobs":
+		mp = get_object_or_404(JobsMarketplace, pk=pk)
+	else:
+		mp = get_object_or_404(Marketplace, pk=pk)
 	mp.is_active = False 
 	mp.save()
 	messages.info(request, "Das Inserat wurde deaktiviert.")
@@ -447,7 +574,10 @@ def cms_inserat_deaktivieren(request, pk):
 
 @staff_member_required
 def cms_marktplatz(request):
-	inserate = Marketplace.objects.all()
+	query1 = Marketplace.objects.all()
+	query2 = JobsMarketplace.objects.all()
+	inserate = list(chain(query1, query2))
+	
 
 	context = {
 		'produkte': inserate,
@@ -455,7 +585,34 @@ def cms_marktplatz(request):
 	return render(request, 'marktplatz/cms-marktplatz.html', context)
 
 
+@staff_member_required
+def cms_mp_bearbeiten(request, pk):
+	mp = get_object_or_404(Marketplace, pk=pk)
+	if request.method == "POST":
+		form = InseratCreateForm(request.POST or None,request.FILES or None, instance=mp)
+		if form.is_valid():
+			form.save()
+			return redirect('store:cms_marktplatz')
 
+		else:
+			messages.error(request, "Error")
+			
+	else:
+		form = InseratCreateForm(request.POST or None, request.FILES or None, instance=mp)
+		context = {
+			'form': form,
+			'mp': mp,
+			 }
+		return render(request, 'marktplatz/cms-marktplatz-edit.html', context)
+
+@staff_member_required
+def cms_mp_löschen(request, pk):
+	eintrag = get_object_or_404(Marketplace, pk=pk)
+	eintrag.delete()
+	messages.info(request, "Das Inserat wurde gelöscht.")
+	return redirect("store:cms_marktplatz")
+
+# Marktplatz CMS END
 
 def marktplatz_main_category(request, cat):
 
@@ -471,7 +628,19 @@ def marktplatz_main_category(request, cat):
 	}
 	return render (request, 'marktplatz/marktplatz-main.html', context)
 
+def marktplatz_main_jobs_category(request, cat):
 
+	mp_inserate = JobsMarketplace.objects.filter(category__name=cat)
+
+	mp_categories = MP_JobsCategory.objects.all()
+
+	context = {
+
+	'mp_inserate': mp_inserate,
+	'mp_categories': mp_categories,
+
+	}
+	return render (request, 'marktplatz/marktplatz-jobs.html', context)
 
 
 

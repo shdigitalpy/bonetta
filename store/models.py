@@ -47,7 +47,7 @@ class JobsMarketplace(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL,null=True, blank=True, on_delete=models.CASCADE)
 	title = models.CharField(max_length=255)
 	slug = models.SlugField(max_length=255)
-	jobdescription = models.CharField(max_length=255, default='')
+	jobdescription = models.CharField(max_length=500, default='')
 	add_date = models.DateTimeField(auto_now_add=True)
 	category = models.ForeignKey(MP_JobsCategory, related_name='mp_jobscategory', default=None, on_delete=models.SET_NULL, null=True, blank=True)
 	is_active = models.BooleanField(default=False)
@@ -57,6 +57,11 @@ class JobsMarketplace(models.Model):
 	language = models.CharField(max_length=255, default='')
 	res_description = models.CharField(max_length=255, default='')
 	contact_person = models.CharField(max_length=255, default='')
+	place = models.CharField(max_length=255, default='')
+	datejob = models.CharField(max_length=255, default='')
+	kindof = models.CharField(max_length=255, default='')
+	pensum = models.CharField(max_length=255, default='')
+	check_portal = models.CharField(max_length=255, default='Jobs')
 
 	class Meta:
 		ordering = ['-add_date']

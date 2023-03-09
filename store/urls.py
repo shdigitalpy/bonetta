@@ -73,13 +73,13 @@ urlpatterns = [
 	#marktplatz
 	path('marktplatz-uebersicht', views.marktplatz_overview, name='marktplatz_overview'),
     path('marktplatz', views.marktplatz_main, name='marktplatz_main'),
-    path('marktplatz-jobs', views.marktplatz_jobs, name='marktplatz_jobs'),
     path('inserate', views.myinserate, name="myinserate"),
     path('inserate/change/<int:pk>', views.myinserate_ändern, name="myinserate_ändern"),
     path('inserate/löschen/<int:pk>', views.myinserate_löschen, name="myinserate_löschen"),
     path('inserate/wirklich/löschen/<int:pk>', views.myinserate_wirklich, name="myinserate_wirklich"),
     path('marktplatz/video/', views.marktplatz_video, name='marktplatz_video'),
     path('marktplatz/main/<str:cat>', views.marktplatz_main_category, name='marktplatz_main_category'),
+    path('marktplatz/main/jobs/<str:cat>', views.marktplatz_main_jobs_category, name='marktplatz_main_jobs_category'),
     path('marktplatz/condition/<str:cond>', views.marktplatz_condition, name='marktplatz_condition'),
     path('marktplatz/inserat/erfassen', views.marktplatz_inserat_erfassen, name='marktplatz_inserat_erfassen'),
     path('marktplatz/inserat/aendern/<int:pk>', views.marktplatz_inserat_ändern, name='marktplatz_inserat_ändern'),
@@ -88,10 +88,19 @@ urlpatterns = [
     path('marktplatz/inserat/erfolg/<int:pk>', views.marktplatz_inserat_erfolg, name="marktplatz_inserat_erfolg"),
     path('marktplatz/inserat/details/<str:slug>', views.marktplatz_inserat_details, name="marktplatz_inserat_details"),
     path('cms/marktplatz', views.cms_marktplatz, name='cms_marktplatz'),
-    path('cms/marktplatz/inserat/freigegeben/<int:pk>', views.cms_inserat_freigeben, name="cms_inserat_freigeben"),
-    path('cms/marktplatz/inserat/deaktivieren/<int:pk>', views.cms_inserat_deaktivieren, name="cms_inserat_deaktivieren"),
+    path('cms/marktplatz/inserat/freigegeben/<int:pk>/<str:portal>', views.cms_inserat_freigeben, name="cms_inserat_freigeben"),
+    path('cms/marktplatz/inserat/deaktivieren/<int:pk>/<str:portal>', views.cms_inserat_deaktivieren, name="cms_inserat_deaktivieren"),
 	path('cms/marktplatz/inserat/bearbeiten/<int:pk>', views.cms_mp_bearbeiten, name="cms_mp_bearbeiten"),
 	path('cms/marktplatz/inserat/löschen/<int:pk>', views.cms_mp_löschen, name="cms_mp_löschen"),
+
+	#jobsmarktplatz
+	path('marktplatz/jobinserat/details/<int:pk>/<str:slug>', views.marktplatz_jobinserat_details, name="marktplatz_jobinserat_details"),
+	path('marktplatz-jobs', views.marktplatz_jobs, name='marktplatz_jobs'),
+	path('marktplatz/jobinserat/erfassen', views.marktplatz_jobinserat_erfassen, name='marktplatz_jobinserat_erfassen'),
+	path('marktplatz/jobinserat/summary/<int:pk>', views.marktplatz_jobinserat_summary, name="marktplatz_jobinserat_summary"),
+	path('marktplatz/jobinserat/aendern/<int:pk>', views.marktplatz_jobinserat_ändern, name='marktplatz_jobinserat_ändern'),
+	path('marktplatz/jobinserat/erfolg/<int:pk>', views.marktplatz_jobinserat_erfolg, name="marktplatz_jobinserat_erfolg"),
+
     #path('pdf_view/', views.ViewPDF.as_view(), name="pdf_view"),
     #path('pdf_download/', views.DownloadPDF.as_view(), name="pdf_download"),
 ]

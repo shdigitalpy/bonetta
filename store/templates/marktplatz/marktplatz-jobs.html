@@ -11,8 +11,8 @@
       <h1>Gastro Jobinserate</h1>
      
      <br>
-     <a class="btn btn-success btn-sm" href="">Inserat erstellen</a>
-     <br><br><br><br>
+     <a class="btn btn-success btn-sm" href="{% url 'store:marktplatz_jobinserat_erfassen' %}">Jobinserat erfassen</a>
+     <br><br><br>
 
 
       <div class="mp-flex-jobs">
@@ -20,13 +20,13 @@
      <div class="mp-main">
 
       <div>
-        <a href="{% url 'store:marktplatz_jobs' %}"><h3>Kategorien</h3></a>
+        <a href="{% url 'store:marktplatz_jobs' %}"><h3 style="font-size:1rem">Alle Kategorien</h3></a>
         <br>
 
         {% for category in mp_categories %}
         
         <ul style="list-style-type: none;padding: 0; margin:0;">
-        <a href="{% url 'store:marktplatz_main_category' category.name %}"><li>{{ category.name }}</li></a>
+        <a href="{% url 'store:marktplatz_main_jobs_category' category.name %}"><li>{{ category.name }}</li></a>
         
       </ul>
       
@@ -49,26 +49,17 @@
     
     
     <div class="mp-text">
-    <h3><a href="{% url 'store:marktplatz_inserat_details' ins.slug %}">{{ ins.title }}</a></h3>
 
-    <br>
-    
-    <div class="mp-box">
-      <p>
+    <h3><a href="{% url 'store:marktplatz_jobinserat_details' ins.id ins.slug %}">{{ ins.title }}
+      -
 
-
-        {% if ins.anonym_ins == 'Nein' %}
-
-        <small>Anbieter nicht öffentlich</small>
-
-        {% else %}
-        {% if ins.mp_firmenname %}
+      {% if ins.mp_firmenname %}
         {{ ins.mp_firmenname }}
         {% endif %}
 
-       {% endif %}
-
-    </p>
+    </a></h3>
+    <p>{{ ins.add_date }}</p>
+    
     </div>
     
   
