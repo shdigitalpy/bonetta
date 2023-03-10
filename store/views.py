@@ -633,7 +633,7 @@ def marktplatz_main_jobs_category(request, cat):
 
 	mp_inserate = JobsMarketplace.objects.filter(category__name=cat)
 
-	mp_categories = MP_JobsCategory.objects.all()
+	mp_categories = MP_JobsCategory.objects.all().order_by('name')
 
 	context = {
 
