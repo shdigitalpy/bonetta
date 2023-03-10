@@ -8,7 +8,7 @@
 
 <div class="container">
     <div class="storepreview">
-      <h1>Gastro Jobinserate</h1>
+      <h1 style="font-size:1.8em">Gastro Jobinserate</h1>
      
      <br>
      <a class="btn btn-success btn-sm" href="{% url 'store:marktplatz_jobinserat_erfassen' %}">Jobinserat erfassen</a>
@@ -37,10 +37,12 @@
 
      </div>
 
-     <div class="right-flex-jobs"><!--wrapper -->
+     <div class="right-flex-jobs" style="flex-direction:row;flex-wrap: wrap;aling-items:none;"><!--wrapper -->
+     
+
      {% for ins in mp_inserate %}
      {% if ins.is_active == True %}
-     <div class="mp-main-jobs-right">
+     <div class="mp-main-jobs-right" style="margin:0;width:400px;margin:0 5px;">
 
       
       
@@ -48,7 +50,7 @@
     
     
     
-    <div class="mp-text">
+    <div class="mp-text" style="padding: 5px 15px 15px 15px">
 
     <h3><a href="{% url 'store:marktplatz_jobinserat_details' ins.id ins.slug %}">{{ ins.title }}
       -
@@ -58,7 +60,7 @@
         {% endif %}
 
     </a></h3>
-    <p>{{ ins.add_date }}</p>
+    <p>Veröffentlichung: {{ ins.add_date|date:"d.m.Y " }}</p>
     
     </div>
     
@@ -67,10 +69,12 @@
     </div>
 
     </div><!-- end inserat flex -->
-  </div>
+  
 {% endif %}
 
   {% endfor %}
+
+  </div>
 
 </div><!--end wrapper -->
 

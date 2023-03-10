@@ -8,7 +8,7 @@
 
 <div class="container">
     <div class="storepreview">
-      <h1>Inserat {{ inserat.title }} {% if inserat.mp_firmenname %} / {{ inserat.mp_firmenname }} {% endif %}</h1>
+      <h1 style="font-size:1.8em">Inserat {{ inserat.title }} {% if inserat.mp_firmenname %} / {{ inserat.mp_firmenname }} {% endif %}</h1>
 
       
       <div class="mp-flex">
@@ -22,7 +22,7 @@
       
         
 
-    <div style="width:70%;">
+    <div style="width:70%;min-width:400px;">
 
       <div>
       
@@ -74,6 +74,11 @@
     <h3>Anforderungen</h3>
     <br>
      <p>{{ inserat.requirements|linebreaks }}</p>
+     {% if inserat.place %}
+      <br>
+     <p>Sprachen:  {{ inserat.language }}</p>
+
+      {% endif %}
 
      <br>
     <h3>Wer wir sind</h3>
@@ -114,6 +119,14 @@
     </div>
 
 
+    
+
+
+    <p> Erstelldatum: {{ inserat.add_date|date:"d.m.Y " }}</p>
+
+
+
+    <br><br>
     <a href="{% url 'store:marktplatz_jobs' %}">Zurück zum Jobsmarktplatz
 
     </a>
