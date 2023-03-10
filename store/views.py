@@ -142,11 +142,15 @@ def marktplatz_video(request):
 	return render (request, 'marktplatz/marktplatz-video.html', context)
 
 def marktplatz_jobs(request):
-	
-
-	mp_inserate = JobsMarketplace.objects.all()
-
 	mp_categories = MP_JobsCategory.objects.all()
+	search_query = request.GET.get('search', '')
+
+	if search_query:
+		mp_inserate = JobsMarketplace.objects.filter(Q(place__icontains=search_query) | Q(region__icontains=search_query))
+
+	else:
+		mp_inserate = JobsMarketplace.objects.all()
+
 
 	context = {
 

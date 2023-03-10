@@ -24,7 +24,7 @@ COUNTRY_CHOICES = [
 class InseratJobsCreateForm(forms.ModelForm):
 	class Meta:
 		model = JobsMarketplace
-		fields = ('category','title','datejob','kindof','pensum', 'jobdescription', 'requirements','language','res_description','contact_person', 'place'  )
+		fields = ('category','title','datejob','kindof','pensum', 'jobdescription', 'requirements','language','res_description','contact_person', 'place','region'  )
 
 		labels = {
 			'title' : "Titel des Eintrags:",
@@ -37,7 +37,8 @@ class InseratJobsCreateForm(forms.ModelForm):
 			'place' : "Adresse",
 			'datejob' : "Stellenantritt",
 			'kindof' : "Anstellungsart",
-			'pensum' : "Pensum"
+			'pensum' : "Pensum",
+			'region' : "Region"
 		}
 		
 		widgets = {
@@ -76,6 +77,9 @@ class InseratJobsCreateForm(forms.ModelForm):
 			'place': forms.TextInput(attrs={
 				'class': 'form-control col-6',
 				'placeholder':'z.B. Landstrasse 4, 8447 Dachsen'}),
+			'region' : forms.Select(attrs={
+				'class': 'form-control col-6',
+				}),
 
 			
 		}

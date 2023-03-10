@@ -1,7 +1,11 @@
+
 .mp-overview {
 	margin-top:3rem;
+	display:-webkit-box;
+	display:-ms-flexbox;
 	display:flex;
-	flex-wrap:wrap;
+	-ms-flex-wrap:wrap;
+	    flex-wrap:wrap;
 }
 
 
@@ -9,7 +13,8 @@
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  flex-wrap:wrap;
+  -ms-flex-wrap:wrap;
+      flex-wrap:wrap;
   width:100%;
   background-color:var(--grey);
   margin: 15px;
@@ -28,15 +33,23 @@
 
 
 .mp-flex {
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	align-items: stretch;
+	-webkit-box-align: stretch;
+	    -ms-flex-align: stretch;
+	        align-items: stretch;
 
 
 }
 
 .mp-flex-jobs {
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	align-items: stretch;
+	-webkit-box-align: stretch;
+	    -ms-flex-align: stretch;
+	        align-items: stretch;
 	width:100%;
 	
 }
@@ -44,7 +57,10 @@
 
 @media only screen and (max-width: 900px) {
 	.mp-flex {
-	flex-direction: column;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	    -ms-flex-direction: column;
+	        flex-direction: column;
 }
 
 .verkauefer {
@@ -58,7 +74,8 @@
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  flex-wrap:wrap;
+  -ms-flex-wrap:wrap;
+      flex-wrap:wrap;
   width: 230px;
   
 }
@@ -67,7 +84,8 @@
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  flex-wrap:wrap;
+  -ms-flex-wrap:wrap;
+      flex-wrap:wrap;
   
 }
 
@@ -78,16 +96,30 @@
 
 
 .right-flex {
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	align-items: stretch;
-	flex-wrap: wrap;
-	justify-content: space-between;
+	-webkit-box-align: stretch;
+	    -ms-flex-align: stretch;
+	        align-items: stretch;
+	-ms-flex-wrap: wrap;
+	    flex-wrap: wrap;
+	-webkit-box-pack: justify;
+	    -ms-flex-pack: justify;
+	        justify-content: space-between;
 }
 
 .right-flex-jobs {
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	flex-direction: column;
-	align-items: stretch;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	    -ms-flex-direction: column;
+	        flex-direction: column;
+	-webkit-box-align: stretch;
+	    -ms-flex-align: stretch;
+	        align-items: stretch;
 	width:100%;
 
 }
@@ -117,7 +149,8 @@
 .mp-image { 
 	width:250px;
 	height:220px;
-	object-fit: cover;
+	-o-object-fit: cover;
+	   object-fit: cover;
 }
 
 
@@ -135,8 +168,13 @@
 .right-wrapper-slider {
 	width:500px;
 	margin: 0 2rem;
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	flex-direction: column;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	    -ms-flex-direction: column;
+	        flex-direction: column;
 }
 
 
@@ -146,6 +184,41 @@
 	margin: 1rem 0;
 }
 }
+
+
+/* Marktplatz Jobs */
+
+.jobsintro-flex {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-pack: justify;
+	    -ms-flex-pack: justify;
+	        justify-content: space-between;
+	-ms-flex-wrap: wrap;
+	    flex-wrap: wrap;
+}
+
+
+.textjobins {
+width:600px;
+
+}
+
+
+
+
+@media only screen and (max-width: 1200px) {
+	.textjobins {
+	width:100%;
+}
+
+.flexjobs {
+	-ms-flex-wrap: wrap;
+	    flex-wrap: wrap;
+}
+}
+
 
 
 /* Slider CSS */
@@ -165,6 +238,8 @@
 .slider>img{
 	position: absolute;
 	left: 0; top: 0;
+	-webkit-transition: all 0.5s;
+	-o-transition: all 0.5s;
 	transition: all 0.5s;
 }
 
@@ -179,6 +254,8 @@
 	
 	float: left;
 	cursor: pointer;
+	-webkit-transition: all 0.5s;
+	-o-transition: all 0.5s;
 	transition: all 0.5s;
 	
 	/*Default style = low opacity*/
@@ -198,14 +275,18 @@
 /*Time to work on the main images*/
 .slider input[name='slide_switch'] ~ img {
 	opacity: 0;
-	transform: scale(1.1);
+	-webkit-transform: scale(1.1);
+	    -ms-transform: scale(1.1);
+	        transform: scale(1.1);
 }
 /*That hides all main images at a 110% size
 On click the images will be displayed at normal size to complete the effect
 */
 .slider input[name='slide_switch']:checked+label+img {
 	opacity: 1;
-	transform: scale(1);
+	-webkit-transform: scale(1);
+	    -ms-transform: scale(1);
+	        transform: scale(1);
 }
 /*Clicking on any thumbnail now should activate the image related to it*/
 

@@ -26,6 +26,39 @@ ANONYM_CHOICES = (
 	('Nein', 'Nein')
 	)
 
+JOBS_CHOICES = (
+(' Aargau',' Aargau'),
+(' Appenzell Innerrhoden',' Appenzell Innerrhoden'),
+(' Appenzell Ausserrhoden',' Appenzell Ausserrhoden'),
+(' Bern',' Bern'),
+(' Basel-Landschaft',' Basel-Landschaft'),
+(' Basel-Stadt',' Basel-Stadt'),
+(' Freiburg',' Freiburg'),
+(' Genf',' Genf'),
+(' Glarus',' Glarus'),
+(' Graubünden',' Graubünden'),
+(' Jura',' Jura'),
+(' Luzern',' Luzern'),
+(' Neuenburg',' Neuenburg'),
+(' Nidwalden',' Nidwalden'),
+(' Obwalden',' Obwalden'),
+(' St. Gallen',' St. Gallen'),
+(' Schaffhausen',' Schaffhausen'),
+(' Solothurn',' Solothurn'),
+(' Schwyz',' Schwyz'),
+(' Thurgau',' Thurgau'),
+(' Tessin',' Tessin'),
+(' Uri',' Uri'),
+(' Waadt',' Waadt'),
+(' Wallis',' Wallis'),
+(' Zug',' Zug'),
+(' Zürich',' Zürich')
+)
+
+
+
+
+
 
 class MP_JobsCategory(models.Model):
 	name = models.CharField(max_length=255)
@@ -58,6 +91,7 @@ class JobsMarketplace(models.Model):
 	res_description = models.CharField(max_length=255, default='')
 	contact_person = models.CharField(max_length=255, default='')
 	place = models.CharField(max_length=255, default='')
+	region = models.CharField(max_length=255, choices=JOBS_CHOICES, default="Zürich")
 	datejob = models.CharField(max_length=255, default='')
 	kindof = models.CharField(max_length=255, default='')
 	pensum = models.CharField(max_length=255, default='')

@@ -11,11 +11,40 @@
       <h1 style="font-size:1.8em">Gastro Jobinserate</h1>
      
      <br>
+
+
+     <div class="jobsintro-flex">
      <a class="btn btn-success btn-sm" href="{% url 'store:marktplatz_jobinserat_erfassen' %}">Jobinserat erfassen</a>
+
+     <!-- Search form -->
+        <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="{% url 'store:marktplatz_jobs' %}">
+          {% csrf_token %}
+            
+          <div style="display: flex">
+                
+                <div style="flex: 0 0 20%">
+                <input id="textsuche" class="form-control" type="text" placeholder="Region / Ort"
+            aria-label="Search" name="search">
+          </div>
+                <div style="flex: 0 0 15%">
+                <button type="submit" style="border: none;" class="btn btn-outline-secondary">
+            <span class="fas fa-search"></span> Suche
+          </button>
+        </div>
+        <div style="flex: 0 0 15%">
+            <a href="{% url 'store:marktplatz_jobs' %}" style="border: none;" class="btn btn-outline-secondary"><span class="fas fa-times"></span> zurücksetzen</a>
+        </div>
+
+      </div>
+        </form>
+
+      </div><!-- end introflex -->
+
+
      <br><br><br>
 
 
-      <div class="mp-flex-jobs">
+      <div class="mp-flex-jobs flexjobs">
   
      <div class="mp-main">
 
@@ -42,25 +71,46 @@
 
      {% for ins in mp_inserate %}
      {% if ins.is_active == True %}
-     <div class="mp-main-jobs-right" style="margin:0;width:400px;margin:0 5px;">
+     <div class="mp-main-jobs-right" style="margin:0;margin:0 5px;border:none;">
 
       
       
-    <div class="inserat-jobs-flex">
+    <div class="inserat-jobs-flex" style="width:100%;display:block;">
     
     
     
-    <div class="mp-text" style="padding: 5px 15px 15px 15px">
+    <div class="mp-text" style="width:100%;padding: 5px 15px 15px 15px">
 
-    <h3><a href="{% url 'store:marktplatz_jobinserat_details' ins.id ins.slug %}">{{ ins.title }}
+      <table class="table table-responsive">
+  
+  <tbody>
+    <tr>
+      
+      <td >{{ ins.add_date|date:"d.m.Y " }}</td>
+      <td class="textjobins"><h3><a href="{% url 'store:marktplatz_jobinserat_details' ins.id ins.slug %}">{{ ins.title }}
       -
-
       {% if ins.mp_firmenname %}
         {{ ins.mp_firmenname }}
         {% endif %}
 
-    </a></h3>
-    <p>Veröffentlichung: {{ ins.add_date|date:"d.m.Y " }}</p>
+    </a></h3></td>
+      <td>Region </td>
+    </tr>
+    <tr>
+
+      <td></td>
+      <td>{{ ins.jobdescription|slice:200 }}...
+        <br><br><a class="btn btn-outline-secondary" href="{% url 'store:marktplatz_jobinserat_details' ins.id ins.slug %}">Details
+
+    </a></td>
+
+    <td>{{ ins.region }}</td>
+      
+    </tr>
+   
+  </tbody>
+</table>
+
     
     </div>
     
