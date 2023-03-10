@@ -53,14 +53,31 @@
         <br>
 
         {% for category in mp_categories %}
+
+        {% if category.name == "Kältebranche" %}
+
+        {% else %}
         
         <ul style="list-style-type: none;padding: 0; margin:0;">
         <a href="{% url 'store:marktplatz_main_jobs_category' category.name %}"><li>{{ category.name }}</li></a>
-        
-      </ul>
+        </ul>
+
+      {% endif %}
       
       {% endfor %}
 
+      <br><br>
+
+      {% for category in mp_categories %}
+
+      {% if category.name == "Kältebranche" %}
+
+      <ul style="list-style-type: none;padding: 0; margin:0;">
+        <a href="{% url 'store:marktplatz_main_jobs_category' category.name  %}"><li>{{ category.name }}</li></a>
+        </ul>
+      {% endif %}
+
+      {% endfor %}
       
     </div>
 
