@@ -133,16 +133,13 @@ def anleitung_videos(request):
 	return render (request, 'anleitung-videos.html', context)
 
 def marktplatz_video(request):
-	
-
 	context = {
 	
-
 	}
 	return render (request, 'marktplatz/marktplatz-video.html', context)
 
 def marktplatz_jobs(request):
-	mp_categories = MP_JobsCategory.objects.all()
+	mp_categories = MP_JobsCategory.objects.all().order_by('name')
 	search_query = request.GET.get('search', '')
 
 	if search_query:
