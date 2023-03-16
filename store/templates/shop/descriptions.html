@@ -49,6 +49,12 @@
   
     
     <div class="dichtflex-element">
+
+      {% if item.kategorie.name  == "Zubehör"%}
+       <p class="preis">CHF {{ item.preis|floatformat:2 }} <small>exklusive MwSt</small>
+        
+      </p>
+      {% endif %}
       
      {% if user.is_authenticated %}
      <form method="POST" action="{{ orderitem.get_add_to_cart_url }}" enctype="multipart/form-data">
