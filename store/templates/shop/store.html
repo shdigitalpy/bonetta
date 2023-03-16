@@ -15,6 +15,39 @@
         
   <div class="col-lg-3">
 
+    {% if product.kategorie.name  == "Zubehör"%}
+
+
+
+    <div class="product-flex">
+      {% if product.titelbild %}
+    <a href="{% url 'store:product-detail' product.slug %}"><img class="thumbnail" src="{{ product.titelbild.url }}"></a>
+    {% endif %}
+    
+    <div class="box-element">
+
+    
+    <div class="box-element-sub">
+    <h4>{{ product.kategorie }}<br> 
+      {{ product.titel }}<br>
+    <strong>{{ product.artikelnr }} </strong></h4>
+    
+  
+    
+    
+    
+      
+    <a class="btn btn-warning btn-sm" href="{% url 'store:product-detail' product.slug %}">Preis Berechnung</a>
+
+    <hr>
+    </div>
+
+    </div>
+
+    </div>
+
+    {% else %}
+
     <div class="product-flex">
       {% if product.titelbild %}
     <a href="{% url 'store:product-detail' product.slug %}"><img class="thumbnail" src="{{ product.titelbild.url }}"></a>
