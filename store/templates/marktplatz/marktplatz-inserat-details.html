@@ -92,7 +92,7 @@
       
      <div class="slider">
 
-      {% if inserat1.image %}
+      {% if inserat.image1 %}
   <input type="radio" name="slide_switch" id="id1"/>
   <label for="id1">
     <img style="max-width:100%;" src="{{ inserat.image1.url }}" width="100"/>
@@ -116,7 +116,7 @@
   <label for="id3">
     <img style="max-width:100%;" src="{{ inserat.image2.url }}" width="100"/>
   </label>
-  <img style="max-width:100%;max-height:320px;" src="{{ inserat.image2.url }}"/>
+  <img style="max-width:100%;max-height:320px;" src="{{inserat.image2.url }}"/>
   {% endif %}
   
   
