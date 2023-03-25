@@ -95,9 +95,9 @@
       {% if inserat.image1 %}
   <input type="radio" name="slide_switch" id="id1"/>
   <label for="id1">
-    <img style="max-width:100%;" src="{{ inserat.image1.url }}" width="100"/>
+    <img style="max-width:100%;max-height:120px;" src="{{ inserat.image1.url }}" width="100"/>
   </label>
-  <img style="max-width:100%;max-height:120px;" src="{{ inserat.image1.url }}"/>
+  <img style="max-width:100%;max-height:320px;" src="{{ inserat.image1.url }}"/>
 
    {% endif %}
   
@@ -105,18 +105,18 @@
   {% if inserat.image %}
   <input type="radio" name="slide_switch" id="id2" checked="checked"/>
   <label for="id2">
-    <img style="max-width:100%;" src="{{ inserat.image.url }}" width="100"/>
+    <img style="max-width:100%;max-height:120px;" src="{{ inserat.image.url }}" width="100"/>
   </label>
-  <img style="max-width:100%;max-height:120px;" src="{{ inserat.image.url }}"/>
+  <img style="max-width:100%;max-height:320px;" src="{{ inserat.image.url }}"/>
 
   {% endif %}
 
   {% if inserat.image2 %}
   <input type="radio" name="slide_switch" id="id3"/>
   <label for="id3">
-    <img style="max-width:100%;" src="{{ inserat.image2.url }}" width="100"/>
+    <img style="max-width:100%;max-height:120px;" src="{{ inserat.image2.url }}" width="100"/>
   </label>
-  <img style="max-width:100%;max-height:120px;" src="{{inserat.image2.url }}"/>
+  <img style="max-width:100%;max-height:320px;" src="{{inserat.image2.url }}"/>
   {% endif %}
   
   
