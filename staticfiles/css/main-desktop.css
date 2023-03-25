@@ -2,9 +2,6 @@
 
 /* ----------------------------------- Main CSS elements */
 :root {
-	--newprimary: #9c1b32;
-	--newsec: #F5A623;
-	--newthird: #FFFFFF; 
   --blue: #29384e;
   --lightblue: #BFDAF3;
   --white: #ffffff;
@@ -95,7 +92,7 @@ table {
 }
 
 thead {
-	background-color: var(--newprimary);
+	background-color: var(--blue);
 	color: var(--white)
 }
 
@@ -830,6 +827,5 @@ footer .flex-item {
 	width: 50%;
 	margin: 0 auto;
 }
-
 
 
