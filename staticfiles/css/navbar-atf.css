@@ -5,7 +5,7 @@
 
 .navbar {
     padding: .8rem;
-    background-color: var(--blue) !important;
+    background-color: var(--newprimary) !important;
 }
 
 @media only screen and (min-width: 1200px) {
@@ -42,7 +42,7 @@
 
 
 .nav-container {
-    background-color: var(--blue);
+    background-color: var(--newprimary);
 }
 
 .warenkorb {

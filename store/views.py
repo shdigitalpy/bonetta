@@ -395,7 +395,7 @@ def myinserate_ändern(request, pk):
 			messages.error(request, "Error")
 
 	else: 
-		form = form = InseratCreateForm(instance=inserat)
+		form = form = InseratCreateForm(request.FILES or None, instance=inserat)
 
 	context = {
 		'form': form,

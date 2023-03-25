@@ -2,6 +2,9 @@
 
 /* ----------------------------------- Main CSS elements */
 :root {
+	--newprimary: #9c1b32;
+	--newsec: #F5A623;
+	--newthird: #FFFFFF; 
   --blue: #29384e;
   --lightblue: #BFDAF3;
   --white: #ffffff;
@@ -92,7 +95,7 @@ table {
 }
 
 thead {
-	background-color: var(--blue);
+	background-color: var(--newprimary);
 	color: var(--white)
 }
 
