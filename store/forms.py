@@ -424,7 +424,7 @@ class RegistrationForm(SignupForm):
 
 	phone = forms.CharField(max_length=500, required=True, label="",
 					widget=forms.TextInput(attrs={
-						'placeholder': 'Telefon-Nr.',
+						'placeholder': 'Telefon- oder Mobile-Nr.',
 						'class': 'form-control'
 
 						}),
