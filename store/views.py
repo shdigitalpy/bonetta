@@ -1948,7 +1948,7 @@ def product_cms_edit(request, pk, current_cat):
 		form = ProduktEditForm(request.POST or None, request.FILES or None, instance=item)
 		if form.is_valid():
 			form.save()
-			return redirect('store:cms_produkte')
+			return redirect('store:cms_produkte', first_cat=current_cat)
 
 		else:
 			messages.error(request, "Error")
