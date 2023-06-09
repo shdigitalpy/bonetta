@@ -1921,8 +1921,9 @@ def product_cms_create(request, cat):
 	if request.method == "POST":
 		form = ProduktCreateForm(request.POST or None, request.FILES or None)
 		if form.is_valid():
-			form.save()
-			form.kategorie = cat
+			result = form.save(commit=False)
+			result.kategorie = get_object_or_404(Category, name=cat)
+			result.save()
 			return redirect('store:cms_produkte', first_cat=cat)
 		else:
 			messages.error(request, "Error")
@@ -1963,11 +1964,11 @@ def product_cms_edit(request, pk, current_cat):
 	return render(request, 'cms-produkte-bearbeiten.html', context)
 
 @staff_member_required
-def cms_remove_product(request, pk):
+def cms_remove_product(request, pk, cat):
 	eintrag = get_object_or_404(Item, pk=pk)
 	eintrag.delete()
 	messages.info(request, "Der Eintrag wurde gelöscht.")
-	return redirect("store:cms_produkte")	
+	return redirect("store:cms_produkte", first_cat=cat)	
 
 
 @staff_member_required

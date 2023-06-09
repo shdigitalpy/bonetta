@@ -750,7 +750,6 @@ class ProduktCreateForm(forms.ModelForm):
 		model = Item
 		fields = (
 			'sortierung',
-			
 			'subkategorie',
 			'titel',
 			'artikelnr',
