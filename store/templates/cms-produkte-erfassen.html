@@ -8,7 +8,7 @@
 			<div class="produkt">
 				
 			<div class="produkt-header">
-			<h2>Produkt erfassen</h2><button class="btn btn-danger btn-exit"><a href="{% url 'store:cms_produkte' %}">Zurück <span class="fas fa-times"></span></a></button>
+			<h2>Produkt erfassen - {{ cat }}</h2><button class="btn btn-danger btn-exit"><a href="{% url 'store:cms_produkte' cat %}">Zurück <span class="fas fa-times"></span></a></button>
 			</div>
 			<br>
 			<div class="form-group">
@@ -17,6 +17,7 @@
 		      {% csrf_token %}
 		      {{ form.media }}
 		      {{ form.as_p }}
+
 		     <br><br>
 		      <button class="btn btn-success btn-save">Speichern <span class="fas fa-check-circle"></span></button>
 		      

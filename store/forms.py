@@ -744,8 +744,160 @@ class ElementeEditForm(forms.ModelForm):
 				}),
 		}
 
-class ProduktEditForm(forms.ModelForm):
 
+class ProduktCreateForm(forms.ModelForm):
+	class Meta:
+		model = Item
+		fields = (
+			'sortierung',
+			
+			'subkategorie',
+			'titel',
+			'artikelnr',
+			'montage',
+			'lieferung',
+			'farbe',
+			'preis', 
+			'preis2', 
+			'preis3', 
+			'preis4',
+			'preis5',
+			'preis6',
+			'preis7',
+			'beschreibung',
+			'titelbild', 
+			'slug',
+			'material', 
+			'nut', 
+			'falz',
+			'falzluft',
+			'fuge',
+			'glasdicke',
+			'hersteller',
+
+			
+			
+			)
+
+		labels = {
+			
+			'sortierung': "Sortierung",
+			'titel' : "Bezeichnung",
+			'artikelnr' : "Artikel-Nr",
+			'lieferung' : "Lieferung",
+			'montage' : "Typ",
+			'farbe' : "Farbe",
+			'preis': "Preis 1 (PVC bis 2m / Gummi & Stahlzargen usw. bis 25m / Dusch bis 5 Stück / Zubehör)", 
+			'preis2': "Preis 2 (PVC ab 2m / Gummi & Stahlzargen usw. ab 25m / Dusch ab 5 Stück)", 
+			'preis3': "Preis 3 (PVC ab 4m / Gummi & Stahlzargen usw. ab 50m / Dusch ab 10 Stück)", 
+			'preis4': "Preis 4 (Gummi & Stahlzargen usw. ab 100m / Dusch ab 25 Stück)",
+			'preis5': "Preis 5 (Gummi & Stahlzargen usw. ab 200m / Dusch ab 50 Stück)",
+			'preis6': "Preis 6 (Gummi & Stahlzargen usw. ab 500m)",
+			'preis7': "Preis 7 (nur Stahlzargen usw. ab 1000m)",
+			'beschreibung' : "Bemerkung",
+			'slug': "URL",
+			'nut': "Nut:",
+			'falzluft': "Falzluft:",
+			'falz': "Falz:",
+			'fuge': "Fuge:",
+			'glasdicke': "Glasdicke:",
+			'material': "Material:",
+			'hersteller': "Hersteller:",
+		}
+
+		widgets = {
+			'sortierung': forms.TextInput(attrs={
+				'class': 'form-control',
+				}),
+			'artikelnr': forms.TextInput(attrs={
+				'class': 'form-control',
+				}),
+			'kategorie': forms.Select(attrs={
+				'class': 'form-control',
+				}),
+			'subkategorie': forms.Select(attrs={
+				'class': 'form-control',
+				}),
+			'titel': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+			'artikelnr': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+			'lieferung': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+			'montage': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+			'farbe': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+			'preis': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+			'preis2': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+			'preis3': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+			'preis4': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+			'preis5': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+			'preis6': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+			'preis7': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+			
+			'beschreibung': forms.Textarea(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+
+			'titelbild' : forms.FileInput(attrs={
+				'class': 'form-control',
+				}),
+			
+			'slug': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder': ''}),
+
+			'nut': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+
+			'falz': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+
+			'falzluft': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+
+			'fuge': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+
+			'glasdicke': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+
+			'material': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+			
+			'hersteller': forms.TextInput(attrs={
+				'class': 'form-control',
+				'placeholder':''}),
+		}
+		
+
+class ProduktEditForm(forms.ModelForm):
 	class Meta:
 		model = Item
 		fields = (
@@ -895,6 +1047,7 @@ class ProduktEditForm(forms.ModelForm):
 				'class': 'form-control',
 				'placeholder':''}),
 		}
+		
 
 
 

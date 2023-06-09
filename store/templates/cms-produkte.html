@@ -6,20 +6,26 @@
 
 		
 			<div class="flexbox">
-				<div class="h2">Produkte</div>
+				<div class="h2">Produkte für {{ current_cat }}</div>
 
 				<!-- Search form -->
-				<form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="{% url 'store:cms_produkte' %}">
+				<form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="{% url 'store:cms_produkte' first_cat %}">
 				  {% csrf_token %}
 				    
 				  <div style="display: flex">
 
 				  	<div style="flex: 0 0 20%">
 		            <select id="category" class="form-control" name="category">
-		              <option selected>Wählen...</option>
+
+		               
+		              <option selected>..wählen</option>
+		              
 		              {% for cat in category %}
+		           
 		              <option value="{{ cat }}">{{ cat }}</option>
-		              {% endfor %}
+
+		              {% endfor %}     
+
 		            </select>
 		        	</div>
 		            
@@ -33,13 +39,16 @@
 				  </button>
 				</div>
 				<div style="flex: 0 0 15%">
-				    <a href="{% url 'store:cms_produkte' %}" style="border: none;" class="btn btn-outline-secondary"><span class="fas fa-times"></span> zurücksetzen</a>
+				   
+
+				    <a href="{% url 'store:cms_produkte' first_cat %}" style="border: none;" class="btn btn-outline-secondary"><span class="fas fa-times"></span> zurücksetzen</a>
+					
 				</div>
 				</form>
 
 			</div>
 			<div class="flexbox">
-				<a class="btn btn-secondary btn-sm mr-1" href="{% url 'store:product_cms_create' %}">Erfassen</a>
+				<a class="btn btn-secondary btn-sm mr-1" href="{% url 'store:product_cms_create' current_cat  %}">Erfassen</a>
 			</div>
 
 			<table class="table table-striped">
@@ -76,7 +85,7 @@
 					 </a></td>
 			      <td>{{ data.sortierung }}</td>
 			      <td>
-			      	<a href="{% url 'store:cms_produkte_edit' data.pk %}"><i style="color:var(--red)" class="far fa-edit"></i>
+			      	<a href="{% url 'store:cms_produkte_edit' data.pk current_cat %}"><i style="color:var(--red)" class="far fa-edit"></i>
 					 </a>
 					 </td>
   					<td>

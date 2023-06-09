@@ -15,3 +15,10 @@ def sub_extras(request):
 def extras_marke(request):
 	marke_menu = Marke.objects.all().count()
 	return {'marke_menu': marke_menu}
+
+
+def first_cat(request):
+	catquery = Category.objects.order_by('name').first()
+	first_cat = catquery.name
+	return {'first_cat' : first_cat}
+	

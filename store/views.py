@@ -1556,7 +1556,11 @@ def create_lieferadresse(request):
 @staff_member_required
 def cms(request):
 
-	context = { }
+	cat = Category.objects.first()
+
+	context = {
+	'cat' : cat
+	 }
 	return render(request, 'cms.html', context)
 
 
@@ -1871,34 +1875,73 @@ def cms_kunde_löschen(request, pk):
 
 
 @staff_member_required
-def cms_produkte(request):
+def cms_produkte(request, first_cat):
 	category = Category.objects.all()
 	filter_query = request.GET.get('category', '')
 	search_query = request.GET.get('search', '')
-
+	first_cat_new = ''
+	current_cat = 'standard'
 
 	if search_query:
 		produkte = Item.objects.filter(Q(titel__icontains=search_query) | Q(artikelnr__icontains=search_query) | Q(kategorie__name__icontains=search_query) | Q(subkategorie__sub_name__icontains=search_query))
-	
+		
 		if filter_query:
 			produkte = produkte.filter(kategorie__name=filter_query)
+			current_cat_query = get_object_or_404(Category, name=filter_query)
+			current_cat = current_cat_query.name 
+			first_cat_new = current_cat
 		else:
 			pass
 	else:
 		if filter_query:
 			produkte = Item.objects.filter(kategorie__name=filter_query)
+			current_cat_query = get_object_or_404(Category, name=filter_query)
+			current_cat = current_cat_query.name 
+			first_cat_new = current_cat
 		else: 
-			produkte = Item.objects.all()
+			produkte = Item.objects.filter(kategorie__name=first_cat)
 			
+	if current_cat == 'standard':
+		current_cat = first_cat
+	else:
+		pass
+
 
 	context = {
 		'category': category,
 		'produkte': produkte,
+		'first_cat_new' : first_cat_new,
+		'current_cat' : current_cat
 	 }
 	return render(request, 'cms-produkte.html', context)
 
+
 @staff_member_required
-def product_cms_edit(request, pk):
+def product_cms_create(request, cat):
+	if request.method == "POST":
+		form = ProduktCreateForm(request.POST or None, request.FILES or None)
+		if form.is_valid():
+			form.save()
+			form.kategorie = cat
+			return redirect('store:cms_produkte', first_cat=cat)
+		else:
+			messages.error(request, "Error")
+	else: 	
+		initial_data = {
+		        'kategorie': cat,
+		        
+		    }
+		form = ProduktCreateForm(initial=initial_data)
+
+	context = {
+		'form': form,
+		'cat' : cat,
+				}
+	return render(request, 'cms-produkte-erfassen.html', context)
+
+
+@staff_member_required
+def product_cms_edit(request, pk, current_cat):
 	item = get_object_or_404(Item, pk=pk)
 	
 	if request.method == "POST":
@@ -1915,27 +1958,9 @@ def product_cms_edit(request, pk):
 	context = {
 		'form': form,
 		'item': item,
+		'current_cat': current_cat
 				}
 	return render(request, 'cms-produkte-bearbeiten.html', context)
-
-@staff_member_required
-def product_cms_create(request):
-	if request.method == "POST":
-		form = ProduktEditForm(request.POST or None, request.FILES or None)
-		if form.is_valid():
-			form.save()
-			return redirect('store:cms_produkte')
-
-		else:
-			messages.error(request, "Error")
-
-	else: 
-		form = ProduktEditForm()
-
-	context = {
-		'form': form,
-				}
-	return render(request, 'cms-produkte-erfassen.html', context)
 
 @staff_member_required
 def cms_remove_product(request, pk):
