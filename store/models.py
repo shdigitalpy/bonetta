@@ -498,7 +498,7 @@ class Order(models.Model):
 		return get_total_pre_mwst_withoutskonto
 
 	def get_total_mwst_warenkorb(self):
-		get_total_mwst_warenkorb = self.get_total_pre_mwst_withoutskonto() * 1.077
+		get_total_mwst_warenkorb = self.get_total_pre_mwst_withoutskonto() * 1.081
 		return get_total_mwst_warenkorb
 
 	def get_pre_mwst_warenkorb(self):
@@ -532,7 +532,7 @@ class Order(models.Model):
 		return mwst
 
 	def grandtotal(self):
-		grandtotal = self.get_total_pre_mwst() * 1.077
+		grandtotal = self.get_total_pre_mwst() * 1.081
 		return grandtotal
 
 class Address(models.Model):

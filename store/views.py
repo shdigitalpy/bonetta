@@ -193,7 +193,7 @@ def marktplatz_inserat_summary(request, pk):
 
 	post_data = {
 	"amount": betrag,
-	"vatRate": 7.7,
+	"vatRate": 8.1,
 	"currency": "CHF",
 	"sku": sku,
 	"preAuthorization": 0,
