@@ -1991,7 +1991,7 @@ def cms_remove_product(request, pk, cat):
 def cms_elemente_statistik(request):
 	search_query = request.GET.get('search', '')
 	if search_query:
-		elemente = Elemente.objects.filter(Q(dichtungen__titel__icontains=search_query) | Q(aussenbreite__icontains=search_query) | Q(aussenhöhe__icontains=search_query))
+		elemente = Elemente.objects.filter(Q(dichtungen__titel__icontains=search_query) | Q(kuehlposition__icontains=search_query) | Q(aussenbreite__icontains=search_query) | Q(aussenhöhe__icontains=search_query) | Q(elementnr__icontains=search_query))
 	else:
 		elemente = Elemente.objects.all
 
