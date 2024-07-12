@@ -2003,16 +2003,21 @@ def cms_elemente_statistik(request):
 
 @staff_member_required
 def cms_elemente(request, pk):
-	kunde_data = ''
+	kunde_data = Kunde.objects.get(pk=pk)
 	search_query = request.GET.get('search', '')
 	if search_query:
-		elemente = Elemente.objects.filter(Q(dichtungen__titel__icontains=search_query) | Q(elementnr__icontains=search_query))
+		
+		elemente = Elemente.objects.filter(Q(dichtungen__titel__icontains=search_query) | Q(kuehlposition__icontains=search_query) | Q(aussenbreite__icontains=search_query) | Q(aussenhöhe__icontains=search_query) | Q(elementnr__icontains=search_query))
+		
 	else:
-		kunde_data = Kunde.objects.get(pk=pk)
+		elemente = Elemente.objects.filter(kunde=kunde_data)
 
+	
 	context = {
-		'kunde_data': kunde_data,
+		'elemente': elemente,
 		'kunde_id'  :pk,
+		'kunde_data' : kunde_data,
+
 		
 	 }
 	return render(request, 'cms-elemente.html', context)
