@@ -2021,6 +2021,7 @@ def cms_elemente_create(request, pk):
     
     context = {
         'form': form,
+        'kunde_id':pk,
     }
     return render(request, 'cms-elemente-erfassen.html', context)
 

@@ -93,7 +93,9 @@
 
 
 			  	{% if data.profile.get_absolute_elemente_url %}
-			  	<td><form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{{ data.profile.get_absolute_elemente_url }}"><i class="fas fa-info-circle"></i></a></form></td>
+			  	<td><form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{{ data.profile.get_absolute_elemente_url }}"><i class="fas fa-info-circle"></i> / {{ data.profile.elemente_count }}</a></form>
+
+			  	</td>
 			  	{% endif %}
 
 			  	

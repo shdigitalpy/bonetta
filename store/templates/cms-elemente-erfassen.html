@@ -15,7 +15,7 @@
 		     {% csrf_token %}
 		      {{ form.as_p }}
 		      <button class="btn btn-warning btn-md ml-4">Erfassen</button>
-		      <button class="btn btn-secondary btn-md ml-4"><a href="{% url 'store:cms_kunden' %}">Zurück</a></button>
+		      <button class="btn btn-secondary btn-md ml-4"><a href="{% url 'store:cms_elemente' kunde_id %}">Zurück</a></button>
   			</div>
 			<br/>
 			   </form>

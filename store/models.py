@@ -599,6 +599,9 @@ class Kunde(models.Model):
 	def get_absolute_elemente_url(self):
 		return reverse('store:cms_elemente', kwargs={'pk': self.pk})
 
+	def elemente_count(self):
+		return self.kunden_elemente.count()
+
 
 class Elemente(models.Model):
 	dichtungen = models.ForeignKey(
