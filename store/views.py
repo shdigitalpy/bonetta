@@ -2003,9 +2003,10 @@ def cms_elemente_statistik(request):
 
 @staff_member_required
 def cms_elemente(request, pk):
+	kunde_data = ''
 	search_query = request.GET.get('search', '')
 	if search_query:
-		elemente = Elemente.objects.filter(Q(profile__firmenname__icontains=search_query) | Q(elementnr__icontains=search_query))
+		elemente = Elemente.objects.filter(Q(dichtungen__titel__icontains=search_query) | Q(elementnr__icontains=search_query))
 	else:
 		kunde_data = Kunde.objects.get(pk=pk)
 
