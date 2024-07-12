@@ -7,9 +7,6 @@
 		
 			<div class="flexbox">
 				<div class="h2">Elemente<br><br> {{ kunde_data.firmenname }}</div>
-
-				
-
 				<!-- Search form -->
 				<form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="">
 				  {% csrf_token %}
@@ -30,9 +27,11 @@
 				
 				   </div>
 				</form>
+
 			</div>
 			<div class="flexbox">
-				<a class="btn btn-secondary btn-sm" href="{% url 'store:cms_kunden' %}">Zurück zur Kundenliste</a>
+				<form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{% url 'store:cms_elemente_create' kunde_id %}"><span class="btn btn-secondary btn-sm">Erfassen</span></a></form><a class="btn btn-secondary btn-sm" href="{% url 'store:cms_kunden' %}">Zurück zur Kundenliste</a>
+
 			</div>
 
 			<table class="table table-striped">
@@ -58,10 +57,10 @@
 			      <td>{{ data.bemerkung }}</td>
 			      <td>{{ data.dichtungen.titel }}</td>
 			      <td>{{ data.aussenbreite }}mm / {{ data.aussenhöhe }}mm </td>
-			      <td><a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente_edit' data.pk %}">
+			      <td><a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente_edit' data.pk kunde_id  %}">
   					Bearbeiten</a></td>
   					<td>
-  					<a href="{% url 'store:cms_elemente_löschen' data.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i>
+  					<a href="{% url 'store:cms_elemente_löschen' data.pk kunde_id %}"><i style="color:var(--red)" class="far fa-trash-alt"></i>
 					 </a>
 					</td> 
 			      {% endfor %}

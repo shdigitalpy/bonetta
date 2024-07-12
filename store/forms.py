@@ -670,7 +670,7 @@ class KundeEditAdvancedForm(forms.ModelForm):
 class ElementeCreateForm(forms.ModelForm):
 	class Meta:
 		model = Elemente
-		fields = ('kunde', 'kuehlposition', 'elementnr', 'bemerkung', 'dichtungen', 'aussenbreite', 'aussenhöhe' )
+		fields = ('kuehlposition', 'elementnr', 'bemerkung', 'dichtungen', 'aussenbreite', 'aussenhöhe' )
 		labels = {
 			'kunde': "Kunde",
 			'elementnr' : "Element-Nr.",

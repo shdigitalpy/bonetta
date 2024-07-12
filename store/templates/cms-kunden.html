@@ -53,7 +53,7 @@
 			      <th scope="col">Firmendaten<br> bearbeiten</th>
 			      <th scope="col">Adresse<br> bearbeiten</th>
 			      <th scope="col">Elemente<br> Übersicht</th>
-			      <th scope="col">Elemente<br> erfassen</th>
+			      
 			      <th scope="col">Kunde löschen</th>	
 			     			      
 
@@ -96,12 +96,7 @@
 			  	<td><form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{{ data.profile.get_absolute_elemente_url }}"><i class="fas fa-info-circle"></i></a></form></td>
 			  	{% endif %}
 
-			  	<td>
-
-			  		<form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{% url 'store:cms_elemente_create' data.profile.pk %}"><i class="fas fa-plus"></i></a></form>
-
-
-			  	</td>
+			  	
 
 			  	<td><form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{% url 'store:cms_kunde_löschen' data.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i></a></form></td>
 			    

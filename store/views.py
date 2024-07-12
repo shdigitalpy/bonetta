@@ -1998,6 +1998,7 @@ def cms_elemente(request, pk):
 
 	context = {
 		'kunde_data': kunde_data,
+		'kunde_id'  :pk,
 		
 	 }
 	return render(request, 'cms-elemente.html', context)
@@ -2005,35 +2006,33 @@ def cms_elemente(request, pk):
 
 @staff_member_required
 def cms_elemente_create(request, pk):
-
-	form = ElementeCreateForm(request.POST or None)
-	form.fields["kunde"].queryset = Kunde.objects.filter(pk=pk)
-	
-	if request.method == "POST":
-		if form.is_valid():
-			form.save()
-			return redirect('store:cms_kunden')
-
-		else:
-			messages.error(request, "Error")
-
-	else: 
-		pass
-
-	context = {
-		'form': form,
-				}
-	return render(request, 'cms-elemente-erfassen.html', context)
+    kunde_queryset = Kunde.objects.filter(pk=pk)
+    form = ElementeCreateForm(request.POST or None)
+    
+    if request.method == "POST":
+        if form.is_valid():
+            elemente_instance = form.save(commit=False)
+            elemente_instance.save()
+            elemente_instance.kunde.set(kunde_queryset)
+            elemente_instance.save()
+            return redirect('store:cms_elemente', pk=pk)
+        else:
+            messages.error(request, "Error")
+    
+    context = {
+        'form': form,
+    }
+    return render(request, 'cms-elemente-erfassen.html', context)
 
 @staff_member_required
-def cms_elemente_edit(request, pk):
+def cms_elemente_edit(request, pk, cpk):
 	element = get_object_or_404(Elemente, pk=pk)
 	
 	if request.method == "POST":
 		form = ElementeEditForm(request.POST or None, instance=element)
 		if form.is_valid():
 			form.save()
-			return redirect('store:cms_kunden')
+			return redirect('store:cms_elemente', pk=cpk)
 
 		else:
 			messages.error(request, "Error")
@@ -2049,11 +2048,11 @@ def cms_elemente_edit(request, pk):
 
 
 @staff_member_required
-def cms_elemente_löschen(request, pk):
+def cms_elemente_löschen(request, pk, cpk):
 	eintrag = get_object_or_404(Elemente, pk=pk)
 	eintrag.delete()
 	messages.info(request, "Der Eintrag wurde gelöscht.")
-	return redirect("store:cms_kunden")	
+	return redirect('store:cms_elemente', pk=cpk)	
 
 
 @staff_member_required
