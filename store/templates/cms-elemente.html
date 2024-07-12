@@ -30,7 +30,15 @@
 
 			</div>
 			<div class="flexbox">
-				<form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{% url 'store:cms_elemente_create' kunde_id %}"><span class="btn btn-secondary btn-sm">Erfassen</span></a></form><a class="btn btn-secondary btn-sm" href="{% url 'store:cms_kunden' %}">Zurück zur Kundenliste</a>
+				<form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{% url 'store:cms_elemente_create' kunde_id %}"><span class="btn btn-secondary btn-sm">Erfassen</span></a></form>
+
+
+				<a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente_statistik' %}">Statistik Elemente</a>
+
+
+
+
+				<a class="btn btn-secondary btn-sm" href="{% url 'store:cms_kunden' %}">Zurück zur Kundenliste</a>
 
 			</div>
 
