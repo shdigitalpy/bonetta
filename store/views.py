@@ -1987,6 +1987,19 @@ def cms_remove_product(request, pk, cat):
 	messages.info(request, "Der Eintrag wurde gelöscht.")
 	return redirect("store:cms_produkte", first_cat=cat)	
 
+@staff_member_required
+def cms_elemente_statistik(request):
+	search_query = request.GET.get('search', '')
+	if search_query:
+		elemente = Elemente.objects.filter(Q(dichtungen__titel__icontains=search_query) | Q(aussenbreite__icontains=search_query) | Q(aussenhöhe__icontains=search_query))
+	else:
+		elemente = Elemente.objects.all
+
+	context = {
+		'elemente':elemente,
+		
+	 }
+	return render(request, 'cms-elemente-statistik.html', context)
 
 @staff_member_required
 def cms_elemente(request, pk):

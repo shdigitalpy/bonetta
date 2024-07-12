@@ -53,6 +53,7 @@ urlpatterns = [
 	path('cms/produkte-marke/<int:pk>', views.cms_product_marke_overview, name='cms_product_marke_overview'),
 	path('cms/produkte-marke/erfassen/<int:pk>', views.cms_product_marke_erfassen, name='cms_product_marke_erfassen'),
 	path('cms/produkte-marke/löschen/<int:pkk>/<int:pk>', views.cms_product_marke_löschen, name='cms_product_marke_löschen'),
+	path('cms/elemente/statistik', views.cms_elemente_statistik, name='cms_elemente_statistik'),
 	path('cms/elemente/<int:pk>', views.cms_elemente, name='cms_elemente'),
 	path('cms/elemente/erfassen/<int:pk>', views.cms_elemente_create, name='cms_elemente_create'),
 	path('cms/elemente/bearbeiten/<int:pk>/<int:cpk>', views.cms_elemente_edit, name='cms_elemente_edit'),
