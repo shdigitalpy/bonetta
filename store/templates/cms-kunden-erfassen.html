@@ -1,29 +1,294 @@
 {% extends 'base-cms.html' %}
 {% load static %}
+{% load i18n %}
 {% block title %}CMS Kunden erfassen{% endblock %}
+{% block stylesheet %}
+   
 
+
+{% endblock %}
 {% block content %}
+
 <br><br><br><br>
         
-            <div class="container">
-            
-            <h2>Kunden erfassen</h2>
-            <br>
-            <div class="form-group">
-            
-            <form method="POST" enctype="multipart/form-data">
-             {% csrf_token %}
-              {{ form.as_p }}
-              <button class="btn btn-warning btn-md ml-4">Erfassen</button>
-              <button class="btn btn-secondary btn-md ml-4"><a href="{% url 'store:cms_kunden' %}">Zurück</a></button>
+<div class="container">
+    <h2>Kunden erfassen</h2>
+    <br>
+    <div class="row padding storepreview form">
+        <div class="col-sm-10 bggrey">
+            <div class="form-group ">
+                <form class="signup" id="signup_form" method="post">
+                    {% csrf_token %}
+                    <div class="register-flex">
+
+
+                        <!-- register flex item 1 -->
+                        <div class="register-flex-wrapperitem">
+                        <div class="register-flex-label">
+                            User *
+                        </div>
+                        <div class="register-flex-item">
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                            <ol style="padding:0">
+                                {% for error in form.username.errors %}
+                                <small style="color:var(--red)">{{ error|escape }}</small>
+                                {% endfor %}
+                            </ol>
+                            {% endif %}
+                            <br>
+                        </div>
+                        </div>
+                           
+                        <!-- register flex item end 1 -->
+
+                        <!-- register flex item 2 -->
+                        <div class="register-flex-wrapperitem">
+                        <div class="register-flex-label">
+                            E-Mail *
+                        </div>
+                        <div class="register-flex-item">
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <ol style="padding:0">
+                                {% for error in form.email.errors %}
+                                <small style="color:var(--red)">{{ error|escape }}</small>
+                                {% endfor %}
+                            </ol>
+                            {% endif %}
+                            <br>
+                        </div>
+                        </div>
+                        <!-- register flex item end 2 -->
+
+                        <!-- register flex item 3 -->
+                        <div class="register-flex-wrapperitem">
+                        <div class="register-flex-label">
+                            Passwort *
+                        </div>
+                        <div class="register-flex-item">
+                            {{ form.password1 }}
+                            {% if form.password1.errors %}
+                            <ol style="padding:0">
+                                {% for error in form.password1.errors %}
+                                <small style="color:var(--red)">{{ error|escape }}</small>
+                                {% endfor %}
+                            </ol>
+                            {% endif %}
+                            <br>
+                        </div>
+                         </div>
+                        <!-- register flex item end 3 -->
+
+                        <!-- register flex item 4 -->
+                         <div class="register-flex-wrapperitem">
+                        <div class="register-flex-label">
+                            Passwort wiederholen *
+                        </div>
+                        <div class="register-flex-item">
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                            <ol style="padding:0">
+                                {% for error in form.password2.errors %}
+                                <small style="color:var(--red)">{{ error|escape }}</small>
+                                {% endfor %}
+                            </ol>
+                            {% endif %}
+                            <br>
+                        </div>
+                        </div>
+                        <!-- register flex item end 4 -->
+                    </div><!-- end register-flex -->
+                    <br>
+                    <h3>Meine Angaben</h3>
+                    <br>
+                    <div class="register-flex">
+                        <!-- register flex item 5 -->
+                         <div class="register-flex-wrapperitem">
+                        <div class="register-flex-label">
+                            Firma 
+                        </div>
+                        <div class="register-flex-item">
+                            {{ form.firmenname }}
+                            <br>
+                        </div>
+                        </div>
+                        <!-- register flex item end 5 -->
+
+                        <!-- register flex item 6 -->
+                         <div class="register-flex-wrapperitem">
+                        <div class="register-flex-label">
+                            Vorname * 
+                        </div>
+                        <div class="register-flex-item">
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                            <ol style="padding:0">
+                                {% for error in form.first_name.errors %}
+                                <small style="color:var(--red)">{{ error|escape }}</small>
+                                {% endfor %}
+                            </ol>
+                            {% endif %}
+                            <br>
+                        </div>
+                        </div>
+                        <!-- register flex item end 6 -->
+
+                        <!-- register flex item 7 -->
+                         <div class="register-flex-wrapperitem">
+                        <div class="register-flex-label">
+                            Nachname * 
+                        </div>
+                        <div class="register-flex-item">
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                            <ol style="padding:0">
+                                {% for error in form.last_name.errors %}
+                                <small style="color:var(--red)">{{ error|escape }}</small>
+                                {% endfor %}
+                            </ol>
+                            {% endif %}
+                            <br>
+                        </div>
+                        </div>
+                        <!-- register flex item end 7 -->
+
+                        <!-- register flex item 8 -->
+                         <div class="register-flex-wrapperitem">
+                        <div class="register-flex-label">
+                            Strasse * 
+                        </div>
+                        <div class="register-flex-item">
+                            {{ form.strasse }}
+                            {% if form.strasse.errors %}
+                            <ol style="padding:0">
+                                {% for error in form.strasse.errors %}
+                                <small style="color:var(--red)">{{ error|escape }}</small>
+                                {% endfor %}
+                            </ol>
+                            {% endif %}
+                            <br>
+                        </div>
+                        </div>
+                        <!-- register flex item end 8 -->
+
+                        <!-- register flex item 9 -->
+                         <div class="register-flex-wrapperitem">
+                        <div class="register-flex-label">
+                            Nr. * 
+                        </div>
+                        <div class="register-flex-item">
+                            {{ form.nr }}
+                            {% if form.nr.errors %}
+                            <ol style="padding:0">
+                                {% for error in form.nr.errors %}
+                                <small style="color:var(--red)">{{ error|escape }}</small>
+                                {% endfor %}
+                            </ol>
+                            {% endif %}
+                            <br>
+                        </div>
+                        </div>
+                        <!-- register flex item end 9 -->
+
+                        <!-- register flex item 10 -->
+                         <div class="register-flex-wrapperitem">
+                        <div class="register-flex-label">
+                            PLZ * 
+                        </div>
+                        <div class="register-flex-item">
+                            {{ form.plz }}
+                            {% if form.plz.errors %}
+                            <ol style="padding:0">
+                                {% for error in form.plz.errors %}
+                                <small style="color:var(--red)">{{ error|escape }}</small>
+                                {% endfor %}
+                            </ol>
+                            {% endif %}
+                            <br>
+                        </div>
+                        </div>
+                        <!-- register flex item end 10 -->
+
+                        <!-- register flex item 11 --> 
+                        <div class="register-flex-wrapperitem">
+                        <div class="register-flex-label">
+                            Ort * 
+                        </div>
+                        <div class="register-flex-item">
+                            {{ form.ort }}
+                            {% if form.ort.errors %}
+                            <ol style="padding:0">
+                                {% for error in form.ort.errors %}
+                                <small style="color:var(--red)">{{ error|escape }}</small>
+                                {% endfor %}
+                            </ol>
+                            {% endif %}
+                            <br>
+                        </div>
+                        </div>
+                        <!-- register flex item end 11 -->
+
+                        <!-- register flex item 12 -->
+                         <div class="register-flex-wrapperitem">
+                        <div class="register-flex-label">
+                            Land * 
+                        </div>
+                        <div class="register-flex-item">
+                            {{ form.land }}
+                            {% if form.land.errors %}
+                            <ol style="padding:0">
+                                {% for error in form.land.errors %}
+                                <small style="color:var(--red)">{{ error|escape }}</small>
+                                {% endfor %}
+                            </ol>
+                            {% endif %}
+                            <br>
+                        </div>
+                        </div>
+                        <!-- register flex item end 12 -->
+
+                        <!-- register flex item 13 -->
+                         <div class="register-flex-wrapperitem">
+                        <div class="register-flex-label">
+                            Telefon / Mobile * 
+                        </div>
+                        <div class="register-flex-item">
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                            <ol style="padding:0">
+                                {% for error in form.phone.errors %}
+                                <small style="color:var(--red)">{{ error|escape }}</small>
+                                {% endfor %}
+                            </ol>
+                            {% endif %}
+                            <br>
+                        </div>
+                        </div>
+                        <!-- register flex item end 13 -->
+
+                        <div class="register-flex">
+                            <br><br>
+                            <!-- register flex item bottom -->
+                            <div class="register-flex-label">
+                                <p>* Pflichtfelder</p>
+                            </div>
+                            <div class="register-flex-item">
+                                <button class="btn btn-primary" type="submit">{% trans "Registrieren" %} &raquo;</button>
+                                <br>
+                            </div>
+                            <!-- register flex item end bottom -->
+                        </div>
+                        </div><!-- end register-flex -->
+
+                        {% if redirect_field_value %}
+                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                        {% endif %}
+                    </div>
+                </form>
             </div>
-            <br>
+        </div>
+    </div>
+</div>
 
-               </form>
-            
-               <small>Weitere Angaben wie Adresse, Rabatt, etc. können nach der Erfassung der Basisdaten des Users vorgenommen werden.</small>
-               </div>
-
-            </div>
-
- {% endblock %}
+{% endblock %}

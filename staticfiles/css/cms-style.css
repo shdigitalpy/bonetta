@@ -348,3 +348,37 @@ ul ul a{
 	    -ms-flex: 0 0 100%;
 	        flex: 0 0 100%;
 }
+
+
+
+/* Register Flex for Signup Form NEW */ 
+
+
+.bggrey {
+	padding: 12%;
+	border: 1px solid var(--blue);
+	background-color: var(--grey);
+}
+
+
+
+.register-flex {
+  display: flex;
+  display: -webkit-flex;
+  display: -ms-flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+.register-flex-item {
+ -webkit-box-flex: 0;
+ -ms-flex: 0 0 70%;
+ flex: 0 0 70%;
+}
+
+.register-flex-label {
+  flex: 1;
+  -webkit-flex: 0 0 30%;
+}

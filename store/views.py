@@ -1782,26 +1782,43 @@ def cms_kunden(request):
 
 @staff_member_required
 def cms_kunden_erfassen(request):
-	if request.method == "POST":
-		form = KundeCreateForm(request.POST or None)
-		if form.is_valid():
-			new_user = User.objects.create_user(**form.cleaned_data)
-			new_kunde = Kunde.objects.create(user=new_user, firmenname=request.POST['username'], rabatt=0)
-			new_kunde.save()
-			new_address = Address.objects.create(user=new_user, rechnung_strasse='Bitte ändern')
-			
-			return redirect('store:cms_kunden')
+    if request.method == "POST":
+        form = RegistrationForm(request.POST or None)
+        if form.is_valid():
+            # Extract only the fields needed for creating a user
+            user_data = {
+                'username': form.cleaned_data['username'],
+                'password': form.cleaned_data['password1'],  # Assuming the form uses password1 and password2
+                'email': form.cleaned_data['email'],
+                'first_name': form.cleaned_data['first_name'],
+                'last_name': form.cleaned_data['last_name'],
+            }
+            new_user = User.objects.create_user(**user_data)
+            new_kunde = Kunde.objects.create(user=new_user, phone=request.POST['phone'], firmenname=request.POST['firmenname'], rabatt=0)
+            new_address = Address.objects.create(
 
-		else:
-			messages.error(request, "Error")
+            	user=new_user, 
+            	rechnung_strasse=request.POST['strasse'],
+            	rechnung_nr=request.POST['nr'],
+            	rechnung_ort=request.POST['ort'],
+            	rechnung_land=request.POST['land'],
+            	rechnung_plz=request.POST['plz'],
+            	address_type='B'
 
-	else: 
-		form = form = KundeCreateForm()
+            	)
+            
+            return redirect('store:cms_kunden')
 
-	context = {
-		'form': form,
-				}
-	return render(request, 'cms-kunden-erfassen.html', context)
+        else:
+            messages.error(request, "Error")
+
+    else:
+        form = RegistrationForm()
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'cms-kunden-erfassen.html', context)
 
 @staff_member_required
 def cms_user_bearbeiten(request, pk):
