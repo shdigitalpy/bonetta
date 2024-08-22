@@ -299,28 +299,7 @@ ul ul a{
 }
 }
 
-/* Register Flex */ 
 
-.register-flex {
-  display: flex;
-  display: -webkit-flex;
-  display: -ms-flex;
-  align-items: stretch;
-  flex-wrap: wrap;
-  margin: 0 auto;
-  justify-content: center;
-}
-
-.register-flex-item {
- -webkit-box-flex: 0;
- -ms-flex: 0 0 70%;
- flex: 0 0 70%;
-}
-
-.register-flex-label {
-  flex: 1;
-  -webkit-flex: 0 0 30%;
-}
 
 
 /* Flexbox Chart */
@@ -355,7 +334,7 @@ ul ul a{
 
 
 .bggrey {
-	padding: 12%;
+	padding: 5rem;
 	border: 1px solid var(--blue);
 	background-color: var(--grey);
 }
@@ -364,21 +343,25 @@ ul ul a{
 
 .register-flex {
   display: flex;
-  display: -webkit-flex;
-  display: -ms-flex;
-  align-items: stretch;
   flex-wrap: wrap;
-  margin: 0 auto;
-  justify-content: center;
+
+}
+
+.register-flex-wrapperitem {
+	display: flex;
+	justify-content: space-between;
+	width:100%;
 }
 
 .register-flex-item {
- -webkit-box-flex: 0;
- -ms-flex: 0 0 70%;
- flex: 0 0 70%;
+ 	width:50%;
 }
 
 .register-flex-label {
-  flex: 1;
-  -webkit-flex: 0 0 30%;
+  width:50%;
+
+}
+
+.register-flex-item .form-control {
+	width:100%;
 }
