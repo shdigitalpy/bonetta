@@ -73,10 +73,7 @@
 			      	{{ data.name }}, {{data.serie}}, {{data.typ}}, {{data.modell}}<br>
 			      	{% endfor %}
 
-			      	{% for x in data.kunde.all %}
-                            <a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente_objekte' data.pk x.id %}">
-  					Details</a>
-                        {% endfor %}
+			      	
 			      	
 			  		</td>
                     <td>{{ data.dichtungen.titel }}</td>
