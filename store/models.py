@@ -56,10 +56,6 @@ JOBS_CHOICES = (
 )
 
 
-
-
-
-
 class MP_JobsCategory(models.Model):
 	name = models.CharField(max_length=255)
 	slug = models.SlugField(max_length=255)
@@ -252,10 +248,6 @@ class Category(models.Model):
 
 	def get_absolute_url(self):
 		return reverse('home')
-
-
-
-
 
 
 class Item(models.Model):
@@ -553,7 +545,7 @@ class Address(models.Model):
 
 
 class ShippingAddress(models.Model):
-	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name ='shipping_address', on_delete=models.CASCADE)
+	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name ='shipping_address', on_delete=models.CASCADE,null=True, blank=True)
 	lieferung_strasse = models.CharField(max_length=255)
 	lieferung_nr = models.CharField(max_length=255)
 	lieferung_ort = models.CharField(max_length=255)
@@ -573,7 +565,7 @@ class ShippingAddress(models.Model):
 
 
 class Kunde(models.Model):
-	user = models.OneToOneField(User, unique=True, related_name ='profile', on_delete=models.CASCADE)
+	user = models.OneToOneField(User, unique=True, related_name ='profile', on_delete=models.CASCADE,null=True, blank=True)
 	firmenname = models.CharField(max_length=255, null=True, blank=True)
 	rabatt = models.FloatField(null=True, blank=True)
 	newsletter = models.BooleanField(null=True, blank=True)
@@ -620,5 +612,22 @@ class Elemente(models.Model):
 
 	def __str__(self):
 		return str(self.kunde) + ' ' + self.kuehlposition + ' ' + self.bemerkung
+
+
+class Objekte(models.Model):
+	name = models.CharField(max_length=255, null=True, blank=True) 
+	objekte = models.ManyToManyField(Elemente, related_name='elemente_objekte',null=True, blank=True)
+	serie = models.CharField(max_length=255, null=True, blank=True) 
+	modell = models.CharField(max_length=255, null=True, blank=True)
+	typ = models.CharField(max_length=255, null=True, blank=True)  
+
+	class Meta:
+		ordering = ['id']
+		verbose_name = 'Objekt'
+		verbose_name_plural = 'Objekte'
+
+	def __str__(self):
+		return str(self.serie) + ' ' + self.modell + ' ' + self.typ
+
 
 

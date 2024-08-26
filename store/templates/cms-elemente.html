@@ -47,7 +47,8 @@
 			    <tr>
 			      <th scope="col">Kühlposition</th>
 			      <th scope="col">Element-Nr.</th>
-			      <th scope="col">Kühlunterbau</th>
+			     
+			      <th scope="col">Objekte</th>
 			      <th scope="col">Typ</th>
 			      <th scope="col">Aussenmass Breite / Höhe</th>
 			      <th scope="col">Bearbeiten</th>
@@ -61,8 +62,16 @@
 			      <td>
 			      	{{ data.kuehlposition }}
 			  		</td>
+			  		
 			      <td>{{ data.elementnr }}</td>
-			      <td>{{ data.bemerkung }}</td>
+			     
+			      <td>
+			      	{% for data in data.elemente_objekte.all %}
+			      	{{ data.name }}<br>
+			      	{% endfor %}
+			      	<a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente_objekte' data.pk kunde_id %}">
+  					Details</a>
+			  		</td>
 			      <td>{{ data.dichtungen.titel }}</td>
 			      <td>{{ data.aussenbreite }}mm / {{ data.aussenhöhe }}mm </td>
 			      <td><a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente_edit' data.pk kunde_id  %}">

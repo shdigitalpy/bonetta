@@ -22,6 +22,74 @@ from datetime import datetime
 from django.contrib.admin.views.decorators import staff_member_required
 from itertools import chain
 
+
+@staff_member_required
+
+def cms_elemente_objekte_löschen(request, pk, cpk):
+    eintrag = get_object_or_404(Objekte, pk=pk)
+    eintrag.delete()
+    messages.info(request, "Das Objekt wurde gelöscht.")
+    return redirect("store:cms_elemente_objekte", pk=pk, cpk=cpk)
+
+@staff_member_required
+def cms_elemente_objekte_erfassen(request, pk, cpk):
+    # Ensure we get a single instance of Elemente
+    elemente_instance = get_object_or_404(Elemente, pk=pk)  # Use get_object_or_404 for a single object
+
+    form = ElementeObjekteCreateForm(request.POST or None)
+    
+    if request.method == "POST":
+        if form.is_valid():
+            objekte_instance = form.save(commit=False)
+            objekte_instance.save()
+            # Associate the newly created objekte with the given elemente
+            objekte_instance.objekte.set([elemente_instance])  # Pass a list to set
+            objekte_instance.save()
+            messages.success(request, "Objekt successfully created and associated with Elemente.")
+            return redirect("store:cms_elemente_objekte", pk=pk, cpk=cpk)
+        else:
+            messages.error(request, "Error in form submission. Please check the fields and try again.")
+    
+    context = {
+        'form': form,
+        'pk': pk,
+        'cpk': cpk,
+    }
+    return render(request, 'cms-elemente-objekte-erfassen.html', context)
+
+@staff_member_required
+def cms_elemente_objekte(request, pk, cpk):
+	kunde = Kunde.objects.get(pk=cpk)
+	elemente_data = Elemente.objects.get(pk=pk)
+	objekte = Objekte.objects.filter(objekte=elemente_data).order_by('id')
+
+	context = {
+    	'kunde': kunde,
+    	'cpk':cpk,
+    	'pk': pk,
+        'objekte': objekte,
+    }
+	return render(request, 'cms-elemente-objekte.html', context)
+
+def cms_interner_kunde_erfassen(request):
+    if request.method == 'POST':
+        kunde_form = InternalKundeForm(request.POST)
+        shipping_form = ShippingAddressForm(request.POST)
+
+        if kunde_form.is_valid() and shipping_form.is_valid():
+            kunde_form.save()
+            shipping_form.save()
+            return redirect('store:cms_kunden')  
+
+    else:
+        kunde_form = InternalKundeForm()
+        shipping_form = ShippingAddressForm()
+    
+    return render(request, 'cms-interner-kunde-erfassen.html', {
+        'kunde_form': kunde_form,
+        'shipping_form': shipping_form,
+    })
+
 @login_required
 def marktplatz_jobinserat_erfolg(request, pk):
 	mp = get_object_or_404(JobsMarketplace, id=pk)
@@ -1760,23 +1828,30 @@ def cms_product_marke_löschen(request, pkk, pk):
 
 
 
-@staff_member_required
 def cms_kunden(request):
-	user = User.objects.all().order_by('-id')
-	search_query = request.GET.get('search', '')
-
-
-	if search_query:
-		user = User.objects.filter(Q(profile__firmenname__icontains=search_query) | Q(profile__interne_nummer__icontains=search_query))
-
-	else:
-		user = User.objects.all().order_by('-id')
-			
-
-	context = {
-			'user': user,		
-			 }
-	return render(request, 'cms-kunden.html', context)
+    search_query = request.GET.get('search', '')
+    
+    # Retrieve User and Kunde separately, including search functionality
+    if search_query:
+        users = User.objects.filter(
+            Q(profile__firmenname__icontains=search_query) | 
+            Q(profile__interne_nummer__icontains=search_query)
+        ).order_by('-id')
+        
+        kunden = Kunde.objects.filter(
+            Q(firmenname__icontains=search_query) | 
+            Q(interne_nummer__icontains=search_query)
+        ).order_by('-id')
+    else:
+        users = User.objects.all().order_by('-id')
+        kunden = Kunde.objects.all().order_by('-id')
+    
+    context = {
+        'users': users,
+        'kunden': kunden,
+    }
+    
+    return render(request, 'cms-kunden.html', context)
 
 
 

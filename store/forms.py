@@ -20,6 +20,57 @@ COUNTRY_CHOICES = [
 
 	]
 
+class ElementeObjekteCreateForm(forms.ModelForm):
+	class Meta:
+		model = Objekte
+		fields = ('name', 'serie', 'modell', 'typ' )
+		labels = {
+			'name': "Objekt-Name",
+			'serie' : "Serie",
+			'modell' : "Modell",
+			'typ' : "Nr. ",
+			
+		}
+		widgets = {
+			
+			'name': forms.TextInput(attrs={
+				'class': 'form-control col-6',
+				'placeholder':''}),
+			'serie': forms.TextInput(attrs={
+				'class': 'form-control col-6',
+				'placeholder':''}),
+			'modell': forms.TextInput(attrs={
+				'class': 'form-control col-6',
+				'placeholder':''}),
+			'typ': forms.TextInput(attrs={
+				'class': 'form-control col-6',
+				'placeholder':''}),
+			
+		}
+
+
+class InternalKundeForm(forms.ModelForm):
+    class Meta:
+        model = Kunde
+        fields = ['firmenname', 'interne_nummer']
+
+        widgets = {
+			
+			'firmenname': forms.TextInput(attrs={
+				'class': 'form-control col-6',
+				'placeholder':''}),
+			'interne_nummer': forms.TextInput(attrs={
+				'class': 'form-control col-6',
+				'placeholder':''}),
+			
+				
+			}
+
+class ShippingAddressForm(forms.ModelForm):
+    class Meta:
+        model = ShippingAddress
+        fields = ['lieferung_strasse', 'lieferung_nr', 'lieferung_ort']
+
 
 class InseratJobsCreateForm(forms.ModelForm):
 	class Meta:
@@ -237,6 +288,7 @@ class CheckoutForm(forms.Form):
 	different_shipping_address = forms.BooleanField(required=False)
 	use_other_billing = forms.BooleanField(required=False)
 	use_default_shipping = forms.BooleanField(required=False)
+
 
 
 class KundeCreateForm(forms.ModelForm):

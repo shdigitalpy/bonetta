@@ -1,0 +1,59 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}CMS Elemente{% endblock %}
+
+{% block content %}
+
+		
+			<div class="flexbox" style="align-items:start;">
+				<div class="h2">Objekte<br><br> {{ kunde }}</div>
+				
+				<a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente' cpk  %}">Zurück zur Elementeliste</a>
+
+				 <a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente_objekte_erfassen' pk cpk   %}">Erfassen</a>
+
+			</div>
+			
+
+			
+
+			<table class="table table-striped">
+			  <thead>
+			    <tr>
+			    	<th scope="col">Name</th>
+			      <th scope="col">Serie</th>
+			      <th scope="col">Modell</th>
+			      <th scope="col">Typ</th>
+			      <th scope="col">Löschen</th>
+			     
+			     
+			    </tr>
+			  </thead>
+			 {% for data in objekte.all %}
+			  <tbody>
+			    <tr>
+			    	<td>
+			      	{{ data.name }}
+			  		</td>
+			      
+			      <td>
+			      	{{ data.serie }}
+			  		</td>
+			  		
+			      <td>{{ data.modell }}</td>
+			      <td>{{ data.typ }}</td>
+			      
+			     
+			     <td>
+  					<a href="{% url 'store:cms_elemente_objekte_löschen' data.id cpk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i>
+					 </a>
+					</td> 
+			      {% endfor %}
+			    </tr>
+			    
+			  </tbody>
+			 
+
+			</table>
+
+ {% endblock %}

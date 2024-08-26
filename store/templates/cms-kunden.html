@@ -3,111 +3,105 @@
 {% block title %}CMS Kunden{% endblock %}
 
 {% block content %}
+    <div class="flexbox">
+        <div class="h2">Kunden</div>
+    </div>
 
-		
-			<div class="flexbox">
-				<div class="h2">Kunden</div>
-				
-			</div>
+    <div class="flexbox" style="align-items:start;">
+        <a class="btn btn-secondary btn-sm" href="{% url 'store:cms_kunden_erfassen' %}">Kunden erfassen</a>
+        <a class="btn btn-secondary btn-sm" href="{% url 'store:cms_interner_kunde_erfassen' %}">Interner Kunde erfassen</a>
 
-			<div class="flexbox">
-				 
+        <!-- Search form -->
+        <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="{% url 'store:cms_kunden' %}">
+            {% csrf_token %}
+            <div style="display: flex">
+                <div style="flex: 0 0 20%">
+                    <input id="textsuche" class="form-control" type="text" placeholder="Firmenname" aria-label="Search" name="search">
+                </div>
+                <div style="flex: 0 0 15%">
+                    <button type="submit" style="border: none;" class="btn btn-outline-secondary">
+                        <span class="fas fa-search"></span> Suche
+                    </button>
+                </div>
+                <div style="flex: 0 0 15%">
+                    <a href="{% url 'store:cms_kunden' %}" style="border: none;" class="btn btn-outline-secondary"><span class="fas fa-times"></span> zurücksetzen</a>
+                </div>
+            </div>
+        </form>
+    </div>
 
-				 <a class="btn btn-secondary btn-sm" href="{% url 'store:cms_kunden_erfassen' %}">Kunden erfassen</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Webshop<br>Kunden-Nr.</th>
+                <th scope="col">Interne Nr. <br><small style="font-size:0.7rem;">(bearbeiten bei Firmendaten)</small></th>
+                <th scope="col">Firma / Profil</th>
+                <th scope="col">Telefon</th>
+                <th scope="col">Profildaten <br>bearbeiten</th>
+                <th scope="col">Rabatt</th>
+                <th scope="col">Newsletter</th>
+                <th scope="col">Firmendaten<br> bearbeiten</th>
+                <th scope="col">Adresse<br> bearbeiten</th>
+                <th scope="col">Elemente<br> Übersicht</th>
+                <th scope="col">Kunde löschen</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Loop over Users -->
+            {% for user in users %}
+                <tr>
+                    <th scope="row">{{ user.pk }}</th>
+                    <td>{% if user.profile.interne_nummer %}{{ user.profile.interne_nummer }}{% endif %}</td>
+                    <td>
+                        {% if user.profile.firmenname %}{{ user.profile.firmenname }} <br>{% endif %}
+                        Benutzername: {{ user.username }}<br>
+                        {{ user.email }}
+                    </td>
+                    <td>{% if user.profile.phone %}{{ user.profile.phone }}{% endif %}</td>
+                    <td><a href="{% url 'store:cms_user_bearbeiten' user.pk %}"><i class="fas fa-edit"></i></a></td>
+                    <td>{{ user.profile.rabatt }}%</td>
+                    <td>
+                        {% if user.profile.newsletter %}
+                            <p>Ja</p>
+                        {% else %}
+                            <p>Nein</p>
+                        {% endif %}
+                    </td>
+                    <td><a href="{{ user.profile.get_absolute_url }}"><i class="fas fa-edit"></i></a></td>
+                    <td><a href="{{ user.profile.get_absolute_address_url }}"><i class="fas fa-edit"></i></a></td>
+                    <td>
+                        {% if user.profile.get_absolute_elemente_url %}
+                            <a href="{{ user.profile.get_absolute_elemente_url }}"><i class="fas fa-info-circle"></i> / {{ user.profile.elemente_count }}</a>
+                        {% endif %}
+                    </td>
+                    <td><a href="{% url 'store:cms_kunde_löschen' user.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i></a></td>
+                </tr>
+            {% endfor %}
 
-
-				 <!-- Search form -->
-				<form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="{% url 'store:cms_kunden' %}">
-				  {% csrf_token %}
-				    
-				  <div style="display: flex">
-		            
-		            <div style="flex: 0 0 20%">
-		            <input id="textsuche" class="form-control" type="text" placeholder="Firmenname"
-				    aria-label="Search" name="search">
-					</div>
-		            <div style="flex: 0 0 15%">
-		            <button type="submit" style="border: none;" class="btn btn-outline-secondary">
-				    <span class="fas fa-search"></span> Suche
-				  </button>
-				</div>
-				<div style="flex: 0 0 15%">
-				    <a href="{% url 'store:cms_kunden' %}" style="border: none;" class="btn btn-outline-secondary"><span class="fas fa-times"></span> zurücksetzen</a>
-				</div>
-				</form>
-
-			
-				
-			</div>
-
-			<table class="table table-striped">
-			  <thead>
-			    <tr>
-			    	<th scope="col">Webshop<br>Kunden-Nr.</th>
-			    	<th scope="col">Interne Nr. <br><small style="font-size:0.7rem;">(bearbeiten bei Firmendaten)</small></th>
-			    	<th scope="col">Firma / Profil</th>
-			    	<th scope="col">Telefon</th>
-			      <th scope="col">Profildaten <br>bearbeiten</th>
-			      <th scope="col">Rabatt</th>
-			      <th scope="col">Newsletter</th>
-			      <th scope="col">Firmendaten<br> bearbeiten</th>
-			      <th scope="col">Adresse<br> bearbeiten</th>
-			      <th scope="col">Elemente<br> Übersicht</th>
-			      
-			      <th scope="col">Kunde löschen</th>	
-			     			      
-
-			    </tr>
-			  </thead>
-			  {% for data in user %}
-			  <tbody>
-			    <tr>
-			      <th scope="row">{{ data.pk }}</th>
-			      <td>{% if data.profile.interne_nummer %}{{ data.profile.interne_nummer }}{% endif %}</td>
-			      <td>
-			      	{% if data.profile.firmenname %}{{ data.profile.firmenname }} <br>{% endif %}
-			     Benutzername: {{ data.username }}<br>
-			  	{{ data.email }}</form>
-			  		</td>
-			  		<td>{% if data.profile.phone %}{{ data.profile.phone }}{% endif %}</td>
-			      <td><form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{% url 'store:cms_user_bearbeiten' data.pk %}"><i class="fas fa-edit"></i></a></form></td>
-			      			      
-			      <td>{{ data.profile.rabatt }}%</td>
-			      <td>
-			      	{% if data.profile.newsletter == False %}
-			      	<p>Nein</p>
-			      	{% else %}
-			      	<p>Ja</p>
-			      	{% endif %}
-			  	</td>
-			  	
-			  	<td><form method="POST" enctype="multipart/form-data">{% csrf_token %}
-
-
-			  	<a type="submit"  href="{{ data.profile.get_absolute_url }}"><i class="fas fa-edit"></i></a>
-
-			  	</form></td>
-
-			  	<td><form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{{ data.profile.get_absolute_address_url }}"><i class="fas fa-edit"></i></a></form>
-			  	</td>
-
-
-			  	{% if data.profile.get_absolute_elemente_url %}
-			  	<td><form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{{ data.profile.get_absolute_elemente_url }}"><i class="fas fa-info-circle"></i> / {{ data.profile.elemente_count }}</a></form>
-
-			  	</td>
-			  	{% endif %}
-
-			  	
-
-			  	<td><form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{% url 'store:cms_kunde_löschen' data.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i></a></form></td>
-			    
-			    </tr>
-			  </tbody>
-			  {% endfor %}
-
-			</table>
-
-			
- {% endblock %}
-
+            <!-- Loop over Kunden that are not associated with a User -->
+            {% for kunde in kunden %}
+                {% if not kunde.user %}
+                    <tr>
+                        <th scope="row">{{ kunde.pk }}</th>
+                        <td>{{ kunde.interne_nummer }}</td>
+                        <td>{{ kunde.firmenname }}</td>
+                        <td>{{ kunde.phone }}</td>
+                        <td><a href="{% url 'store:cms_kunde_bearbeiten' kunde.pk %}"><i class="fas fa-edit"></i></a></td>
+                        <td>{{ kunde.rabatt }}%</td>
+                        <td>
+                            {% if kunde.newsletter %}
+                                <p>Ja</p>
+                            {% else %}
+                                <p>Nein</p>
+                            {% endif %}
+                        </td>
+                        <td><a href="{{ kunde.get_absolute_url }}"><i class="fas fa-edit"></i></a></td>
+                        <td><a href="{{ kunde.get_absolute_address_url }}"><i class="fas fa-edit"></i></a></td>
+                        <td><a href="{{ kunde.get_absolute_elemente_url }}"><i class="fas fa-info-circle"></i> / {{ kunde.elemente_count }}</a></td>
+                        <td><a href="{% url 'store:cms_kunde_löschen' kunde.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i></a></td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
