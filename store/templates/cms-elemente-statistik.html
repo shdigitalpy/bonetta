@@ -1,74 +1,93 @@
 {% extends 'base-cms.html' %}
 {% load static %}
-{% block title %}CMS Elemente{% endblock %}
+{% block title %}CMS Elemente Statistik{% endblock %}
 
 {% block content %}
+    <div class="flexbox">
+        <div class="h2">Elemente Statistik</div>
+        <!-- Extended Search form -->
+        <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" method="GET">
+            <div style="display: flex; flex-wrap: wrap;">
+                <div style="flex: 0 0 5%; padding: 5px;">
+                    <input id="textsuche" class="form-control" type="text" placeholder="Typ"
+                           name="dichtungen_titel" value="{{ request.GET.dichtungen_titel }}">
+                </div>
+               
+                <div style="flex: 0 0 5%; padding: 5px;">
+                    <input class="form-control" type="text" placeholder="Aussenbreite"
+                           name="aussenbreite" value="{{ request.GET.aussenbreite }}">
+                </div>
+                <div style="flex: 0 0 5%; padding: 5px;">
+                    <input class="form-control" type="text" placeholder="Aussenhöhe"
+                           name="aussenhöhe" value="{{ request.GET.aussenhöhe }}">
+                </div>
+                <div style="flex: 0 0 5%; padding: 5px;">
+                    <input class="form-control" type="text" placeholder="Serie"
+                           name="serie" value="{{ request.GET.serie }}">
+                </div>
+                <div style="flex: 0 0 5%; padding: 5px;">
+                    <input class="form-control" type="text" placeholder="Modell"
+                           name="modell" value="{{ request.GET.modell }}">
+                </div>
+                <div style="flex: 0 0 5%; padding: 5px;">
+                    <input class="form-control" type="text" placeholder="Marke"
+                           name="typ" value="{{ request.GET.typ }}">
+                </div>
+                <div style="flex: 0 0 5%; padding: 5px;">
+                    <button type="submit" class="btn btn-outline-secondary">
+                        <span class="fas fa-search"></span> Suche
+                    </button>
+                </div>
+                <div style="flex: 0 0 5%; padding: 5px;">
+                    <a href="{% url 'store:cms_elemente_statistik' %}" class="btn btn-outline-secondary">
+                        <span class="fas fa-times"></span> zurücksetzen
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
 
-		
-			<div class="flexbox">
-				<div class="h2">Elemente<br><br> {{ kunde_data.firmenname }}</div>
-				<!-- Search form -->
-				<form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="">
-				  {% csrf_token %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Kühlposition</th>
+                <th scope="col">Element-Nr.</th>
+                <th scope="col">Objekte</th>
+                <th scope="col">Typ</th>
+                <th scope="col">Aussenmass Breite / Höhe</th>
+                <th scope="col">Kunde</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in elemente %}
+                <tr>
+                    <td>{{ data.kuehlposition }}</td>
+                    <td>{{ data.elementnr }}</td>
+                    <td>
 
-				  <div style="display: flex">
-
-				  	<div style="flex: 0 0 20%">
-				  <input id="textsuche" class="form-control" type="text" placeholder="Text"
-				    aria-label="Search" name="search">
-					</div>
-		            <div style="flex: 0 0 15%">
-		            <button type="submit" style="border: none;" class="btn btn-outline-secondary">
-				    <span class="fas fa-search"></span> Suche
-				  </button>
-				</div>
-				<div style="flex: 0 0 20%">
-				    <a href="{% url 'store:cms_elemente_statistik' %}" style="border: none;" class="btn btn-outline-secondary"><span class="fas fa-times"></span> zurücksetzen</a>
-				
-				   </div>
-				</form>
-
-			</div>
-			
-
-			<table class="table table-striped">
-			  <thead>
-			    <tr>
-			      <th scope="col">Kühlposition</th>
-			      <th scope="col">Element-Nr.</th>
-			      <th scope="col">Kühlunterbau</th>
-			      <th scope="col">Typ</th>
-			      <th scope="col">Aussenmass Breite / Höhe</th>
-			      <th scope="col">Kunde</th>
-			  
-			     
-			    </tr>
-			  </thead>
-			 {% for data in elemente %}
-			  <tbody>
-			    <tr>
-			      <td>
-			      	{{ data.kuehlposition }}
-			  		</td>
-			      <td>{{ data.elementnr }}</td>
-			      <td>{{ data.bemerkung }}</td>
-			      <td>{{ data.dichtungen.titel }}</td>
-			      <td>{{ data.aussenbreite }}mm / {{ data.aussenhöhe }}mm </td>
-			      <td>
-
-			      	{% for x in data.kunde.all %}
-
-			      	{{ x.firmenname }}
-
+			      	{% for data in data.elemente_objekte.all %}
+			      	{{ data.name }}<br>
 			      	{% endfor %}
 
-			  </td>
-			      {% endfor %}
-			    </tr>
-			    
-			  </tbody>
-			 
-
-			</table>
-
- {% endblock %}
+			      	{% for x in data.kunde.all %}
+                            <a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente_objekte' data.pk x.id %}">
+  					Details</a>
+                        {% endfor %}
+			      	
+			  		</td>
+                    <td>{{ data.dichtungen.titel }}</td>
+                    <td>{{ data.aussenbreite }}mm / {{ data.aussenhöhe }}mm</td>
+                    <td>
+                        {% for x in data.kunde.all %}
+                            {{ x.firmenname }}
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6">Es wurden keine Elemente gefunden, die den Suchkriterien entsprechen.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

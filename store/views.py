@@ -23,8 +23,54 @@ from django.contrib.admin.views.decorators import staff_member_required
 from itertools import chain
 
 
-@staff_member_required
 
+@staff_member_required
+def cms_elemente_statistik(request):
+    # Initialize the queryset
+    elemente = Elemente.objects.all()
+    
+    # Capture individual search criteria
+    dichtungen_titel = request.GET.get('dichtungen_titel', '')
+    kuehlposition = request.GET.get('kuehlposition', '')
+    aussenbreite = request.GET.get('aussenbreite', '')
+    aussenhöhe = request.GET.get('aussenhöhe', '')
+    serie = request.GET.get('serie', '')
+    modell = request.GET.get('modell', '')
+    typ = request.GET.get('typ', '')
+
+    # Filter the queryset based on search criteria
+    if dichtungen_titel:
+        elemente = elemente.filter(dichtungen__titel__icontains=dichtungen_titel)
+    if kuehlposition:
+        elemente = elemente.filter(kuehlposition__icontains=kuehlposition)
+    if aussenbreite:
+        try:
+            aussenbreite_value = int(aussenbreite)
+            elemente = elemente.filter(aussenbreite=aussenbreite_value)
+        except ValueError:
+            pass  # Ignore invalid integer input
+    if aussenhöhe:
+        try:
+            aussenhöhe_value = int(aussenhöhe)
+            elemente = elemente.filter(aussenhöhe=aussenhöhe_value)
+        except ValueError:
+            pass  # Ignore invalid integer input
+    if serie:
+        elemente = elemente.filter(elemente_objekte__serie__icontains=serie)
+    if modell:
+        elemente = elemente.filter(elemente_objekte__modell__icontains=modell)
+    if typ:
+        elemente = elemente.filter(elemente_objekte__typ__icontains=typ)
+
+    # Use distinct() to avoid duplicates if multiple criteria match
+    elemente = elemente.distinct()
+
+    context = {
+        'elemente': elemente,
+    }
+    return render(request, 'cms-elemente-statistik.html', context)
+
+@staff_member_required
 def cms_elemente_objekte_löschen(request, pk, cpk):
     eintrag = get_object_or_404(Objekte, pk=pk)
     eintrag.delete()
@@ -2062,19 +2108,7 @@ def cms_remove_product(request, pk, cat):
 	messages.info(request, "Der Eintrag wurde gelöscht.")
 	return redirect("store:cms_produkte", first_cat=cat)	
 
-@staff_member_required
-def cms_elemente_statistik(request):
-	search_query = request.GET.get('search', '')
-	if search_query:
-		elemente = Elemente.objects.filter(Q(dichtungen__titel__icontains=search_query) | Q(kuehlposition__icontains=search_query) | Q(aussenbreite__icontains=search_query) | Q(aussenhöhe__icontains=search_query) | Q(elementnr__icontains=search_query))
-	else:
-		elemente = Elemente.objects.all
 
-	context = {
-		'elemente':elemente,
-		
-	 }
-	return render(request, 'cms-elemente-statistik.html', context)
 
 @staff_member_required
 def cms_elemente(request, pk):

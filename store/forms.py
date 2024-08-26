@@ -28,7 +28,7 @@ class ElementeObjekteCreateForm(forms.ModelForm):
 			'name': "Objekt-Name",
 			'serie' : "Serie",
 			'modell' : "Modell",
-			'typ' : "Nr. ",
+			'typ' : "Marke/Sonstiges",
 			
 		}
 		widgets = {
