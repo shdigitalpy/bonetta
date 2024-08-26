@@ -70,7 +70,7 @@
                     <td>
 
 			      	{% for data in data.elemente_objekte.all %}
-			      	{{ data.name }}, {{data.serie}}<br>
+			      	{{ data.name }}, {{data.serie}}, {{data.typ}}, {{data.modell}}<br>
 			      	{% endfor %}
 
 			      	{% for x in data.kunde.all %}
