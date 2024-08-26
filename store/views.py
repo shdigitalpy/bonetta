@@ -37,6 +37,7 @@ def cms_elemente_statistik(request):
     serie = request.GET.get('serie', '')
     modell = request.GET.get('modell', '')
     typ = request.GET.get('typ', '')
+    name = request.GET.get('name', '')  # New field for filtering by name
 
     # Filter the queryset based on search criteria
     if dichtungen_titel:
@@ -61,6 +62,8 @@ def cms_elemente_statistik(request):
         elemente = elemente.filter(elemente_objekte__modell__icontains=modell)
     if typ:
         elemente = elemente.filter(elemente_objekte__typ__icontains=typ)
+    if name:
+        elemente = elemente.filter(elemente_objekte__name__icontains=name)  # Filter by name
 
     # Use distinct() to avoid duplicates if multiple criteria match
     elemente = elemente.distinct()

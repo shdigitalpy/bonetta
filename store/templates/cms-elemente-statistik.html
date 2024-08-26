@@ -22,15 +22,19 @@
                            name="aussenhöhe" value="{{ request.GET.aussenhöhe }}">
                 </div>
                 <div style="flex: 0 0 5%; padding: 5px;">
-                    <input class="form-control" type="text" placeholder="Serie"
+                    <input class="form-control" type="text" placeholder="Marke"
+                           name="name" value="{{ request.GET.name }}">
+                </div>
+                <div style="flex: 0 0 5%; padding: 5px;">
+                    <input class="form-control" type="text" placeholder="Typ"
                            name="serie" value="{{ request.GET.serie }}">
                 </div>
                 <div style="flex: 0 0 5%; padding: 5px;">
-                    <input class="form-control" type="text" placeholder="Modell"
+                    <input class="form-control" type="text" placeholder="Modell/Code"
                            name="modell" value="{{ request.GET.modell }}">
                 </div>
                 <div style="flex: 0 0 5%; padding: 5px;">
-                    <input class="form-control" type="text" placeholder="Marke"
+                    <input class="form-control" type="text" placeholder="Serien-Nr."
                            name="typ" value="{{ request.GET.typ }}">
                 </div>
                 <div style="flex: 0 0 5%; padding: 5px;">
@@ -66,7 +70,7 @@
                     <td>
 
 			      	{% for data in data.elemente_objekte.all %}
-			      	{{ data.name }}<br>
+			      	{{ data.name }}, {{data.serie}}<br>
 			      	{% endfor %}
 
 			      	{% for x in data.kunde.all %}

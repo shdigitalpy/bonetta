@@ -25,10 +25,10 @@ class ElementeObjekteCreateForm(forms.ModelForm):
 		model = Objekte
 		fields = ('name', 'serie', 'modell', 'typ' )
 		labels = {
-			'name': "Objekt-Name",
-			'serie' : "Serie",
-			'modell' : "Modell",
-			'typ' : "Marke/Sonstiges",
+			'name': "Marke",
+			'serie' : "Typ",
+			'modell' : "Modell/Code",
+			'typ' : "Serien-Nr.",
 			
 		}
 		widgets = {
