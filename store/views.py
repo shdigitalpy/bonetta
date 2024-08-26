@@ -71,11 +71,11 @@ def cms_elemente_statistik(request):
     return render(request, 'cms-elemente-statistik.html', context)
 
 @staff_member_required
-def cms_elemente_objekte_löschen(request, pk, cpk):
+def cms_elemente_objekte_löschen(request, pk, epk, cpk):
     eintrag = get_object_or_404(Objekte, pk=pk)
     eintrag.delete()
     messages.info(request, "Das Objekt wurde gelöscht.")
-    return redirect("store:cms_elemente_objekte", pk=pk, cpk=cpk)
+    return redirect("store:cms_elemente_objekte", pk=epk, cpk=cpk)
 
 @staff_member_required
 def cms_elemente_objekte_erfassen(request, pk, cpk):
@@ -106,7 +106,7 @@ def cms_elemente_objekte_erfassen(request, pk, cpk):
 @staff_member_required
 def cms_elemente_objekte(request, pk, cpk):
 	kunde = Kunde.objects.get(pk=cpk)
-	elemente_data = Elemente.objects.get(pk=pk)
+	elemente_data = get_object_or_404(Elemente, pk=pk)
 	objekte = Objekte.objects.filter(objekte=elemente_data).order_by('id')
 
 	context = {

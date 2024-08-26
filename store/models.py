@@ -616,7 +616,7 @@ class Elemente(models.Model):
 
 class Objekte(models.Model):
 	name = models.CharField(max_length=255, null=True, blank=True) 
-	objekte = models.ManyToManyField(Elemente, related_name='elemente_objekte',null=True, blank=True)
+	objekte = models.ManyToManyField(Elemente, related_name='elemente_objekte', blank=True)
 	serie = models.CharField(max_length=255, null=True, blank=True) 
 	modell = models.CharField(max_length=255, null=True, blank=True)
 	typ = models.CharField(max_length=255, null=True, blank=True)  

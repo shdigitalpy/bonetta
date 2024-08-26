@@ -34,10 +34,6 @@
 
 
 				<a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente_statistik' %}">Statistik Elemente</a>
-
-
-
-
 				<a class="btn btn-secondary btn-sm" href="{% url 'store:cms_kunden' %}">Zurück zur Kundenliste</a>
 
 			</div>
@@ -79,7 +75,7 @@
   					<td>
   					<a href="{% url 'store:cms_elemente_löschen' data.pk kunde_id %}"><i style="color:var(--red)" class="far fa-trash-alt"></i>
 					 </a>
-					</td> 
+					</td>
 			      {% endfor %}
 			    </tr>
 			    
