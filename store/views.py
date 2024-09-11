@@ -22,8 +22,6 @@ from datetime import datetime
 from django.contrib.admin.views.decorators import staff_member_required
 from itertools import chain
 
-
-
 @staff_member_required
 def cms_elemente_statistik(request):
     # Initialize the queryset
