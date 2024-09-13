@@ -20,7 +20,11 @@
     <ul class="nav justify-content-end topnav">
 
       <li class="nav-item">
-      <a class="nav-link" href="{% url 'store:anleitung_videos' %}">Anleitungen & Videos</a>
+      <a class="nav-link" href="">Bestellformular Kunde</a>
+      </li>
+
+      <li class="nav-item">
+      <a class="nav-link" href="{% url 'store:anleitung_videos' %}">Anleitungen</a>
       </li>
 
       
@@ -106,7 +110,7 @@
       </div>
 
       <div id="divider-mobile" class="divider-mobile">
-        
+
       <a href="{% url 'store:order_summary' %}" class="btn btn-outline-warning warenkorb">
         <i id="cart-icon" class="fas fa-shopping-cart"></i><span id="cart-total">{{ request.user|cart_item_count}}</span></a>
       </div>
