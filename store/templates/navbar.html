@@ -11,9 +11,9 @@
   </a>
     
     <div class="nav-buttons">
-    <a type="button" target="__blank" style="font-size:0.8rem;" class="btn btn-outline-warning" href="https://gastrosortiment.ch/" rel="nofollow" title="Gastrozubehör">Gastrozubehör  </a>
+    <a id="gastrozubehoer" type="button" target="__blank" class="gastrozubehoer-btn btn btn-outline-warning" href="https://gastrosortiment.ch/" rel="nofollow" title="Gastrozubehör">Gastrozubehör  </a>
 
-    <a type="button" style="margin-left:5px;font-size:0.8rem;" class="btn btn-outline-warning" href="https://www.gastroplatz.ch/" title="Marktplatz">Marktplatz  </a>
+  
     </div>
 
     <!-- Topnav -->
@@ -106,6 +106,7 @@
       </div>
 
       <div id="divider-mobile" class="divider-mobile">
+        
       <a href="{% url 'store:order_summary' %}" class="btn btn-outline-warning warenkorb">
         <i id="cart-icon" class="fas fa-shopping-cart"></i><span id="cart-total">{{ request.user|cart_item_count}}</span></a>
       </div>
@@ -122,7 +123,7 @@
 <div class="container-fluid">
 
   
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">    
+  <button class="navbar-toggler"  type="button" data-toggle="collapse" data-target="#navbarResponsive">    
                 <span class="navbar-toggler-icon"></span>
     </button>     
 

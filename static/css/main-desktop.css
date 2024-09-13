@@ -293,30 +293,25 @@ a[aria-expanded="true"] {
 /* ----------------------------------- Navigation END */
 
 #home {
-	background: url('/static/images/gastro-dichtungen.jpg') no-repeat center center fixed;
-	height: 100%;
+	background: white;
 	width: 100%;
-	background-size: cover;
-	display: -webkit-box;
-	display: -ms-flexbox;
+	height:100%;
 	display: flex;
-	-webkit-box-pack: center;
-	    -ms-flex-pack: center;
-	        justify-content: center;
-	-webkit-box-align: center;
-	    -ms-flex-align: center;
-	        align-items: center;
+  justify-content: center;
+  margin-top: 7rem;
 }
 
 
-@media only screen and (min-width: 769px) and (max-width: 1024px){
-	#home {
-	background: var(--blue);
-}
-}
+
 @media only screen and (max-width: 768px){
 	#home {
-	background: var(--blue);
+	margin-top:2rem;
+	height:auto;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center
+
+
 }
 }
 

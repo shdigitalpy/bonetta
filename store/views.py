@@ -805,14 +805,18 @@ def home(request):
 			email.content_subtype = "html"
 			email.send()
 
+
+
 			context = {
 				'items': items,
 				'vorname' : vorname,
 			}
 			return render(request, 'dichtungen.html', context)
 		else:
+			marken = Marke.objects.all()
 			context = {
-				'items': items
+				'items': items,
+				'marken' : marken, 
 			}
 			return render(request, 'dichtungen.html', context)
 

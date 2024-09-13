@@ -20,19 +20,24 @@ table {
 
 .topnav {
 	margin: 0 !important;
-	padding: 0 !important;
+	padding-top:0;
 	display:flex;
 	flex-direction: column;
+	width:20%;
+
 	}
 
 .topnav a {
-	font-size: 0.9rem !important;
+	font-size: 1rem !important;
 }
 
 .nav-buttons {
 	display:flex;
-	flex-direction: column;
 }
+
+.gastrozubehoer-btn {
+        display: none !important;
+    }
 
 #divider {
 	display: none;
@@ -40,6 +45,7 @@ table {
 
 #divider-mobile {
 	display: block;
+	width:20%;
 
 }
 

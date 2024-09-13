@@ -15,8 +15,48 @@
 
       <div id="home">
         <div class="landing-text">
-          <h1>Dichtungen aller Art</h1>
-          <h2>Spezialisierter Online Shop für Dichtungen in der Schweiz</h2>
+          <h1>Dichtungen nach Marke</h1>
+          <br>
+          <br>
+          <br>
+          <br>
+          <div class="container">
+          <div class="storepreview">
+        <div class="row">
+
+            {% for marke in marken %}
+                {% if marke.item.all.count > 0 %}  <!-- Only display if marke has associated items -->
+
+                <div class="col-lg-5">
+                    <div class="marke-flex">
+                        {% if marke.markepic %}
+                        <a href="{% url 'store:markedetails' marke.slug %}">  <!-- Corrected URL generation -->
+                            <img class="thumbnail" src="{{ marke.markepic.url }}">
+                        </a>
+                        {% endif %}
+                        
+                        <div class="marke-element">
+                            <div class="marke-element-sub">
+                                <h4>{{ marke.name }} - Dichtungen</h4>
+
+                                <a class="btn btn-primary btn-sm" href="{% url 'store:markedetails' marke.slug %}">Zu den Produkten</a>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% endif %}
+            {% endfor %}
+
+        </div><!-- row end -->
+    </div><!-- storepreview end -->
+  </div><!-- container end -->
+
+    <br>
+    <br>
+
+
           <a id="scroll-link" href="#boxen" behavior="smooth"><i class="fas fa-caret-down"></i></a>
         </div>
       
