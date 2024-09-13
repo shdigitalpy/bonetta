@@ -12,16 +12,16 @@
             {% for marke in marken %}
                 {% if marke.item.all.count > 0 %}  <!-- Only display if marke has associated items -->
 
-                <div class="col-lg-3">
-                    <div class="product-flex">
+                <div class="col-lg-5">
+                    <div class="marke-flex">
                         {% if marke.markepic %}
                         <a href="{% url 'store:markedetails' marke.slug %}">  <!-- Corrected URL generation -->
                             <img class="thumbnail" src="{{ marke.markepic.url }}">
                         </a>
                         {% endif %}
                         
-                        <div class="box-element">
-                            <div class="box-element-sub">
+                        <div class="marke-element">
+                            <div class="marke-element-sub">
                                 <h4>{{ marke.name }} - Dichtungen</h4>
 
                                 <a class="btn btn-primary btn-sm" href="{% url 'store:markedetails' marke.slug %}">Zu den Produkten</a>
