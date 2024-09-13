@@ -10,12 +10,12 @@
         <div class="row">
 
             {% for marke in marken %}
-                {% if marke.item.all.count > 0 %}  <!-- Check if marke has any items -->
+                {% if marke.item.all.count > 0 %}  <!-- Only display if marke has associated items -->
 
                 <div class="col-lg-3">
                     <div class="product-flex">
                         {% if marke.markepic %}
-                        <a href="{% url 'store:marke' marke.slug %}">
+                        <a href="{% url 'store:markedetails' marke.slug %}">  <!-- Corrected URL generation -->
                             <img class="thumbnail" src="{{ marke.markepic.url }}">
                         </a>
                         {% endif %}
