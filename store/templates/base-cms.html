@@ -23,10 +23,10 @@
    	<ul class="list-unstyled components">
  	 	<a href="{% url 'store:cms' %}"><p>Startseite</p></a> 
 
-      
+      <p style="color:  var(--white);background-color: var(--red);text-transform:uppercase;margin: 1rem 0;">Webshop</p>
 
       <li>
-      <a href="{% url 'store:cms_kunden' %}">Kunden</a>
+      <a href="{% url 'store:cms_kunden' %}">User Webshop</a>
       </li> 
 
       <li>
@@ -45,15 +45,31 @@
       <li>
       <a href="{% url 'store:cms_statistik_produkte' %}">Statistik Produkte</a>
     </li>
-    <li>
-      <a href="{% url 'store:cms_elemente_statistik' %}">Statistik Elemente</a>
-    </li>
+    
 
       <li>
       <a href="{% url 'store:cms_marken' %}">Marken</a>
     </li>
 
+    <p style="color:  var(--white);background-color: var(--red);text-transform:uppercase;margin: 1rem 0;">CRM</p>
+
+    <li>
+      <a href="{% url 'store:crm_new_kunden' %}">Kunden</a>
+      </li> 
+
+     
+
+      <li>
+      <a href="{% url 'store:cms_elemente_statistik' %}">Statistik Elemente</a>
+    </li>
+
+     <li>
+      <a href="">QR Code</a>
+      </li> 
+
  	 			
+
+        <p style="color:  var(--white);background-color: var(--red);text-transform:uppercase;margin: 1rem 0;">Weiteres</p>
       <li>
           <a href="{% url 'store:cms_benutzerdaten' %}">Benutzerdaten</a>
         </li>

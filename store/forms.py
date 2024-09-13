@@ -8,6 +8,7 @@ from django_countries.fields import CountryField
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string, get_template
 
+
 PAYMENT_CHOICES = (
 	('R', 'Rechnung*'),
 	('V', 'Vorkasse (2% Skonto)'),
@@ -19,6 +20,116 @@ COUNTRY_CHOICES = [
 	('A', 'Österreich'),
 
 	]
+
+
+class CRMLastService(forms.ModelForm):
+    class Meta:
+        model = Kunde
+        fields = ['last_service']  # Only allow the last_service field
+        labels = {
+            'last_service': "Letzter Service",
+        }
+        widgets = {
+            'last_service': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date',  # This will generate an HTML5 date picker
+                'placeholder': 'Wählen Sie ein Datum',
+            }),
+        }
+
+
+class CRMKundeForm(forms.ModelForm):
+	class Meta:
+		model = Kunde
+		fields = ['vorname', 'nachname','email','interne_nummer','firmenname','phone','mobile']
+
+		labels = {
+			'vorname': "Vorname",
+			'nachname': "Nachname",
+			'email': "E-Mail",
+			'interne_nummer': "Interne-Nr.",
+			'firmenname': "Firmenname",
+			'phone': "Telefon",
+			'mobile': "Mobile-Nr",
+
+			}
+
+		widgets = {
+			'vorname': forms.TextInput(attrs={
+					'class': 'form-control col-6',
+					'placeholder':''}),
+			'nachname': forms.TextInput(attrs={
+					'class': 'form-control col-6',
+					'placeholder':''}),
+			'email': forms.TextInput(attrs={
+					'class': 'form-control col-6',
+					'placeholder':''}),
+				
+				'firmenname': forms.TextInput(attrs={
+					'class': 'form-control col-6',
+					'placeholder':''}),
+				'interne_nummer': forms.NumberInput(attrs={
+					'class': 'form-control col-6',
+					'placeholder':''}),
+				'rabatt': forms.TextInput(attrs={
+					'class': 'form-control col-6',
+					'placeholder':''}),
+				
+				'phone': forms.TextInput(attrs={
+					'class': 'form-control col-6',
+					'placeholder':''}),
+				'mobile': forms.TextInput(attrs={
+					'class': 'form-control col-6',
+					'placeholder':''}),
+		
+
+			}
+
+
+class CRMAddressForm(forms.ModelForm):
+    class Meta:
+        model = CRMAddress  # Your CRM address model
+        fields = (
+            'crm_strasse',
+            'crm_nr',
+            'crm_plz',
+            'crm_ort',
+            'crm_kanton',  # This is now a dropdown
+        )
+        labels = {
+            'crm_strasse': "Strasse:",
+            'crm_nr': "Nr.",
+            'crm_ort': "Ort",
+            'crm_kanton': "Kanton",
+            'crm_plz': "PLZ",
+        }
+        widgets = {
+            'crm_strasse': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Strasse',
+                'required': True
+            }),
+            'crm_nr': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Nr.',
+                'required': True
+            }),
+            'crm_ort': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ort',
+                'required': True
+            }),
+            'crm_kanton': forms.Select(attrs={
+                'class': 'form-control',  # Dropdown for Kanton
+                'required': True
+            }),
+            'crm_plz': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'PLZ',
+                'required': True
+            }),
+        }
+
 
 class ElementeObjekteCreateForm(forms.ModelForm):
 	class Meta:
@@ -49,168 +160,11 @@ class ElementeObjekteCreateForm(forms.ModelForm):
 		}
 
 
-class InternalKundeForm(forms.ModelForm):
-    class Meta:
-        model = Kunde
-        fields = ['firmenname', 'interne_nummer']
-
-        widgets = {
-			
-			'firmenname': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':''}),
-			'interne_nummer': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':''}),
-			
-				
-			}
-
-class ShippingAddressForm(forms.ModelForm):
-    class Meta:
-        model = ShippingAddress
-        fields = ['lieferung_strasse', 'lieferung_nr', 'lieferung_ort']
-
-
-class InseratJobsCreateForm(forms.ModelForm):
-	class Meta:
-		model = JobsMarketplace
-		fields = ('category','title','datejob','kindof','pensum', 'jobdescription', 'requirements','language','res_description','contact_person', 'place','region'  )
-
-		labels = {
-			'title' : "Titel des Eintrags:",
-			'jobdescription' : "Job Beschreibung",
-			'category' : "Kategorie",
-			'requirements' : "Anforderungen",
-			'res_description' : "Restaurant Beschreibung",
-			'contact_person' : "Kontaktperson",
-			'language' : "Sprachen",
-			'place' : "Adresse",
-			'datejob' : "Stellenantritt",
-			'kindof' : "Anstellungsart",
-			'pensum' : "Pensum",
-			'region' : "Region"
-		}
-		
-		widgets = {
-			
-			'title': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'z.B. Küchenchef'}),
-			'jobdescription': forms.Textarea(attrs={
-
-				'class': 'form-control col-6',
-				'placeholder':'Beschreibung Aufgaben'}),
-			'datejob': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'z.B. per sofort oder nach Vereinbarung'}),
-			'kindof': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'z.B. Dauerstelle/Teilzeitstelle'}),
-			'pensum': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'z.B. 100%'}),
-			'language': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'z.B. Deutsch, Englisch erwünscht'}),
-			'category' : forms.Select(attrs={
-				'class': 'form-control col-6',
-				}),
-			'requirements': forms.Textarea(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'z.B. Kochlehre und Erfahrung in ähnlicher führender Position'}),
-			'res_description': forms.Textarea(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'z.B. Bestens frequentierter Betrieb.'}),
-			'contact_person': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'z.B. Herr Markus Müller, Geschäftsführer'}),
-			'place': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'z.B. Landstrasse 4, 8447 Dachsen'}),
-			'region' : forms.Select(attrs={
-				'class': 'form-control col-6',
-				}),
-
-			
-		}
-
-
 
 class ProductMarkeLinkForm(forms.Form):
     item_marke = forms.ModelChoiceField(queryset=Marke.objects.all())
 
 
-class InseratCreateForm(forms.ModelForm):
-	class Meta:
-		model = Marketplace
-		fields = ('category','numberof', 'title', 'price', 'description', 'condition', 'marke_ins', 'typ_marke_ins', 'place','image','image1','image2','anonym_ins'  )
-
-		labels = {
-			'title' : "Titel des Eintrags:",
-			'numberof' : "Stückzahl",
-			'price' : "Preis",
-			'description' : "Beschreibung",
-			'condition' : "Zustand",
-			'place' : "Standort",
-			'image' : "Bild",
-			'image1' : "Bild",
-			'image2' : "Bild",
-			'category' : "Kategorie",
-			'anonym_ins' : "Veröffentlichung Adresse & Angaben",
-			'marke_ins' : "Marke",
-			'typ_marke_ins' : "Typ Bezeichnung"
-
-
-		}
-		
-
-		widgets = {
-			
-			'title': forms.TextInput(attrs={
-				'class': 'form-control col-3',
-				'placeholder':'z.B. Küchenmaschine'}),
-			'marke_ins': forms.TextInput(attrs={
-				'class': 'form-control col-3',
-				'placeholder':'Markenname'}),
-			'typ_marke_ins': forms.TextInput(attrs={
-				'class': 'form-control col-3',
-				'placeholder':'Typ Bezeichnung'}),
-			'numberof': forms.NumberInput(attrs={
-				'class': 'form-control col-3',
-				'placeholder':'Stückzahl'}),
-
-			'price': forms.NumberInput(attrs={
-				'class': 'form-control',
-				'placeholder':'z.B. 100'}),
-			'description': forms.Textarea(attrs={
-				'maxlength': '100',
-				'rows': '3',
-				'class': 'form-control col-3',
-				'placeholder':''}),
-			'condition': forms.Select(attrs={
-				'class': 'form-control',
-				}),
-			'place': forms.TextInput(attrs={
-				'class': 'form-control col-3',
-				'placeholder':'Wo'}),
-			'image' : forms.FileInput(attrs={
-				'class': 'form-control',
-				}),
-			'image1' : forms.FileInput(attrs={
-				'class': 'form-control',
-				}),
-			'image2' : forms.FileInput(attrs={
-				'class': 'form-control',
-				}),
-			'category' : forms.Select(attrs={
-				'class': 'form-control',
-				}),
-
-			'anonym_ins' : forms.Select(attrs={
-				'class': 'form-control',
-				}),
-		}
 
 class CheckoutForm(forms.Form):
 	rechnung_firmenname = forms.CharField(required=False, widget=forms.TextInput(attrs={
@@ -686,8 +640,8 @@ class KundeEditAdvancedForm(forms.ModelForm):
 	class Meta:
 		model = Kunde
 		fields = (
-			'firmenname',
 			'interne_nummer',
+			'firmenname',
 			'rabatt',
 			'newsletter',
 			'phone',
@@ -696,6 +650,66 @@ class KundeEditAdvancedForm(forms.ModelForm):
 
 			)
 		widgets = {
+			
+			'firmenname': forms.TextInput(attrs={
+				'class': 'form-control col-3',
+				'placeholder':''}),
+			'interne_nummer': forms.NumberInput(attrs={
+				'class': 'form-control col-3',
+				'placeholder':''}),
+			'rabatt': forms.TextInput(attrs={
+				'class': 'form-control col-3',
+				'placeholder':''}),
+			'newsletter': forms.Select(attrs={
+				'class': 'form-control col-3',}),
+			'phone': forms.TextInput(attrs={
+				'class': 'form-control col-3',
+				'placeholder':''}),
+			'mobile': forms.TextInput(attrs={
+				'class': 'form-control col-3',
+				'placeholder':''}),
+			'birthday': forms.TextInput(attrs={
+				'class': 'form-control col-3',
+				'placeholder':''}),
+		}
+
+class CRMKundeEditModelForm(forms.ModelForm):
+	class Meta:
+		model = Kunde
+		fields = (
+			'vorname',
+			'nachname',
+			'email',
+			'interne_nummer',
+			'firmenname',
+			'rabatt',
+			'phone',
+			'mobile',
+			'birthday'
+
+			)
+		labels = {
+			'vorname': "Vorname",
+			'nachname': "Nachname",
+			'email': "E-Mail",
+			'interne_nummer': "Nr.",
+			'firmenname': "Firmenname",
+			'rabatt': "Rabatt %",
+			'phone': "Telefon",
+			'mobile': "Mobile-Nr",
+			'birthday': "Geburtsdatum"
+
+			}
+		widgets = {
+		'vorname': forms.TextInput(attrs={
+				'class': 'form-control col-3',
+				'placeholder':''}),
+		'nachname': forms.TextInput(attrs={
+				'class': 'form-control col-3',
+				'placeholder':''}),
+		'email': forms.TextInput(attrs={
+				'class': 'form-control col-3',
+				'placeholder':''}),
 			
 			'firmenname': forms.TextInput(attrs={
 				'class': 'form-control col-3',

@@ -1,0 +1,125 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}CRM Kunden{% endblock %}
+{% load custom_filters %}
+
+{% block content %}
+    <div class="flexbox">
+        <div class="h2">CRM Kunden</div>
+    </div>
+
+    <p style="color:red">Achtung viele Funktionen gehen noch nicht</p>
+
+    <div class="flexbox" style="align-items:start;">
+        
+        <a class="btn btn-secondary btn-sm" href="{% url 'store:crm_new_kunde_erfassen' %}">CRM Kunde erfassen</a>
+
+        <!-- Search form -->
+        <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="{% url 'store:crm_new_kunden' %}">
+            {% csrf_token %}
+            <div style="display: flex">
+                <div style="flex: 0 0 20%">
+                    <input id="textsuche" class="form-control" type="text" placeholder="Suche" aria-label="Search" name="search">
+                </div>
+                <div style="flex: 0 0 15%">
+                    <button type="submit" style="border: none;" class="btn btn-outline-secondary">
+                        <span class="fas fa-search"></span> Suche
+                    </button>
+                </div>
+                <div style="flex: 0 0 15%">
+                    <a href="{% url 'store:crm_new_kunden' %}" style="border: none;" class="btn btn-outline-secondary"><span class="fas fa-times"></span> zurücksetzen</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Daten-Bearbeiten</th>
+                <th scope="col">Interne Nr.</th>
+                <th scope="col">Firma / Profil</th>
+                <th scope="col">Telefon</th>
+                
+                <th scope="col">Adresse<br> bearbeiten</th>
+                <th scope="col">Elemente<br> Übersicht</th>
+                <th scope="col">Kunde erfasst am</th>
+                <th scope="col">Letzter Service</th>
+                <th scope="col">Fällig am</th>
+                <th scope="col"># Tage</th>
+                <th scope="col">Kunde löschen</th>
+            </tr>
+        </thead>
+        <tbody>
+             {% for kunde in kunden %}
+                {% if not kunde.user %}
+                    <tr>
+                        <td><a href="{{ kunde.get_absolute_crm_url }}"><i class="fas fa-edit"></i></a></td>
+                        <td>{{ kunde.interne_nummer }}</td>
+                        <td>{{ kunde.firmenname }} <br>
+
+                        {% for address in kunde.kunde_address.all %}
+                            {{ address.crm_strasse }} {{ address.crm_nr }},<br>
+                           {{ address.crm_plz }}
+                            {{ address.crm_ort }}<br>
+                            {{ address.crm_kanton }}
+                        {% empty %}
+                           Keine Adresse.
+                        {% endfor %}
+
+
+                    </td>
+                        <td>{% if kunde.phone %}{{kunde.phone}}{% endif %} <br>{% if kunde.mobile %}{{kunde.mobile}}{% endif %}</td>
+                        <td><a href="{{kunde.get_absolute_crm_address_url}}"><i class="fas fa-edit"></i></a></td>
+                                              
+                        
+                        <td><a href="{{ kunde.get_absolute_elemente_url }}"><i class="fas fa-info-circle"></i> / {{ kunde.elemente_count }}</a></td>
+
+
+                        <td>{{ kunde.created_at|date:"d.m.Y" }}</td>
+                        <td>{% if kunde.last_service %}
+                            {{ kunde.last_service|date:"d.m.Y" }}
+
+                            <a href="{% url 'store:crm_update_last_service' kunde.pk %}"><i class="fas fa-edit"></i></a>
+
+                            {% else %}keiner <a href="{% url 'store:crm_update_last_service' kunde.pk %}"><i class="fas fa-edit"></i></a>{% endif %}</td>
+
+                         <td>
+                            {% if kunde.get_due_date %}
+                                {{ kunde.get_due_date|date:"d.m.Y" }}  <!-- Formats the date as "DD.MM.YYYY" -->
+                            {% else %}
+                                keins
+                            {% endif %}
+                        </td>
+                         {% load custom_filters %}
+
+                        <td>
+                            {% with kunde.last_service as last_service %}
+                                {% with kunde.get_due_date as due_date %}
+                                    {% if last_service and due_date %}
+                                        {% with last_service|days_until_due:due_date as days_until_due %}
+                                            <span 
+                                                {% if days_until_due < 60 %} 
+                                                    style="color: red;" 
+                                                {% endif %}
+                                            >
+                                                {{ days_until_due }}
+                                            </span>
+                                        {% endwith %}
+                                    {% else %}
+                                        keins
+                                    {% endif %}
+                                {% endwith %}
+                            {% endwith %}
+                        </td>
+
+
+
+
+                        <td><a href="{% url 'store:cms_crm_kunde_löschen' kunde.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i></a></td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

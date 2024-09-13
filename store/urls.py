@@ -36,17 +36,35 @@ urlpatterns = [
 	path('add-to-cart-myd/<slug:slug>/<int:pk>/<int:aussenbreite>/<int:aussenhöhe>/<int:anzahl>/<int:element>', add_to_cart_myd, name='add_to_cart_myd'),
 	path('remove-from-cart/<slug:slug>/<int:pk>/', remove_from_cart, name='remove_from_cart'),
 	path('remove-item-from-cart/<slug:slug>/<int:pk>/', remove_single_item_from_cart, name='remove_single_item_from_cart'),
-	path('rechnung/', views.Rechnung, name='rechnung'), 
+	path('rechnung/', views.Rechnung, name='rechnung'),
+
+	#crm kunden
+	path('cms/crm/kunden', views.crm_new_kunden, name='crm_new_kunden'),
+	path('cms/crm/kunden/bearbeiten/<int:pk>', views.crm_new_kunde_bearbeiten, name='crm_new_kunde_bearbeiten'),
+	path('cms/crm/adresse/bearbeiten/<int:pk>', views.cms_crm_adresse_bearbeiten, name='cms_crm_adresse_bearbeiten'),
+	path('cms/crm/kunde/löschen/<int:pk>', views.cms_crm_kunde_löschen, name='cms_crm_kunde_löschen'),
+	path('cms/crm/kunde/erfassen', views.crm_new_kunde_erfassen, name='crm_new_kunde_erfassen'),
+	path('cms/crm/<int:pk>/update_last_service/', views.crm_update_last_service, name='crm_update_last_service'),
+
+	#cms 
 	path('cms/', views.cms, name="cms"),
 	path('cms/bestellungen', views.cms_bestellungen, name='cms_bestellungen'),
 	path('cms/bestätigung/<int:pk>', views.cms_bestellung_confirmation, name='cms_bestellung_confirmation'),
-	path('cms/kunden', views.cms_kunden, name='cms_kunden'),
-	path('cms/kunden/erfassen', views.cms_kunden_erfassen, name='cms_kunden_erfassen'),
-	path('cms/internal-kunde/erfassen', views.cms_interner_kunde_erfassen, name='cms_interner_kunde_erfassen'),
+
+	
+
+	#webshop kunden
+	path('cms/webshop/kunden', views.cms_kunden, name='cms_kunden'),
+	path('cms/webshop/erfassen', views.cms_kunden_erfassen, name='cms_kunden_erfassen'),
 	path('cms/user/bearbeiten/<int:pk>', views.cms_user_bearbeiten, name='cms_user_bearbeiten'),
 	path('cms/kundenadresse/bearbeiten/<int:pk>', views.cms_kundenadresse_bearbeiten, name='cms_kundenadresse_bearbeiten'),
-	path('cms/kunden/bearbeiten/<int:pk>', views.cms_kunde_bearbeiten, name='cms_kunde_bearbeiten'),
-	path('cms/kunden/löschen/<int:pk>', views.cms_kunde_löschen, name='cms_kunde_löschen'),
+	path('cms/webshop//bearbeiten/<int:pk>', views.cms_kunde_bearbeiten, name='cms_kunde_bearbeiten'),
+	path('cms/webshop/löschen/<int:pk>', views.cms_kunde_löschen, name='cms_kunde_löschen'),
+
+
+	
+
+	#produkte
 	path('cms/produkte/<str:first_cat>', views.cms_produkte, name='cms_produkte'),
 	path('cms/produkte/bearbeiten/<int:pk>/<str:current_cat>', views.product_cms_edit, name='cms_produkte_edit'),
 	path('cms/produkte/löschen/<int:pk>/<str:cat>', views.cms_remove_product, name='cms_remove_product'),
@@ -54,6 +72,12 @@ urlpatterns = [
 	path('cms/produkte-marke/<int:pk>', views.cms_product_marke_overview, name='cms_product_marke_overview'),
 	path('cms/produkte-marke/erfassen/<int:pk>', views.cms_product_marke_erfassen, name='cms_product_marke_erfassen'),
 	path('cms/produkte-marke/löschen/<int:pkk>/<int:pk>', views.cms_product_marke_löschen, name='cms_product_marke_löschen'),
+	
+
+	
+
+
+	#elemente
 	path('cms/elemente/statistik', views.cms_elemente_statistik, name='cms_elemente_statistik'),
 	path('cms/elemente/<int:pk>', views.cms_elemente, name='cms_elemente'),
 	path('cms/elemente/erfassen/<int:pk>', views.cms_elemente_create, name='cms_elemente_create'),
@@ -74,37 +98,9 @@ urlpatterns = [
 	path('cms/login_user', views.login_user, name='login_user'),
 	path('cms/logout_user', views.logout_user, name='logout_user'),
 	path('cms/statistik/produkte', views.cms_statistik_produkte, name='cms_statistik_produkte'),
+	
 	re_path(r'^robots.txt$', TemplateView.as_view(template_name="robots.txt", content_type="text/plain"), name="robots_file"),
 	#marktplatz
-	path('marktplatz-uebersicht', views.marktplatz_overview, name='marktplatz_overview'),
-    path('marktplatz', views.marktplatz_main, name='marktplatz_main'),
-    path('inserate', views.myinserate, name="myinserate"),
-    path('inserate/change/<int:pk>', views.myinserate_ändern, name="myinserate_ändern"),
-    path('inserate/löschen/<int:pk>', views.myinserate_löschen, name="myinserate_löschen"),
-    path('inserate/wirklich/löschen/<int:pk>', views.myinserate_wirklich, name="myinserate_wirklich"),
-    path('marktplatz/video/', views.marktplatz_video, name='marktplatz_video'),
-    path('marktplatz/main/<str:cat>', views.marktplatz_main_category, name='marktplatz_main_category'),
-    path('marktplatz/main/jobs/<str:cat>', views.marktplatz_main_jobs_category, name='marktplatz_main_jobs_category'),
-    path('marktplatz/condition/<str:cond>', views.marktplatz_condition, name='marktplatz_condition'),
-    path('marktplatz/inserat/erfassen', views.marktplatz_inserat_erfassen, name='marktplatz_inserat_erfassen'),
-    path('marktplatz/inserat/aendern/<int:pk>', views.marktplatz_inserat_ändern, name='marktplatz_inserat_ändern'),
-    path('marktplatz/inserat/zahlung/<int:pk>/<int:tid>', views.marktplatz_zahlung, name="marktplatz_zahlung"),
-    path('marktplatz/inserat/summary/<int:pk>', views.marktplatz_inserat_summary, name="marktplatz_inserat_summary"),
-    path('marktplatz/inserat/erfolg/<int:pk>', views.marktplatz_inserat_erfolg, name="marktplatz_inserat_erfolg"),
-    path('marktplatz/inserat/details/<str:slug>', views.marktplatz_inserat_details, name="marktplatz_inserat_details"),
-    path('cms/marktplatz', views.cms_marktplatz, name='cms_marktplatz'),
-    path('cms/marktplatz/inserat/freigegeben/<int:pk>/<str:portal>', views.cms_inserat_freigeben, name="cms_inserat_freigeben"),
-    path('cms/marktplatz/inserat/deaktivieren/<int:pk>/<str:portal>', views.cms_inserat_deaktivieren, name="cms_inserat_deaktivieren"),
-	path('cms/marktplatz/inserat/bearbeiten/<int:pk>', views.cms_mp_bearbeiten, name="cms_mp_bearbeiten"),
-	path('cms/marktplatz/inserat/löschen/<int:pk>', views.cms_mp_löschen, name="cms_mp_löschen"),
-
-	#jobsmarktplatz
-	path('marktplatz/jobinserat/details/<int:pk>/<str:slug>', views.marktplatz_jobinserat_details, name="marktplatz_jobinserat_details"),
-	path('marktplatz-jobs', views.marktplatz_jobs, name='marktplatz_jobs'),
-	path('marktplatz/jobinserat/erfassen', views.marktplatz_jobinserat_erfassen, name='marktplatz_jobinserat_erfassen'),
-	path('marktplatz/jobinserat/summary/<int:pk>', views.marktplatz_jobinserat_summary, name="marktplatz_jobinserat_summary"),
-	path('marktplatz/jobinserat/aendern/<int:pk>', views.marktplatz_jobinserat_ändern, name='marktplatz_jobinserat_ändern'),
-	path('marktplatz/jobinserat/erfolg/<int:pk>', views.marktplatz_jobinserat_erfolg, name="marktplatz_jobinserat_erfolg"),
 
     #path('pdf_view/', views.ViewPDF.as_view(), name="pdf_view"),
     #path('pdf_download/', views.DownloadPDF.as_view(), name="pdf_download"),

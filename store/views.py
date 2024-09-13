@@ -120,123 +120,7 @@ def cms_elemente_objekte(request, pk, cpk):
     }
 	return render(request, 'cms-elemente-objekte.html', context)
 
-def cms_interner_kunde_erfassen(request):
-    if request.method == 'POST':
-        kunde_form = InternalKundeForm(request.POST)
-        shipping_form = ShippingAddressForm(request.POST)
 
-        if kunde_form.is_valid() and shipping_form.is_valid():
-            kunde_form.save()
-            shipping_form.save()
-            return redirect('store:cms_kunden')  
-
-    else:
-        kunde_form = InternalKundeForm()
-        shipping_form = ShippingAddressForm()
-    
-    return render(request, 'cms-interner-kunde-erfassen.html', {
-        'kunde_form': kunde_form,
-        'shipping_form': shipping_form,
-    })
-
-@login_required
-def marktplatz_jobinserat_erfolg(request, pk):
-	mp = get_object_or_404(JobsMarketplace, id=pk)
-
-	'''subject = 'Inserat Nr.' + ' ' + str(mp.id) + ' ' + mp.title + ' wurde erstellt.'
-	if mp.condition == "G":
-		condition = "Gebraucht"
-	else:
-		condition = "Neu"
-	template = render_to_string('marktplatz/inserat-email-erfolg.html', {
-			'title' : mp.title,
-			'price': mp.price, 
-			'condition': mp.condition,
-			'place': mp.place,
-			'add_date': mp.add_date,
-			'category': mp.category,		
-					 })
-	email = ''	
-	#send email for order
-	email = EmailMessage(
-			subject,
-			template,
-			email,
-			['sandro@sh-digital.ch','livio.bonetta@geboshop.ch'],
-				)
-	email.fail_silently=False
-	email.content_subtype = "html"
-	email.send()'''
-
-	context = {
-
-	'mp' : mp,
-		
-				}
-	return render(request, 'marktplatz/marktplatz-jobs-erfolg.html', context)
-
-
-@login_required
-def marktplatz_jobinserat_summary(request, pk):
-	mp = get_object_or_404(JobsMarketplace, id=pk)
-
-	if request.method == "POST":
-		#return redirect(link)
-		return redirect ("store:marktplatz_jobinserat_erfolg", pk=mp.id)
-
-	else:
-		context = {	
-			'inserat' : mp,
-				
-				}
-	
-		return render(request, 'marktplatz/marktplatz-jobsummary.html', context)
-
-@login_required
-def marktplatz_jobinserat_ändern(request, pk):
-	inserat = get_object_or_404(JobsMarketplace, id=pk)
-	
-	if request.method == "POST":
-		form = InseratJobsCreateForm(request.POST or None, request.FILES or None, instance=inserat)
-		if form.is_valid():
-			mp = form.save(commit=False)
-			mp.user = request.user
-			mp.save()
-			return redirect('store:marktplatz_jobinserat_summary', pk=mp.id)
-
-		else:
-			messages.error(request, "Error")
-
-	else: 
-		form = form = InseratJobsCreateForm(instance=inserat)
-
-	context = {
-		'form': form,
-				}
-	return render(request, 'marktplatz/marktplatz-inserat-erfassen.html', context)
-
-
-@login_required
-def marktplatz_jobinserat_erfassen(request):
-	if request.method == "POST":
-		form = InseratJobsCreateForm(request.POST or None,request.FILES or None,)
-		if form.is_valid():
-			mp = form.save(commit=False)
-			mp.user = request.user
-			mp.save()
-			
-			return redirect('store:marktplatz_jobinserat_summary', pk=mp.id)
-
-		else:
-			messages.error(request, "Error")
-
-	else: 
-		form = form = InseratJobsCreateForm()
-
-	context = {
-		'form': form,
-				}
-	return render(request, 'marktplatz/marktplatz-jobs-erstellen.html', context)
 
 
 
@@ -249,516 +133,6 @@ def anleitung_videos(request):
 	}
 	return render (request, 'anleitung-videos.html', context)
 
-def marktplatz_video(request):
-	context = {
-	
-	}
-	return render (request, 'marktplatz/marktplatz-video.html', context)
-
-def marktplatz_jobs(request):
-	mp_categories = MP_JobsCategory.objects.all().order_by('name')
-	search_query = request.GET.get('search', '')
-
-	if search_query:
-		mp_inserate = JobsMarketplace.objects.filter(Q(place__icontains=search_query) | Q(region__icontains=search_query))
-
-	else:
-		mp_inserate = JobsMarketplace.objects.all()
-
-
-	context = {
-
-	'mp_inserate': mp_inserate,
-	'mp_categories': mp_categories,
-	
-
-	}
-	return render (request, 'marktplatz/marktplatz-jobs.html', context)
-
-def marktplatz_overview(request):
-	
-	context = {
-
-			
-		
-				}
-	return render(request, 'marktplatz/marktplatz-overview.html', context)
-
-@login_required
-def marktplatz_zahlung(request, pk, tid):
-	mp = get_object_or_404(Marketplace, id=pk)
-	#### regular
-	context = {
-
-			'inserat' : mp,
-		
-				}
-	return render(request, 'marktplatz/marktplatz-zahlung.html', context)
-
-@login_required
-def marktplatz_inserat_summary(request, pk):
-	import urllib.request
-	import hmac
-	import hashlib
-	import base64
-	import json
-
-	mp = get_object_or_404(Marketplace, id=pk)
-
-	betrag = 1500
-	sku = int(mp.id) + 1000
-
-	post_data = {
-	"amount": betrag,
-	"vatRate": 8.1,
-	"currency": "CHF",
-	"sku": sku,
-	"preAuthorization": 0,
-	"reservation": 0,
-	"successRedirectUrl": settings.PAYMENT_SUCCESS_URL,
-	"failedRedirectUrl": settings.PAYMENT_DECLINE_URL
-
-			}
-
-	data = urllib.parse.urlencode(post_data).encode('UTF-8')
-
-	string = settings.INSTANCE_API_SECRET
-	as_bytes = bytes(string, 'UTF-8')
-
-	dig = hmac.new(as_bytes, msg=data, digestmod=hashlib.sha256).digest()
-	post_data['ApiSignature'] = base64.b64encode(dig).decode()
-	post_data['instance'] = settings.INSTANCE_NAME
-
-	data = urllib.parse.urlencode(post_data, quote_via=urllib.parse.quote).encode('UTF-8')
-
-	try:
-		payment_url = settings.PAYMENT_URL_OPEN
-
-		url = urllib.request.urlopen(payment_url, data) 
-		
-		content = url.read().decode('UTF-8')
-		response = json.loads(content)
-		result = response['data'][0]['id']
-		link = response['data'][0]['link']
-
-	except Exception as exc:
-		result = "Wrong"
-
-	mp.tid = result
-	mp.save()
-
-	if request.method == "POST":
-		#return redirect(link)
-		return redirect ("store:marktplatz_inserat_erfolg", pk=mp.id)
-
-	else:
-		context = {	
-			'inserat' : mp,
-			'result' : result,
-			'tid' : result,
-		
-				}
-	
-		return render(request, 'marktplatz/marktplatz-summary.html', context)
-
-@login_required
-def marktplatz_inserat_erfolg(request, pk):
-	mp = get_object_or_404(Marketplace, id=pk)
-
-	subject = 'Inserat Nr.' + ' ' + str(mp.id) + ' ' + mp.title + ' wurde erstellt.'
-	if mp.condition == "G":
-		condition = "Gebraucht"
-	else:
-		condition = "Neu"
-	template = render_to_string('marktplatz/inserat-email-erfolg.html', {
-			'title' : mp.title,
-			'price': mp.price, 
-			'condition': mp.condition,
-			'place': mp.place,
-			'add_date': mp.add_date,
-			'category': mp.category,		
-					 })
-	email = ''	
-	#send email for order
-	email = EmailMessage(
-			subject,
-			template,
-			email,
-			['sandro@sh-digital.ch','livio.bonetta@geboshop.ch'],
-				)
-	email.fail_silently=False
-	email.content_subtype = "html"
-	email.send()
-
-	context = {
-
-	'mp' : mp,
-		
-				}
-	return render(request, 'marktplatz/marktplatz-erfolg.html', context)
-
-@login_required
-def marktplatz_inserat_erfassen(request):
-	if request.method == "POST":
-		form = InseratCreateForm(request.POST or None,request.FILES or None,)
-		if form.is_valid():
-			mp = form.save(commit=False)
-			mp.user = request.user
-			mp.save()
-			
-			return redirect('store:marktplatz_inserat_summary', pk=mp.id)
-
-		else:
-			messages.error(request, "Error")
-
-	else: 
-		form = form = InseratCreateForm()
-
-	context = {
-		'form': form,
-				}
-	return render(request, 'marktplatz/marktplatz-inserat-erfassen.html', context)
-
-@login_required
-def marktplatz_inserat_ändern(request, pk):
-	inserat = get_object_or_404(Marketplace, id=pk)
-	
-	if request.method == "POST":
-		form = InseratCreateForm(request.POST or None, request.FILES or None, instance=inserat)
-		if form.is_valid():
-			mp = form.save(commit=False)
-			mp.user = request.user
-			mp.save()
-			return redirect('store:marktplatz_inserat_summary', pk=mp.id)
-
-		else:
-			messages.error(request, "Error")
-
-	else: 
-		form = form = InseratCreateForm(instance=inserat)
-
-	context = {
-		'form': form,
-				}
-	return render(request, 'marktplatz/marktplatz-inserat-erfassen.html', context)
-
-def marktplatz_main(request):
-	
-
-	mp_inserate = Marketplace.objects.all()
-
-	mp_categories = MP_Category.objects.all()
-
-	context = {
-
-	'mp_inserate': mp_inserate,
-	'mp_categories': mp_categories,
-	
-
-	}
-	return render (request, 'marktplatz/marktplatz-main.html', context)
-
-
-
-
-
-#myinserate benutzer übersicht
-
-@login_required
-def myinserate(request):
-	myinserat = Marketplace.objects.filter(user=request.user)
-
-	context = { 
-			'myinserat': myinserat,
-			
-			}
-	return render(request, 'marktplatz/marktplatz-inserate-benutzer.html', context)
-
-
-@login_required
-def myinserate_löschen(request, pk):
-	element = get_object_or_404(Marketplace, pk=pk)
-	if request.method == "POST":
-		return redirect("store:myinserate-wirklich", pk=pk)
-
-	else:
-		messages.info(request, "Achtung!")
-		context = {
-		'element': element,
-				}
-		return render(request, 'marktplatz/marktplatz-inserate-wirklich-loeschen.html', context)
-
-
-@login_required
-def myinserate_wirklich(request, pk):
-	eintrag = get_object_or_404(Marketplace, pk=pk)
-	eintrag.delete()
-	messages.info(request, "Das Inserat wurde gelöscht.")
-	return redirect("store:myinserate")
-
-@login_required
-def myinserate_ändern(request, pk):
-	inserat = get_object_or_404(Marketplace, id=pk)
-	
-	if request.method == "POST":
-		form = InseratCreateForm(request.POST or None, request.FILES or None, instance=inserat)
-		if form.is_valid():
-			mp = form.save(commit=False)
-			mp.user = request.user
-			mp.save()
-			return redirect('store:myinserate')
-
-		else:
-			messages.error(request, "Error")
-
-	else: 
-		form = form = InseratCreateForm(instance=inserat)
-
-	context = {
-		'form': form,
-				}
-	return render(request, 'marktplatz/marktplatz-inserate-benutzer-edit.html', context)
-
-#myinserate benutzer übersicht end
-
-def marktplatz_jobinserat_details(request, pk, slug):
-	inserat = get_object_or_404(JobsMarketplace, id=pk, slug=slug)
-
-	context = {
-
-			'inserat' : inserat,
-
-			}
-
-	return render (request, 'marktplatz/marktplatz-jobinserat-details.html', context)
-
-def marktplatz_inserat_details(request, slug):
-	inserat = get_object_or_404(Marketplace, slug=slug)
-
-	if request.user.is_authenticated:
-		user = request.user 
-		kunde = Kunde.objects.get(user=user)
-
-		inserat_kunde = Kunde.objects.get(user=inserat.user)
-
-		if request.method =="POST":
-			nachricht = request.POST['message']
-			
-
-			subject = 'Anfrage für Inserat Nr. ' + str(inserat.id)
-			template = render_to_string('marktplatz/inserat-verk-email.html', {
-				'benutzer': user.username,
-				'firma': kunde.firmenname,
-				'nachricht': nachricht,	
-				'inserat' : inserat,
-				'email' : kunde.user.email,
-				'telefon' : kunde.phone,		
-				 })
-
-			email = ''
-			
-			#send email for order
-			email = EmailMessage(
-				subject,
-				template,
-				email,
-				[inserat.user.email],
-			)
-
-			email.fail_silently=False
-			email.content_subtype = "html"
-			email.send()
-			messages.error(request, "Die Nachricht wurde erfolgreich gesendet")
-			return redirect('store:marktplatz_inserat_details', slug=inserat.slug)
-
-		else:
-			context = {
-
-			'inserat' : inserat,
-
-			}
-			return render (request, 'marktplatz/marktplatz-inserat-details.html', context)
-
-	else:
-		context = {
-
-			'inserat' : inserat,
-
-			}
-		return render (request, 'marktplatz/marktplatz-inserat-details.html', context)
-
-
-def marktplatz_condition(request, cond):
-
-	if cond == "Gebraucht":
-		mp_inserate = Marketplace.objects.filter(condition="G")
-
-	elif cond == "Neu":
-		mp_inserate = Marketplace.objects.filter(condition="N")
-
-	else: 
-		mp_inserate = Marketplace.objects.all()
-
-	mp_categories = MP_Category.objects.all()
-
-	context = {
-
-	'mp_categories' : mp_categories,
-	'mp_inserate': mp_inserate,
-
-	}
-	return render (request, 'marktplatz/marktplatz-main.html', context)
-
-
-# Marktplatz CMS
-
-@staff_member_required
-def cms_inserat_freigeben(request, pk, portal):
-	
-	if portal == "Jobs":
-		mp = get_object_or_404(JobsMarketplace, pk=pk)
-		mp.is_active = True 
-		mp.save()
-		'''messages.info(request, "Das Inserat wurde freigegeben.")
-		subject = 'Inserat Nr.' + ' ' + str(mp.id) + ' ' + mp.title + ' wurde freigegeben.'
-		if mp.condition == "G":
-			condition = "Gebraucht"
-		else:
-			condition = "Neu"
-		template = render_to_string('marktplatz/inserat-email.html', {
-			'title' : mp.title,
-			'price': mp.price, 
-			'condition': condition,
-			'place': mp.place,
-			'add_date': mp.add_date,
-			'category': mp.category,		
-					 })
-		email = ''	
-		#send email for order
-		email = EmailMessage(
-			subject,
-			template,
-			email,
-			[mp.user.email],
-				)
-
-		email.fail_silently=False
-		email.content_subtype = "html"
-		email.send()'''
-		return redirect("store:cms_marktplatz")
-	else:
-		mp = get_object_or_404(Marketplace, pk=pk)
-		mp.is_active = True 
-		mp.save()
-		messages.info(request, "Das Inserat wurde freigegeben.")
-		subject = 'Inserat Nr.' + ' ' + str(mp.id) + ' ' + mp.title + ' wurde freigegeben.'
-		if mp.condition == "G":
-			condition = "Gebraucht"
-		else:
-			condition = "Neu"
-		template = render_to_string('marktplatz/inserat-email.html', {
-			'title' : mp.title,
-			'price': mp.price, 
-			'condition': condition,
-			'place': mp.place,
-			'add_date': mp.add_date,
-			'category': mp.category,		
-					 })
-		email = ''	
-		#send email for order
-		email = EmailMessage(
-			subject,
-			template,
-			email,
-			[mp.user.email],
-				)
-
-		email.fail_silently=False
-		email.content_subtype = "html"
-		email.send()
-		return redirect("store:cms_marktplatz")
-
-@staff_member_required
-def cms_inserat_deaktivieren(request, pk, portal):
-
-	if portal == "Jobs":
-		mp = get_object_or_404(JobsMarketplace, pk=pk)
-	else:
-		mp = get_object_or_404(Marketplace, pk=pk)
-	mp.is_active = False 
-	mp.save()
-	messages.info(request, "Das Inserat wurde deaktiviert.")
-	return redirect("store:cms_marktplatz")
-
-@staff_member_required
-def cms_marktplatz(request):
-	query1 = Marketplace.objects.all()
-	query2 = JobsMarketplace.objects.all()
-	inserate = list(chain(query1, query2))
-	
-
-	context = {
-		'produkte': inserate,
-	 }
-	return render(request, 'marktplatz/cms-marktplatz.html', context)
-
-
-@staff_member_required
-def cms_mp_bearbeiten(request, pk):
-	mp = get_object_or_404(Marketplace, pk=pk)
-	if request.method == "POST":
-		form = InseratCreateForm(request.POST or None,request.FILES or None, instance=mp)
-		if form.is_valid():
-			form.save()
-			return redirect('store:cms_marktplatz')
-
-		else:
-			messages.error(request, "Error")
-			
-	else:
-		form = InseratCreateForm(request.POST or None, request.FILES or None, instance=mp)
-		context = {
-			'form': form,
-			'mp': mp,
-			 }
-		return render(request, 'marktplatz/cms-marktplatz-edit.html', context)
-
-@staff_member_required
-def cms_mp_löschen(request, pk):
-	eintrag = get_object_or_404(Marketplace, pk=pk)
-	eintrag.delete()
-	messages.info(request, "Das Inserat wurde gelöscht.")
-	return redirect("store:cms_marktplatz")
-
-# Marktplatz CMS END
-
-def marktplatz_main_category(request, cat):
-
-	mp_inserate = Marketplace.objects.filter(category__name=cat)
-
-	mp_categories = MP_Category.objects.all()
-
-	context = {
-
-	'mp_inserate': mp_inserate,
-	'mp_categories': mp_categories,
-
-	}
-	return render (request, 'marktplatz/marktplatz-main.html', context)
-
-def marktplatz_main_jobs_category(request, cat):
-
-	mp_inserate = JobsMarketplace.objects.filter(category__name=cat)
-
-	mp_categories = MP_JobsCategory.objects.all().order_by('name')
-
-	context = {
-
-	'mp_inserate': mp_inserate,
-	'mp_categories': mp_categories,
-
-	}
-	return render (request, 'marktplatz/marktplatz-jobs.html', context)
 
 
 
@@ -1879,7 +1253,226 @@ def cms_product_marke_löschen(request, pkk, pk):
 	return render(request, 'cms-produkt-marke-erfassen.html', context)
 
 
+#CRM
 
+def crm_new_kunden(request):
+    search_query = request.GET.get('search', '')
+    if search_query:
+             
+        kunden = Kunde.objects.filter(
+            Q(firmenname__icontains=search_query) | 
+            Q(interne_nummer__icontains=search_query) |
+            Q(kunde_address__crm_ort__icontains=search_query) |
+            Q(kunde_address__crm_strasse__icontains=search_query) |
+            Q(kunde_address__crm_kanton__icontains=search_query)
+        ).order_by('-id')
+    else:
+        kunden = Kunde.objects.all().order_by('-id')
+    
+    context = {
+
+        'kunden': kunden,
+    }
+    
+    return render(request, 'crm/crm-kunden.html', context)
+
+def crm_new_kunde_erfassen(request):
+    if request.method == 'POST':
+        # Initialize forms with POST data
+        kunde_form = CRMKundeForm(request.POST)
+        address_form = CRMAddressForm(request.POST)
+
+        if kunde_form.is_valid() and address_form.is_valid():
+            # First, save the Kunde instance
+            kunde = kunde_form.save()  # Save the Kunde form and get the instance
+            
+            # Now assign the Kunde instance to the CRMAddress form before saving
+            address = address_form.save(commit=False)  # Don't save yet
+            address.kunde = kunde  # Assign the saved Kunde instance
+            address.address_type = 'R'  # Set the address type (or whatever default)
+            address.save()  # Now save the CRMAddress instance
+
+            return redirect('store:crm_new_kunden')
+
+    else:
+        # Empty forms for GET request
+        kunde_form = CRMKundeForm()
+        address_form = CRMAddressForm()
+
+    return render(request, 'crm/crm-kunde-erfassen.html', {
+        'kunde_form': kunde_form,
+        'address_form': address_form,
+    })
+
+
+
+@staff_member_required
+def crm_new_kunde_bearbeiten(request, pk):
+	kunde = get_object_or_404(Kunde, pk=pk)
+	if request.method == "POST":
+		form = CRMKundeEditModelForm(request.POST or None, instance=kunde)
+		if form.is_valid():
+			form.save()
+			return redirect('store:crm_new_kunden')
+
+		else:
+			messages.error(request, "Error")
+			
+	else:
+		form = CRMKundeEditModelForm(request.POST or None, request.FILES or None, instance=kunde)
+		context = {
+			'form': form,
+			'kunde': kunde,
+			 }
+		return render(request, 'cms-kunden-bearbeiten.html', context)
+
+@staff_member_required
+def cms_crm_adresse_bearbeiten(request, pk):
+    # Fetch the Kunde object (the customer)
+    kunde = get_object_or_404(Kunde, pk=pk)
+
+    # Try to get the existing address or create a new one for the Kunde
+    try:
+        address = CRMAddress.objects.get(kunde=kunde)
+    except CRMAddress.DoesNotExist:
+        address = CRMAddress(kunde=kunde)  # Create a new address with the linked Kunde
+
+    if request.method == "POST":
+        form = CRMAddressForm(request.POST, instance=address)
+        if form.is_valid():
+            # Manually set the Kunde field and address_type to 'R' before saving
+            address = form.save(commit=False)
+            address.kunde = kunde  # Set the 'kunde' field
+            address.address_type = 'R'  # Set the default address_type to 'R'
+            address.save()
+            messages.success(request, "Address updated successfully.")
+            return redirect('store:crm_new_kunden')
+        else:
+            messages.error(request, "Error updating address.")
+    else:
+        form = CRMAddressForm(instance=address)
+
+    context = {
+        'form': form,
+        'kunde': kunde,
+    }
+    return render(request, 'crm/crm-adresse-bearbeiten.html', context)
+
+@staff_member_required
+def cms_crm_kunde_löschen(request, pk):
+	eintrag = get_object_or_404(Kunde, pk=pk)
+	eintrag.delete()
+	messages.info(request, "Der Kunde wurde gelöscht.")
+	return redirect("store:crm_new_kunden")	
+
+@staff_member_required
+def crm_update_last_service(request, pk):
+    # Fetch the specific customer by primary key
+    kunde = get_object_or_404(Kunde, pk=pk)  
+
+    if request.method == 'POST':
+        # Pass POST data and instance of the Kunde to update
+        form = CRMLastService(request.POST, instance=kunde)
+
+        if form.is_valid():
+            form.save()  # Save the last_service update
+            messages.success(request, "Letzter Service erfolgreich aktualisiert!")
+            return redirect('store:crm_new_kunden')  # Redirect after successful save
+        else:
+            # Handle form validation errors
+            messages.error(request, "Fehler beim Aktualisieren des letzten Service.")
+    else:
+        # Initialize the form with existing data for GET request
+        form = CRMLastService(instance=kunde)
+
+    return render(request, 'crm/crm-update-last-service.html', {
+        'form': form,
+        'kunde': kunde,
+    })
+
+
+# CRM END
+
+# ELEMENTE
+
+
+@staff_member_required
+def cms_elemente(request, pk):
+    kunde_data = Kunde.objects.get(pk=pk)
+    search_query = request.GET.get('search', '')
+
+    if search_query:
+        elemente = Elemente.objects.filter(
+            Q(dichtungen__titel__icontains=search_query) |
+            Q(kuehlposition__icontains=search_query) |
+            Q(aussenbreite__icontains=search_query) |
+            Q(aussenhöhe__icontains=search_query) |
+            Q(elementnr__icontains=search_query)
+        ).filter(kunde=kunde_data).order_by('kunde', 'elementnr')
+    else:
+        elemente = Elemente.objects.filter(kunde=kunde_data).order_by('elementnr')
+
+    context = {
+        'elemente': elemente,
+        'kunde_id': pk,
+        'kunde_data': kunde_data,
+    }
+    return render(request, 'cms-elemente.html', context)
+
+
+@staff_member_required
+def cms_elemente_create(request, pk):
+    kunde_queryset = Kunde.objects.filter(pk=pk)
+    form = ElementeCreateForm(request.POST or None)
+    
+    if request.method == "POST":
+        if form.is_valid():
+            elemente_instance = form.save(commit=False)
+            elemente_instance.save()
+            elemente_instance.kunde.set(kunde_queryset)
+            elemente_instance.save()
+            return redirect('store:cms_elemente', pk=pk)
+        else:
+            messages.error(request, "Error")
+    
+    context = {
+        'form': form,
+        'kunde_id':pk,
+    }
+    return render(request, 'cms-elemente-erfassen.html', context)
+
+@staff_member_required
+def cms_elemente_edit(request, pk, cpk):
+	element = get_object_or_404(Elemente, pk=pk)
+	
+	if request.method == "POST":
+		form = ElementeEditForm(request.POST or None, instance=element)
+		if form.is_valid():
+			form.save()
+			return redirect('store:cms_elemente', pk=cpk)
+
+		else:
+			messages.error(request, "Error")
+
+	else: 
+		form = ElementeEditForm(request.POST or None, instance=element)
+
+	context = {
+		'form': form,
+		'element': element,
+				}
+	return render(request, 'cms-elemente-bearbeiten.html', context)
+
+
+@staff_member_required
+def cms_elemente_löschen(request, pk, cpk):
+	eintrag = get_object_or_404(Elemente, pk=pk)
+	eintrag.delete()
+	messages.info(request, "Der Eintrag wurde gelöscht.")
+	return redirect('store:cms_elemente', pk=cpk)	
+#ELEMENTE END
+
+#webshop kunde
 
 def cms_kunden(request):
     search_query = request.GET.get('search', '')
@@ -2117,80 +1710,6 @@ def cms_remove_product(request, pk, cat):
 
 
 
-@staff_member_required
-def cms_elemente(request, pk):
-    kunde_data = Kunde.objects.get(pk=pk)
-    search_query = request.GET.get('search', '')
-
-    if search_query:
-        elemente = Elemente.objects.filter(
-            Q(dichtungen__titel__icontains=search_query) |
-            Q(kuehlposition__icontains=search_query) |
-            Q(aussenbreite__icontains=search_query) |
-            Q(aussenhöhe__icontains=search_query) |
-            Q(elementnr__icontains=search_query)
-        ).filter(kunde=kunde_data).order_by('kunde', 'elementnr')
-    else:
-        elemente = Elemente.objects.filter(kunde=kunde_data).order_by('elementnr')
-
-    context = {
-        'elemente': elemente,
-        'kunde_id': pk,
-        'kunde_data': kunde_data,
-    }
-    return render(request, 'cms-elemente.html', context)
-
-
-@staff_member_required
-def cms_elemente_create(request, pk):
-    kunde_queryset = Kunde.objects.filter(pk=pk)
-    form = ElementeCreateForm(request.POST or None)
-    
-    if request.method == "POST":
-        if form.is_valid():
-            elemente_instance = form.save(commit=False)
-            elemente_instance.save()
-            elemente_instance.kunde.set(kunde_queryset)
-            elemente_instance.save()
-            return redirect('store:cms_elemente', pk=pk)
-        else:
-            messages.error(request, "Error")
-    
-    context = {
-        'form': form,
-        'kunde_id':pk,
-    }
-    return render(request, 'cms-elemente-erfassen.html', context)
-
-@staff_member_required
-def cms_elemente_edit(request, pk, cpk):
-	element = get_object_or_404(Elemente, pk=pk)
-	
-	if request.method == "POST":
-		form = ElementeEditForm(request.POST or None, instance=element)
-		if form.is_valid():
-			form.save()
-			return redirect('store:cms_elemente', pk=cpk)
-
-		else:
-			messages.error(request, "Error")
-
-	else: 
-		form = ElementeEditForm(request.POST or None, instance=element)
-
-	context = {
-		'form': form,
-		'element': element,
-				}
-	return render(request, 'cms-elemente-bearbeiten.html', context)
-
-
-@staff_member_required
-def cms_elemente_löschen(request, pk, cpk):
-	eintrag = get_object_or_404(Elemente, pk=pk)
-	eintrag.delete()
-	messages.info(request, "Der Eintrag wurde gelöscht.")
-	return redirect('store:cms_elemente', pk=cpk)	
 
 
 @staff_member_required

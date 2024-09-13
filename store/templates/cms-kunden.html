@@ -8,8 +8,8 @@
     </div>
 
     <div class="flexbox" style="align-items:start;">
-        <a class="btn btn-secondary btn-sm" href="{% url 'store:cms_kunden_erfassen' %}">Kunden erfassen</a>
-        <a class="btn btn-secondary btn-sm" href="{% url 'store:cms_interner_kunde_erfassen' %}">Interner Kunde erfassen</a>
+       
+       
 
         <!-- Search form -->
         <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="{% url 'store:cms_kunden' %}">
@@ -34,15 +34,13 @@
         <thead>
             <tr>
                 <th scope="col">Webshop<br>Kunden-Nr.</th>
-                <th scope="col">Interne Nr. <br><small style="font-size:0.7rem;">(bearbeiten bei Firmendaten)</small></th>
+                
                 <th scope="col">Firma / Profil</th>
                 <th scope="col">Telefon</th>
-                <th scope="col">Profildaten <br>bearbeiten</th>
+                <th scope="col">Benutzer <br>bearbeiten</th>
                 <th scope="col">Rabatt</th>
                 <th scope="col">Newsletter</th>
                 <th scope="col">Firmendaten<br> bearbeiten</th>
-                <th scope="col">Adresse<br> bearbeiten</th>
-                <th scope="col">Elemente<br> Übersicht</th>
                 <th scope="col">Kunde löschen</th>
             </tr>
         </thead>
@@ -51,7 +49,7 @@
             {% for user in users %}
                 <tr>
                     <th scope="row">{{ user.pk }}</th>
-                    <td>{% if user.profile.interne_nummer %}{{ user.profile.interne_nummer }}{% endif %}</td>
+                    
                     <td>
                         {% if user.profile.firmenname %}{{ user.profile.firmenname }} <br>{% endif %}
                         Benutzername: {{ user.username }}<br>
@@ -68,40 +66,13 @@
                         {% endif %}
                     </td>
                     <td><a href="{{ user.profile.get_absolute_url }}"><i class="fas fa-edit"></i></a></td>
-                    <td><a href="{{ user.profile.get_absolute_address_url }}"><i class="fas fa-edit"></i></a></td>
-                    <td>
-                        {% if user.profile.get_absolute_elemente_url %}
-                            <a href="{{ user.profile.get_absolute_elemente_url }}"><i class="fas fa-info-circle"></i> / {{ user.profile.elemente_count }}</a>
-                        {% endif %}
-                    </td>
+                    
+                    
                     <td><a href="{% url 'store:cms_kunde_löschen' user.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i></a></td>
                 </tr>
             {% endfor %}
 
-            <!-- Loop over Kunden that are not associated with a User -->
-            {% for kunde in kunden %}
-                {% if not kunde.user %}
-                    <tr>
-                        <th scope="row">{{ kunde.pk }}</th>
-                        <td>{{ kunde.interne_nummer }}</td>
-                        <td>{{ kunde.firmenname }}</td>
-                        <td>{{ kunde.phone }}</td>
-                        <td><a href="{% url 'store:cms_kunde_bearbeiten' kunde.pk %}"><i class="fas fa-edit"></i></a></td>
-                        <td>{{ kunde.rabatt }}%</td>
-                        <td>
-                            {% if kunde.newsletter %}
-                                <p>Ja</p>
-                            {% else %}
-                                <p>Nein</p>
-                            {% endif %}
-                        </td>
-                        <td><a href="{{ kunde.get_absolute_url }}"><i class="fas fa-edit"></i></a></td>
-                        <td><a href="{{ kunde.get_absolute_address_url }}"><i class="fas fa-edit"></i></a></td>
-                        <td><a href="{{ kunde.get_absolute_elemente_url }}"><i class="fas fa-info-circle"></i> / {{ kunde.elemente_count }}</a></td>
-                        <td><a href="{% url 'store:cms_kunde_löschen' kunde.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i></a></td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
+            
         </tbody>
     </table>
 {% endblock %}
