@@ -8,43 +8,38 @@
 <div class="container">
     <div class="storepreview">
       <div class="row">
-    
-       
-      
+
         {% for marke in marken %}
-        
-  <div class="col-lg-3">
+          {% if marke.item.all|length > 0 %}  <!-- Check if there are items -->
 
-    <div class="product-flex">
-      {% if marke.markepic %}
-    <a href="{% url 'store:marke' marke.name|slugify %}"><img class="thumbnail" src="{{ marke.markepic.url }}"></a>
-    {% endif %}
-    
-    <div class="box-element">
+          <div class="col-lg-3">
+            <div class="product-flex">
+              {% if marke.markepic %}
+              <a href="{% url 'store:marke' marke.name|slugify %}">
+                <img class="thumbnail" src="{{ marke.markepic.url }}">
+              </a>
+              {% endif %}
 
-    
-    <div class="box-element-sub">
-    <h4>{{ marke.name }} - Dichtungen</h4>
+              <div class="box-element">
+                <div class="box-element-sub">
+                  <h4>{{ marke.name }} - Dichtungen</h4>
 
-    
-      {% if marke.item.all %}
-    <a class="btn btn-primary btn-sm" href="{% url 'store:markedetails' marke.slug %}">Zu den Produkten</a>
-    <hr>
-    {% else %}
-    <p>Aktuell keine Produkte</p>
-    {% endif %}
-    
-    </div>
+                  {% if marke.item.all %}
+                  <a class="btn btn-primary btn-sm" href="{% url 'store:markedetails' marke.slug %}">Zu den Produkten</a>
+                  <hr>
+                  {% else %}
+                  <p>Aktuell keine Produkte</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
 
-    </div>
+          {% endif %}
+        {% endfor %}
 
-    </div>
-  </div>
-
-  {% endfor %}
-
-  </div><!-- row end -->
-  </div><!-- storepreview end -->
+      </div><!-- row end -->
+    </div><!-- storepreview end -->
 </div><!-- container end -->
 
 {% endblock content %}
