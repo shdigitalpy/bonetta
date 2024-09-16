@@ -24,9 +24,14 @@
 				</div>
 				<div style="flex: 0 0 20%">
 				    <a href="{% url 'store:cms_elemente' kunde_id %}" style="border: none;" class="btn btn-outline-secondary"><span class="fas fa-times"></span> zurücksetzen</a>
-				
 				   </div>
+
+				  
+				  
+        
 				</form>
+
+				
 
 			</div>
 			<div class="flexbox">
@@ -38,6 +43,10 @@
 				href="{% url 'store:crm_new_kunden' %}">
 			Zurück zur Kundenliste</a>
 
+			<a class="btn btn-secondary btn-sm" 
+				href="{% url 'store:cms_elemente_statistik' %}">
+			Zurück zur Elemente-Statistik</a>
+
 			</div>
 
 			<table class="table table-striped">
@@ -47,7 +56,7 @@
 			      <th scope="col">Element-Nr.</th>
 			     <th scope="col">Kühlunterbau</th>
 			      <th scope="col">Details</th>
-			      <th scope="col">Typ</th>
+			      <th scope="col">Dichtungstyp</th>
 			      <th scope="col">Aussenmass Breite / Höhe</th>
 			      <th scope="col">Bearbeiten</th>
 			      <th scope="col">Löschen</th>
@@ -72,7 +81,7 @@
 			      	<a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente_objekte' data.pk kunde_id %}">
   					<i class="fas fa-edit"></i></a>
 			  		</td>
-			      <td>{{ data.dichtungen.titel }}</td>
+			      <td>{% if data.produkt %}{{ data.produkt }}{% endif %}</td>
 			      <td>{{ data.aussenbreite }}mm / {{ data.aussenhöhe }}mm </td>
 			      <td>
 

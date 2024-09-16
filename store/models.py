@@ -483,6 +483,11 @@ class Elemente(models.Model):
 	aussenbreite = models.IntegerField(null=True, blank=True)
 	aussenhöhe = models.IntegerField(null=True, blank=True)
 
+	def elemente_laufmeter(self):
+		lfm = 2 * (self.aussenbreite + self.aussenhöhe)
+		return lfm
+
+
 	class Meta:
 		ordering = ['elementnr']
 		verbose_name = 'Element'

@@ -90,15 +90,13 @@ def danke(request):
 
 
 #CMS
-
-
 @staff_member_required
 def cms_elemente_statistik(request):
     # Initialize the queryset
     elemente = Elemente.objects.all()
     
     # Capture individual search criteria
-    dichtungen_titel = request.GET.get('dichtungen_titel', '')
+    produkt = request.GET.get('produkt', '')
     kuehlposition = request.GET.get('kuehlposition', '')
     aussenbreite = request.GET.get('aussenbreite', '')
     aussenhöhe = request.GET.get('aussenhöhe', '')
@@ -108,8 +106,8 @@ def cms_elemente_statistik(request):
     name = request.GET.get('name', '')  # New field for filtering by name
 
     # Filter the queryset based on search criteria
-    if dichtungen_titel:
-        elemente = elemente.filter(dichtungen__titel__icontains=dichtungen_titel)
+    if produkt:
+        elemente = elemente.filter(produkt__icontains=produkt)
     if kuehlposition:
         elemente = elemente.filter(kuehlposition__icontains=kuehlposition)
     if aussenbreite:
@@ -136,10 +134,22 @@ def cms_elemente_statistik(request):
     # Use distinct() to avoid duplicates if multiple criteria match
     elemente = elemente.distinct()
 
+    # Calculate total laufmeter
+    total_laufmeter = sum([element.elemente_laufmeter() for element in elemente])
+
+    # Count the number of Elemente records
+    elemente_count = elemente.count()
+
+    # Pass total laufmeter and filtered elements to the context
     context = {
         'elemente': elemente,
+        'total_laufmeter': total_laufmeter,  # Pass total laufmeter to template
+        'elemente_count': elemente_count,  # Pass the count of elements to template
     }
+
     return render(request, 'cms-elemente-statistik.html', context)
+
+
 
 @staff_member_required
 def cms_elemente_objekte_löschen(request, pk, epk, cpk):

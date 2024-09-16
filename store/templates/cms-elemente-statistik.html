@@ -9,8 +9,8 @@
         <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" method="GET">
             <div style="display: flex; flex-wrap: wrap;">
                 <div style="flex: 0 0 5%; padding: 5px;">
-                    <input id="textsuche" class="form-control" type="text" placeholder="Typ"
-                           name="dichtungen_titel" value="{{ request.GET.dichtungen_titel }}">
+                    <input id="textsuche" class="form-control" type="text" placeholder="Dichtungstyp"
+                           name="produkt" value="{{ request.GET.produkt }}">
                 </div>
                
                 <div style="flex: 0 0 5%; padding: 5px;">
@@ -47,6 +47,11 @@
                         <span class="fas fa-times"></span> zurücksetzen
                     </a>
                 </div>
+                 <div class="alert alert-info">
+                            <strong>Gesamte Laufmeter:</strong> {{ total_laufmeter }} Meter | 
+                            <strong>Anzahl Elemente:</strong> {{ elemente_count }}
+                        </div>
+
             </div>
         </form>
     </div>
@@ -54,17 +59,23 @@
     <table class="table table-striped">
         <thead>
             <tr>
+                <th scope="col">Kunde</th>
                 <th scope="col">Kühlposition</th>
                 <th scope="col">Element-Nr.</th>
                 <th scope="col">Objekte</th>
-                <th scope="col">Typ</th>
+                <th scope="col">Dichtungstyp</th>
                 <th scope="col">Aussenmass Breite / Höhe</th>
-                <th scope="col">Kunde</th>
+                
             </tr>
         </thead>
         <tbody>
             {% for data in elemente %}
                 <tr>
+                    <td>
+                        {% for x in data.kunde.all %}
+                           <a href="{% url 'store:cms_elemente' x.id %}"> {{ x.firmenname }} </a>
+                        {% endfor %}
+                    </td>
                     <td>{{ data.kuehlposition }}</td>
                     <td>{{ data.elementnr }}</td>
                     <td>
@@ -76,17 +87,14 @@
 			      	
 			      	
 			  		</td>
-                    <td>{{ data.dichtungen.titel }}</td>
+                     <td>{% if data.produkt %}{{ data.produkt }}{% endif %}</td>
                     <td>{{ data.aussenbreite }}mm / {{ data.aussenhöhe }}mm</td>
-                    <td>
-                        {% for x in data.kunde.all %}
-                            {{ x.firmenname }}
-                        {% endfor %}
-                    </td>
+                    
                 </tr>
             {% empty %}
                 <tr>
                     <td colspan="6">Es wurden keine Elemente gefunden, die den Suchkriterien entsprechen.</td>
+
                 </tr>
             {% endfor %}
         </tbody>
