@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Bestellformular | gastrodichtung.ch {% endblock %}
+{% block meta_description %}Bestellformular | gastrodichtung.ch{% endblock %}
+{% block keywords %}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="margin: 5rem 0;">
+        <h1>Bestellformular</h1>
+        <p>Als Gastronomiekunde mit aufgenommenem Inventar können Sie hier Ersatzdichtungen anhand der auf dem Objekt befindlichen Elementnummer nachbestellen.</p>
+        <br>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="contact-form">
+                    <!-- Section Heading -->
+                    <div class="section-heading">
+
+                       
+                        <div class="line"></div>
+                    </div>
+                    <!-- Form -->
+                    <form action="{% url 'store:bestellformular' %}" method="POST">
+                        {% csrf_token %}
+                        
+                        <!-- Kunden-Nr. -->
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <input type="text" name="kunden-nr" class="form-control mb-30" placeholder="Kunden-Nr.">
+                            </div>
+                        </div>
+
+                        <br>
+                        
+                        <!-- Betrieb/Person -->
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <input type="text" name="betrieb-person" class="form-control mb-30" placeholder="Betrieb/Person">
+                            </div>
+                        </div>
+
+                        <br>
+                        
+                        <!-- Adresse -->
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <input type="text" name="adresse" class="form-control mb-30" placeholder="Adresse">
+                            </div>
+                        </div>
+
+                        <br>
+                        
+                        <!-- PLZ und Ort -->
+                        <div class="row">
+                            <div class="col-lg-2">
+                                <input type="text" name="plz" class="form-control mb-30" placeholder="PLZ">
+                            </div>
+                            <div class="col-lg-4">
+                                <input type="text" name="ort" class="form-control mb-30" placeholder="Ort">
+                            </div>
+                        </div>
+
+                        <br>
+
+                          <!-- Elemente-Nr. as checkboxes -->
+                            <div class="row">
+                                    <div class="col-lg-12">
+                                        <label>Elemente-Nr.</label><br>
+                                        <div class="form-check">
+                                            {% for i in elemente_range %}
+                                                <div class="form-check-inline">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" name="elemente-nr" value="{{ i }}" class="form-check-input"> {{ i }}
+                                                    </label>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+
+                        <!-- Mit oder ohne Montage -->
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <label>Mit oder ohne Montage</label><br>
+                                <div class="form-check-inline">
+                                    <label class="form-check-label">
+                                        <input type="radio" name="montage" value="mit" class="form-check-input"> Mit Montage
+                                    </label>
+                                </div>
+                                <div class="form-check-inline">
+                                    <label class="form-check-label">
+                                        <input type="radio" name="montage" value="ohne" class="form-check-input"> Ohne Montage
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+
+                        <!-- Bemerkung -->
+                        <div class="row">
+                            <div class="col-12 textarea-contact">
+                                <textarea name="bemerkung" class="form-control" placeholder="Bemerkung"></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- Senden Button -->
+                        <div class="row">
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-warning">Senden</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

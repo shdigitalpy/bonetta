@@ -5,18 +5,23 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.views.generic import TemplateView
 
-
 app_name = 'store'
 
 urlpatterns = [
 
 	path('', views.home, name='home'),
-	path('bestätigung/<int:pk>', views.email, name='email'),
-	path('searchbar', views.searchbar, name='searchbar'),
+
+	#pages
 	path('kontakt', views.kontakt, name='kontakt'),
 	path('montage', views.firma, name='firma'),
 	path('anleitungen', views.anleitung_videos, name='anleitung_videos'),
 	path('impressum', views.impressum, name='impressum'),
+	path('bestellformular', views.bestellformular, name='bestellformular'),
+	path('danke', views.danke, name='danke'),
+
+	#shop
+	path('bestätigung/<int:pk>', views.email, name='email'),
+	path('searchbar', views.searchbar, name='searchbar'),
 	path('checkout/', CheckoutView.as_view(), name='checkout'), 
 	path('payment/', PaymentView.as_view(), name='payment'), 
 	path('order-summary', OrderSummaryView.as_view(), name='order_summary'),
@@ -51,8 +56,6 @@ urlpatterns = [
 	path('cms/bestellungen', views.cms_bestellungen, name='cms_bestellungen'),
 	path('cms/bestätigung/<int:pk>', views.cms_bestellung_confirmation, name='cms_bestellung_confirmation'),
 
-	
-
 	#webshop kunden
 	path('cms/webshop/kunden', views.cms_kunden, name='cms_kunden'),
 	path('cms/webshop/erfassen', views.cms_kunden_erfassen, name='cms_kunden_erfassen'),
@@ -60,9 +63,6 @@ urlpatterns = [
 	path('cms/kundenadresse/bearbeiten/<int:pk>', views.cms_kundenadresse_bearbeiten, name='cms_kundenadresse_bearbeiten'),
 	path('cms/webshop//bearbeiten/<int:pk>', views.cms_kunde_bearbeiten, name='cms_kunde_bearbeiten'),
 	path('cms/webshop/löschen/<int:pk>', views.cms_kunde_löschen, name='cms_kunde_löschen'),
-
-
-	
 
 	#produkte
 	path('cms/produkte/<str:first_cat>', views.cms_produkte, name='cms_produkte'),
@@ -73,10 +73,6 @@ urlpatterns = [
 	path('cms/produkte-marke/erfassen/<int:pk>', views.cms_product_marke_erfassen, name='cms_product_marke_erfassen'),
 	path('cms/produkte-marke/löschen/<int:pkk>/<int:pk>', views.cms_product_marke_löschen, name='cms_product_marke_löschen'),
 	
-
-	
-
-
 	#elemente
 	path('cms/elemente/statistik', views.cms_elemente_statistik, name='cms_elemente_statistik'),
 	path('cms/elemente/<int:pk>', views.cms_elemente, name='cms_elemente'),
@@ -103,8 +99,7 @@ urlpatterns = [
 	path('cms/elemente/objekte-loeschen/<int:pk>/<int:epk>/<int:cpk>', views.cms_elemente_objekte_löschen, name='cms_elemente_objekte_löschen'),
 
 	re_path(r'^robots.txt$', TemplateView.as_view(template_name="robots.txt", content_type="text/plain"), name="robots_file"),
-	#marktplatz
-
+	
     #path('pdf_view/', views.ViewPDF.as_view(), name="pdf_view"),
     #path('pdf_download/', views.DownloadPDF.as_view(), name="pdf_download"),
 ]

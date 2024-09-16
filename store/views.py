@@ -24,6 +24,74 @@ from itertools import chain
 
 
 
+
+
+#Bestellformular
+def bestellformular(request):
+	email = ''
+	elemente_range = range(1, 100) 
+	if request.method == "POST":
+        # Retrieve form data
+		kunden_nr = request.POST.get('kunden-nr')
+		betrieb_person = request.POST.get('betrieb-person')
+		adresse = request.POST.get('adresse')
+		plz = request.POST.get('plz')
+		ort = request.POST.get('ort')
+		elemente_nr = request.POST.getlist('elemente-nr')  # list for multiple checkboxes
+		montage = request.POST.get('montage')  # mit/ohne montage checkbox
+		bemerkung = request.POST.get('bemerkung')
+
+
+		# Prepare email subject and message content
+		subject = 'Bestellung Elemente ' + betrieb_person + ' ' + kunden_nr
+		template = render_to_string('crm/mail-bestellung-elemente.html', {
+            'kunden_nr': kunden_nr,
+            'betrieb_person': betrieb_person,
+            'adresse': adresse,
+            'plz': plz,
+            'ort': ort,
+            'elemente_nr': ', '.join(elemente_nr),  # Join list into string for display
+            'montage': montage,
+            'bemerkung': bemerkung,
+        })
+
+		# Send email for order
+		email = EmailMessage(
+            subject,
+            template,
+            email,
+            ['sandro@sh-digital.ch'],  # recipients
+        )
+		email.fail_silently = False
+		email.content_subtype = "html"  # to send the email as HTML
+		email.send()
+
+		# Success message to be displayed after form submission
+		context = {
+            'message_kontakt': 'Die Nachricht wurde erfolgreich gesendet.',
+            'elemente_range' : elemente_range,
+        }
+		return redirect("store:danke")
+	else:
+
+		# Render empty form for GET requests
+		context = {
+		'elemente_range' : elemente_range,
+
+		}
+		return render(request, 'bestellformular.html', context)
+
+
+
+def danke(request):
+	context = {
+	}
+	return render (request, 'crm/danke.html', context)
+
+
+#CMS
+
+
 @staff_member_required
 def cms_elemente_statistik(request):
     # Initialize the queryset
@@ -157,15 +225,8 @@ def cms_elemente_objekte(request, pk, cpk):
 	return render(request, 'cms-elemente-objekte.html', context)
 
 
-
-
-
 def anleitung_videos(request):
-	
-
 	context = {
-	
-
 	}
 	return render (request, 'anleitung-videos.html', context)
 
@@ -293,10 +354,14 @@ def kontakt(request):
 		context = { }
 		return render(request, 'kontakt.html', context)
 
-#Kontaktseite
+#Kontaktseite END
+
+
+
 def firma(request):
 	context = { }
-	return render(request, 'firma.html', context)
+	return render(request, 'montage.html', context)
+
 
 
 #Marke Übersicht
