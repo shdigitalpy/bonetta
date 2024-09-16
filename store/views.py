@@ -108,6 +108,11 @@ def cms_elemente_statistik(request):
     # Filter the queryset based on search criteria
     if produkt:
         elemente = elemente.filter(produkt__icontains=produkt)
+
+        # If no elements are found with the produkt, search in dichtungen.titel
+        if not elemente.exists():
+            elemente = Elemente.objects.filter(dichtungen__titel__icontains=produkt)
+    
     if kuehlposition:
         elemente = elemente.filter(kuehlposition__icontains=kuehlposition)
     if aussenbreite:

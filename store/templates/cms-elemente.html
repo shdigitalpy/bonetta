@@ -81,7 +81,7 @@
 			      	<a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente_objekte' data.pk kunde_id %}">
   					<i class="fas fa-edit"></i></a>
 			  		</td>
-			      <td>{% if data.produkt %}{{ data.produkt }}{% endif %}</td>
+			       <td>{% if data.produkt %}{{ data.produkt }}{% else %}{{ data.dichtungen.titel }}{% endif %}</td>
 			      <td>{{ data.aussenbreite }}mm / {{ data.aussenhöhe }}mm </td>
 			      <td>
 
