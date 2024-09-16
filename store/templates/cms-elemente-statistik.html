@@ -12,7 +12,6 @@
                     <input id="textsuche" class="form-control" type="text" placeholder="Dichtungstyp"
                            name="produkt" value="{{ request.GET.produkt }}">
                 </div>
-               
                 <div style="flex: 0 0 5%; padding: 5px;">
                     <input class="form-control" type="text" placeholder="Aussenbreite"
                            name="aussenbreite" value="{{ request.GET.aussenbreite }}">
@@ -47,11 +46,10 @@
                         <span class="fas fa-times"></span> zurücksetzen
                     </a>
                 </div>
-                 <div class="alert alert-info">
-                            <strong>Gesamte Laufmeter:</strong> {{ total_laufmeter }} Meter | 
-                            <strong>Anzahl Elemente:</strong> {{ elemente_count }}
-                        </div>
-
+                <div class="alert alert-info">
+                    <strong>Gesamte Laufmeter:</strong> {{ total_laufmeter }} Meter | 
+                    <strong>Anzahl Elemente:</strong> {{ elemente_count }}
+                </div>
             </div>
         </form>
     </div>
@@ -59,13 +57,53 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th scope="col">Kunde</th>
+                <!-- Sortable Kunde header -->
+                <th scope="col">
+                    <a href="?sort=kunde">
+                        Kunde
+                        {% if sort_by == 'kunde' %}
+                            <i class="fas fa-sort-down"></i>
+                        {% endif %}
+                    </a>
+                </th>
+                <!-- Sortable Element-Nr. header -->
+                <th scope="col">
+                    <a href="?sort=elementnr">
+                        Element-Nr.
+                        {% if sort_by == 'elementnr' %}
+                            <i class="fas fa-sort-down"></i>
+                        {% endif %}
+                    </a>
+                </th>
+                <!-- Sortable Produkt header -->
+                <th scope="col">
+                    <a href="?sort=produkt">
+                        Dichtungstyp
+                        {% if sort_by == 'produkt' %}
+                            <i class="fas fa-sort-down"></i>
+                        {% endif %}
+                    </a>
+                </th>
+                <!-- Sortable Aussenbreite header -->
+                <th scope="col">
+                    <a href="?sort=aussenbreite">
+                        Aussenbreite
+                        {% if sort_by == 'aussenbreite' %}
+                            <i class="fas fa-sort-down"></i>
+                        {% endif %}
+                    </a>
+                </th>
+                <!-- Sortable Aussenhöhe header -->
+                <th scope="col">
+                    <a href="?sort=aussenhöhe">
+                        Aussenhöhe
+                        {% if sort_by == 'aussenhöhe' %}
+                            <i class="fas fa-sort-down"></i>
+                        {% endif %}
+                    </a>
+                </th>
                 <th scope="col">Kühlposition</th>
-                <th scope="col">Element-Nr.</th>
                 <th scope="col">Objekte</th>
-                <th scope="col">Dichtungstyp</th>
-                <th scope="col">Aussenmass Breite / Höhe</th>
-                
             </tr>
         </thead>
         <tbody>
@@ -73,28 +111,23 @@
                 <tr>
                     <td>
                         {% for x in data.kunde.all %}
-                           <a href="{% url 'store:cms_elemente' x.id %}"> {{ x.firmenname }} </a>
+                            <a href="{% url 'store:cms_elemente' x.id %}"> {{ x.firmenname }} </a>
                         {% endfor %}
                     </td>
-                    <td>{{ data.kuehlposition }}</td>
                     <td>{{ data.elementnr }}</td>
+                    <td>{% if data.produkt %}{{ data.produkt }}{% else %}{{ data.dichtungen.titel }}{% endif %}</td>
+                    <td>{{ data.aussenbreite }}mm</td>
+                    <td>{{ data.aussenhöhe }}mm</td>
+                    <td>{{ data.kuehlposition }}</td>
                     <td>
-
-			      	{% for data in data.elemente_objekte.all %}
-			      	{{ data.name }}, {{data.serie}}, {{data.typ}}, {{data.modell}}<br>
-			      	{% endfor %}
-
-			      	
-			      	
-			  		</td>
-                     <td>{% if data.produkt %}{{ data.produkt }}{% else %}{{ data.dichtungen.titel }}{% endif %}</td>
-                    <td>{{ data.aussenbreite }}mm / {{ data.aussenhöhe }}mm</td>
-                    
+                        {% for obj in data.elemente_objekte.all %}
+                            {{ obj.name }}, {{ obj.serie }}, {{ obj.typ }}, {{ obj.modell }}<br>
+                        {% endfor %}
+                    </td>
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="6">Es wurden keine Elemente gefunden, die den Suchkriterien entsprechen.</td>
-
+                    <td colspan="7">Es wurden keine Elemente gefunden, die den Suchkriterien entsprechen.</td>
                 </tr>
             {% endfor %}
         </tbody>

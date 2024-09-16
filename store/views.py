@@ -112,38 +112,55 @@ def cms_elemente_statistik(request):
     serie = request.GET.get('serie', '')
     modell = request.GET.get('modell', '')
     typ = request.GET.get('typ', '')
-    name = request.GET.get('name', '')  # New field for filtering by name
+    name = request.GET.get('name', '')
+    
+    # Capture sort_by parameter, default to sorting by 'kunde__firmenname'
+    sort_by = request.GET.get('sort', 'kunde')
 
     # Filter the queryset based on search criteria
     if produkt:
         elemente = elemente.filter(produkt__icontains=produkt)
-
         # If no elements are found with the produkt, search in dichtungen.titel
         if not elemente.exists():
             elemente = Elemente.objects.filter(dichtungen__titel__icontains=produkt)
 
     if kuehlposition:
         elemente = elemente.filter(kuehlposition__icontains=kuehlposition)
+    
     if aussenbreite:
         try:
             aussenbreite_value = int(aussenbreite)
             elemente = elemente.filter(aussenbreite=aussenbreite_value)
         except ValueError:
             pass  # Ignore invalid integer input
+    
     if aussenhöhe:
         try:
             aussenhöhe_value = int(aussenhöhe)
             elemente = elemente.filter(aussenhöhe=aussenhöhe_value)
         except ValueError:
             pass  # Ignore invalid integer input
+    
     if serie:
         elemente = elemente.filter(elemente_objekte__serie__icontains=serie)
+    
     if modell:
         elemente = elemente.filter(elemente_objekte__modell__icontains=modell)
+    
     if typ:
         elemente = elemente.filter(elemente_objekte__typ__icontains=typ)
+    
     if name:
-        elemente = elemente.filter(elemente_objekte__name__icontains=name)  # Filter by name
+        elemente = elemente.filter(elemente_objekte__name__icontains=name)
+
+    # Apply sorting based on the 'sort' parameter
+    if sort_by == 'kunde':
+        elemente = elemente.order_by('kunde__firmenname')
+    elif sort_by == 'elementnr':
+        elemente = elemente.order_by('elementnr')
+    else:
+        # Default to sorting by kunde__firmenname if no valid sort is provided
+        elemente = elemente.order_by('kunde__firmenname')
 
     # Use distinct() to avoid duplicates if multiple criteria match
     elemente = elemente.distinct()
@@ -159,9 +176,11 @@ def cms_elemente_statistik(request):
         'elemente': elemente,
         'total_laufmeter': total_laufmeter,  # Pass total laufmeter to template
         'elemente_count': elemente_count,  # Pass the count of elements to template
+        'sort_by': sort_by,  # Pass sorting parameter to the template
     }
 
     return render(request, 'cms-elemente-statistik.html', context)
+
 
 
 

@@ -42,7 +42,7 @@
                 <th scope="col">Newsletter</th>
                 <th scope="col">Firmendaten<br> bearbeiten</th>
                 <th scope="col">Kunde löschen</th>
-                <th scope="col">Beziehung löschen</th>
+                <th scope="col">Webshop zu CRM</th>
             </tr>
         </thead>
         <tbody>
@@ -76,10 +76,10 @@
                     <!-- Check if the user has a related Kunde profile before accessing its properties -->
                     {% if user.profile %}
                         <a href="{% url 'store:delete_kunde_user_relationship' user.profile.pk %}" class="btn btn-danger btn-sm">
-                            <i class="fas fa-unlink"></i> Beziehung löschen ({{ user.profile.elemente_count }} Elemente)
+                            <i class="fas fa-unlink"></i> Ins CRM übernehmen ({{ user.profile.elemente_count }} Elemente)
                         </a>
                     {% else %}
-                        <p>Kein Kunde verknüpft</p>
+                        <p>Keine Element-Daten</p>
                     {% endif %}
                 </td>
                 </tr>
