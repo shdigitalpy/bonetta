@@ -23,7 +23,17 @@ from django.contrib.admin.views.decorators import staff_member_required
 from itertools import chain
 
 
-
+@staff_member_required
+def delete_kunde_user_relationship(request, pk):
+    # Get the Kunde object by primary key
+    kunde = get_object_or_404(Kunde, pk=pk)
+    
+    # Unlink the user
+    kunde.user = None
+    kunde.save()
+    
+    # Redirect back to the customer list or another page
+    return redirect(reverse('store:cms_kunden'))
 
 
 #Bestellformular
@@ -82,7 +92,6 @@ def bestellformular(request):
 		return render(request, 'bestellformular.html', context)
 
 
-
 def danke(request):
 	context = {
 	}
@@ -112,7 +121,7 @@ def cms_elemente_statistik(request):
         # If no elements are found with the produkt, search in dichtungen.titel
         if not elemente.exists():
             elemente = Elemente.objects.filter(dichtungen__titel__icontains=produkt)
-    
+
     if kuehlposition:
         elemente = elemente.filter(kuehlposition__icontains=kuehlposition)
     if aussenbreite:

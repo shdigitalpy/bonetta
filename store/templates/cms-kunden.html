@@ -42,6 +42,7 @@
                 <th scope="col">Newsletter</th>
                 <th scope="col">Firmendaten<br> bearbeiten</th>
                 <th scope="col">Kunde löschen</th>
+                <th scope="col">Beziehung löschen</th>
             </tr>
         </thead>
         <tbody>
@@ -65,11 +66,22 @@
                             <p>Nein</p>
                         {% endif %}
                     </td>
-                    <td><td><a href="{{ user.profile.get_absolute_elemente_url }}"><i class="fas fa-info-circle"></i> / {{ user.profile.elemente_count }}</a></td></td>
+                    
                     <td><a href="{{ user.profile.get_absolute_url }}"><i class="fas fa-edit"></i></a></td>
                     
                     
                     <td><a href="{% url 'store:cms_kunde_löschen' user.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i></a></td>
+
+                    <td>
+                    <!-- Check if the user has a related Kunde profile before accessing its properties -->
+                    {% if user.profile %}
+                        <a href="{% url 'store:delete_kunde_user_relationship' user.profile.pk %}" class="btn btn-danger btn-sm">
+                            <i class="fas fa-unlink"></i> Beziehung löschen ({{ user.profile.elemente_count }} Elemente)
+                        </a>
+                    {% else %}
+                        <p>Kein Kunde verknüpft</p>
+                    {% endif %}
+                </td>
                 </tr>
             {% endfor %}
 

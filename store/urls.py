@@ -50,6 +50,7 @@ urlpatterns = [
 	path('cms/crm/kunde/löschen/<int:pk>', views.cms_crm_kunde_löschen, name='cms_crm_kunde_löschen'),
 	path('cms/crm/kunde/erfassen', views.crm_new_kunde_erfassen, name='crm_new_kunde_erfassen'),
 	path('cms/crm/<int:pk>/update_last_service/', views.crm_update_last_service, name='crm_update_last_service'),
+	path('kunde/delete-user-relationship/<int:pk>/', views.delete_kunde_user_relationship, name='delete_kunde_user_relationship'),
 
 	#cms 
 	path('cms/', views.cms, name="cms"),
