@@ -418,6 +418,7 @@ class Kunde(models.Model):
 	nachname = models.CharField(max_length=255, null=True, blank=True)
 	created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 	last_service = models.DateTimeField(null=True, blank=True)
+	zusatz = models.CharField(max_length=255, null=True, blank=True)
 
 	class Meta:
 		ordering = ['id']
@@ -426,7 +427,7 @@ class Kunde(models.Model):
 
 	def __str__(self):
         # Convert any datetime or timedelta object to a string
-		return f"{self.firmenname or 'Kunde'} - Due Date: {self.get_due_date()} ({self.get_days_until_due()} days left)"
+		return f"{self.firmenname or 'Kunde'} - Due Date: {self.get_due_date()}"
 
 	# Method to calculate the due date (1 year after the last service)
 	def get_due_date(self):
@@ -456,13 +457,13 @@ class Kunde(models.Model):
 
 class CRMAddress(models.Model):
 	kunde = models.ForeignKey(Kunde, related_name ='kunde_address', on_delete=models.CASCADE)
-	crm_strasse = models.CharField(max_length=255)
-	crm_nr = models.CharField(max_length=255)
-	crm_ort = models.CharField(max_length=255)
+	crm_strasse = models.CharField(max_length=255, null=True, blank=True)
+	crm_nr = models.CharField(max_length=255, null=True, blank=True)
+	crm_ort = models.CharField(max_length=255, null=True, blank=True)
 	crm_land = CountryField(multiple=False)
-	crm_plz = models.CharField(max_length=255)
-	crm_kanton = models.CharField(max_length=255, choices=KANTON_CHOICES, default="Zürich")
-	address_type = models.CharField(max_length=500, choices=ADDRESS_CHOICES)
+	crm_plz = models.CharField(max_length=255, null=True, blank=True)
+	crm_kanton = models.CharField(max_length=255, null=True, blank=True, choices=KANTON_CHOICES, default="Zürich")
+	address_type = models.CharField(max_length=500, null=True, blank=True, choices=ADDRESS_CHOICES)
 
 	class Meta:
 		verbose_name = 'CRM-Adresse'
@@ -474,6 +475,7 @@ class CRMAddress(models.Model):
 class Elemente(models.Model):
 	dichtungen = models.ForeignKey(
 		'Item', on_delete=models.SET_NULL, blank=True, null=True)
+	produkt = models.CharField(max_length=255, blank=True, null=True)
 	elementnr = models.IntegerField(null=True, blank=True) 
 	kuehlposition = models.CharField(max_length=255)
 	bemerkung = models.CharField(max_length=255)

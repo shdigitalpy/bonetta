@@ -80,6 +80,42 @@ def cms_elemente_objekte_löschen(request, pk, epk, cpk):
     messages.info(request, "Das Objekt wurde gelöscht.")
     return redirect("store:cms_elemente_objekte", pk=epk, cpk=cpk)
 
+
+@staff_member_required
+def cms_elemente_objekte_bearbeiten(request, pk, epk, cpk):
+    # Retrieve the Elemente instance (as before)
+    elemente_instance = get_object_or_404(Elemente, pk=epk)
+
+    # Retrieve the existing Objekte instance that we want to edit
+    objekte_instance = get_object_or_404(Objekte, pk=pk)
+
+    # Initialize the form with the existing objekte_instance
+    form = ElementeObjekteCreateForm(request.POST or None, instance=objekte_instance)
+
+    if request.method == "POST":
+        if form.is_valid():
+            # Save the form and update the objekte_instance
+            objekte_instance = form.save(commit=False)
+            objekte_instance.save()
+
+            # Ensure the relationship between objekte_instance and elemente_instance is maintained
+            objekte_instance.objekte.set([elemente_instance])  # Maintain the association
+            objekte_instance.save()
+
+            messages.success(request, "Objekt successfully updated and associated with Elemente.")
+            return redirect("store:cms_elemente_objekte", pk=epk, cpk=cpk)
+        else:
+            messages.error(request, "Error in form submission. Please check the fields and try again.")
+
+    context = {
+        'form': form,
+        'pk': pk,
+        'epk': epk,
+        'cpk': cpk,
+    }
+    return render(request, 'cms-elemente-objekte-erfassen.html', context)
+
+
 @staff_member_required
 def cms_elemente_objekte_erfassen(request, pk, cpk):
     # Ensure we get a single instance of Elemente
@@ -1267,7 +1303,7 @@ def crm_new_kunden(request):
             Q(kunde_address__crm_kanton__icontains=search_query)
         ).order_by('-id')
     else:
-        kunden = Kunde.objects.all().order_by('-id')
+        kunden = Kunde.objects.all().order_by('-interne_nummer')
     
     context = {
 
@@ -1308,23 +1344,38 @@ def crm_new_kunde_erfassen(request):
 
 @staff_member_required
 def crm_new_kunde_bearbeiten(request, pk):
-	kunde = get_object_or_404(Kunde, pk=pk)
-	if request.method == "POST":
-		form = CRMKundeEditModelForm(request.POST or None, instance=kunde)
-		if form.is_valid():
-			form.save()
-			return redirect('store:crm_new_kunden')
+    kunde = get_object_or_404(Kunde, pk=pk)
+    try:
+        address = CRMAddress.objects.get(kunde=kunde)  # Get the related address
+    except CRMAddress.DoesNotExist:
+        address = None  # Handle the case where the address does not exist
 
-		else:
-			messages.error(request, "Error")
-			
-	else:
-		form = CRMKundeEditModelForm(request.POST or None, request.FILES or None, instance=kunde)
-		context = {
-			'form': form,
-			'kunde': kunde,
-			 }
-		return render(request, 'cms-kunden-bearbeiten.html', context)
+    if request.method == 'POST':
+        # Initialize the forms with POST data and existing instances
+        kunde_form = CRMKundeForm(request.POST, instance=kunde)
+        address_form = CRMAddressForm(request.POST, instance=address)
+
+        if kunde_form.is_valid() and address_form.is_valid():
+            # Save the Kunde form and get the updated instance
+            kunde = kunde_form.save()
+
+            # Save the updated address, assigning the updated Kunde instance
+            address = address_form.save(commit=False)
+            address.kunde = kunde  # Ensure the address is still associated with the correct Kunde
+            address.address_type = 'R'  # Keep the same address type or update as needed
+            address.save()
+
+            return redirect('store:crm_new_kunden')
+
+    else:
+        # Prepopulate the forms with the existing Kunde and Address data
+        kunde_form = CRMKundeForm(instance=kunde)
+        address_form = CRMAddressForm(instance=address)
+
+    return render(request, 'crm/crm-kunde-bearbeiten.html', {
+        'kunde_form': kunde_form,
+        'address_form': address_form,
+    })
 
 @staff_member_required
 def cms_crm_adresse_bearbeiten(request, pk):
@@ -1446,7 +1497,7 @@ def cms_elemente_edit(request, pk, cpk):
 	element = get_object_or_404(Elemente, pk=pk)
 	
 	if request.method == "POST":
-		form = ElementeEditForm(request.POST or None, instance=element)
+		form = ElementeCreateForm(request.POST or None, instance=element)
 		if form.is_valid():
 			form.save()
 			return redirect('store:cms_elemente', pk=cpk)
@@ -1455,7 +1506,7 @@ def cms_elemente_edit(request, pk, cpk):
 			messages.error(request, "Error")
 
 	else: 
-		form = ElementeEditForm(request.POST or None, instance=element)
+		form = ElementeCreateForm(request.POST or None, instance=element)
 
 	context = {
 		'form': form,

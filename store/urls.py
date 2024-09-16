@@ -83,9 +83,6 @@ urlpatterns = [
 	path('cms/elemente/erfassen/<int:pk>', views.cms_elemente_create, name='cms_elemente_create'),
 	path('cms/elemente/bearbeiten/<int:pk>/<int:cpk>', views.cms_elemente_edit, name='cms_elemente_edit'),
 	path('cms/elemente/löschen/<int:pk>/<int:cpk>', views.cms_elemente_löschen, name='cms_elemente_löschen'),
-	path('cms/elemente/objekte/<int:pk>/<int:cpk>', views.cms_elemente_objekte, name='cms_elemente_objekte'),
-	path('cms/elemente/objekte-erfassen/<int:pk>/<int:cpk>', views.cms_elemente_objekte_erfassen, name='cms_elemente_objekte_erfassen'),
-	path('cms/elemente/objekte-loeschen/<int:pk>/<int:epk>/<int:cpk>', views.cms_elemente_objekte_löschen, name='cms_elemente_objekte_löschen'),
 	path('cms/benutzerdaten', views.cms_benutzerdaten, name='cms_benutzerdaten'),
 	path('cms/versandkosten', views.cms_versandkosten, name='cms_versandkosten'),
 	path('cms/versandkosten/erfassen', views.cms_versandkosten_erfassen, name='cms_versandkosten_erfassen'),
@@ -99,6 +96,12 @@ urlpatterns = [
 	path('cms/logout_user', views.logout_user, name='logout_user'),
 	path('cms/statistik/produkte', views.cms_statistik_produkte, name='cms_statistik_produkte'),
 	
+	#objekte
+	path('cms/elemente/objekte/<int:pk>/<int:cpk>', views.cms_elemente_objekte, name='cms_elemente_objekte'),
+	path('cms/elemente/objekte-erfassen/<int:pk>/<int:cpk>', views.cms_elemente_objekte_erfassen, name='cms_elemente_objekte_erfassen'),
+	path('cms/elemente/objekte-bearbeiten/<int:pk>/<int:epk>/<int:cpk>', views.cms_elemente_objekte_bearbeiten, name='cms_elemente_objekte_bearbeiten'),
+	path('cms/elemente/objekte-loeschen/<int:pk>/<int:epk>/<int:cpk>', views.cms_elemente_objekte_löschen, name='cms_elemente_objekte_löschen'),
+
 	re_path(r'^robots.txt$', TemplateView.as_view(template_name="robots.txt", content_type="text/plain"), name="robots_file"),
 	#marktplatz
 

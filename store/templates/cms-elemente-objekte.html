@@ -24,6 +24,7 @@
 			      <th scope="col">Typ:</th>
 			      <th scope="col">Modell/Code</th>
 			      <th scope="col">Serien-Nr.</th>
+			       <th scope="col">Bearbeiten</th>
 			      <th scope="col">Löschen</th>
 			     
 			     
@@ -42,6 +43,11 @@
 			  		
 			      <td>{{ data.modell }}</td>
 			      <td>{{ data.typ }}</td>
+
+
+
+			      	<td><a href="{% url 'store:cms_elemente_objekte_bearbeiten' data.id pk cpk  %}">
+  					<i class="fas fa-edit"></i></a></td>
 			      
 			     
 			     <td>

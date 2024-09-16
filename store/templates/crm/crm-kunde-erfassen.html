@@ -19,41 +19,10 @@
                 <form method="post">
                     {% csrf_token %}
 
-                    <br><h3>Persönliche Angaben</h3><br>
+                    
 
                     <div class="register-flex">
-
                         <!-- Kunde Fields -->
-                        <div class="register-flex-wrapperitem">
-                            <div class="register-flex-label">
-                                {{ kunde_form.vorname.label_tag }}
-                            </div>
-                            <div class="register-flex-item">
-                                {{ kunde_form.vorname }}
-                                <br>
-                            </div>
-                        </div>
-
-                        <div class="register-flex-wrapperitem">
-                            <div class="register-flex-label">
-                                {{ kunde_form.nachname.label_tag }}
-                            </div>
-                            <div class="register-flex-item">
-                                {{ kunde_form.nachname }}
-                                <br>
-                            </div>
-                        </div>
-
-                        <div class="register-flex-wrapperitem">
-                            <div class="register-flex-label">
-                                {{ kunde_form.email.label_tag }}
-                            </div>
-                            <div class="register-flex-item">
-                                {{ kunde_form.email }}
-                                <br>
-                            </div>
-                        </div>
-
                         <div class="register-flex-wrapperitem">
                             <div class="register-flex-label">
                                 {{ kunde_form.interne_nummer.label_tag }}
@@ -76,31 +45,16 @@
 
                         <div class="register-flex-wrapperitem">
                             <div class="register-flex-label">
-                                {{ kunde_form.phone.label_tag }}
+                                {{ kunde_form.zusatz.label_tag }}
                             </div>
                             <div class="register-flex-item">
-                                {{ kunde_form.phone }}
+                                {{ kunde_form.zusatz }}
                                 <br>
                             </div>
                         </div>
 
-                        <div class="register-flex-wrapperitem">
-                            <div class="register-flex-label">
-                                {{ kunde_form.mobile.label_tag }}
-                            </div>
-                            <div class="register-flex-item">
-                                {{ kunde_form.mobile }}
-                                <br>
-                            </div>
-                        </div>
-
-                    </div><!-- End Kunde Fields -->
-
-                    <br><h3>Adresse</h3><br>
-
-                    <!-- CRM Address Fields -->
-                    <div class="register-flex">
-                        <div class="register-flex-wrapperitem">
+                        <!-- CRM Address Fields -->
+                   
                             <div class="register-flex-label">
                                 {{ address_form.crm_strasse.label_tag }}
                             </div>
@@ -110,15 +64,7 @@
                             </div>
                         </div>
 
-                        <div class="register-flex-wrapperitem">
-                            <div class="register-flex-label">
-                                {{ address_form.crm_nr.label_tag }}
-                            </div>
-                            <div class="register-flex-item">
-                                {{ address_form.crm_nr }}
-                                <br>
-                            </div>
-                        </div>
+                        
 
                         <div class="register-flex-wrapperitem">
                             <div class="register-flex-label">
@@ -148,14 +94,72 @@
                                 {{ address_form.crm_kanton }}
                                 <br>
                             </div>
-                        </div>
+                        
                     </div><!-- End CRM Address Fields -->
+
+                        <br><br>
+                        <div class="register-flex-wrapperitem">
+                            <div class="register-flex-label">
+                                {{ kunde_form.vorname.label_tag }}
+                            </div>
+                            <div class="register-flex-item">
+                                {{ kunde_form.vorname }}
+                                <br>
+                            </div>
+                        </div>
+
+                        <div class="register-flex-wrapperitem">
+                            <div class="register-flex-label">
+                                {{ kunde_form.nachname.label_tag }}
+                            </div>
+                            <div class="register-flex-item">
+                                {{ kunde_form.nachname }}
+                                <br>
+                            </div>
+                        </div>
+
+                        <div class="register-flex-wrapperitem">
+                            <div class="register-flex-label">
+                                {{ kunde_form.phone.label_tag }}
+                            </div>
+                            <div class="register-flex-item">
+                                {{ kunde_form.phone }}
+                                <br>
+                            </div>
+                        </div>
+
+                        <div class="register-flex-wrapperitem">
+                            <div class="register-flex-label">
+                                {{ kunde_form.email.label_tag }}
+                            </div>
+                            <div class="register-flex-item">
+                                {{ kunde_form.email }}
+                                <br>
+                            </div>
+                        </div>
+
+                        
+
+                        
+
+                        
+
+                        
+
+                    </div><!-- End Kunde Fields -->
+
+          
+
+                    
 
                     <!-- Submit Button -->
                     <div class="register-flex">
                         <div class="register-flex-wrapperitem">
                             <div class="register-flex-item">
-                                <button class="btn btn-warning ml-4">Erfassen</button>
+                                <button class="btn btn-warning ml-4">Speichern</button>
+                            </div>
+                            <div class="register-flex-item">
+                                <button class="btn btn-secondary btn-md ml-4"><a href="{% url 'store:crm_new_kunden' %}">Abbrechen</a></button>
                             </div>
                         </div>
                     </div>

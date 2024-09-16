@@ -41,20 +41,25 @@ class CRMLastService(forms.ModelForm):
 class CRMKundeForm(forms.ModelForm):
 	class Meta:
 		model = Kunde
-		fields = ['vorname', 'nachname','email','interne_nummer','firmenname','phone','mobile']
+		fields = ['interne_nummer','vorname', 'nachname','email','firmenname','phone','zusatz']
 
 		labels = {
+		'interne_nummer': "Kunden-Nr.",
 			'vorname': "Vorname",
 			'nachname': "Nachname",
 			'email': "E-Mail",
-			'interne_nummer': "Interne-Nr.",
-			'firmenname': "Firmenname",
-			'phone': "Telefon",
-			'mobile': "Mobile-Nr",
+			
+			'firmenname': "Restaurant/Betrieb",
+			'phone': "Telefon/Handy",
+			'zusatz': "Zusatz",
+			
 
 			}
 
 		widgets = {
+		'interne_nummer': forms.TextInput(attrs={
+					'class': 'form-control col-6',
+					'placeholder':''}),
 			'vorname': forms.TextInput(attrs={
 					'class': 'form-control col-6',
 					'placeholder':''}),
@@ -66,11 +71,10 @@ class CRMKundeForm(forms.ModelForm):
 					'placeholder':''}),
 				
 				'firmenname': forms.TextInput(attrs={
-					'class': 'form-control col-6',
+					'class': 'form-control',
 					'placeholder':''}),
-				'interne_nummer': forms.NumberInput(attrs={
-					'class': 'form-control col-6',
-					'placeholder':''}),
+
+				
 				'rabatt': forms.TextInput(attrs={
 					'class': 'form-control col-6',
 					'placeholder':''}),
@@ -78,8 +82,8 @@ class CRMKundeForm(forms.ModelForm):
 				'phone': forms.TextInput(attrs={
 					'class': 'form-control col-6',
 					'placeholder':''}),
-				'mobile': forms.TextInput(attrs={
-					'class': 'form-control col-6',
+				'zusatz': forms.TextInput(attrs={
+					'class': 'form-control',
 					'placeholder':''}),
 		
 
@@ -91,13 +95,12 @@ class CRMAddressForm(forms.ModelForm):
         model = CRMAddress  # Your CRM address model
         fields = (
             'crm_strasse',
-            'crm_nr',
             'crm_plz',
             'crm_ort',
             'crm_kanton',  # This is now a dropdown
         )
         labels = {
-            'crm_strasse': "Strasse:",
+            'crm_strasse': "Adresse",
             'crm_nr': "Nr.",
             'crm_ort': "Ort",
             'crm_kanton': "Kanton",
@@ -106,27 +109,23 @@ class CRMAddressForm(forms.ModelForm):
         widgets = {
             'crm_strasse': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Strasse',
-                'required': True
+                'placeholder': '',
+                
             }),
-            'crm_nr': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Nr.',
-                'required': True
-            }),
+            
             'crm_ort': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Ort',
-                'required': True
+                'placeholder': '',
+                
             }),
             'crm_kanton': forms.Select(attrs={
                 'class': 'form-control',  # Dropdown for Kanton
-                'required': True
+                
             }),
             'crm_plz': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'PLZ',
-                'required': True
+                'placeholder': '',
+                
             }),
         }
 
@@ -736,7 +735,7 @@ class CRMKundeEditModelForm(forms.ModelForm):
 class ElementeCreateForm(forms.ModelForm):
 	class Meta:
 		model = Elemente
-		fields = ('kuehlposition', 'elementnr', 'bemerkung', 'dichtungen', 'aussenbreite', 'aussenhöhe' )
+		fields = ('kuehlposition', 'elementnr', 'bemerkung', 'produkt', 'aussenbreite', 'aussenhöhe' )
 		labels = {
 			'kunde': "Kunde",
 			'elementnr' : "Element-Nr.",
@@ -744,10 +743,11 @@ class ElementeCreateForm(forms.ModelForm):
 			'dichtung_masse' : "Dichtungsmasse",
 			'bemerkung' : "Kühlunterbau",
 			'aussenbreite' : "Aussenmass Breite",
-			'aussenhöhe' : "Aussenmass Höhe"
+			'aussenhöhe' : "Aussenmass Höhe",
+			'produkt': "Dichtung"
 		}
 		widgets = {
-			'dichtungen': forms.Select(attrs={
+			'produkt': forms.TextInput(attrs={
 				'class': 'form-control col-6'}),
 			'elementnr': forms.TextInput(attrs={
 				'class': 'form-control col-6',
@@ -764,51 +764,9 @@ class ElementeCreateForm(forms.ModelForm):
 			'bemerkung': forms.TextInput(attrs={
 				'class': 'form-control col-6',
 				'placeholder':''}),
-			'kunde': forms.CheckboxSelectMultiple(attrs={
-				'class': 'elementcheckbox',
-				'required': 'True'
-				}),
+			
 		}
 
-	def __init__(self, *args, **kwargs):
-		super(ElementeCreateForm, self).__init__(*args, **kwargs)
-		self.fields['dichtungen'].queryset = Item.objects.filter(kategorie__name__contains='PVC')
-
-class ElementeEditForm(forms.ModelForm):
-	class Meta:
-		model = Elemente
-		fields = ('kuehlposition', 'elementnr', 'bemerkung', 'dichtungen', 'aussenbreite', 'aussenhöhe' )
-		labels = {
-			'elementnr' : "Element-Nr.",
-			'kuehlposition' : "Kühlposition",
-			'dichtung_masse' : "Dichtungsmasse",
-			'bemerkung' : "Kühlunterbau",
-			'aussenbreite' : "Aussenmass Breite",
-			'aussenhöhe' : "Aussenmass Höhe"
-		}
-		widgets = {
-			'dichtungen': forms.Select(attrs={
-				'class': 'form-control col-6'}),
-			'elementnr': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'Eine ganze Zahl eingeben'}),
-			'aussenbreite': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'z.B. 380'}),
-			'aussenhöhe': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'z.B. 440'}),
-			'kuehlposition': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'z.B. Küche UG'}),
-			'bemerkung': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':''}),
-			'kunde': forms.CheckboxSelectMultiple(attrs={
-				'class': 'elementcheckbox',
-				
-				}),
-		}
 
 
 class ProduktCreateForm(forms.ModelForm):
