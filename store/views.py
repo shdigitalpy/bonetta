@@ -21,6 +21,76 @@ from io import BytesIO
 from datetime import datetime
 from django.contrib.admin.views.decorators import staff_member_required
 from itertools import chain
+import qrcode
+import base64
+
+
+@staff_member_required
+def download_qr_code(request):
+    """
+    Generates a QR code for the bestellformular and returns it as a downloadable PNG file.
+    """
+    # Get the full URL to the bestellformular view
+    url = request.build_absolute_uri(reverse('store:bestellformular'))
+
+    # Create the QR code instance
+    qr = qrcode.QRCode(
+        version=1,  # Controls the size of the QR Code
+        error_correction=qrcode.constants.ERROR_CORRECT_L,  # Less error correction
+        box_size=10,  # Size of each box in pixels
+        border=4,  # Border size
+    )
+    
+    # Add the URL data to the QR code
+    qr.add_data(url)
+    qr.make(fit=True)
+
+    # Create an image from the QR code
+    img = qr.make_image(fill='black', back_color='white')
+
+    # Save the image to a BytesIO object
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
+    buffer.seek(0)
+
+    # Return the image as an HTTP response with content-disposition to download
+    response = HttpResponse(buffer, content_type="image/png")
+    response['Content-Disposition'] = 'attachment; filename="qr_code_bestellformular.png"'
+    return response
+
+@staff_member_required
+def qr_code_view(request):
+    """
+    Generates a QR code for the bestellformular and renders it in the HTML page.
+    """
+    # Get the full URL to the bestellformular view
+    url = request.build_absolute_uri(reverse('store:bestellformular'))
+
+    # Create the QR code instance
+    qr = qrcode.QRCode(
+        version=1,  # Controls the size of the QR Code
+        error_correction=qrcode.constants.ERROR_CORRECT_L,  # Less error correction
+        box_size=10,  # Size of each box in pixels
+        border=4,  # Border size
+    )
+    
+    # Add the URL data to the QR code
+    qr.add_data(url)
+    qr.make(fit=True)
+
+    # Create an image from the QR code
+    img = qr.make_image(fill='black', back_color='white')
+
+    # Save the image to a BytesIO object
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
+    buffer.seek(0)
+
+    # Convert the image to base64 to embed in HTML
+    image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+
+    # Pass the base64 image to the template
+    return render(request, 'crm/qr-code.html', {'qr_code_base64': image_base64})
 
 
 @staff_member_required

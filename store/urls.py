@@ -18,6 +18,8 @@ urlpatterns = [
 	path('impressum', views.impressum, name='impressum'),
 	path('bestellformular', views.bestellformular, name='bestellformular'),
 	path('danke', views.danke, name='danke'),
+	path('qr-code/', qr_code_view, name='qr_code_view'),
+	path('qr-code/download/', views.download_qr_code, name='download_qr_code'),
 
 	#shop
 	path('bestätigung/<int:pk>', views.email, name='email'),
