@@ -484,7 +484,7 @@ class Elemente(models.Model):
 	aussenhöhe = models.IntegerField(null=True, blank=True)
 
 	def elemente_laufmeter(self):
-		lfm = 2 * (self.aussenbreite + self.aussenhöhe)
+		lfm = (2 * (self.aussenbreite + self.aussenhöhe)) / 1000
 		return lfm
 
 
