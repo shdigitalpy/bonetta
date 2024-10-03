@@ -22,6 +22,75 @@ COUNTRY_CHOICES = [
 	]
 
 
+
+class CRMLagerBestandForm(forms.ModelForm):
+    class Meta:
+        model = CRMLager
+        fields = ['lagerbestand']
+        
+        labels = {
+
+            'lagerbestand': "Lagerbestand",
+
+        }
+
+        widgets = {
+            
+            
+            'lagerbestand': forms.NumberInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder': ''
+            }),
+            
+        }
+
+class CRMLagerForm(forms.ModelForm):
+    class Meta:
+        model = CRMLager
+        fields = ['dichtungstyp','aussenbreite', 'aussenhöhe', 'lagerort', 'lagerbestand', 'marke']
+        
+        labels = {
+            
+            'aussenbreite': "Außenbreite (mm)",
+            'aussenhöhe': "Außenhöhe (mm)",
+            'dichtungstyp': "Dichtungstyp",
+            'lagerort': "Lagerort",
+            'lagerbestand': "Lagerbestand",
+            'marke': "Marke(n)"
+        }
+
+        widgets = {
+            
+            'aussenbreite': forms.NumberInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder': ''
+            }),
+            'aussenhöhe': forms.NumberInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder': ''
+            }),
+            'dichtungstyp': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': ''
+            }),
+            'lagerort': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': ''
+            }),
+            'lagerbestand': forms.NumberInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder': ''
+            }),
+            'marke': forms.Select(attrs={
+                'class': 'form-control',
+                'placeholder': ''
+            }),
+        }
+
+
+
+
+
 class CRMLastService(forms.ModelForm):
     class Meta:
         model = Kunde

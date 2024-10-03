@@ -54,6 +54,13 @@ urlpatterns = [
 	path('cms/crm/<int:pk>/update_last_service/', views.crm_update_last_service, name='crm_update_last_service'),
 	path('kunde/delete-user-relationship/<int:pk>/', views.delete_kunde_user_relationship, name='delete_kunde_user_relationship'),
 
+	#crm kunden
+	path('cms/crm/lager', views.crm_lagerbestand, name='crm_lagerbestand'),
+	path('cms/crm/lager/bearbeiten/<int:pk>', views.crm_lager_bearbeiten, name='crm_lager_bearbeiten'),
+	path('cms/crm/lagerbestand/bearbeiten/<int:pk>', views.crm_lagerbestand_bearbeiten, name='crm_lagerbestand_bearbeiten'),
+	path('cms/crm/lager/löschen/<int:pk>', views.crm_lager_löschen, name='crm_lager_löschen'),
+	path('cms/crm/lager/erfassen', views.crm_lager_erfassen, name='crm_lager_erfassen'),
+
 	#cms 
 	path('cms/', views.cms, name="cms"),
 	path('cms/bestellungen', views.cms_bestellungen, name='cms_bestellungen'),

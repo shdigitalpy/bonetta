@@ -1469,6 +1469,138 @@ def cms_product_marke_löschen(request, pkk, pk):
 
 #CRM
 
+def crm_lagerbestand(request):
+    # Get the search parameters from GET
+    dichtungstyp = request.GET.get('dichtungstyp', '')
+    aussenbreite = request.GET.get('aussenbreite', '')
+    aussenhoehe = request.GET.get('aussenhöhe', '')  # Using aussenhöhe with umlaut
+    marke = request.GET.get('marke', '')
+
+    # Start with the base queryset
+    lager_queryset = CRMLager.objects.all()
+
+    # Apply filters for each search field
+    if dichtungstyp:
+        lager_queryset = lager_queryset.filter(dichtungstyp__icontains=dichtungstyp)
+
+    # Filter with tolerance for aussenbreite (+/- 10)
+    if aussenbreite:
+        try:
+            aussenbreite_value = int(aussenbreite)
+            lager_queryset = lager_queryset.filter(
+                aussenbreite__gte=aussenbreite_value - 10,
+                aussenbreite__lte=aussenbreite_value + 10
+            )
+        except ValueError:
+            pass  # In case a non-integer is entered
+
+    # Filter with tolerance for aussenhöhe (+/- 10)
+    if aussenhoehe:
+        try:
+            aussenhoehe_value = int(aussenhoehe)  # Ensure this is correctly converted to an integer
+            lager_queryset = lager_queryset.filter(
+                aussenhöhe__gte=aussenhoehe_value - 10,
+                aussenhöhe__lte=aussenhoehe_value + 10
+            )
+        except ValueError:
+            pass  # In case a non-integer is entered
+
+    if marke:
+        # Adjust this depending on the field name in the 'Marke' model
+        lager_queryset = lager_queryset.filter(marke__name__icontains=marke)
+
+    # Always order by '-dichtungstyp' after filtering
+    lager = lager_queryset.order_by('-dichtungstyp')
+
+    context = {
+        'lager': lager,
+    }
+
+    return render(request, 'crm/crm-lagerbestand.html', context)
+
+
+
+
+def crm_lager_erfassen(request):
+    if request.method == 'POST':
+        # Initialize the form with POST data
+        lager_form = CRMLagerForm(request.POST or None)
+
+        if lager_form.is_valid():
+            # Save the CRMLager instance
+            lager = lager_form.save()  # Save the CRMLager form and get the instance
+
+            # Redirect to another view or display a success message after saving
+            return redirect('store:crm_lagerbestand')  # Change to the appropriate URL for your project
+
+    else:
+        # Initialize an empty form for GET request
+        lager_form = CRMLagerForm()
+
+    return render(request, 'crm/crm-lager-erfassen.html', {
+        'lager_form': lager_form,
+    })
+
+@staff_member_required
+def crm_lagerbestand_bearbeiten(request, pk):
+    # Fetch the specific CRMLager instance using the primary key (pk)
+    lager = get_object_or_404(CRMLager, pk=pk)
+
+    if request.method == 'POST':
+        # Initialize the form with POST data and the existing CRMLager instance
+        lager_form = CRMLagerBestandForm(request.POST, instance=lager)
+
+        if lager_form.is_valid():
+            # Save only the 'lagerbestand' field
+            lager_form.save()
+
+            # Redirect to the lager overview page after successful update
+            return redirect('store:crm_lagerbestand')  # Adjust URL to match your project
+
+    else:
+        # Prepopulate the form with the existing CRMLager 'lagerbestand' data
+        lager_form = CRMLagerBestandForm(instance=lager)
+
+    return render(request, 'crm/crm-lager-erfassen.html', {
+        'lager_form': lager_form,
+    })
+
+
+
+@staff_member_required
+def crm_lager_bearbeiten(request, pk):
+    # Fetch the specific CRMLager instance using the primary key (pk)
+    lager = get_object_or_404(CRMLager, pk=pk)
+
+    if request.method == 'POST':
+        # Initialize the form with POST data and the existing CRMLager instance
+        lager_form = CRMLagerForm(request.POST, instance=lager)
+
+        if lager_form.is_valid():
+            # Save the updated CRMLager instance
+            lager = lager_form.save()
+
+            # Redirect to a lager overview page after successful update
+            return redirect('store:crm_lagerbestand')  # Change to the appropriate URL
+
+    else:
+        # Prepopulate the form with the existing CRMLager instance data
+        lager_form = CRMLagerForm(instance=lager)
+
+    return render(request, 'crm/crm-lager-erfassen.html', {
+        'lager_form': lager_form,
+    })
+
+
+@staff_member_required
+def crm_lager_löschen(request, pk):
+	eintrag = get_object_or_404(CRMLager, pk=pk)
+	eintrag.delete()
+	messages.info(request, "Der Artikel des Lagers wurde gelöscht.")
+	return redirect("store:crm_lagerbestand")	
+
+# CRM Kunden ---------------------------------------------------------------
+
 def crm_new_kunden(request):
     search_query = request.GET.get('search', '')
     if search_query:

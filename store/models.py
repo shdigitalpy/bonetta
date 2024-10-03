@@ -455,6 +455,22 @@ class Kunde(models.Model):
 		return self.kunden_elemente.count()
 
 
+class CRMLager(models.Model):
+	titel = models.CharField(max_length=255, null=True, blank=True)
+	aussenbreite = models.IntegerField(null=True, blank=True)
+	aussenhöhe = models.IntegerField(null=True, blank=True)
+	dichtungstyp = models.CharField(max_length=255, null=True, blank=True)
+	lagerort = models.CharField(max_length=255, null=True, blank=True)
+	lagerbestand = models.IntegerField(null=True, blank=True, default=1)
+	marke = models.ForeignKey('Marke', on_delete=models.SET_NULL, null=True, blank=True, related_name='lager_marke')
+
+	class Meta:
+		verbose_name = 'CRM-Lager'
+		verbose_name_plural = 'CRM-Lagerbestände'
+
+	def __str__(self):
+		return self.titel
+
 class CRMAddress(models.Model):
 	kunde = models.ForeignKey(Kunde, related_name ='kunde_address', on_delete=models.CASCADE)
 	crm_strasse = models.CharField(max_length=255, null=True, blank=True)

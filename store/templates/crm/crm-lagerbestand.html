@@ -1,0 +1,142 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}Lagerbestand{% endblock %}
+
+{% block content %}
+    <div class="flexbox">
+        <div class="h2">Lagerbestand</div>
+
+        <div><a class="btn btn-secondary btn-sm" href="{% url 'store:crm_lager_erfassen' %}">Lagerbestand erfassen</a></div>
+
+        <!-- Extended Search form -->
+        <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" method="GET">
+    <div style="display: flex; flex-wrap: wrap;">
+        <div style="flex: 0 0 5%; padding: 5px;">
+            <input id="textsuche" class="form-control" type="text" placeholder="Dichtungstyp"
+                   name="dichtungstyp" value="{{ request.GET.dichtungstyp }}">
+        </div>
+        <div style="flex: 0 0 5%; padding: 5px;">
+            <input class="form-control" type="text" placeholder="Aussenbreite"
+                   name="aussenbreite" value="{{ request.GET.aussenbreite }}">
+        </div>
+        <div style="flex: 0 0 5%; padding: 5px;">
+            <input class="form-control" type="text" placeholder="Aussenhöhe"
+                   name="aussenhöhe" value="{{ request.GET.aussenhöhe }}">
+        </div>
+        <div style="flex: 0 0 5%; padding: 5px;">
+            <input class="form-control" type="text" placeholder="Marke"
+                   name="marke" value="{{ request.GET.marke }}">
+        </div>
+        
+        <div style="flex: 0 0 5%; padding: 5px;">
+            <button type="submit" class="btn btn-outline-secondary">
+                <span class="fas fa-search"></span> Suche
+            </button>
+        </div>
+        <div style="flex: 0 0 5%; padding: 5px;">
+            <a href="{% url 'store:crm_lagerbestand' %}" class="btn btn-outline-secondary">
+                <span class="fas fa-times"></span> zurücksetzen
+            </a>
+        </div>
+    </div>
+</form>
+
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <!-- Sortable Dichtungstyp header -->
+                <th scope="col">
+                    <a href="?sort=dichtungstyp">
+                        Dichtungstyp
+                        {% if sort_by == 'dichtungstyp' %}
+                            <i class="fas fa-sort-down"></i>
+                        {% endif %}
+                    </a>
+                </th>
+                <!-- Sortable Marke header -->
+                <th scope="col">
+                    <a href="?sort=marke">
+                        Marke
+                        {% if sort_by == 'marke' %}
+                            <i class="fas fa-sort-down"></i>
+                        {% endif %}
+                    </a>
+                </th>
+                <!-- Sortable Aussenbreite header -->
+                <th scope="col">
+                    <a href="?sort=aussenbreite">
+                        Aussenbreite
+                        {% if sort_by == 'aussenbreite' %}
+                            <i class="fas fa-sort-down"></i>
+                        {% endif %}
+                    </a>
+                </th>
+                <!-- Sortable Aussenhöhe header -->
+                <th scope="col">
+                    <a href="?sort=aussenhöhe">
+                        Aussenhöhe
+                        {% if sort_by == 'aussenhöhe' %}
+                            <i class="fas fa-sort-down"></i>
+                        {% endif %}
+                    </a>
+                </th>
+                <!-- Sortable Anzahl header -->
+                <th scope="col">
+                    <a href="?sort=lagerbestand">
+                        Anzahl
+                        {% if sort_by == 'lagerbestand' %}
+                            <i class="fas fa-sort-down"></i>
+                        {% endif %}
+                    </a>
+                </th>
+                <!-- Sortable Lagerort header -->
+                <th scope="col">
+                    <a href="?sort=lagerort">
+                        Lagerort
+                        {% if sort_by == 'lagerort' %}
+                            <i class="fas fa-sort-down"></i>
+                        {% endif %}
+                    </a>
+                </th>
+
+                
+                <th scope="col">
+                    Bearbeiten
+                </th>
+                 <th scope="col">
+                    Löschen
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in lager %}
+                <tr>
+                    <td>{{ data.dichtungstyp }}</td>
+                    <td>{{ data.marke }}</td>
+                    <td>{{ data.aussenbreite }}</td>
+                    <td>{{ data.aussenhöhe }}</td>
+                    <td>{{ data.lagerbestand }} <small> <a href="{% url 'store:crm_lagerbestand_bearbeiten' data.pk %}"><i class="fas fa-edit"></i></a> </small></td>
+                    <td>{{ data.lagerort }}</td>
+
+
+                    <td><a href="{% url 'store:crm_lager_bearbeiten' data.pk %}"><i class="fas fa-edit"></i></a></td>
+                    
+                    
+                    <td>
+                        <a href="{% url 'store:crm_lager_löschen' data.pk %}" 
+                           onclick="return confirm('Sind Sie sicher, dass Sie diesen Lagerbestand löschen möchten?');">
+                           <i style="color:var(--red)" class="far fa-trash-alt"></i>
+                        </a>
+                    </td>
+
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6">Es wurden keine Dichtungstypen gefunden, die den Suchkriterien entsprechen.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
