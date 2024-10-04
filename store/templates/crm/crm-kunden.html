@@ -34,12 +34,12 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th scope="col">Daten-Bearbeiten</th>
+                
                 <th scope="col">Interne Nr.</th>
                 <th scope="col">Firma / Profil</th>
                 <th scope="col">Telefon</th>
                 
-                <th scope="col">Adresse<br> bearbeiten</th>
+                <th scope="col">Kundendaten<br> bearbeiten</th>
                 <th scope="col">Elemente<br> Übersicht</th>
                 <th scope="col">Kunde erfasst am</th>
                 <th scope="col">Letzter Service</th>
@@ -52,8 +52,8 @@
              {% for kunde in kunden %}
                 {% if not kunde.user %}
                     <tr>
-                        <td><a href="{{ kunde.get_absolute_crm_url }}"><i class="fas fa-edit"></i></a></td>
-                        <td>{{ kunde.interne_nummer }}</td>
+                        
+                        <td>{% if kunde.interne_nummer %}{{ kunde.interne_nummer }}{%endif%}</td>
                         <td>{{ kunde.firmenname }} <br>
 
                         {% for address in kunde.kunde_address.all %}
@@ -68,7 +68,7 @@
 
                     </td>
                         <td>{% if kunde.phone %}{{kunde.phone}}{% endif %} <br>{% if kunde.mobile %}{{kunde.mobile}}{% endif %}</td>
-                        <td><a href="{{kunde.get_absolute_crm_address_url}}"><i class="fas fa-edit"></i></a></td>
+                        <td><a href="{{ kunde.get_absolute_crm_url }}"><i class="fas fa-edit"></i></a></td>
                                               
                         
                         <td><a href="{{ kunde.get_absolute_elemente_url }}"><i class="fas fa-info-circle"></i> / {{ kunde.elemente_count }}</a></td>
