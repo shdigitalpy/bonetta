@@ -6,11 +6,16 @@
 
 		
 			<div class="flexbox" style="align-items:start;">
-				<div class="h2">Objekte<br><br> {{ kunde }}</div>
-				
-				<a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente' cpk  %}">Zurück zur Elementeliste</a>
+				<div class="h2">Objekte<br><br> {{ kunde }}
 
-				 <a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente_objekte_erfassen' pk cpk   %}">Erfassen</a>
+					<br><br>
+					 <a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente_objekte_erfassen' pk cpk   %}">Erfassen</a>
+					<a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente' cpk  %}">Zurück zur Elementeliste</a>
+
+				
+				</div>
+				
+				
 
 			</div>
 			
