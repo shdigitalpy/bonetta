@@ -336,7 +336,7 @@ a[aria-expanded="true"] {
 .landing-text {
 	color: var(--blue);
 	background-color: var(--white);
-	padding: 1.5rem;
+	padding: 1.5rem 1.5rem 5rem 1.5rem;
 	width:800px;
 }
 
