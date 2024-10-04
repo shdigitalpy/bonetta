@@ -313,7 +313,7 @@ a[aria-expanded="true"] {
 	height:100%;
 	display: flex;
   justify-content: center;
-  padding-top: 20rem;
+  padding-top: 5rem;
 }
 
 
@@ -337,8 +337,6 @@ a[aria-expanded="true"] {
 	color: var(--blue);
 	background-color: var(--white);
 	padding: 1.5rem;
-	margin-bottom:3rem;
-	width:800px;
 }
 
 @media only screen and (max-width: 768px){
@@ -347,6 +345,10 @@ a[aria-expanded="true"] {
 	width:100%;
 
 }
+}
+
+.landing-text .storepreview {
+	height:100%;
 }
 
 
