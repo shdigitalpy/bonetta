@@ -114,7 +114,7 @@
             {% for data in lager %}
                 <tr>
                     <td>{{ data.dichtungstyp }}</td>
-                    <td>{{ data.marke }}</td>
+                    <td>{% if data.marke %}{{ data.marke }}{% endif %}</td>
                     <td>{{ data.aussenbreite }}</td>
                     <td>{{ data.aussenhöhe }}</td>
                     <td>{{ data.lagerbestand }} <small> <a href="{% url 'store:crm_lagerbestand_bearbeiten' data.pk %}"><i class="fas fa-edit"></i></a> </small></td>
