@@ -230,6 +230,12 @@ img {
 	padding: 65px 0;
 }
 
+@media only screen and (max-width: 768px){
+	.padding {
+	padding: 0;
+}
+}
+
 .padding img {
 	width: 100%;
 }
@@ -307,7 +313,7 @@ a[aria-expanded="true"] {
 	height:100%;
 	display: flex;
   justify-content: center;
-  padding-top: 7rem;
+  padding-top: 25rem;
 }
 
 
@@ -331,11 +337,13 @@ a[aria-expanded="true"] {
 	color: var(--blue);
 	background-color: var(--white);
 	padding: 1.5rem;
+	width:800px;
 }
 
 @media only screen and (max-width: 768px){
 	.landing-text {
 	padding: 1rem;
+	width:100%;
 
 }
 }
@@ -409,6 +417,18 @@ a[aria-expanded="true"] {
 	width: 300px;
 	margin: 3rem 0;
 }
+
+@media only screen and (max-width: 768px){
+	.boxen {
+	width: 100%;
+	margin: 1rem 0;
+}
+	.boxen-flex-item {
+	width: 80%;
+	margin: 1rem 0;
+}
+}
+
 
 #boxen img {
 	width: 300px;
