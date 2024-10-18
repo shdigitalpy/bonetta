@@ -685,22 +685,22 @@ class KundeEditForm(forms.ModelForm):
 		widgets = {
 			
 			'username': forms.TextInput(attrs={
-				'class': 'form-control col-3',
+				'class': 'form-control',
 				'placeholder':''}),
 			'first_name': forms.TextInput(attrs={
-				'class': 'form-control col-3',
+				'class': 'form-control',
 				'placeholder':''}),
 			'last_name': forms.TextInput(attrs={
-				'class': 'form-control col-3',
+				'class': 'form-control',
 				'placeholder':''}),
 			'email': forms.TextInput(attrs={
-				'class': 'form-control col-3',
+				'class': 'form-control',
 				'placeholder':''}),
 			'password': forms.TextInput(attrs={
-				'class': 'form-control col-3',
+				'class': 'form-control',
 				'placeholder':''}),
 			'date_joined': forms.TextInput(attrs={
-				'class': 'form-control col-3',
+				'class': 'form-control',
 				'readonly':'readonly'}),
 		}
 
@@ -717,30 +717,34 @@ class KundeEditAdvancedForm(forms.ModelForm):
 			'birthday'
 
 			)
+		labels = {
+			'phone': "Telefon",
+			
+		}
 		widgets = {
 			
 			'firmenname': forms.TextInput(attrs={
-				'class': 'form-control col-3',
+				'class': 'form-control',
 				'placeholder':''}),
 			'interne_nummer': forms.NumberInput(attrs={
-				'class': 'form-control col-3',
+				'class': 'form-control',
 				'placeholder':''}),
 			'rabatt': forms.TextInput(attrs={
-				'class': 'form-control col-3',
+				'class': 'form-control',
 				'placeholder':''}),
 			'newsletter': forms.Select(attrs={
-				'class': 'form-control col-3',}),
+				'class': 'form-control',}),
 			'phone': forms.TextInput(attrs={
-				'class': 'form-control col-3',
+				'class': 'form-control',
 				'placeholder':''}),
 			'mobile': forms.TextInput(attrs={
-				'class': 'form-control col-3',
+				'class': 'form-control',
 				'placeholder':''}),
 			'birthday': forms.TextInput(attrs={
-				'class': 'form-control col-3',
+				'class': 'form-control',
 				'placeholder':''}),
 		}
-
+	
 class CRMKundeEditModelForm(forms.ModelForm):
 	class Meta:
 		model = Kunde
