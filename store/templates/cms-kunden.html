@@ -8,9 +8,6 @@
     </div>
 
     <div class="flexbox" style="align-items:start;">
-       
-       
-
         <!-- Search form -->
         <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="{% url 'store:cms_kunden' %}">
             {% csrf_token %}
@@ -24,7 +21,9 @@
                     </button>
                 </div>
                 <div style="flex: 0 0 15%">
-                    <a href="{% url 'store:cms_kunden' %}" style="border: none;" class="btn btn-outline-secondary"><span class="fas fa-times"></span> zurücksetzen</a>
+                    <a href="{% url 'store:cms_kunden' %}" style="border: none;" class="btn btn-outline-secondary">
+                        <span class="fas fa-times"></span> zurücksetzen
+                    </a>
                 </div>
             </div>
         </form>
@@ -34,10 +33,9 @@
         <thead>
             <tr>
                 <th scope="col">Webshop<br>Kunden-Nr.</th>
-                
                 <th scope="col">Firma / Profil</th>
                 <th scope="col">Telefon</th>
-                <th scope="col">Benutzer <br>bearbeiten</th>
+                
                 <th scope="col">Rabatt</th>
                 <th scope="col">Newsletter</th>
                 <th scope="col">Firmendaten<br> bearbeiten</th>
@@ -50,14 +48,17 @@
             {% for user in users %}
                 <tr>
                     <th scope="row">{{ user.pk }}</th>
-                    
                     <td>
-                        {% if user.profile.firmenname %}{{ user.profile.firmenname }} <br>{% endif %}
-                        Benutzername: {{ user.username }}<br>
-                        {{ user.email }}
+                        {% if user.profile.firmenname %}
+                            {{ user.profile.firmenname }} <br>
+                            {% for address in user.address.all %}
+                                {{ address.rechnung_strasse }} {{ address.rechnung_nr }}<br>
+                                {{ address.rechnung_plz }} {{ address.rechnung_ort }}<br>
+                            {% endfor %}
+                        {% endif %}  <!-- Missing endif added here -->
                     </td>
                     <td>{% if user.profile.phone %}{{ user.profile.phone }}{% endif %}</td>
-                    <td><a href="{% url 'store:cms_user_bearbeiten' user.pk %}"><i class="fas fa-edit"></i></a></td>
+                   
                     <td>{{ user.profile.rabatt }}%</td>
                     <td>
                         {% if user.profile.newsletter %}
@@ -66,26 +67,20 @@
                             <p>Nein</p>
                         {% endif %}
                     </td>
-                    
                     <td><a href="{{ user.profile.get_absolute_url }}"><i class="fas fa-edit"></i></a></td>
-                    
-                    
                     <td><a href="{% url 'store:cms_kunde_löschen' user.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i></a></td>
-
                     <td>
-                    <!-- Check if the user has a related Kunde profile before accessing its properties -->
-                    {% if user.profile %}
-                        <a href="{% url 'store:delete_kunde_user_relationship' user.profile.pk %}" class="btn btn-danger btn-sm">
-                            <i class="fas fa-unlink"></i> Ins CRM übernehmen ({{ user.profile.elemente_count }} Elemente)
-                        </a>
-                    {% else %}
-                        <p>Keine Element-Daten</p>
-                    {% endif %}
-                </td>
+                        <!-- Check if the user has a related Kunde profile before accessing its properties -->
+                        {% if user.profile %}
+                            <a href="{% url 'store:delete_kunde_user_relationship' user.profile.pk %}" class="btn btn-danger btn-sm">
+                                <i class="fas fa-unlink"></i> Ins CRM übernehmen ({{ user.profile.elemente_count }} Elemente)
+                            </a>
+                        {% else %}
+                            <p>Keine Element-Daten</p>
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
-
-            
         </tbody>
     </table>
 {% endblock %}

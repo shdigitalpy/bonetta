@@ -71,7 +71,7 @@ urlpatterns = [
 	path('cms/webshop/erfassen', views.cms_kunden_erfassen, name='cms_kunden_erfassen'),
 	path('cms/user/bearbeiten/<int:pk>', views.cms_user_bearbeiten, name='cms_user_bearbeiten'),
 	path('cms/kundenadresse/bearbeiten/<int:pk>', views.cms_kundenadresse_bearbeiten, name='cms_kundenadresse_bearbeiten'),
-	path('cms/webshop//bearbeiten/<int:pk>', views.cms_kunde_bearbeiten, name='cms_kunde_bearbeiten'),
+	path('cms/webshop/bearbeiten/<int:pk>', views.cms_kunde_bearbeiten, name='cms_kunde_bearbeiten'),
 	path('cms/webshop/löschen/<int:pk>', views.cms_kunde_löschen, name='cms_kunde_löschen'),
 
 	#produkte

@@ -25,15 +25,70 @@ import qrcode
 import base64
 
 
+# Bestellformular
+def bestellformular(request):
+    email = settings.EMAIL_HOST_USER  # Use the email from settings
+    elemente_range = range(1, 100)
+    
+    if request.method == "POST":
+        # Retrieve form data
+        kunden_nr = request.POST.get('kunden-nr')
+        betrieb_person = request.POST.get('betrieb-person')
+        adresse = request.POST.get('adresse')
+        plz = request.POST.get('plz')
+        ort = request.POST.get('ort')
+        elemente_nr = request.POST.getlist('elemente-nr')  # list for multiple checkboxes
+        montage = request.POST.get('montage')  # mit/ohne montage checkbox
+        bemerkung = request.POST.get('bemerkung')
+
+        # Prepare email subject and message content
+        subject = 'Bestellung Elemente ' + betrieb_person + ' ' + kunden_nr
+        template = render_to_string('crm/mail-bestellung-elemente.html', {
+            'kunden_nr': kunden_nr,
+            'betrieb_person': betrieb_person,
+            'adresse': adresse,
+            'plz': plz,
+            'ort': ort,
+            'elemente_nr': ', '.join(elemente_nr),  # Join list into string for display
+            'montage': montage,
+            'bemerkung': bemerkung,
+        })
+
+        # Send email for order
+        email = EmailMessage(
+            subject,
+            template,
+            settings.EMAIL_HOST_USER,  # Use the correct sender email
+            ['sandro@sh-digital.ch']  # Recipient email
+        )
+        email.fail_silently = False
+        email.content_subtype = "html"  # to send the email as HTML
+        email.send()
+
+        # Debugging: Print email host and password to ensure correct loading
+        print(config('EMAIL_HOST_USER'))
+        print(config('EMAIL_HOST_PASSWORD'))
+
+        # Success message to be displayed after form submission
+        context = {
+            'message_kontakt': 'Die Nachricht wurde erfolgreich gesendet.',
+            'elemente_range': elemente_range,
+        }
+        return redirect("store:danke")
+
+    else:
+        # Render empty form for GET requests
+        context = {
+            'elemente_range': elemente_range,
+        }
+        return render(request, 'bestellformular.html', context)
+
+
+
 @staff_member_required
 def download_qr_code(request):
-    """
-    Generates a QR code for the bestellformular and returns it as a downloadable PNG file.
-    """
-    # Get the full URL to the bestellformular view
     url = request.build_absolute_uri(reverse('store:bestellformular'))
 
-    # Create the QR code instance
     qr = qrcode.QRCode(
         version=1,  # Controls the size of the QR Code
         error_correction=qrcode.constants.ERROR_CORRECT_L,  # Less error correction
@@ -60,10 +115,6 @@ def download_qr_code(request):
 
 @staff_member_required
 def qr_code_view(request):
-    """
-    Generates a QR code for the bestellformular and renders it in the HTML page.
-    """
-    # Get the full URL to the bestellformular view
     url = request.build_absolute_uri(reverse('store:bestellformular'))
 
     # Create the QR code instance
@@ -106,60 +157,7 @@ def delete_kunde_user_relationship(request, pk):
     return redirect(reverse('store:cms_kunden'))
 
 
-#Bestellformular
-def bestellformular(request):
-	email = ''
-	elemente_range = range(1, 100) 
-	if request.method == "POST":
-        # Retrieve form data
-		kunden_nr = request.POST.get('kunden-nr')
-		betrieb_person = request.POST.get('betrieb-person')
-		adresse = request.POST.get('adresse')
-		plz = request.POST.get('plz')
-		ort = request.POST.get('ort')
-		elemente_nr = request.POST.getlist('elemente-nr')  # list for multiple checkboxes
-		montage = request.POST.get('montage')  # mit/ohne montage checkbox
-		bemerkung = request.POST.get('bemerkung')
 
-
-		# Prepare email subject and message content
-		subject = 'Bestellung Elemente ' + betrieb_person + ' ' + kunden_nr
-		template = render_to_string('crm/mail-bestellung-elemente.html', {
-            'kunden_nr': kunden_nr,
-            'betrieb_person': betrieb_person,
-            'adresse': adresse,
-            'plz': plz,
-            'ort': ort,
-            'elemente_nr': ', '.join(elemente_nr),  # Join list into string for display
-            'montage': montage,
-            'bemerkung': bemerkung,
-        })
-
-		# Send email for order
-		email = EmailMessage(
-            subject,
-            template,
-            email,
-            ['sandro@sh-digital.ch','livio.bonetta@geboshop.ch'],  # recipients
-        )
-		email.fail_silently = False
-		email.content_subtype = "html"  # to send the email as HTML
-		email.send()
-
-		# Success message to be displayed after form submission
-		context = {
-            'message_kontakt': 'Die Nachricht wurde erfolgreich gesendet.',
-            'elemente_range' : elemente_range,
-        }
-		return redirect("store:danke")
-	else:
-
-		# Render empty form for GET requests
-		context = {
-		'elemente_range' : elemente_range,
-
-		}
-		return render(request, 'bestellformular.html', context)
 
 
 def danke(request):
@@ -1861,46 +1859,42 @@ def cms_kunden(request):
     return render(request, 'cms-kunden.html', context)
 
 
-
-@staff_member_required
 def cms_kunden_erfassen(request):
     if request.method == "POST":
-        form = RegistrationForm(request.POST or None)
-        if form.is_valid():
-            # Extract only the fields needed for creating a user
-            user_data = {
-                'username': form.cleaned_data['username'],
-                'password': form.cleaned_data['password1'],  # Assuming the form uses password1 and password2
-                'email': form.cleaned_data['email'],
-                'first_name': form.cleaned_data['first_name'],
-                'last_name': form.cleaned_data['last_name'],
-            }
-            new_user = User.objects.create_user(**user_data)
-            new_kunde = Kunde.objects.create(user=new_user, phone=request.POST['phone'], firmenname=request.POST['firmenname'], rabatt=0)
-            new_address = Address.objects.create(
+        kunde_form = KundeEditAdvancedForm(request.POST)
+        address_form = AddressForm(request.POST)
 
-            	user=new_user, 
-            	rechnung_strasse=request.POST['strasse'],
-            	rechnung_nr=request.POST['nr'],
-            	rechnung_ort=request.POST['ort'],
-            	rechnung_land=request.POST['land'],
-            	rechnung_plz=request.POST['plz'],
-            	address_type='B'
+        if kunde_form.is_valid() and address_form.is_valid():
+            # Save Kunde and Address as needed
+            new_user = User.objects.create_user(  # Example user creation
+                username=kunde_form.cleaned_data['firmenname'],
+                password=User.objects.make_random_password(),
+                email=kunde_form.cleaned_data.get('email', '')
+            )
 
-            	)
-            
+            kunde = kunde_form.save(commit=False)
+            kunde.user = new_user
+            kunde.save()
+
+            address = address_form.save(commit=False)
+            address.kunde = kunde
+            address.save()
+
             return redirect('store:cms_kunden')
-
         else:
-            messages.error(request, "Error")
+            messages.error(request, "Fehler beim Erstellen des Kunden.")
 
     else:
-        form = RegistrationForm()
+        kunde_form = KundeEditAdvancedForm()
+        address_form = AddressForm()
 
-    context = {
-        'form': form,
-    }
-    return render(request, 'cms-kunden-erfassen.html', context)
+    return render(request, 'cms-kunden-erfassen.html', {
+        'kunde_form': kunde_form,
+        'address_form': address_form
+    })
+
+
+
 
 @staff_member_required
 def cms_user_bearbeiten(request, pk):
@@ -1923,25 +1917,44 @@ def cms_user_bearbeiten(request, pk):
 		return render(request, 'cms-user-bearbeiten.html', context)
 
 
-@staff_member_required
-def cms_kunde_bearbeiten(request, pk):
-	kunde = get_object_or_404(Kunde, pk=pk)
-	if request.method == "POST":
-		form = KundeEditAdvancedForm(request.POST or None, instance=kunde)
-		if form.is_valid():
-			form.save()
-			return redirect('store:cms_kunden')
+from django.shortcuts import get_object_or_404
+from .models import Kunde, Address
 
-		else:
-			messages.error(request, "Error")
-			
-	else:
-		form = KundeEditAdvancedForm(request.POST or None, request.FILES or None, instance=kunde)
-		context = {
-			'form': form,
-			'kunde': kunde,
-			 }
-		return render(request, 'cms-kunden-bearbeiten.html', context)
+def cms_kunde_bearbeiten(request, pk):
+    # Get the Kunde instance
+    kunde = get_object_or_404(Kunde, pk=pk)
+
+    # Fetch the address using the user field (since Address is linked to User, not Kunde)
+    try:
+        address = Address.objects.get(user=kunde.user, address_type='R')  # Assuming 'R' is the main address type
+    except Address.DoesNotExist:
+        address = None  # Handle case if no address is found
+
+    # Handle POST request and forms
+    if request.method == "POST":
+        kunde_form = KundeEditAdvancedForm(request.POST, instance=kunde)
+        address_form = AddressForm(request.POST, instance=address)
+
+        if kunde_form.is_valid() and address_form.is_valid():
+            kunde_form.save()
+            address = address_form.save(commit=False)
+            address.user = kunde.user  # Make sure the address is linked to the correct user
+            address.save()
+            return redirect('store:cms_kunden')
+        else:
+            messages.error(request, "Fehler beim Speichern der Daten.")
+    else:
+        kunde_form = KundeEditAdvancedForm(instance=kunde)
+        address_form = AddressForm(instance=address)
+
+    context = {
+        'kunde_form': kunde_form,
+        'address_form': address_form,
+        'kunde': kunde,
+    }
+    
+    return render(request, 'cms-kunden-bearbeiten.html', context)
+
 
 @staff_member_required
 def cms_kundenadresse_bearbeiten(request, pk):

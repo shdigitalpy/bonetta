@@ -175,13 +175,13 @@ CKEDITOR_UPLOAD_PATH = "upload/"
 
 
 # sending emails
-EMAIL_HOST = 'asmtp.mail.hostpoint.ch'
-EMAIL_PORT = 465
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = True
-DEFAULT_FROM_EMAIL = "bestellungen@gastrodichtung.ch"
+EMAIL_HOST = 'asmtp.mail.hostpoint.ch'  # Hostpoint SMTP server
+EMAIL_PORT = 465  # SSL encrypted connection on port 465
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Your email address (e.g., 'your.email@domain.ch')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # The password for the email account
+EMAIL_USE_TLS = False  # Disable TLS because we are using SSL
+EMAIL_USE_SSL = True  # Enable SSL for port 465 (encrypted connection)
+DEFAULT_FROM_EMAIL = "bestellungen@gastrodichtung.ch"  # Default sender email
 
 #Aws storage
 AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
