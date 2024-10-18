@@ -23,6 +23,43 @@ COUNTRY_CHOICES = [
 
 
 
+class LieferantenForm(forms.ModelForm):
+    class Meta:
+        model = Lieferanten
+        fields = ['number', 'name', 'adresse', 'plz', 'ort']
+
+        labels = {
+            'number': "Lieferanten-Nr.",
+            'name': "Name",
+            'adresse': "Adresse",
+            'plz': "PLZ",
+            'ort': "Ort",
+        }
+
+        widgets = {
+            'number': forms.TextInput(attrs={
+                'class': 'form-control col-12',
+                'placeholder': ''
+            }),
+            'name': forms.TextInput(attrs={
+                'class': 'form-control col-12',
+                'placeholder': ''
+            }),
+            'adresse': forms.TextInput(attrs={
+                'class': 'form-control col-12',
+                'placeholder': ''
+            }),
+            'plz': forms.TextInput(attrs={
+                'class': 'form-control col-12',
+                'placeholder': ''
+            }),
+            'ort': forms.TextInput(attrs={
+                'class': 'form-control col-12',
+                'placeholder': ''
+            }),
+        }
+
+
 class CRMLagerBestandForm(forms.ModelForm):
     class Meta:
         model = CRMLager
@@ -202,12 +239,13 @@ class CRMAddressForm(forms.ModelForm):
 class ElementeObjekteCreateForm(forms.ModelForm):
 	class Meta:
 		model = Objekte
-		fields = ('name', 'serie', 'modell', 'typ' )
+		fields = ('name', 'serie', 'modell', 'typ','lieferant')
 		labels = {
 			'name': "Marke",
 			'serie' : "Typ",
 			'modell' : "Modell/Code",
 			'typ' : "Serien-Nr.",
+			'lieferant' : "Lieferant",
 			
 		}
 		widgets = {
@@ -224,6 +262,10 @@ class ElementeObjekteCreateForm(forms.ModelForm):
 			'typ': forms.TextInput(attrs={
 				'class': 'form-control col-6',
 				'placeholder':''}),
+			'lieferant': forms.Select(attrs={
+                'class': 'form-control col-6',  # Dropdown for Kanton
+                
+            }),
 			
 		}
 
@@ -808,8 +850,10 @@ class CRMKundeEditModelForm(forms.ModelForm):
 class ElementeCreateForm(forms.ModelForm):
 	class Meta:
 		model = Elemente
-		fields = ('kuehlposition', 'elementnr', 'bemerkung', 'produkt', 'aussenbreite', 'aussenhöhe' )
+		fields = ('number','nettopreis','kuehlposition', 'elementnr', 'bemerkung', 'produkt', 'aussenbreite', 'aussenhöhe','lieferant' )
 		labels = {
+		'nettopreis': "Nettopreis CHF",
+		'number': "Artikel-Nr.",
 			'kunde': "Kunde",
 			'elementnr' : "Element-Nr.",
 			'kuehlposition' : "Kühlposition",
@@ -817,7 +861,8 @@ class ElementeCreateForm(forms.ModelForm):
 			'bemerkung' : "Kühlunterbau",
 			'aussenbreite' : "Aussenmass Breite",
 			'aussenhöhe' : "Aussenmass Höhe",
-			'produkt': "Dichtung"
+			'produkt': "Dichtung",
+			'lieferant': "Lieferant"
 		}
 		widgets = {
 			'produkt': forms.TextInput(attrs={
@@ -837,6 +882,18 @@ class ElementeCreateForm(forms.ModelForm):
 			'bemerkung': forms.TextInput(attrs={
 				'class': 'form-control col-6',
 				'placeholder':''}),
+			'nettopreis': forms.TextInput(attrs={
+				'class': 'form-control col-6',
+				'placeholder':'',
+				}),
+			'number': forms.TextInput(attrs={
+				'class': 'form-control col-6',
+				'placeholder':'',
+				}),
+			'lieferant': forms.Select(attrs={
+				'class': 'form-control col-6',
+				'placeholder':'',
+				}),
 			
 		}
 

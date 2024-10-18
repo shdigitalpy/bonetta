@@ -382,7 +382,6 @@ class Address(models.Model):
 	def __str__(self):
 		return self.user.username + ' ' + str(self.rechnung_strasse) + ' '+ str(self.rechnung_nr) + ', ' + str(self.rechnung_plz) + ' '+ str(self.rechnung_ort)
 
-
 class ShippingAddress(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name ='shipping_address', on_delete=models.CASCADE,null=True, blank=True)
 	lieferung_strasse = models.CharField(max_length=255)
@@ -401,8 +400,6 @@ class ShippingAddress(models.Model):
 
 	def __str__(self):
 		return self.user.username + ' ' + str(self.lieferung_strasse) + ' '+ str(self.lieferung_nr) + ', ' + str(self.lieferung_plz) + ' '+ str(self.lieferung_ort)
-
-
 
 class Kunde(models.Model):
 	user = models.OneToOneField(User, unique=True, related_name ='profile', on_delete=models.CASCADE,null=True, blank=True)
@@ -488,6 +485,21 @@ class CRMAddress(models.Model):
 	def __str__(self):
 		return self.user.firmenname + ' ' + str(self.crm_strasse)
 
+class Lieferanten(models.Model):
+	number = models.IntegerField(null=True, blank=True)
+	name = models.CharField(max_length=255, null=True, blank=True) 
+	adresse = models.CharField(max_length=255, null=True, blank=True) 
+	plz = models.CharField(max_length=255, null=True, blank=True) 
+	ort = models.CharField(max_length=255, null=True, blank=True)
+
+	class Meta:
+		ordering = ['id']
+		verbose_name = 'Lieferant'
+		verbose_name_plural = 'Lieferanten'
+
+	def __str__(self):
+		return self.name
+
 class Elemente(models.Model):
 	dichtungen = models.ForeignKey(
 		'Item', on_delete=models.SET_NULL, blank=True, null=True)
@@ -498,6 +510,10 @@ class Elemente(models.Model):
 	kunde = models.ManyToManyField(Kunde, related_name='kunden_elemente', blank=True)
 	aussenbreite = models.IntegerField(null=True, blank=True)
 	aussenhöhe = models.IntegerField(null=True, blank=True)
+	produkt = models.CharField(max_length=255, blank=True, null=True)
+	number = models.CharField(max_length=255, blank=True, null=True)
+	nettopreis = models.CharField(max_length=255, blank=True, null=True)
+	lieferant = models.ForeignKey(Lieferanten, related_name ='elemente_lieferanten', on_delete=models.CASCADE, null=True, blank=True)
 
 	def elemente_laufmeter(self):
 		lfm = (2 * (self.aussenbreite + self.aussenhöhe)) / 1000
@@ -512,13 +528,13 @@ class Elemente(models.Model):
 	def __str__(self):
 		return str(self.kunde) + ' ' + self.kuehlposition + ' ' + self.bemerkung
 
-
 class Objekte(models.Model):
 	name = models.CharField(max_length=255, null=True, blank=True) 
 	objekte = models.ManyToManyField(Elemente, related_name='elemente_objekte', blank=True)
 	serie = models.CharField(max_length=255, null=True, blank=True) 
 	modell = models.CharField(max_length=255, null=True, blank=True)
-	typ = models.CharField(max_length=255, null=True, blank=True)  
+	typ = models.CharField(max_length=255, null=True, blank=True)
+	lieferant = models.ForeignKey(Lieferanten, related_name ='objekte_lieferanten', on_delete=models.CASCADE, null=True, blank=True)
 
 	class Meta:
 		ordering = ['id']
@@ -527,6 +543,3 @@ class Objekte(models.Model):
 
 	def __str__(self):
 		return str(self.serie) + ' ' + self.modell + ' ' + self.typ
-
-
-

@@ -56,7 +56,9 @@
 			      <th scope="col">Details</th>
 			      <th scope="col">Dichtungstyp</th>
 			      <th scope="col">Aussenmass Breite / Höhe</th>
+			      <th scope="col">Lieferant</th>
 			      <th scope="col">Bearbeiten</th>
+			      <th scope="col">Stk. Preis</th>
 			      <th scope="col">Löschen</th>
 			     
 			    </tr>
@@ -82,6 +84,7 @@
 			       <td>{% if data.produkt %}{{ data.produkt }}{% else %}{{ data.dichtungen.titel }}{% endif %}</td>
 			      <td>{{ data.aussenbreite }}mm / {{ data.aussenhöhe }}mm </td>
 			      <td>
+			      	<td>{% if data.lieferant %}{{ data.lieferant }}{% endif %}</td>
 
 			      	
 
@@ -89,6 +92,7 @@
   					<i class="fas fa-edit"></i></a>
 
   				</td>
+  				<td>{% if data.nettopreis %}{{ data.nettopreis }}{% endif %}</td>
   					<td>
   					<a href="{% url 'store:cms_elemente_löschen' data.pk kunde_id %}"><i style="color:var(--red)" class="far fa-trash-alt"></i>
 					 </a>

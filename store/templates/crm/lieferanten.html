@@ -1,0 +1,60 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}Lieferanten{% endblock %}
+{% load custom_filters %}
+
+{% block content %}
+    <div class="flexbox">
+        <div class="h2">Lieferanten</div>
+    </div>
+
+    <div class="flexbox" style="align-items:start;">
+        
+        <a class="btn btn-secondary btn-sm" href="{% url 'store:lieferant_create' %}">Lieferant erfassen</a>
+
+        <!-- Search form -->
+        <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="{% url 'store:lieferanten' %}">
+            {% csrf_token %}
+            <div style="display: flex">
+                <div style="flex: 0 0 20%">
+                    <input id="textsuche" class="form-control" type="text" placeholder="Suche" aria-label="Search" name="search">
+                </div>
+                <div style="flex: 0 0 15%">
+                    <button type="submit" style="border: none;" class="btn btn-outline-secondary">
+                        <span class="fas fa-search"></span> Suche
+                    </button>
+                </div>
+                <div style="flex: 0 0 15%">
+                    <a href="{% url 'store:lieferanten' %}" style="border: none;" class="btn btn-outline-secondary"><span class="fas fa-times"></span> zurücksetzen</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Lieferanten-Nr.</th>
+                <th scope="col">Name</th>
+                <th scope="col">Adresse</th>
+                <th scope="col">PLZ</th>
+                <th scope="col">Ort</th>
+                <th scope="col">Lieferant bearbeiten</th>
+                <th scope="col">Lieferant löschen</th>
+            </tr>
+        </thead>
+        <tbody>
+             {% for lieferant in lieferanten %}
+                <tr>
+                    <td>{% if lieferant.number %}{{ lieferant.number }}{% endif %}</td>
+                    <td>{{ lieferant.name }}</td>
+                    <td>{{ lieferant.adresse }}</td>
+                    <td>{{ lieferant.plz }}</td>
+                    <td>{{ lieferant.ort }}</td>
+                    <td><a href="{% url 'store:lieferant_edit' lieferant.pk %}"><i class="fas fa-edit"></i></a></td>
+                    <td><a href="{% url 'store:lieferant_delete' lieferant.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i></a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -33,7 +33,8 @@
         <thead>
             <tr>
                 <th scope="col">Webshop<br>Kunden-Nr.</th>
-                <th scope="col">Firma / Profil</th>
+                <th scope="col">Firma</th>
+                <th scope="col">Kunde</th>
                 <th scope="col">Telefon</th>
                 
                 <th scope="col">Rabatt</th>
@@ -56,6 +57,11 @@
                                 {{ address.rechnung_plz }} {{ address.rechnung_ort }}<br>
                             {% endfor %}
                         {% endif %}  <!-- Missing endif added here -->
+                    </td>
+                    <td>
+                        {% if user.first_name %} {{user.first_name}} {{user.last_name}}{% endif %}<br>
+                        {% if user.profile.phone %}Tel. {{user.profile.phone}}{% endif %}<br>
+                        {% if user.email %}{{user.email}}{% endif %}
                     </td>
                     <td>{% if user.profile.phone %}{{ user.profile.phone }}{% endif %}</td>
                    

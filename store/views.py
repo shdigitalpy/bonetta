@@ -1465,6 +1465,54 @@ def cms_product_marke_löschen(request, pkk, pk):
 	return render(request, 'cms-produkt-marke-erfassen.html', context)
 
 
+
+def lieferanten(request):
+    search_query = request.GET.get('search', '')
+    if search_query:
+        lieferanten = Lieferanten.objects.filter(
+            Q(name__icontains=search_query) |
+            Q(adresse__icontains=search_query) |
+            Q(ort__icontains=search_query) |
+            Q(plz__icontains=search_query)
+        ).order_by('-id')
+    else:
+        lieferanten = Lieferanten.objects.all().order_by('-id')
+
+    context = {
+        'lieferanten': lieferanten,
+    }
+    return render(request, 'crm/lieferanten.html', context)
+
+def lieferant_create(request):
+    if request.method == 'POST':
+        form = LieferantenForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('store:lieferanten')
+    else:
+        form = LieferantenForm()
+
+    return render(request, 'crm/lieferanten-erstellen.html', {'form': form})
+
+def lieferant_edit(request, pk):
+    lieferant = get_object_or_404(Lieferanten, pk=pk)
+    if request.method == 'POST':
+        form = LieferantenForm(request.POST, instance=lieferant)
+        if form.is_valid():
+            form.save()
+            return redirect('store:lieferanten')
+    else:
+        form = LieferantenForm(instance=lieferant)
+
+    return render(request, 'crm/lieferanten-erstellen.html', {'form': form})
+
+@staff_member_required
+def lieferant_delete(request, pk):
+    eintrag = get_object_or_404(Lieferanten, pk=pk)
+    eintrag.delete()
+    messages.info(request, "Der Lieferant wurde gelöscht.")
+    return redirect("store:lieferanten")
+
 #CRM
 
 def crm_lagerbestand(request):
