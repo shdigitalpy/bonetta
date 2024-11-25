@@ -65,10 +65,6 @@ def bestellformular(request):
         email.content_subtype = "html"  # to send the email as HTML
         email.send()
 
-        # Debugging: Print email host and password to ensure correct loading
-        print(config('EMAIL_HOST_USER'))
-        print(config('EMAIL_HOST_PASSWORD'))
-
         # Success message to be displayed after form submission
         context = {
             'message_kontakt': 'Die Nachricht wurde erfolgreich gesendet.',
