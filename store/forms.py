@@ -22,11 +22,114 @@ COUNTRY_CHOICES = [
 	]
 
 
+class ElementeCreateForm(forms.ModelForm):
+    class Meta:
+        model = Elemente
+        fields = ('kuehlposition','elementnr',
+                  'bemerkung','artikel','lieferant')
+        labels = {
+            'artikel': "Artikel",
+            
+            'kunde': "Kunde",
+            'elementnr': "Element-Nr.",
+            'kuehlposition': "Kühlposition",
+            'dichtung_masse': "Dichtungsmasse",
+            'bemerkung': "Kühlunterbau",
+            'aussenbreite': "Aussenmass Breite",
+            'aussenhöhe': "Aussenmass Höhe",
+            'produkt': "Dichtung",
+            'lieferant': "Lieferant",
+        }
+        widgets = {
+            'produkt': forms.TextInput(attrs={
+                'class': 'form-control col-6'
+            }),
+            'elementnr': forms.TextInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder': ''
+            }),
+            'aussenbreite': forms.TextInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder': 'z.B. 380'
+            }),
+            'aussenhöhe': forms.TextInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder': 'z.B. 440'
+            }),
+            'kuehlposition': forms.TextInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder': ''
+            }),
+            'bemerkung': forms.TextInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder': ''
+            }),
+            'nettopreis': forms.TextInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder': '',
+            }),
+            'number': forms.TextInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder': '',
+            }),
+            'lieferant': forms.Select(attrs={
+                'class': 'form-control col-6',
+                'placeholder': '',
+            }),
+            'artikel': forms.Select(attrs={
+                'class': 'form-control col-6',
+                'placeholder': '',
+            }),
+        }
+
+
+
+class ArtikelForm(forms.ModelForm):
+    class Meta:
+        model = Artikel
+        fields = ['artikelnr', 'name', 'aussenbreite', 'aussenhöhe', 'nettopreis','vp']
+        
+        labels = {
+            'artikelnr': "Artikelnummer",
+            'name': "Dichtung",
+            'aussenbreite': "Aussenbreite (mm)",
+            'aussenhöhe': "Außenhöhe (mm)",
+            'nettopreis': "Einkaufspreis (CHF)",
+            'vp': "Verkaufspreis (CHF)",
+        }
+        
+        widgets = {
+            'artikelnr': forms.TextInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder': ''
+            }),
+            'name': forms.TextInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder': ''
+            }),
+            'aussenbreite': forms.NumberInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder': ''
+            }),
+            'aussenhöhe': forms.NumberInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder': ''
+            }),
+            'nettopreis': forms.NumberInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder': ''
+            }),
+            'vp': forms.NumberInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder': ''
+            }),
+        }
+        
 
 class LieferantenForm(forms.ModelForm):
     class Meta:
         model = Lieferanten
-        fields = ['number', 'name', 'adresse', 'plz', 'ort']
+        fields = ['number', 'name', 'adresse', 'plz', 'ort','email']
 
         labels = {
             'number': "Lieferanten-Nr.",
@@ -34,6 +137,7 @@ class LieferantenForm(forms.ModelForm):
             'adresse': "Adresse",
             'plz': "PLZ",
             'ort': "Ort",
+            'email' : "E-Mail"
         }
 
         widgets = {
@@ -54,6 +158,10 @@ class LieferantenForm(forms.ModelForm):
                 'placeholder': ''
             }),
             'ort': forms.TextInput(attrs={
+                'class': 'form-control col-12',
+                'placeholder': ''
+            }),
+            'email': forms.TextInput(attrs={
                 'class': 'form-control col-12',
                 'placeholder': ''
             }),
@@ -847,55 +955,6 @@ class CRMKundeEditModelForm(forms.ModelForm):
 				'placeholder':''}),
 		}
 
-class ElementeCreateForm(forms.ModelForm):
-	class Meta:
-		model = Elemente
-		fields = ('number','nettopreis','kuehlposition', 'elementnr', 'bemerkung', 'produkt', 'aussenbreite', 'aussenhöhe','lieferant' )
-		labels = {
-		'nettopreis': "Nettopreis CHF",
-		'number': "Artikel-Nr.",
-			'kunde': "Kunde",
-			'elementnr' : "Element-Nr.",
-			'kuehlposition' : "Kühlposition",
-			'dichtung_masse' : "Dichtungsmasse",
-			'bemerkung' : "Kühlunterbau",
-			'aussenbreite' : "Aussenmass Breite",
-			'aussenhöhe' : "Aussenmass Höhe",
-			'produkt': "Dichtung",
-			'lieferant': "Lieferant"
-		}
-		widgets = {
-			'produkt': forms.TextInput(attrs={
-				'class': 'form-control col-6'}),
-			'elementnr': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'Eine ganze Zahl eingeben'}),
-			'aussenbreite': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'z.B. 380'}),
-			'aussenhöhe': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'z.B. 440'}),
-			'kuehlposition': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'z.B. Küche UG'}),
-			'bemerkung': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':''}),
-			'nettopreis': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'',
-				}),
-			'number': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'',
-				}),
-			'lieferant': forms.Select(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'',
-				}),
-			
-		}
 
 
 

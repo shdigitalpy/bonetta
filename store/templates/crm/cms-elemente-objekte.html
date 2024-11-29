@@ -9,8 +9,8 @@
 				<div class="h2">Objekte<br><br> {{ kunde }}
 
 					<br><br>
-					 <a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente_objekte_erfassen' pk cpk   %}">Erfassen</a>
-					<a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente' cpk  %}">Zurück zur Elementeliste</a>
+					 <a class="btn btn-outline-primary btn-sm" href="{% url 'store:cms_elemente_objekte_erfassen' pk cpk %}">Erfassen</a>
+					<a class="btn btn-light btn-sm" href="{% url 'store:cms_elemente' cpk %}">Zurück zur Elementeliste</a>
 
 				
 				</div>
@@ -30,8 +30,8 @@
 			      <th scope="col">Modell/Code</th>
 			      <th scope="col">Serien-Nr.</th>
 			      <th scope="col">Lieferant</th>
-			       <th scope="col">Bearbeiten</th>
-			      <th scope="col">Löschen</th>
+			       <th scope="col">Aktionen</th>
+			      
 			     
 			     
 			    </tr>
@@ -51,17 +51,22 @@
 			      <td>{{ data.typ }}</td>
 			      <td>{% if data.lieferant %}{{ data.lieferant }}{% endif %}</td>
 
+			      <td>
 
-			      	<td><a href="{% url 'store:cms_elemente_objekte_bearbeiten' data.id pk cpk  %}">
-  					<i class="fas fa-edit"></i></a></td>
-			      
-			     
-			     <td>
-  					<a href="{% url 'store:cms_elemente_objekte_löschen' data.id pk cpk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i>
-					 </a>
-					</td> 
+                <div class="btn-group" role="group">
+                    <a href="{% url 'store:cms_elemente_objekte_bearbeiten' data.id pk cpk  %}" class="btn btn-sm btn-outline-primary" title="Bearbeiten">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="{% url 'store:cms_elemente_objekte_löschen' data.id pk cpk %}" class="btn btn-sm btn-outline-danger" onclick="return confirmSend();" title="Löschen">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                </div>
+                </td>
+            </td>
 			      {% endfor %}
+
 			    </tr>
+
 			    
 			  </tbody>
 			 

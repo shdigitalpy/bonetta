@@ -4,8 +4,8 @@
 
 {% block content %}
 
-		<br><br><br>
-			<div class="container">
+
+			<div class="produkt">
 			
 			<h2>Elemente bearbeiten</h2>
 
@@ -14,7 +14,7 @@
 		    <form method="POST" enctype="multipart/form-data">
 		      {% csrf_token %}
 		      {{ form.as_p }}
-		      <button class="btn btn-warning">Speichern</button>
+		      <button class="btn btn-primary">Speichern <span class="fas fa-check-circle"></span></button>
 		      </td>
   			</div>
 			<br/>

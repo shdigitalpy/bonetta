@@ -31,7 +31,9 @@
 
       <li>
       <a href="{% url 'store:cms_produkte' first_cat %}">Produkte</a>
-      </li> 
+      </li>
+
+      
   
       
       <li>
@@ -64,8 +66,15 @@
       <a href="{% url 'store:lieferanten' %}">Lieferanten</a>
     </li>
 
+    <li>
+      <a href="{% url 'store:crm_artikel' %}">Artikel</a>
+      </li> 
+
       <li>
-      <a href="{% url 'store:cms_elemente_statistik' %}">Statistik Elemente</a>
+      <a href="{% url 'store:cms_elemente_statistik' %}">Elemente Statistik</a>
+    </li>
+    <li>
+      <a href="">Elemente Bestellungen</a>
     </li>
 
      <li>
@@ -159,6 +168,12 @@ $(document).ready(function () {
             });
         });
 
+</script>
+
+<script>
+    function confirmSend() {
+        return confirm("Bist du sicher, dass du den Eintrag löschen willst?");
+    }
 </script>
 
 

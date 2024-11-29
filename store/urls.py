@@ -67,6 +67,12 @@ urlpatterns = [
     path('cms/crm/lieferanten/edit/<int:pk>/', views.lieferant_edit, name='lieferant_edit'),
     path('cms/crm/lieferanten/löschen/<int:pk>', views.lieferant_delete, name='lieferant_delete'),
 
+    #crm artikel
+    path('artikel/', views.crm_artikel, name='crm_artikel'),
+    path('artikel/create/', views.crm_artikel_create, name='crm_artikel_create'),
+    path('artikel/<int:pk>/edit/', views.crm_artikel_edit, name='crm_artikel_edit'),
+    path('artikel/<int:pk>/delete/', views.crm_artikel_delete, name='crm_artikel_delete'),
+
 	#cms 
 	path('cms/', views.cms, name="cms"),
 	path('cms/bestellungen', views.cms_bestellungen, name='cms_bestellungen'),

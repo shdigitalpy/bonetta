@@ -1,31 +1,29 @@
 {% extends 'base-cms.html' %}
 {% load static %}
 {% load i18n %}
-{% block title %}Lieferant erfassen{% endblock %}
+{% block title %}Artikel Erfassen{% endblock %}
 {% block stylesheet %}
 <!-- Add your custom styles here if needed -->
 {% endblock %}
 {% block content %}
 
-
 <div class="produkt">
-    <h2 style="margin:0">Lieferant erfassen</h2>
+    <h2 style="margin:0">Artikel erfassen</h2>
     <br>
-    <div class="row storepreview form">
+    <div class="row padding storepreview form">
         <div class="col-sm-10">
             <div class="form-group">
 
                 <form method="post">
                     {% csrf_token %}
                     <div class="register-flex">
-                        
-                        <!-- Lieferant Fields -->
+                        <!-- Artikel Fields -->
                         <div class="register-flex-wrapperitem">
                             <div class="register-flex-label">
-                                {{ form.number.label_tag }}
+                                {{ form.artikelnr.label_tag }}
                             </div>
                             <div class="register-flex-item">
-                                {{ form.number }}
+                                {{ form.artikelnr }}
                                 <br>
                             </div>
                         </div>
@@ -42,59 +40,62 @@
 
                         <div class="register-flex-wrapperitem">
                             <div class="register-flex-label">
-                                {{ form.adresse.label_tag }}
+                                {{ form.aussenbreite.label_tag }}
                             </div>
                             <div class="register-flex-item">
-                                {{ form.adresse }}
+                                {{ form.aussenbreite }}
                                 <br>
                             </div>
                         </div>
 
                         <div class="register-flex-wrapperitem">
                             <div class="register-flex-label">
-                                {{ form.plz.label_tag }}
+                                {{ form.aussenhöhe.label_tag }}
                             </div>
                             <div class="register-flex-item">
-                                {{ form.plz }}
+                                {{ form.aussenhöhe }}
                                 <br>
                             </div>
                         </div>
 
                         <div class="register-flex-wrapperitem">
                             <div class="register-flex-label">
-                                {{ form.ort.label_tag }}
+                                {{ form.nettopreis.label_tag }}
                             </div>
                             <div class="register-flex-item">
-                                {{ form.ort }}
+                                {{ form.nettopreis }}
                                 <br>
                             </div>
                         </div>
+
                         <div class="register-flex-wrapperitem">
                             <div class="register-flex-label">
-                                {{ form.email.label_tag }}
+                                {{ form.vp.label_tag }}
                             </div>
                             <div class="register-flex-item">
-                                {{ form.email }}
+                                {{ form.vp }}
                                 <br>
                             </div>
                         </div>
-                    </div><!-- End Lieferant Fields -->
+                    </div>
+                    <!-- End Artikel Fields -->
 
-                    <br><br>
                     <!-- Submit Button -->
                     <div class="register-flex">
                         <div class="register-flex-wrapperitem">
                             <div class="register-flex-item">
-                                <button class="btn btn-primary ">Speichern <span class="fas fa-check-circle"></span></button>
+                                <button class="btn btn-primary btn-md ">Erfassen <span class="fas fa-check-circle"></span></button>
                             </div>
                             <div class="register-flex-item">
-                                <button class="btn btn-light btn-md"><a href="{% url 'store:lieferanten' %}">Abbrechen <span class="fas fa-times"></span></a></button>
+                               
+                                    
+                                    <button class="btn btn-light btn-md "><a href="{% url 'store:crm_artikel' %}">Zurück <span class="fas fa-times"></span></a></button>
+                                </button>
                             </div>
                         </div>
                     </div>
-
-                    
                 </form>
+
             </div>
         </div>
     </div>

@@ -10,7 +10,7 @@
 
     <div class="flexbox" style="align-items:start;">
         
-        <a class="btn btn-secondary btn-sm" href="{% url 'store:crm_new_kunde_erfassen' %}">CRM Kunde erfassen</a>
+        <a class="btn btn-outline-primary btn-sm" href="{% url 'store:crm_new_kunde_erfassen' %}">CRM Kunde erfassen</a>
 
         <!-- Search form -->
         <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="{% url 'store:crm_new_kunden' %}">
@@ -20,12 +20,12 @@
                     <input id="textsuche" class="form-control" type="text" placeholder="Suche" aria-label="Search" name="search">
                 </div>
                 <div style="flex: 0 0 15%">
-                    <button type="submit" style="border: none;" class="btn btn-outline-secondary">
+                    <button type="submit" style="border: none;" class="btn btn-outline-primary">
                         <span class="fas fa-search"></span> Suche
                     </button>
                 </div>
                 <div style="flex: 0 0 15%">
-                    <a href="{% url 'store:crm_new_kunden' %}" style="border: none;" class="btn btn-outline-secondary"><span class="fas fa-times"></span> zurücksetzen</a>
+                    <a href="{% url 'store:crm_new_kunden' %}" style="border: none;" class="btn btn-light"><span class="fas fa-times"></span> zurücksetzen</a>
                 </div>
             </div>
         </form>
@@ -77,10 +77,26 @@
 
 
                         </td>
-                        <td><a href="{{ kunde.get_absolute_crm_url }}"><i class="fas fa-edit"></i></a></td>
+
+                        <td>
+                <div class="btn-group" role="group">
+                    <a href="{{ kunde.get_absolute_crm_url }}" class="btn btn-sm btn-outline-primary" title="Bearbeiten">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    
+                </div>
+            </td>
+
+
+                        
                                               
                         
-                        <td><a href="{{ kunde.get_absolute_elemente_url }}"><i class="fas fa-info-circle"></i> / {{ kunde.elemente_count }}</a></td>
+                        <td>
+                            <a href="{{ kunde.get_absolute_elemente_url }}" class="btn btn-sm btn-outline-primary" title="Bearbeiten">
+                        <i class="fas fa-info-circle"></i>/ {{ kunde.elemente_count }}
+                            </a>
+
+                            </td>
 
 
                         <td>{{ kunde.created_at|date:"d.m.Y" }}</td>
@@ -123,7 +139,11 @@
 
 
 
-                        <td><a href="{% url 'store:cms_crm_kunde_löschen' kunde.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i></a></td>
+                        <td>
+                        <a href="{% url 'store:cms_crm_kunde_löschen' kunde.pk %}"  onclick="return confirmSend();">
+                            <i style="color:var(--red)" class="far fa-trash-alt"></i>
+                        </a>
+                    </td>
                     </tr>
                 {% endif %}
             {% endfor %}

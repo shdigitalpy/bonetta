@@ -1,0 +1,128 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}CMS Elemente Statistik{% endblock %}
+
+{% block content %}
+<div class="flexbox">
+    <div class="h2">Elemente Statistik</div>
+    <!-- Extended Search form -->
+    <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" method="GET">
+        <div style="display: flex; flex-wrap: wrap;">
+            <!-- Existing search fields -->
+            <div style="flex: 0 0 5%; padding: 5px;">
+                <input id="textsuche" class="form-control" type="text" placeholder="Dichtungstyp"
+                       name="produkt" value="{{ request.GET.produkt }}">
+            </div>
+            <div style="flex: 0 0 5%; padding: 5px;">
+                <input class="form-control" type="text" placeholder="Aussenbreite"
+                       name="aussenbreite" value="{{ request.GET.aussenbreite }}">
+            </div>
+            <div style="flex: 0 0 5%; padding: 5px;">
+                <input class="form-control" type="text" placeholder="Aussenhöhe"
+                       name="aussenhöhe" value="{{ request.GET.aussenhöhe }}">
+            </div>
+            <div style="flex: 0 0 5%; padding: 5px;">
+                <input class="form-control" type="text" placeholder="Marke"
+                       name="name" value="{{ request.GET.name }}">
+            </div>
+            <div style="flex: 0 0 5%; padding: 5px;">
+                <input class="form-control" type="text" placeholder="Typ"
+                       name="serie" value="{{ request.GET.serie }}">
+            </div>
+            <div style="flex: 0 0 5%; padding: 5px;">
+                <input class="form-control" type="text" placeholder="Modell/Code"
+                       name="modell" value="{{ request.GET.modell }}">
+            </div>
+            <div style="flex: 0 0 5%; padding: 5px;">
+                <input class="form-control" type="text" placeholder="Serien-Nr."
+                       name="typ" value="{{ request.GET.typ }}">
+            </div>
+            <div style="flex: 0 0 5%; padding: 5px;">
+                <button type="submit" class="btn btn-outline-primary btn-sm">
+                    <span class="fas fa-search"></span> Suche
+                </button>
+            </div>
+            <div style="flex: 0 0 5%; padding: 5px;">
+                <a href="{% url 'store:cms_elemente_statistik' %}" class="btn btn-light btn-sm">
+                    <span class="fas fa-times"></span> zurücksetzen
+                </a>
+            </div>
+            <div class="alert alert-info">
+                <strong>Gesamte Laufmeter:</strong> {{ total_laufmeter|floatformat:0 }}m | 
+                <strong>Anzahl Elemente:</strong> {{ elemente_count }}
+            </div>
+        </div>
+    </form>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Kunde</th>
+            <th scope="col">Element-Nr.</th>
+            <th scope="col">Dichtungstyp</th>
+            <th scope="col">Aussenbreite</th>
+            <th scope="col">Aussenhöhe</th>
+            <th scope="col">Kühlposition</th>
+            <th scope="col">Objekte</th>
+            <th scope="col">Einkaufspreis CHF</th> <!-- New field -->
+            <th scope="col">Verkaufspreis CHF</th> <!-- New field -->
+        </tr>
+    </thead>
+    <tbody>
+        {% for data in elemente %}
+        <tr>
+            <td>
+                {% for x in data.kunde.all %}
+                    <a href="{% url 'store:cms_elemente' x.id %}"> {{ x.firmenname }} </a>
+                {% endfor %}
+            </td>
+            <td>{{ data.elementnr }}</td>
+            <td>{% if data.produkt %}{{ data.produkt }}{% else %}{{ data.dichtungen.titel }}{% endif %}</td>
+            <td>
+                {% if data.aussenbreite %}
+                    {{ data.aussenbreite }}mm
+                {% elif data.artikel and data.artikel.aussenbreite %}
+                    {{ data.artikel.aussenbreite }}mm
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+            <td>
+                {% if data.aussenhöhe %}
+                    {{ data.aussenhöhe }}mm
+                {% elif data.artikel and data.artikel.aussenhöhe %}
+                    {{ data.artikel.aussenhöhe }}mm
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+            <td>{{ data.kuehlposition }}</td>
+            <td>
+                {% for obj in data.elemente_objekte.all %}
+                    {{ obj.name }}, {{ obj.serie }}, {{ obj.typ }}, {{ obj.modell }}<br>
+                {% endfor %}
+            </td>
+            <td>
+                {% if data.artikel and data.artikel.nettopreis %}
+                    {{ data.artikel.nettopreis }} 
+                {% else %}
+                    
+                {% endif %}
+            </td>
+            <td>
+                {% if data.artikel and data.artikel.vp %}
+                    {{ data.artikel.vp }} 
+                {% else %}
+                    
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="9">Es wurden keine Elemente gefunden, die den Suchkriterien entsprechen.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

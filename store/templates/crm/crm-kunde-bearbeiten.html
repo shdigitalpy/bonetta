@@ -7,13 +7,12 @@
 {% endblock %}
 {% block content %}
 
-<br><br><br><br>
 
-<div class="container">
-    <h2>CRM Kunde bearbeiten</h2>
+<div class="produkt">
+    <h2 style="margin:0">CRM Kunde bearbeiten</h2>
     <br>
     <div class="row padding storepreview form">
-        <div class="col-sm-10 bggrey">
+        <div class="col-sm-10">
             <div class="form-group">
 
                 <form method="post">
@@ -156,10 +155,10 @@
                     <div class="register-flex">
                         <div class="register-flex-wrapperitem">
                             <div class="register-flex-item">
-                                <button class="btn btn-warning ml-4">Speichern</button>
+                                <button class="btn btn-primary">Speichern <span class="fas fa-check-circle"></button>
                             </div>
                             <div class="register-flex-item">
-                                <button class="btn btn-secondary btn-md ml-4"><a href="{% url 'store:crm_new_kunden' %}">Abbrechen</a></button>
+                                <button class="btn btn-secondary btn-light"><a href="{% url 'store:crm_new_kunden' %}">Abbrechen <span class="fas fa-times"></span></a></a></button>
                             </div>
                         </div>
                     </div>

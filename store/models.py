@@ -491,6 +491,7 @@ class Lieferanten(models.Model):
 	adresse = models.CharField(max_length=255, null=True, blank=True) 
 	plz = models.CharField(max_length=255, null=True, blank=True) 
 	ort = models.CharField(max_length=255, null=True, blank=True)
+	email = models.CharField(max_length=255, null=True, blank=True)
 
 	class Meta:
 		ordering = ['id']
@@ -499,6 +500,24 @@ class Lieferanten(models.Model):
 
 	def __str__(self):
 		return self.name
+
+
+
+class Artikel(models.Model):
+	artikelnr = models.CharField(max_length=255, null=True, blank=True) 
+	name = models.CharField(max_length=255, null=True, blank=True) 
+	aussenbreite = models.IntegerField(null=True, blank=True)
+	aussenhöhe = models.IntegerField(null=True, blank=True)
+	nettopreis = models.FloatField(null=True, blank=True)
+	vp = models.FloatField(null=True, blank=True)
+	
+	class Meta:
+		ordering = ['id']
+		verbose_name = 'Artikel'
+		verbose_name_plural = 'Artikel'
+
+	def __str__(self):
+		return str(self.artikelnr) + " " + str(self.name)
 
 class Elemente(models.Model):
 	dichtungen = models.ForeignKey(
@@ -514,10 +533,27 @@ class Elemente(models.Model):
 	number = models.CharField(max_length=255, blank=True, null=True)
 	nettopreis = models.CharField(max_length=255, blank=True, null=True)
 	lieferant = models.ForeignKey(Lieferanten, related_name ='elemente_lieferanten', on_delete=models.CASCADE, null=True, blank=True)
+	artikel = models.ForeignKey(Artikel, related_name='artikel_elemente', on_delete=models.CASCADE, null=True, blank=True)
 
 	def elemente_laufmeter(self):
-		lfm = (2 * (self.aussenbreite + self.aussenhöhe)) / 1000
-		return lfm
+	    # Use the dimensions from `Elemente` if available
+	    breite = self.aussenbreite
+	    hoehe = self.aussenhöhe
+
+	    # Fallback to dimensions from the related `Artikel` if available
+	    if (breite is None or hoehe is None) and self.artikel:
+	        artikel_breite = getattr(self.artikel, 'aussenbreite', None)
+	        artikel_hoehe = getattr(self.artikel, 'aussenhöhe', None)
+	        breite = breite if breite is not None else artikel_breite
+	        hoehe = hoehe if hoehe is not None else artikel_hoehe
+
+	    # Ensure dimensions are valid before calculating laufmeter
+	    if breite is not None and hoehe is not None:
+	        lfm = (2 * (breite + hoehe)) / 1000
+	        return lfm
+
+	    # Return 0 if dimensions are still not available
+	    return 0
 
 
 	class Meta:
@@ -543,3 +579,5 @@ class Objekte(models.Model):
 
 	def __str__(self):
 		return str(self.serie) + ' ' + self.modell + ' ' + self.typ
+
+

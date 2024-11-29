@@ -15,12 +15,12 @@
                 <input id="textsuche" class="form-control" type="text" placeholder="Text" aria-label="Search" name="search">
             </div>
             <div style="flex: 0 0 15%">
-                <button type="submit" style="border: none;" class="btn btn-outline-secondary">
+                <button type="submit" style="border: none;" class="btn btn-outline-primary">
                     <i class="fas fa-search"></i> Suche
                 </button>
             </div>
             <div style="flex: 0 0 20%">
-                <a href="{% url 'store:cms_elemente' kunde_id %}" style="border: none;" class="btn btn-outline-secondary">
+                <a href="{% url 'store:cms_elemente' kunde_id %}" style="border: none;" class="btn btn-light">
                     <i class="fas fa-times"></i> zurücksetzen
                 </a>
             </div>
@@ -32,11 +32,11 @@
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <a type="submit" href="{% url 'store:cms_elemente_create' kunde_id %}">
-            <span class="btn btn-secondary btn-sm">Erfassen</span>
+            <span class="btn btn-outline-primary btn-sm">Erfassen</span>
         </a>
     </form>
-    <a class="btn btn-secondary btn-sm" href="{% url 'store:crm_new_kunden' %}">Zurück zur Kundenliste</a>
-    <a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente_statistik' %}">Statistik Elemente</a>
+    <a class="btn btn-light btn-sm" href="{% url 'store:crm_new_kunden' %}">Zurück zur Kundenliste</a>
+    <a class="btn btn-outline-primary btn-sm" href="{% url 'store:cms_elemente_statistik' %}">Statistik Elemente</a>
 </div>
 
 <table class="table table-striped">
@@ -49,8 +49,9 @@
             <th scope="col">Dichtungstyp</th>
             <th scope="col">Aussenmass Breite / Höhe</th>
             <th scope="col">Lieferant</th>
+            <th scope="col">Einkaufspreis</th>
+            <th scope="col">Verkaufspreis</th>
             <th scope="col">Aktionen</th>
-            <th scope="col">Stk. Preis</th>
         </tr>
     </thead>
     <tbody>
@@ -63,34 +64,57 @@
                 {% for obj in data.elemente_objekte.all %}
                 {{ obj.name }}<br>
                 {% endfor %}
-                <a class="btn btn-sm btn-outline-secondary" href="{% url 'store:cms_elemente_objekte' data.pk kunde_id %}" title="Details bearbeiten">
+                <a class="btn btn-sm btn-outline-primary" href="{% url 'store:cms_elemente_objekte' data.pk kunde_id %}" title="Details bearbeiten">
                     <i class="fas fa-edit"></i>
                 </a>
             </td>
             <td>
-                {% if data.produkt %}
-                {{ data.produkt }}
-                {% else %}
-                {{ data.dichtungen.titel }}
+                <!-- Prioritize Artikel name or Element product -->
+                {% if data.artikel %}
+                    {{ data.artikel.name }}
+                {% elif data.produkt %}
+                    {{ data.produkt }}
+                {% elif data.dichtungen %}
+                    {{ data.dichtungen.titel }}
                 {% endif %}
             </td>
-            <td>{{ data.aussenbreite }}mm / {{ data.aussenhöhe }}mm</td>
+            <td>
+                <!-- Prioritize Artikel dimensions or Element dimensions -->
+                {% if data.artikel %}
+                    {{ data.artikel.aussenbreite }}mm / {{ data.artikel.aussenhöhe }}mm
+                {% else %}
+                    {{ data.aussenbreite }}mm / {{ data.aussenhöhe }}mm
+                {% endif %}
+            </td>
             <td>
                 {% if data.lieferant %}
-                {{ data.lieferant }}
+                    {{ data.lieferant }}
+                {% endif %}
+            </td>
+            <td>
+                <!-- Prioritize Nettopreis from Artikel or Element -->
+                {% if data.artikel and data.artikel.nettopreis %}
+                    {{ data.artikel.nettopreis }}
+                {% else %}
+                    {{ data.nettopreis }}
+                {% endif %}
+            </td>
+            <td>
+                <!-- Show Verkaufspreis from Artikel -->
+                {% if data.artikel and data.artikel.vp %}
+                    {{ data.artikel.vp }}
                 {% endif %}
             </td>
             <td>
                 <div class="btn-group" role="group">
-                    <a href="{% url 'store:cms_elemente_edit' data.pk kunde_id %}" class="btn btn-sm btn-outline-secondary" title="Bearbeiten">
+                    <a href="{% url 'store:cms_elemente_edit' data.pk kunde_id %}" class="btn btn-sm btn-outline-primary" title="Bearbeiten">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <a href="{% url 'store:cms_elemente_löschen' data.pk kunde_id %}" class="btn btn-sm btn-outline-danger" title="Löschen">
+                    <a href="{% url 'store:cms_elemente_löschen' data.pk kunde_id %}" class="btn btn-sm btn-outline-danger" onclick="return confirmSend();" title="Löschen">
                         <i class="fas fa-trash-alt"></i>
                     </a>
                 </div>
             </td>
-            <td>{% if data.nettopreis %}{{ data.nettopreis }}{% endif %}</td>
         </tr>
         {% endfor %}
     </tbody>

@@ -4,9 +4,13 @@
 
 {% block content %}
     <div class="flexbox">
+
+
         <div class="h2">Lagerbestand</div>
 
-        <div><a class="btn btn-secondary btn-sm" href="{% url 'store:crm_lager_erfassen' %}">Lagerbestand erfassen</a></div>
+        <div><a class="btn btn-outline-primary btn-sm" href="{% url 'store:crm_lager_erfassen' %}">Lagerbestand erfassen</a></div>
+
+
 
         <!-- Extended Search form -->
         <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" method="GET">
@@ -29,12 +33,12 @@
         </div>
         
         <div style="flex: 0 0 5%; padding: 5px;">
-            <button type="submit" class="btn btn-outline-secondary">
+            <button type="submit" class="btn btn-outline-primary">
                 <span class="fas fa-search"></span> Suche
             </button>
         </div>
         <div style="flex: 0 0 5%; padding: 5px;">
-            <a href="{% url 'store:crm_lagerbestand' %}" class="btn btn-outline-secondary">
+            <a href="{% url 'store:crm_lagerbestand' %}" class="btn btn-light ">
                 <span class="fas fa-times"></span> zurücksetzen
             </a>
         </div>

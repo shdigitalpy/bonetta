@@ -3,19 +3,19 @@
 {% block title %}CMS Elemente erfassen{% endblock %}
 
 {% block content %}
-<br><br>
+
 		
-			<div class="container">
+			<div class="produkt">
 			
-			<h2>Objekte erfassen</h2>
+			<h2>Elemente erfassen</h2>
 
 			<div class="form-group">
 		    
 		    <form method="POST" enctype="multipart/form-data">
 		     {% csrf_token %}
 		      {{ form.as_p }}
-		      <button class="btn btn-warning btn-md ml-4">Erfassen</button>
-		      <button class="btn btn-secondary btn-md ml-4"><a href="{% url 'store:cms_elemente_objekte' pk cpk %}">Zurück</a></button>
+		      <button class="btn btn-primary btn-md ml-4">Erfassen <span class="fas fa-check-circle"></span></button>
+		      <button class="btn btn-light btn-md ml-4"><a href="{% url 'store:cms_elemente' kunde_id %}">Zurück <span class="fas fa-times"></span></a></button>
   			</div>
 			<br/>
 			   </form>

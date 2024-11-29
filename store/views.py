@@ -25,6 +25,8 @@ import qrcode
 import base64
 
 
+
+
 # Bestellformular
 def bestellformular(request):
     email = settings.EMAIL_HOST_USER  # Use the email from settings
@@ -59,7 +61,7 @@ def bestellformular(request):
             subject,
             template,
             settings.EMAIL_HOST_USER,  # Use the correct sender email
-            ['sandro@sh-digital.ch']  # Recipient email
+            ['sandro@sh-digital.ch','livio.bonetta@geboshop.ch']  # Recipient email
         )
         email.fail_silently = False
         email.content_subtype = "html"  # to send the email as HTML
@@ -184,7 +186,6 @@ def cms_elemente_statistik(request):
     # Filter the queryset based on search criteria
     if produkt:
         elemente = elemente.filter(produkt__icontains=produkt)
-        # If no elements are found with the produkt, search in dichtungen.titel
         if not elemente.exists():
             elemente = Elemente.objects.filter(dichtungen__titel__icontains=produkt)
 
@@ -223,14 +224,18 @@ def cms_elemente_statistik(request):
     elif sort_by == 'elementnr':
         elemente = elemente.order_by('elementnr')
     else:
-        # Default to sorting by kunde__firmenname if no valid sort is provided
         elemente = elemente.order_by('kunde__firmenname')
 
     # Use distinct() to avoid duplicates if multiple criteria match
     elemente = elemente.distinct()
 
-    # Calculate total laufmeter
-    total_laufmeter = sum([element.elemente_laufmeter() for element in elemente])
+    # Calculate total laufmeter with fallback for missing dimensions
+    total_laufmeter = 0
+    for element in elemente:
+        breite = element.aussenbreite or (element.artikel.aussenbreite if element.artikel else None)
+        hoehe = element.aussenhöhe or (element.artikel.aussenhöhe if element.artikel else None)
+        if breite and hoehe:
+            total_laufmeter += (2 * (breite + hoehe)) / 1000  # Convert to meters
 
     # Count the number of Elemente records
     elemente_count = elemente.count()
@@ -243,7 +248,7 @@ def cms_elemente_statistik(request):
         'sort_by': sort_by,  # Pass sorting parameter to the template
     }
 
-    return render(request, 'cms-elemente-statistik.html', context)
+    return render(request, 'crm/cms-elemente-statistik.html', context)
 
 
 
@@ -288,7 +293,7 @@ def cms_elemente_objekte_bearbeiten(request, pk, epk, cpk):
         'epk': epk,
         'cpk': cpk,
     }
-    return render(request, 'cms-elemente-objekte-erfassen.html', context)
+    return render(request, 'crm/cms-elemente-objekte-erfassen.html', context)
 
 
 @staff_member_required
@@ -315,7 +320,7 @@ def cms_elemente_objekte_erfassen(request, pk, cpk):
         'pk': pk,
         'cpk': cpk,
     }
-    return render(request, 'cms-elemente-objekte-erfassen.html', context)
+    return render(request, 'crm/cms-elemente-objekte-erfassen.html', context)
 
 @staff_member_required
 def cms_elemente_objekte(request, pk, cpk):
@@ -329,7 +334,7 @@ def cms_elemente_objekte(request, pk, cpk):
     	'pk': pk,
         'objekte': objekte,
     }
-	return render(request, 'cms-elemente-objekte.html', context)
+	return render(request, 'crm/cms-elemente-objekte.html', context)
 
 
 def anleitung_videos(request):
@@ -1511,6 +1516,47 @@ def lieferant_delete(request, pk):
 
 #CRM
 
+# View to list all Artikel
+def crm_artikel(request):
+    search_query = request.GET.get('search', '')
+    if search_query:
+        artikel = Artikel.objects.filter(
+            Q(artikelnr__icontains=search_query) |
+            Q(name__icontains=search_query)
+        ).order_by('-id')
+    else:
+        artikel = Artikel.objects.all().order_by('-id')
+    return render(request, 'crm/crm-artikel.html', {'artikel': artikel})
+
+# View to create a new Artikel
+def crm_artikel_create(request):
+    if request.method == 'POST':
+        form = ArtikelForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('store:crm_artikel')
+    else:
+        form = ArtikelForm()
+    return render(request, 'crm/crm-artikel-erfassen.html', {'form': form})
+
+# View to edit an existing Artikel
+def crm_artikel_edit(request, pk):
+    artikel = get_object_or_404(Artikel, pk=pk)
+    if request.method == 'POST':
+        form = ArtikelForm(request.POST, instance=artikel)
+        if form.is_valid():
+            form.save()
+            return redirect('store:crm_artikel')
+    else:
+        form = ArtikelForm(instance=artikel)
+    return render(request, 'crm/crm-artikel-bearbeiten.html', {'form': form})
+
+def crm_artikel_delete(request, pk):
+    eintrag = get_object_or_404(Artikel, pk=pk)
+    eintrag.delete()
+    messages.info(request, "Der Artikel wurde gelöscht.")
+    return redirect("store:crm_artikel")
+
 def crm_lagerbestand(request):
     # Get the search parameters from GET
     dichtungstyp = request.GET.get('dichtungstyp', '')
@@ -1559,8 +1605,6 @@ def crm_lagerbestand(request):
     }
 
     return render(request, 'crm/crm-lagerbestand.html', context)
-
-
 
 
 def crm_lager_erfassen(request):
@@ -1810,7 +1854,9 @@ def cms_elemente(request, pk):
             Q(kuehlposition__icontains=search_query) |
             Q(aussenbreite__icontains=search_query) |
             Q(aussenhöhe__icontains=search_query) |
-            Q(elementnr__icontains=search_query)
+            Q(elementnr__icontains=search_query) |
+            Q(artikel__name__icontains=search_query) |  # Added search for artikel name
+            Q(artikel__artikelnr__icontains=search_query)  # Added search for artikel artikelnr
         ).filter(kunde=kunde_data).order_by('kunde', 'elementnr')
     else:
         elemente = Elemente.objects.filter(kunde=kunde_data).order_by('elementnr')
@@ -1820,51 +1866,89 @@ def cms_elemente(request, pk):
         'kunde_id': pk,
         'kunde_data': kunde_data,
     }
-    return render(request, 'cms-elemente.html', context)
+    return render(request, 'crm/cms-elemente.html', context)
 
 
 @staff_member_required
 def cms_elemente_create(request, pk):
-    kunde_queryset = Kunde.objects.filter(pk=pk)
+    kunde = get_object_or_404(Kunde, pk=pk)  # Get the Kunde instance
     form = ElementeCreateForm(request.POST or None)
-    
+
     if request.method == "POST":
         if form.is_valid():
+            # Save the main Elemente instance
             elemente_instance = form.save(commit=False)
+
+            # Assign the selected Artikel to the Elemente instance
+            selected_artikel = form.cleaned_data.get('artikel')
+            elemente_instance.artikel = selected_artikel
+
+            # Assign aussenbreite and aussenhöhe from the selected Artikel
+            if selected_artikel:
+                elemente_instance.aussenbreite = selected_artikel.aussenbreite
+                elemente_instance.aussenhöhe = selected_artikel.aussenhöhe
+
+            # Save the Elemente instance
             elemente_instance.save()
-            elemente_instance.kunde.set(kunde_queryset)
-            elemente_instance.save()
+
+            # Link the Elemente instance to the Kunde
+            elemente_instance.kunde.add(kunde)
+
+            messages.success(request, "Das Element wurde erfolgreich erstellt.")
             return redirect('store:cms_elemente', pk=pk)
         else:
-            messages.error(request, "Error")
-    
+            messages.error(request, "Ein Fehler ist aufgetreten. Bitte überprüfen Sie die Eingaben.")
+
     context = {
         'form': form,
-        'kunde_id':pk,
+        'kunde_id': pk,
     }
-    return render(request, 'cms-elemente-erfassen.html', context)
+    return render(request, 'crm/cms-elemente-erfassen.html', context)
+
+
 
 @staff_member_required
 def cms_elemente_edit(request, pk, cpk):
-	element = get_object_or_404(Elemente, pk=pk)
-	
-	if request.method == "POST":
-		form = ElementeCreateForm(request.POST or None, instance=element)
-		if form.is_valid():
-			form.save()
-			return redirect('store:cms_elemente', pk=cpk)
+    # Fetch the Elemente instance
+    element = get_object_or_404(Elemente, pk=pk)
 
-		else:
-			messages.error(request, "Error")
+    if request.method == "POST":
+        # Bind the form to the POST data and the instance
+        form = ElementeCreateForm(request.POST, instance=element)
+        if form.is_valid():
+            # Save the main Elemente instance
+            element = form.save(commit=False)
+            
+            # Assign the selected Artikel to the Elemente instance
+            selected_artikel = form.cleaned_data.get('artikel')
+            element.artikel = selected_artikel  # Assign the ForeignKey relationship
+            
+            # Update dimensions based on the selected Artikel
+            if selected_artikel:
+                element.aussenbreite = selected_artikel.aussenbreite
+                element.aussenhöhe = selected_artikel.aussenhöhe
+            else:
+                element.aussenbreite = None
+                element.aussenhöhe = None
 
-	else: 
-		form = ElementeCreateForm(request.POST or None, instance=element)
+            # Save the updated Elemente instance
+            element.save()
 
-	context = {
-		'form': form,
-		'element': element,
-				}
-	return render(request, 'cms-elemente-bearbeiten.html', context)
+            messages.success(request, "Das Element wurde erfolgreich aktualisiert.")
+            return redirect('store:cms_elemente', pk=cpk)
+        else:
+            messages.error(request, "Ein Fehler ist aufgetreten. Bitte überprüfen Sie die Eingaben.")
+    else:
+        # Initialize the form with the existing Elemente instance
+        form = ElementeCreateForm(instance=element)
+
+    context = {
+        'form': form,
+        'element': element,
+    }
+    return render(request, 'crm/cms-elemente-bearbeiten.html', context)
+
+
 
 
 @staff_member_required

@@ -8,7 +8,7 @@
 			<div class="produkt">
 				
 			<div class="produkt-header">
-			<h2>Lager erfassen</h2><button class="btn btn-danger btn-exit"><a href="{% url 'store:crm_lagerbestand' %}">Zurück <span class="fas fa-times"></span></a></button>
+			<h2>Lager erfassen</h2>
 			</div>
 			<br>
 			<div class="form-group">
@@ -19,7 +19,9 @@
 		      {{ lager_form.as_p }}
 
 		     <br><br>
-		      <button class="btn btn-success btn-save">Speichern <span class="fas fa-check-circle"></span></button>
+		      <button class="btn btn-primary btn-save">Speichern <span class="fas fa-check-circle"></span></button>
+
+		      <button class="btn btn-light btn-small"><a href="{% url 'store:crm_lagerbestand' %}">Zurück <span class="fas fa-times"></span></a></button>
 		      
   			</div>
   			</div>
