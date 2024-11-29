@@ -113,6 +113,8 @@ urlpatterns = [
 	path('cms/login_user', views.login_user, name='login_user'),
 	path('cms/logout_user', views.logout_user, name='logout_user'),
 	path('cms/statistik/produkte', views.cms_statistik_produkte, name='cms_statistik_produkte'),
+	path('cms/crm/elemente-bestellungen', views.elemente_bestellungen, name='elemente_bestellungen'),
+	path('lieferschein/<int:bestellung_id>/', generate_lieferschein, name='generate_lieferschein'),	
 	
 	#objekte
 	path('cms/elemente/objekte/<int:pk>/<int:cpk>', views.cms_elemente_objekte, name='cms_elemente_objekte'),

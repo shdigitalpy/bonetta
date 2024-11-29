@@ -23,55 +23,137 @@ from django.contrib.admin.views.decorators import staff_member_required
 from itertools import chain
 import qrcode
 import base64
+import os
+from datetime import date
+from django.http import HttpResponse
+from django.conf import settings
+from docx import Document
+from comtypes.client import CreateObject
+import boto3
+
+@staff_member_required
+def generate_lieferschein(request, bestellung_id):
+    try:
+        bestellung = Elemente_Bestellungen.objects.get(id=bestellung_id)
+    except Elemente_Bestellungen.DoesNotExist:
+        messages.error(request, "Bestellung not found")
+        return redirect('store:elemente_bestellungen')
+
+    # Path to the .docx template file
+    template_path = os.path.join(settings.BASE_DIR, 'static/docx/template.docx')
+
+    # Load the .docx template
+    document = Document(template_path)
+
+    # Replace `{{date}}` placeholder with today's date
+    for paragraph in document.paragraphs:
+        if "{{date}}" in paragraph.text:  # Search for `{{date}}`
+            paragraph.text = paragraph.text.replace("{{date}}", date.today().strftime("%d.%m.%Y"))
+
+    # Handle the `{{lieferschein.table}}` placeholder
+    for paragraph in document.paragraphs:
+        if "{{lieferschein.table}}" in paragraph.text:  # Search for `{{lieferschein.table}}`
+            paragraph.text = ""  # Clear placeholder text
+
+            # Create a table with the required structure
+            table = document.add_table(rows=1, cols=5)
+            table.style = 'Table Grid'
+
+            # Add header row
+            hdr_cells = table.rows[0].cells
+            hdr_cells[0].text = "Kunden Nr."
+            hdr_cells[1].text = "Betrieb/Person"
+            hdr_cells[2].text = "Elemente Nr."
+            hdr_cells[3].text = "Montage"
+            hdr_cells[4].text = "Bemerkung"
+
+            # Add data row
+            row_cells = table.add_row().cells
+            row_cells[0].text = bestellung.kunden_nr or "N/A"
+            row_cells[1].text = f"{bestellung.betrieb_person}\n{bestellung.adresse}\n{bestellung.plz} {bestellung.ort}"
+            row_cells[2].text = bestellung.elemente_nr or "N/A"
+            row_cells[3].text = "Ja" if bestellung.montage == "mit" else "Nein"
+            row_cells[4].text = bestellung.bemerkung or "Keine Bemerkung"
+
+            # Insert the table directly after the placeholder paragraph
+            paragraph._element.addnext(table._tbl)
+            break
+
+    # Ensure the temp directory exists
+    temp_dir = os.path.join(settings.BASE_DIR, 'temp')
+    if not os.path.exists(temp_dir):
+        os.makedirs(temp_dir)
+
+    # Save the generated Word document
+    output_docx_path = os.path.join(temp_dir, f'Lieferschein_{bestellung.kunden_nr}.docx')
+    document.save(output_docx_path)
+
+    # Serve the Word document as a response
+    with open(output_docx_path, 'rb') as docx_file:
+        response = HttpResponse(docx_file.read(), content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+        response['Content-Disposition'] = f'attachment; filename=Lieferschein_{bestellung.kunden_nr}.docx'
+
+    # Clean up temporary file
+    os.remove(output_docx_path)
+
+    # Add a success message
+    messages.success(request, "Lieferschein wurde heruntergeladen.")
+    return response
 
 
-
-
-# Bestellformular
 def bestellformular(request):
     email = settings.EMAIL_HOST_USER  # Use the email from settings
-    elemente_range = range(1, 100)
-    
+    elemente_range = range(1, 100)  # Generate the range of element numbers
+
     if request.method == "POST":
         # Retrieve form data
         kunden_nr = request.POST.get('kunden-nr')
         betrieb_person = request.POST.get('betrieb-person')
         adresse = request.POST.get('adresse')
         plz = request.POST.get('plz')
-        ort = request.POST.get('ort')
-        elemente_nr = request.POST.getlist('elemente-nr')  # list for multiple checkboxes
+        ort = request.POST.get('ort')  # Retrieve the missing 'ort' field
+        elemente_nr = request.POST.getlist('elemente-nr')  # List of selected numbers
         montage = request.POST.get('montage')  # mit/ohne montage checkbox
         bemerkung = request.POST.get('bemerkung')
 
+        # Save each selected element as a new record in the database
+        for nr in elemente_nr:
+            Elemente_Bestellungen.objects.create(
+                kunden_nr=kunden_nr,
+                betrieb_person=betrieb_person,
+                adresse=adresse,
+                plz=plz,
+                ort=ort,  # Save the 'ort' field
+                elemente_nr=nr,  # Save the current element number
+                montage=montage,
+                bemerkung=bemerkung,
+            )
+
         # Prepare email subject and message content
-        subject = 'Bestellung Elemente ' + betrieb_person + ' ' + kunden_nr
+        subject = f'Bestellung Elemente {betrieb_person} {kunden_nr}'
         template = render_to_string('crm/mail-bestellung-elemente.html', {
             'kunden_nr': kunden_nr,
             'betrieb_person': betrieb_person,
             'adresse': adresse,
             'plz': plz,
-            'ort': ort,
-            'elemente_nr': ', '.join(elemente_nr),  # Join list into string for display
+            'ort': ort,  # Include 'ort' in the email template
+            'elemente_nr': ', '.join(elemente_nr),  # Join the list for display
             'montage': montage,
             'bemerkung': bemerkung,
         })
 
-        # Send email for order
+        # Send email with order details
         email = EmailMessage(
             subject,
             template,
-            settings.EMAIL_HOST_USER,  # Use the correct sender email
+            settings.EMAIL_HOST_USER,  # Sender email
             ['sandro@sh-digital.ch']  # Recipient email
         )
         email.fail_silently = False
-        email.content_subtype = "html"  # to send the email as HTML
+        email.content_subtype = "html"  # Send the email as HTML
         email.send()
 
-        # Success message to be displayed after form submission
-        context = {
-            'message_kontakt': 'Die Nachricht wurde erfolgreich gesendet.',
-            'elemente_range': elemente_range,
-        }
+        # Redirect to a "thank you" page after submission
         return redirect("store:danke")
 
     else:
@@ -80,7 +162,6 @@ def bestellformular(request):
             'elemente_range': elemente_range,
         }
         return render(request, 'bestellformular.html', context)
-
 
 
 @staff_member_required
@@ -165,6 +246,28 @@ def danke(request):
 
 
 #CMS
+
+@staff_member_required
+def elemente_bestellungen(request):
+    search_query = request.GET.get('search', '')
+
+    # Filter records based on the search query
+    if search_query:
+        bestellungen = Elemente_Bestellungen.objects.filter(
+            kunden_nr__icontains=search_query
+        ) | Elemente_Bestellungen.objects.filter(
+            betrieb_person__icontains=search_query
+        ) | Elemente_Bestellungen.objects.filter(
+            elemente_nr__icontains=search_query
+        )
+    else:
+        bestellungen = Elemente_Bestellungen.objects.all()
+
+    # Pass the results to the template
+    context = {'bestellungen': bestellungen}
+    return render(request, 'crm/cms-elemente-bestellungen.html', context)
+
+
 @staff_member_required
 def cms_elemente_statistik(request):
     # Initialize the queryset

@@ -1,0 +1,101 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}Elemente Bestellungen{% endblock %}
+
+{% block content %}
+    <div class="flexbox">
+        <div class="h2">Elemente Bestellungen</div>
+    </div>
+
+    <!-- Search and Action Buttons -->
+    <div class="flexbox" style="align-items:start; margin-bottom: 20px;">
+        <!-- Search form -->
+        <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="{% url 'store:elemente_bestellungen' %}">
+            {% csrf_token %}
+            <div style="display: flex">
+                <div style="flex: 0 0 20%">
+                    <input id="textsuche" class="form-control" type="text" placeholder="Suche" aria-label="Search" name="search">
+                </div>
+                <div style="flex: 0 0 15%">
+                    <button type="submit" style="border: none;" class="btn btn-outline-primary">
+                        <span class="fas fa-search"></span> Suche
+                    </button>
+                </div>
+                <div style="flex: 0 0 15%">
+                    <a href="{% url 'store:elemente_bestellungen' %}" style="border: none;" class="btn btn-light">
+                        <span class="fas fa-times"></span> zurücksetzen
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table Display -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Kunden Nr.</th>
+                <th scope="col">Betrieb/Person</th>
+                <th scope="col">Elemente Nr.</th>
+                <th scope="col">Montage</th>
+                <th scope="col">Bemerkung</th>
+                <th scope="col">Lieferschein</th>
+                <th scope="col">Lieferant auslösen</th>
+                <th scope="col">Lieferant bestellt</th>
+                <th scope="col">Lieferant wann bestellt</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bestellung in bestellungen %}
+            <tr>
+                <td>{{ bestellung.kunden_nr }}</td>
+
+                <td>
+                {{ bestellung.betrieb_person }}<br>
+                {{ bestellung.adresse }}<br>
+                {{ bestellung.plz }} {{ bestellung.ort }} 
+                    </td>
+                    <td>{{ bestellung.elemente_nr }}</td>
+                <td>
+                    {% if bestellung.montage == 'mit' %}
+                        Ja
+                    {% elif bestellung.montage == 'ohne' %}
+                        Nein
+                    {% else %}
+                        Keine Montage angegeben
+                    {% endif %}
+
+                </td>
+                <td>
+                    {% if bestellung.bemerkung %}
+                        {{ bestellung.bemerkung }}
+                    {% else %}
+                        Keine Bemerkung
+                    {% endif %}
+                </td>
+
+                <td>
+                    <a href="{% url 'store:generate_lieferschein' bestellung.id %}" class="btn btn-outline-primary lieferschein-download" data-id="{{ bestellung.id }}">
+                        <i class="fas fa-file"></i> Lieferschein
+                    </a>
+                </td>
+
+
+                <td>
+                <button type="submit" style="border: none;" class="btn btn-outline-primary">
+                        <i class="fas fa-envelope"></i>
+
+                    </button>
+                </td>
+                <td>{{ bestellung.lieferant_ausgeloest|yesno:"Ja,Nein" }}</td>
+                <td>{% if bestellung.lieferant_date %}{{ bestellung.lieferant_date|date:"d.m.Y" }}{% else %}Kein Datum{% endif %}</td>
+               
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" style="text-align: center;">Es wurden keine Bestellungen gefunden.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
