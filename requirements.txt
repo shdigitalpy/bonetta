@@ -1,4 +1,4 @@
-
+arabic-reshaper==2.1.4
 asgiref==3.5.2
 asn1crypto==1.5.1
 boto3==1.17.38
@@ -44,6 +44,7 @@ pycparser==2.21
 pyHanko==0.15.1
 pyhanko-certvalidator==0.19.8
 PyJWT==2.6.0
+PyPDF3==1.0.6
 python-bidi==0.4.2
 python-dateutil==2.8.2
 python-decouple==3.6
@@ -51,7 +52,6 @@ python-docx==1.1.2
 python3-openid==3.2.0
 pytz==2022.7
 pytz-deprecation-shim==0.1.0.post0
-pywin32==308
 PyYAML==6.0
 qrcode==7.3.1
 reportlab==3.6.12
@@ -70,4 +70,4 @@ uritools==4.0.0
 urllib3==1.26.13
 webencodings==0.5.1
 whitenoise==6.2.0
-
+xhtml2pdf==0.2.8
