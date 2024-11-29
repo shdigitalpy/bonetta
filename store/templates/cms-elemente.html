@@ -4,105 +4,96 @@
 
 {% block content %}
 
-		
-			<div class="flexbox">
-				<div class="h2">Elemente<br><br> {{ kunde_data.firmenname }}</div>
-				<!-- Search form -->
-				<form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="">
-				  {% csrf_token %}
+<div class="flexbox">
+    <div class="h2">Elemente<br><br> {{ kunde_data.firmenname }}</div>
+    <!-- Search form -->
+    <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="">
+        {% csrf_token %}
 
-				  <div style="display: flex">
+        <div style="display: flex">
+            <div style="flex: 0 0 20%">
+                <input id="textsuche" class="form-control" type="text" placeholder="Text" aria-label="Search" name="search">
+            </div>
+            <div style="flex: 0 0 15%">
+                <button type="submit" style="border: none;" class="btn btn-outline-secondary">
+                    <i class="fas fa-search"></i> Suche
+                </button>
+            </div>
+            <div style="flex: 0 0 20%">
+                <a href="{% url 'store:cms_elemente' kunde_id %}" style="border: none;" class="btn btn-outline-secondary">
+                    <i class="fas fa-times"></i> zurücksetzen
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
 
-				  	<div style="flex: 0 0 20%">
-				  <input id="textsuche" class="form-control" type="text" placeholder="Text"
-				    aria-label="Search" name="search">
-					</div>
-		            <div style="flex: 0 0 15%">
-		            <button type="submit" style="border: none;" class="btn btn-outline-secondary">
-				    <span class="fas fa-search"></span> Suche
-				  </button>
-				</div>
-				<div style="flex: 0 0 20%">
-				    <a href="{% url 'store:cms_elemente' kunde_id %}" style="border: none;" class="btn btn-outline-secondary"><span class="fas fa-times"></span> zurücksetzen</a>
-				   </div>
+<div class="flexbox">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <a type="submit" href="{% url 'store:cms_elemente_create' kunde_id %}">
+            <span class="btn btn-secondary btn-sm">Erfassen</span>
+        </a>
+    </form>
+    <a class="btn btn-secondary btn-sm" href="{% url 'store:crm_new_kunden' %}">Zurück zur Kundenliste</a>
+    <a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente_statistik' %}">Statistik Elemente</a>
+</div>
 
-				  
-				  
-        
-				</form>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Kühlposition</th>
+            <th scope="col">Element-Nr.</th>
+            <th scope="col">Kühlunterbau</th>
+            <th scope="col">Details</th>
+            <th scope="col">Dichtungstyp</th>
+            <th scope="col">Aussenmass Breite / Höhe</th>
+            <th scope="col">Lieferant</th>
+            <th scope="col">Aktionen</th>
+            <th scope="col">Stk. Preis</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for data in elemente.all %}
+        <tr>
+            <td>{{ data.kuehlposition }}</td>
+            <td>{{ data.elementnr }}</td>
+            <td>{{ data.bemerkung }}</td>
+            <td>
+                {% for obj in data.elemente_objekte.all %}
+                {{ obj.name }}<br>
+                {% endfor %}
+                <a class="btn btn-sm btn-outline-secondary" href="{% url 'store:cms_elemente_objekte' data.pk kunde_id %}" title="Details bearbeiten">
+                    <i class="fas fa-edit"></i>
+                </a>
+            </td>
+            <td>
+                {% if data.produkt %}
+                {{ data.produkt }}
+                {% else %}
+                {{ data.dichtungen.titel }}
+                {% endif %}
+            </td>
+            <td>{{ data.aussenbreite }}mm / {{ data.aussenhöhe }}mm</td>
+            <td>
+                {% if data.lieferant %}
+                {{ data.lieferant }}
+                {% endif %}
+            </td>
+            <td>
+                <div class="btn-group" role="group">
+                    <a href="{% url 'store:cms_elemente_edit' data.pk kunde_id %}" class="btn btn-sm btn-outline-secondary" title="Bearbeiten">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="{% url 'store:cms_elemente_löschen' data.pk kunde_id %}" class="btn btn-sm btn-outline-danger" title="Löschen">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                </div>
+            </td>
+            <td>{% if data.nettopreis %}{{ data.nettopreis }}{% endif %}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
-				
-
-			</div>
-			<div class="flexbox">
-				<form method="POST" enctype="multipart/form-data">{% csrf_token %}<a type="submit"  href="{% url 'store:cms_elemente_create' kunde_id %}"><span class="btn btn-secondary btn-sm">Erfassen</span></a></form>
-				<a class="btn btn-secondary btn-sm" 
-				href="{% url 'store:crm_new_kunden' %}">
-			Zurück zur Kundenliste</a>
-
-				<a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente_statistik' %}">Statistik Elemente</a>
-				
-
-			
-
-			</div>
-
-			<table class="table table-striped">
-			  <thead>
-			    <tr>
-			      <th scope="col">Kühlposition</th>
-			      <th scope="col">Element-Nr.</th>
-			     <th scope="col">Kühlunterbau</th>
-			      <th scope="col">Details</th>
-			      <th scope="col">Dichtungstyp</th>
-			      <th scope="col">Aussenmass Breite / Höhe</th>
-			      <th scope="col">Lieferant</th>
-			      <th scope="col">Bearbeiten</th>
-			      <th scope="col">Stk. Preis</th>
-			      <th scope="col">Löschen</th>
-			     
-			    </tr>
-			  </thead>
-			 {% for data in elemente.all %}
-			  <tbody>
-			    <tr>
-			      <td>
-			      	{{ data.kuehlposition }}
-			  		</td>
-			  		
-			      <td>{{ data.elementnr }}</td>
-
-			      <td>{{ data.bemerkung }}</td>
-			     
-			      <td>
-			      	{% for data in data.elemente_objekte.all %}
-			      	{{ data.name }}<br>
-			      	{% endfor %}
-			      	<a class="btn btn-secondary btn-sm" href="{% url 'store:cms_elemente_objekte' data.pk kunde_id %}">
-  					<i class="fas fa-edit"></i></a>
-			  		</td>
-			       <td>{% if data.produkt %}{{ data.produkt }}{% else %}{{ data.dichtungen.titel }}{% endif %}</td>
-			      <td>{{ data.aussenbreite }}mm / {{ data.aussenhöhe }}mm </td>
-			      <td>
-			      	<td>{% if data.lieferant %}{{ data.lieferant }}{% endif %}</td>
-
-			      	
-
-			      	<a href="{% url 'store:cms_elemente_edit' data.pk kunde_id  %}">
-  					<i class="fas fa-edit"></i></a>
-
-  				</td>
-  				<td>{% if data.nettopreis %}{{ data.nettopreis }}{% endif %}</td>
-  					<td>
-  					<a href="{% url 'store:cms_elemente_löschen' data.pk kunde_id %}"><i style="color:var(--red)" class="far fa-trash-alt"></i>
-					 </a>
-					</td>
-			      {% endfor %}
-			    </tr>
-			    
-			  </tbody>
-			 
-
-			</table>
-
- {% endblock %}
+{% endblock %}
