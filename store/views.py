@@ -28,7 +28,6 @@ from datetime import date
 from django.http import HttpResponse
 from django.conf import settings
 from docx import Document
-from comtypes.client import CreateObject
 import boto3
 
 @staff_member_required
@@ -147,7 +146,7 @@ def bestellformular(request):
             subject,
             template,
             settings.EMAIL_HOST_USER,  # Sender email
-            ['sandro@sh-digital.ch']  # Recipient email
+            ['sandro@sh-digital.ch','livio.bonetta@geboshop.ch']  # Recipient email
         )
         email.fail_silently = False
         email.content_subtype = "html"  # Send the email as HTML
