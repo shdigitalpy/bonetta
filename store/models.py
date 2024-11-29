@@ -59,6 +59,9 @@ KANTON_CHOICES = (
 )
 
 
+
+
+
 class Subcategory(models.Model):
 	sub_name = models.CharField(max_length=255)
 	sub_slug = models.SlugField(max_length=255)
@@ -451,6 +454,20 @@ class Kunde(models.Model):
 	def elemente_count(self):
 		return self.kunden_elemente.count()
 
+class Elemente_Bestellungen(models.Model):
+	kunden_nr = models.CharField(max_length=255, null=True, blank=True) 
+	betrieb_person = models.CharField(max_length=255, null=True, blank=True) 
+	adresse = models.CharField(null=True, blank=True)
+	plz = models.CharField(null=True, blank=True)
+	elemente_nr = models.CharField(null=True, blank=True)
+	montage = models.CharField(null=True, blank=True)
+	bemerkung = models.CharField(null=True, blank=True)
+	
+	class Meta:
+		ordering = ['id']
+
+	def __str__(self):
+		return str(self.kunden_nr) + " " + str(self.betrieb_person)
 
 class CRMLager(models.Model):
 	titel = models.CharField(max_length=255, null=True, blank=True)
@@ -518,6 +535,10 @@ class Artikel(models.Model):
 
 	def __str__(self):
 		return str(self.artikelnr) + " " + str(self.name)
+
+
+
+
 
 class Elemente(models.Model):
 	dichtungen = models.ForeignKey(

@@ -61,7 +61,7 @@ def bestellformular(request):
             subject,
             template,
             settings.EMAIL_HOST_USER,  # Use the correct sender email
-            ['sandro@sh-digital.ch','livio.bonetta@geboshop.ch']  # Recipient email
+            ['sandro@sh-digital.ch']  # Recipient email
         )
         email.fail_silently = False
         email.content_subtype = "html"  # to send the email as HTML
