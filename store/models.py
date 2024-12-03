@@ -521,7 +521,8 @@ class Lieferanten(models.Model):
 		verbose_name_plural = 'Lieferanten'
 
 	def __str__(self):
-		return self.name
+		return self.name or "Unbekannter Lieferant"
+
 
 
 
@@ -539,9 +540,7 @@ class Artikel(models.Model):
 		verbose_name_plural = 'Artikel'
 
 	def __str__(self):
-		return str(self.id)
-
-
+		return f"{self.artikelnr or 'Keine Nummer'} - {self.name or 'Unbenannt'}"
 
 
 
