@@ -539,7 +539,7 @@ class Artikel(models.Model):
 		verbose_name_plural = 'Artikel'
 
 	def __str__(self):
-		return str(self.artikelnr) + " " + str(self.name)
+		return str(self.id)
 
 
 
