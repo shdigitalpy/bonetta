@@ -588,7 +588,7 @@ class Elemente(models.Model):
 		verbose_name_plural = 'Elemente'
 
 	def __str__(self):
-		return str(self.kunde) + ' ' + self.kuehlposition + ' ' + self.bemerkung
+		return self.id or "Element ohne Namen"
 
 class Objekte(models.Model):
 	name = models.CharField(max_length=255, null=True, blank=True) 
