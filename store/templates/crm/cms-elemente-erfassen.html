@@ -10,28 +10,22 @@
         {% csrf_token %}
 
         <!-- Artikel Dropdown -->
-        <!-- Search Bar for Artikel -->
         <div class="form-group">
+            <!-- Artikel Input Field -->
             <label for="artikel_search">Artikel durchsuchen:</label>
             <input 
                 type="text" 
                 id="artikel_search" 
                 class="form-control" 
-                placeholder="Artikel suchen..." 
-                onkeyup="filterArtikel()" 
+                placeholder="Eingabe ohne Enter..." 
+                onkeyup="fetchArtikel()" 
                 autocomplete="off">
-            
-            <!-- Hidden Input to Hold Selected Value -->
+
+            <!-- Hidden Input for Selected Artikel -->
             <input type="hidden" id="selected_artikel" name="artikel_name">
             
             <!-- List for Artikel -->
-            <ul id="artikel_list" class="list-group mt-2">
-                {% for artikel in artikel_liste %}
-                    <li class="list-group-item artikel-item" onclick="selectArtikel('{{ artikel.artikelnr }}')">
-                        {{ artikel.artikelnr }}
-                    </li>
-                {% endfor %}
-            </ul>
+            <ul id="artikel_list" class="list-group mt-2"></ul>
         </div>
 
         <!-- Kühlposition -->
@@ -64,28 +58,4 @@
     </form>
 </div>
 
-<!-- JavaScript for Filtering Artikel and Selecting Value -->
-<script>
-    function filterArtikel() {
-        const searchInput = document.getElementById('artikel_search').value.toLowerCase();
-        const artikelItems = document.getElementById('artikel_list').getElementsByTagName('li');
-
-        for (let i = 0; i < artikelItems.length; i++) {
-            const artikelText = artikelItems[i].textContent.toLowerCase();
-            artikelItems[i].style.display = artikelText.includes(searchInput) ? '' : 'none';
-        }
-    }
-
-    function selectArtikel(artikelName) {
-        // Set the selected artikel name in the input field and hidden field
-        document.getElementById('artikel_search').value = artikelName;
-        document.getElementById('selected_artikel').value = artikelName;
-        
-        // Hide the list of suggestions
-        const artikelItems = document.getElementById('artikel_list').getElementsByTagName('li');
-        for (let i = 0; i < artikelItems.length; i++) {
-            artikelItems[i].style.display = 'none';
-        }
-    }
-</script>
 {% endblock %}

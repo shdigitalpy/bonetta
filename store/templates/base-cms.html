@@ -186,6 +186,66 @@ $(document).ready(function () {
     }
 </script>
 
+<!-- JavaScript for Fetching Artikel Dynamically -->
+<script>
+    function fetchArtikel() {
+        const searchInput = document.getElementById('artikel_search').value.trim();
+        console.log("Search input:", searchInput);
+
+        const artikelList = document.getElementById('artikel_list');
+        artikelList.innerHTML = ''; // Clear the current list
+
+        // Ensure the search input is not empty
+        if (searchInput.length > 0) {
+            fetch("{% url 'store:fetch_artikel' %}?query=" + encodeURIComponent(searchInput))
+                .then(response => {
+                    console.log("Response status:", response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Fetched Articles:", data);
+
+                    // Display no result message if no articles found
+                    if (data.length === 0) {
+                        const noResultItem = document.createElement('li');
+                        noResultItem.textContent = 'Keine Artikel gefunden';
+                        noResultItem.className = 'list-group-item text-muted';
+                        artikelList.appendChild(noResultItem);
+                    } else {
+                        // Populate the list with articles
+                        data.forEach(artikel => {
+                            const listItem = document.createElement('li');
+                            listItem.textContent = artikel.artikelnr;
+                            listItem.className = 'list-group-item artikel-item';
+                            listItem.onclick = () => selectArtikel(artikel.artikelnr);
+                            artikelList.appendChild(listItem);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching articles:', error);
+                    const errorItem = document.createElement('li');
+                    errorItem.textContent = 'Fehler beim Abrufen von Artikeln';
+                    errorItem.className = 'list-group-item text-danger';
+                    artikelList.appendChild(errorItem);
+                });
+        }
+    }
+
+    function selectArtikel(artikelName) {
+        // Set the selected artikel name in both the visible and hidden input fields
+        document.getElementById('artikel_search').value = artikelName;
+        document.getElementById('selected_artikel').value = artikelName;
+
+        // Clear the list of suggestions
+        document.getElementById('artikel_list').innerHTML = '';
+    }
+</script>
+
+
 
 </body>
 </html>

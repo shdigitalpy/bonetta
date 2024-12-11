@@ -82,7 +82,7 @@ urlpatterns = [
     path('artikel/lagerort/bearbeiten/<int:pk>/', views.crm_artikel_lagerort_edit, name='crm_artikel_lagerort_edit'),
     path('artikel/preiscode/edit/<int:pk>/', views.crm_artikel_preiscode_edit, name='crm_artikel_preiscode_edit'),
     path('artikel/nettopreis/edit/<int:pk>/', views.crm_artikel_nettopreis_edit, name='crm_artikel_nettopreis_edit'),
-
+    path('fetch-artikel/', fetch_artikel, name='fetch_artikel'),
 
 	#cms 
 	path('cms/', views.cms, name="cms"),

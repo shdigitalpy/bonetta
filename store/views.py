@@ -29,9 +29,23 @@ from django.http import HttpResponse
 from django.conf import settings
 from docx import Document
 import boto3
-
+from django.http import JsonResponse
 
 #CRM
+def fetch_artikel(request):
+    query = request.GET.get('query', '').strip()
+    print("Query received:", query)  # Debugging
+
+    if query:
+        artikel_list = Artikel.objects.filter(artikelnr__icontains=query)[:20]
+        print("Articles found:", [artikel.artikelnr for artikel in artikel_list])  # Debugging
+    else:
+        artikel_list = []
+        print("No query provided")  # Debugging
+
+    artikel_data = [{'artikelnr': artikel.artikelnr} for artikel in artikel_list]
+    return JsonResponse(artikel_data, safe=False)
+
 def lieferant_send_order_email(request, pk):
     artikel = get_object_or_404(Artikel, pk=pk)
     if request.method == "POST":
@@ -552,28 +566,31 @@ def cms_elemente(request, pk):
 @staff_member_required
 def cms_elemente_create(request, pk):
     kunde = get_object_or_404(Kunde, pk=pk)  # Get the Kunde instance
-    artikel_liste = Artikel.objects.all()  # Get the list of all Artikel
+    artikel_liste = Artikel.objects.all()  # Get all Artikel
     form = ElementeCreateForm(request.POST or None)
 
     if request.method == "POST":
-        # Get the selected artikel name from the POST data
-        artikel_name = request.POST.get('artikel_name', None)
-        try:
-            selected_artikel = Artikel.objects.get(name=artikel_name) if artikel_name else None
-        except Artikel.DoesNotExist:
-            selected_artikel = None
+        artikel_name = request.POST.get('artikel_name', None)  # Get selected Artikel name
+        selected_artikel = None
+
+        # Attempt to find the Artikel by name (or another identifier, e.g., artikelnr)
+        if artikel_name:
+            try:
+                selected_artikel = Artikel.objects.get(artikelnr=artikel_name)  # Adjust field if needed
+            except Artikel.DoesNotExist:
+                messages.error(request, f"Der Artikel '{artikel_name}' wurde nicht gefunden.")
 
         if form.is_valid():
-            # Save the Elemente instance without committing
+            # Create the Elemente instance but do not save to the database yet
             elemente_instance = form.save(commit=False)
 
-            # Assign the selected Artikel to the Elemente instance
-            elemente_instance.artikel = selected_artikel
-
-            # Assign aussenbreite and aussenhöhe from the selected Artikel
+            # Link the selected Artikel if found
             if selected_artikel:
+                elemente_instance.artikel = selected_artikel
                 elemente_instance.aussenbreite = selected_artikel.aussenbreite
                 elemente_instance.aussenhöhe = selected_artikel.aussenhöhe
+            else:
+                messages.error(request, "Bitte wählen Sie einen gültigen Artikel aus.")
 
             # Save the Elemente instance
             elemente_instance.save()
@@ -585,8 +602,6 @@ def cms_elemente_create(request, pk):
             return redirect('store:cms_elemente', pk=pk)
         else:
             messages.error(request, "Ein Fehler ist aufgetreten. Bitte überprüfen Sie die Eingaben.")
-            if not selected_artikel:
-                messages.error(request, "Der ausgewählte Artikel wurde nicht gefunden.")
 
     context = {
         'form': form,
@@ -594,7 +609,6 @@ def cms_elemente_create(request, pk):
         'kunde_id': pk,
     }
     return render(request, 'crm/cms-elemente-erfassen.html', context)
-
 
 
 @staff_member_required

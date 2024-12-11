@@ -9,32 +9,26 @@
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <!-- Debugging Marker -->
-        <p>Template Debug Marker: {{ element.id }}</p>
-
         <!-- Artikel Dropdown -->
         <div class="form-group">
             <label for="artikel_search">Artikel durchsuchen:</label>
-            <input 
-                type="text" 
-                id="artikel_search" 
-                class="form-control" 
-                placeholder="Artikel suchen..." 
-                onkeyup="filterArtikel()" 
-                autocomplete="off"
-                value="{% if element.artikel %}{{ element.artikel.artikelnr }}{% else %}{% endif %}">
+             <input 
+            type="text" 
+            id="artikel_search" 
+            class="form-control" 
+            placeholder="Artikel suchen..." 
+            onkeyup="fetchArtikel()" 
+            autocomplete="off"
+            value="{% if element.artikel %}{{ element.artikel.artikelnr }}{% endif %}">
 
-            <!-- Hidden Input to Hold Selected Value -->
-            <input type="hidden" id="selected_artikelnr" name="artikel_artikelnr" value="{% if element.artikel %}{{ element.artikel.artikelnr }}{% else %}{% endif %}">
+        <input 
+            type="hidden" 
+            id="selected_artikel" 
+            name="artikel_name" 
+            value="{% if element.artikel %}{{ element.artikel.artikelnr }}{% endif %}">
 
             <!-- List for Artikel -->
-            <ul id="artikel_list" class="list-group mt-2">
-                {% for artikel in artikel_liste %}
-                    <li class="list-group-item artikel-item" onclick="selectArtikel('{{ artikel.artikelnr }}')">
-                        {{ artikel.artikelnr }}
-                    </li>
-                {% endfor %}
-            </ul>
+            <ul id="artikel_list" class="list-group mt-2"></ul>
         </div>
 
         <!-- Kühlposition (Dropdown) -->
@@ -76,30 +70,4 @@
         </div>
     </form>
 </div>
-
-<!-- JavaScript for Filtering Artikel and Selecting Value -->
-<script>
-    function filterArtikel() {
-        const searchInput = document.getElementById('artikel_search').value.toLowerCase();
-        const artikelItems = document.getElementById('artikel_list').getElementsByTagName('li');
-
-        for (let i = 0; i < artikelItems.length; i++) {
-            const artikelText = artikelItems[i].textContent.toLowerCase();
-            artikelItems[i].style.display = artikelText.includes(searchInput) ? '' : 'none';
-        }
-    }
-
-    function selectArtikel(artikelnr) {
-        console.log("Selected Artikelnr: ", artikelnr); // Debug log
-        // Set the selected artikel artikelnr in the input field and hidden field
-        document.getElementById('artikel_search').value = artikelnr;
-        document.getElementById('selected_artikelnr').value = artikelnr;
-
-        // Hide the list of suggestions
-        const artikelItems = document.getElementById('artikel_list').getElementsByTagName('li');
-        for (let i = 0; i < artikelItems.length; i++) {
-            artikelItems[i].style.display = 'none';
-        }
-    }
-</script>
 {% endblock %}
