@@ -1,0 +1,74 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}Preiscodes{% endblock %}
+
+{% block content %}
+    <div class="flexbox">
+        <div class="h2">Preiscodes</div>
+    </div>
+
+    <div class="flexbox" style="align-items:start;">
+        <a class="btn btn-outline-primary btn-sm" href="{% url 'store:crm_preiscode_create' %}">Preiscode erfassen</a>
+
+        <!-- Search form -->
+        <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="{% url 'store:crm_preiscode' %}">
+            {% csrf_token %}
+            <div style="display: flex">
+                <div style="flex: 0 0 20%">
+                    <input id="textsuche" class="form-control" type="text" placeholder="Suche" aria-label="Search" name="search">
+                </div>
+                <div style="flex: 0 0 15%">
+                    <button type="submit" style="border: none;" class="btn btn-outline-primary btn-sm">
+                        <span class="fas fa-search"></span> Suche
+                    </button>
+                </div>
+                <div style="flex: 0 0 15%">
+                    <a href="{% url 'store:crm_preiscode' %}" style="border: none;" class="btn btn-light btn-sm">
+                        <span class="fas fa-times"></span> zurücksetzen
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Preiscode</th>
+                <th scope="col">Faktor</th>
+                <th scope="col">Transportkosten (%)</th>
+                <th scope="col">Rabatt (%)</th>
+                <th scope="col">Preisanpassung (%)</th>
+                <th scope="col">Aktionen</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if preiscodes %}
+                {% for preiscode in preiscodes %}
+                    <tr>
+                        <td>{{ preiscode.preiscode }}</td>
+                        <td>{{ preiscode.faktor|default:"-" }}</td>
+                        <td>{{ preiscode.transportkosten|floatformat:2|default:"-" }}{% if preiscode.transportkosten %} %{% endif %}</td>
+                        <td>{{ preiscode.rabatt|floatformat:2|default:"-" }}{% if preiscode.rabatt %} %{% endif %}</td>
+                        <td>{{ preiscode.preisanpassung|floatformat:2|default:"-" }}{% if preiscode.preisanpassung %} %{% endif %}</td>
+                        <td>
+                            <a href="{% url 'store:crm_preiscode_edit' preiscode.pk %}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{% url 'store:crm_preiscode_delete' preiscode.pk %}" method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" onclick="return confirmSend();" class="btn btn-sm btn-outline-danger">
+                                    <i class="far fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="6">Keine Preiscodes gefunden.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+{% endblock %}

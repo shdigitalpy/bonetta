@@ -1,0 +1,13 @@
+{% extends 'base-cms.html' %}
+{% block title %}Preiscode Bearbeiten{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Preiscode Bearbeiten</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary ml-4">Speichern</button>
+        <a href="{% url 'store:crm_artikel' %}" class="btn btn-secondary">Abbrechen</a>
+    </form>
+</div>
+{% endblock %}

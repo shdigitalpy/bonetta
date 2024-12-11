@@ -30,6 +30,573 @@ from django.conf import settings
 from docx import Document
 import boto3
 
+
+#CRM
+
+
+@staff_member_required
+def crm_artikel_nettopreis_edit(request, pk):
+    artikel = get_object_or_404(Artikel, pk=pk)
+    if request.method == 'POST':
+        form = NettopreisArtikelForm(request.POST, instance=artikel)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Einkaufspreis erfolgreich aktualisiert.")
+            return redirect('store:crm_artikel')  # Redirect back to Artikel list
+    else:
+        form = NettopreisArtikelForm(instance=artikel)
+    return render(request, 'crm/crm-artikel-nettopreis-edit.html', {'form': form, 'artikel': artikel})
+
+@staff_member_required
+def crm_artikel_preiscode_edit(request, pk):
+    artikel = get_object_or_404(Artikel, pk=pk)
+    if request.method == 'POST':
+        form = PreiscodeArtikelForm(request.POST, instance=artikel)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Preiscode erfolgreich aktualisiert.")
+            return redirect('store:crm_artikel')  # Redirect back to the Artikel list
+    else:
+        form = PreiscodeArtikelForm(instance=artikel)
+    return render(request, 'crm/crm-artikel-preiscode-edit.html', {'form': form, 'artikel': artikel})
+
+# Edit Lagerbestand View
+@staff_member_required
+def crm_artikel_lagerbestand_edit(request, pk):
+    artikel = get_object_or_404(Artikel, pk=pk)
+    if request.method == 'POST':
+        form = LagerbestandForm(request.POST, instance=artikel)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Lagerbestand erfolgreich aktualisiert.")
+            return redirect('store:crm_artikel')
+    else:
+        form = LagerbestandForm(instance=artikel)
+    return render(request, 'crm/crm-artikel-lagerbestand-bearbeiten.html', {'form': form, 'artikel': artikel})
+
+# Edit Lagerort View
+@staff_member_required
+def crm_artikel_lagerort_edit(request, pk):
+    artikel = get_object_or_404(Artikel, pk=pk)
+    if request.method == 'POST':
+        form = LagerortForm(request.POST, instance=artikel)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Lagerort erfolgreich aktualisiert.")
+            return redirect('store:crm_artikel')
+    else:
+        form = LagerortForm(instance=artikel)
+    return render(request, 'crm/crm-artikel-lagerort-bearbeiten.html', {'form': form, 'artikel': artikel})
+
+# View to list all Preiscodes
+@staff_member_required
+def crm_preiscode(request):
+    search_query = request.GET.get('search', '')
+    if search_query:
+        preiscodes = Preiscode.objects.filter(
+            Q(preiscode__icontains=search_query) |
+            Q(faktor__icontains=search_query) |
+            Q(transportkosten__icontains=search_query) |
+            Q(rabatt__icontains=search_query) |
+            Q(preisanpassung__icontains=search_query)
+        ).order_by('-id')
+    else:
+        preiscodes = Preiscode.objects.all().order_by('-id')
+    return render(request, 'crm/crm-preiscodes.html', {'preiscodes': preiscodes})
+
+# View to create a new Preiscode
+@staff_member_required
+def crm_preiscode_create(request):
+    if request.method == 'POST':
+        form = PreiscodeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('store:crm_preiscode')
+    else:
+        form = PreiscodeForm()
+    return render(request, 'crm/crm-preiscode-erfassen.html', {'form': form})
+
+# View to edit an existing Preiscode
+@staff_member_required
+def crm_preiscode_edit(request, pk):
+    preiscode = get_object_or_404(Preiscode, pk=pk)
+    if request.method == 'POST':
+        form = PreiscodeForm(request.POST, instance=preiscode)
+        if form.is_valid():
+            form.save()
+            return redirect('store:crm_preiscode')
+    else:
+        form = PreiscodeForm(instance=preiscode)
+    return render(request, 'crm/crm-preiscode-bearbeiten.html', {'form': form})
+
+# View to delete an existing Preiscode
+@staff_member_required
+def crm_preiscode_delete(request, pk):
+    preiscode = get_object_or_404(Preiscode, pk=pk)
+    preiscode.delete()
+    messages.info(request, "Der Preiscode wurde gelöscht.")
+    return redirect('store:crm_preiscode')
+
+
+# View to list all Artikel
+@staff_member_required
+def crm_artikel(request):
+    search_query = request.GET.get('search', '')
+    if search_query:
+        artikel = Artikel.objects.filter(
+            Q(artikelnr__icontains=search_query) |
+            Q(name__icontains=search_query)
+        ).order_by('artikelnr')
+    else:
+        artikel = Artikel.objects.all().order_by('artikelnr')
+    return render(request, 'crm/crm-artikel.html', {'artikel': artikel})
+
+# View to create a new Artikel
+@staff_member_required
+def crm_artikel_create(request):
+    if request.method == 'POST':
+        form = ArtikelForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('store:crm_artikel')
+    else:
+        form = ArtikelForm()
+    return render(request, 'crm/crm-artikel-erfassen.html', {'form': form})
+
+# View to edit an existing Artikel
+@staff_member_required
+def crm_artikel_edit(request, pk):
+    artikel = get_object_or_404(Artikel, pk=pk)
+    if request.method == 'POST':
+        form = ArtikelForm(request.POST, instance=artikel)
+        if form.is_valid():
+            form.save()
+            return redirect('store:crm_artikel')
+    else:
+        form = ArtikelForm(instance=artikel)
+    return render(request, 'crm/crm-artikel-bearbeiten.html', {'form': form})
+
+@staff_member_required
+def crm_artikel_delete(request, pk):
+    eintrag = get_object_or_404(Artikel, pk=pk)
+    eintrag.delete()
+    messages.info(request, "Der Artikel wurde gelöscht.")
+    return redirect("store:crm_artikel")
+
+@staff_member_required
+def crm_lagerbestand(request):
+    # Get the search parameters from GET
+    dichtungstyp = request.GET.get('dichtungstyp', '')
+    aussenbreite = request.GET.get('aussenbreite', '')
+    aussenhoehe = request.GET.get('aussenhöhe', '')  # Using aussenhöhe with umlaut
+    marke = request.GET.get('marke', '')
+
+    # Start with the base queryset
+    lager_queryset = CRMLager.objects.all()
+
+    # Apply filters for each search field
+    if dichtungstyp:
+        lager_queryset = lager_queryset.filter(dichtungstyp__icontains=dichtungstyp)
+
+    # Filter with tolerance for aussenbreite (+/- 10)
+    if aussenbreite:
+        try:
+            aussenbreite_value = int(aussenbreite)
+            lager_queryset = lager_queryset.filter(
+                aussenbreite__gte=aussenbreite_value - 10,
+                aussenbreite__lte=aussenbreite_value + 10
+            )
+        except ValueError:
+            pass  # In case a non-integer is entered
+
+    # Filter with tolerance for aussenhöhe (+/- 10)
+    if aussenhoehe:
+        try:
+            aussenhoehe_value = int(aussenhoehe)  # Ensure this is correctly converted to an integer
+            lager_queryset = lager_queryset.filter(
+                aussenhöhe__gte=aussenhoehe_value - 10,
+                aussenhöhe__lte=aussenhoehe_value + 10
+            )
+        except ValueError:
+            pass  # In case a non-integer is entered
+
+    if marke:
+        # Adjust this depending on the field name in the 'Marke' model
+        lager_queryset = lager_queryset.filter(marke__name__icontains=marke)
+
+    # Always order by '-dichtungstyp' after filtering
+    lager = lager_queryset.order_by('-dichtungstyp')
+
+    context = {
+        'lager': lager,
+    }
+
+    return render(request, 'crm/crm-lagerbestand.html', context)
+
+@staff_member_required
+def crm_lager_erfassen(request):
+    if request.method == 'POST':
+        # Initialize the form with POST data
+        lager_form = CRMLagerForm(request.POST or None)
+
+        if lager_form.is_valid():
+            # Save the CRMLager instance
+            lager = lager_form.save()  # Save the CRMLager form and get the instance
+
+            # Redirect to another view or display a success message after saving
+            return redirect('store:crm_lagerbestand')  # Change to the appropriate URL for your project
+
+    else:
+        # Initialize an empty form for GET request
+        lager_form = CRMLagerForm()
+
+    return render(request, 'crm/crm-lager-erfassen.html', {
+        'lager_form': lager_form,
+    })
+
+@staff_member_required
+def crm_lagerbestand_bearbeiten(request, pk):
+    # Fetch the specific CRMLager instance using the primary key (pk)
+    lager = get_object_or_404(CRMLager, pk=pk)
+
+    if request.method == 'POST':
+        # Initialize the form with POST data and the existing CRMLager instance
+        lager_form = CRMLagerBestandForm(request.POST, instance=lager)
+
+        if lager_form.is_valid():
+            # Save only the 'lagerbestand' field
+            lager_form.save()
+
+            # Redirect to the lager overview page after successful update
+            return redirect('store:crm_lagerbestand')  # Adjust URL to match your project
+
+    else:
+        # Prepopulate the form with the existing CRMLager 'lagerbestand' data
+        lager_form = CRMLagerBestandForm(instance=lager)
+
+    return render(request, 'crm/crm-lager-erfassen.html', {
+        'lager_form': lager_form,
+    })
+
+
+
+@staff_member_required
+def crm_lager_bearbeiten(request, pk):
+    # Fetch the specific CRMLager instance using the primary key (pk)
+    lager = get_object_or_404(CRMLager, pk=pk)
+
+    if request.method == 'POST':
+        # Initialize the form with POST data and the existing CRMLager instance
+        lager_form = CRMLagerForm(request.POST, instance=lager)
+
+        if lager_form.is_valid():
+            # Save the updated CRMLager instance
+            lager = lager_form.save()
+
+            # Redirect to a lager overview page after successful update
+            return redirect('store:crm_lagerbestand')  # Change to the appropriate URL
+
+    else:
+        # Prepopulate the form with the existing CRMLager instance data
+        lager_form = CRMLagerForm(instance=lager)
+
+    return render(request, 'crm/crm-lager-erfassen.html', {
+        'lager_form': lager_form,
+    })
+
+
+@staff_member_required
+def crm_lager_löschen(request, pk):
+    eintrag = get_object_or_404(CRMLager, pk=pk)
+    eintrag.delete()
+    messages.info(request, "Der Artikel des Lagers wurde gelöscht.")
+    return redirect("store:crm_lagerbestand")   
+
+# CRM Kunden ---------------------------------------------------------------
+
+def crm_new_kunden(request):
+    search_query = request.GET.get('search', '')
+    if search_query:
+             
+        kunden = Kunde.objects.filter(
+            Q(firmenname__icontains=search_query) | 
+            Q(interne_nummer__icontains=search_query) |
+            Q(kunde_address__crm_ort__icontains=search_query) |
+            Q(kunde_address__crm_strasse__icontains=search_query) |
+            Q(kunde_address__crm_kanton__icontains=search_query)
+        ).order_by('-id')
+    else:
+        kunden = Kunde.objects.all().order_by('-interne_nummer')
+    
+    context = {
+
+        'kunden': kunden,
+    }
+    
+    return render(request, 'crm/crm-kunden.html', context)
+
+def crm_new_kunde_erfassen(request):
+    if request.method == 'POST':
+        # Initialize forms with POST data
+        kunde_form = CRMKundeForm(request.POST)
+        address_form = CRMAddressForm(request.POST)
+
+        if kunde_form.is_valid() and address_form.is_valid():
+            # First, save the Kunde instance
+            kunde = kunde_form.save()  # Save the Kunde form and get the instance
+            
+            # Now assign the Kunde instance to the CRMAddress form before saving
+            address = address_form.save(commit=False)  # Don't save yet
+            address.kunde = kunde  # Assign the saved Kunde instance
+            address.address_type = 'R'  # Set the address type (or whatever default)
+            address.save()  # Now save the CRMAddress instance
+
+            return redirect('store:crm_new_kunden')
+
+    else:
+        # Empty forms for GET request
+        kunde_form = CRMKundeForm()
+        address_form = CRMAddressForm()
+
+    return render(request, 'crm/crm-kunde-erfassen.html', {
+        'kunde_form': kunde_form,
+        'address_form': address_form,
+    })
+
+
+
+@staff_member_required
+def crm_new_kunde_bearbeiten(request, pk):
+    kunde = get_object_or_404(Kunde, pk=pk)
+    try:
+        address = CRMAddress.objects.get(kunde=kunde)  # Get the related address
+    except CRMAddress.DoesNotExist:
+        address = None  # Handle the case where the address does not exist
+
+    if request.method == 'POST':
+        # Initialize the forms with POST data and existing instances
+        kunde_form = CRMKundeForm(request.POST, instance=kunde)
+        address_form = CRMAddressForm(request.POST, instance=address)
+
+        if kunde_form.is_valid() and address_form.is_valid():
+            # Save the Kunde form and get the updated instance
+            kunde = kunde_form.save()
+
+            # Save the updated address, assigning the updated Kunde instance
+            address = address_form.save(commit=False)
+            address.kunde = kunde  # Ensure the address is still associated with the correct Kunde
+            address.address_type = 'R'  # Keep the same address type or update as needed
+            address.save()
+
+            return redirect('store:crm_new_kunden')
+
+    else:
+        # Prepopulate the forms with the existing Kunde and Address data
+        kunde_form = CRMKundeForm(instance=kunde)
+        address_form = CRMAddressForm(instance=address)
+
+    return render(request, 'crm/crm-kunde-bearbeiten.html', {
+        'kunde_form': kunde_form,
+        'address_form': address_form,
+    })
+
+@staff_member_required
+def cms_crm_adresse_bearbeiten(request, pk):
+    # Fetch the Kunde object (the customer)
+    kunde = get_object_or_404(Kunde, pk=pk)
+
+    # Try to get the existing address or create a new one for the Kunde
+    try:
+        address = CRMAddress.objects.get(kunde=kunde)
+    except CRMAddress.DoesNotExist:
+        address = CRMAddress(kunde=kunde)  # Create a new address with the linked Kunde
+
+    if request.method == "POST":
+        form = CRMAddressForm(request.POST, instance=address)
+        if form.is_valid():
+            # Manually set the Kunde field and address_type to 'R' before saving
+            address = form.save(commit=False)
+            address.kunde = kunde  # Set the 'kunde' field
+            address.address_type = 'R'  # Set the default address_type to 'R'
+            address.save()
+            messages.success(request, "Address updated successfully.")
+            return redirect('store:crm_new_kunden')
+        else:
+            messages.error(request, "Error updating address.")
+    else:
+        form = CRMAddressForm(instance=address)
+
+    context = {
+        'form': form,
+        'kunde': kunde,
+    }
+    return render(request, 'crm/crm-adresse-bearbeiten.html', context)
+
+@staff_member_required
+def cms_crm_kunde_löschen(request, pk):
+    eintrag = get_object_or_404(Kunde, pk=pk)
+    eintrag.delete()
+    messages.info(request, "Der Kunde wurde gelöscht.")
+    return redirect("store:crm_new_kunden") 
+
+@staff_member_required
+def crm_update_last_service(request, pk):
+    # Fetch the specific customer by primary key
+    kunde = get_object_or_404(Kunde, pk=pk)  
+
+    if request.method == 'POST':
+        # Pass POST data and instance of the Kunde to update
+        form = CRMLastService(request.POST, instance=kunde)
+
+        if form.is_valid():
+            form.save()  # Save the last_service update
+            messages.success(request, "Letzter Service erfolgreich aktualisiert!")
+            return redirect('store:crm_new_kunden')  # Redirect after successful save
+        else:
+            # Handle form validation errors
+            messages.error(request, "Fehler beim Aktualisieren des letzten Service.")
+    else:
+        # Initialize the form with existing data for GET request
+        form = CRMLastService(instance=kunde)
+
+    return render(request, 'crm/crm-update-last-service.html', {
+        'form': form,
+        'kunde': kunde,
+    })
+
+
+# CRM END
+
+# ELEMENTE
+
+
+@staff_member_required
+def cms_elemente(request, pk):
+    kunde_data = Kunde.objects.get(pk=pk)
+    search_query = request.GET.get('search', '')
+
+    if search_query:
+        elemente = Elemente.objects.filter(
+            Q(dichtungen__titel__icontains=search_query) |
+            Q(kuehlposition__icontains=search_query) |
+            Q(aussenbreite__icontains=search_query) |
+            Q(aussenhöhe__icontains=search_query) |
+            Q(elementnr__icontains=search_query) |
+            Q(artikel__name__icontains=search_query) |  # Added search for artikel name
+            Q(artikel__artikelnr__icontains=search_query)  # Added search for artikel artikelnr
+        ).filter(kunde=kunde_data).order_by('kunde', 'elementnr')
+    else:
+        elemente = Elemente.objects.filter(kunde=kunde_data).order_by('elementnr')
+
+    context = {
+        'elemente': elemente,
+        'kunde_id': pk,
+        'kunde_data': kunde_data,
+    }
+    return render(request, 'crm/cms-elemente.html', context)
+
+
+@staff_member_required
+def cms_elemente_create(request, pk):
+    kunde = get_object_or_404(Kunde, pk=pk)  # Get the Kunde instance
+    artikel_liste = Artikel.objects.all()  # Get the list of all Artikel
+    form = ElementeCreateForm(request.POST or None)
+
+    if request.method == "POST":
+        # Get the selected artikel name from the POST data
+        artikel_name = request.POST.get('artikel_name', None)
+        try:
+            selected_artikel = Artikel.objects.get(name=artikel_name) if artikel_name else None
+        except Artikel.DoesNotExist:
+            selected_artikel = None
+
+        if form.is_valid():
+            # Save the Elemente instance without committing
+            elemente_instance = form.save(commit=False)
+
+            # Assign the selected Artikel to the Elemente instance
+            elemente_instance.artikel = selected_artikel
+
+            # Assign aussenbreite and aussenhöhe from the selected Artikel
+            if selected_artikel:
+                elemente_instance.aussenbreite = selected_artikel.aussenbreite
+                elemente_instance.aussenhöhe = selected_artikel.aussenhöhe
+
+            # Save the Elemente instance
+            elemente_instance.save()
+
+            # Link the Elemente instance to the Kunde
+            elemente_instance.kunde.add(kunde)
+
+            messages.success(request, "Das Element wurde erfolgreich erstellt.")
+            return redirect('store:cms_elemente', pk=pk)
+        else:
+            messages.error(request, "Ein Fehler ist aufgetreten. Bitte überprüfen Sie die Eingaben.")
+            if not selected_artikel:
+                messages.error(request, "Der ausgewählte Artikel wurde nicht gefunden.")
+
+    context = {
+        'form': form,
+        'artikel_liste': artikel_liste,
+        'kunde_id': pk,
+    }
+    return render(request, 'crm/cms-elemente-erfassen.html', context)
+
+
+
+
+@staff_member_required
+def cms_elemente_edit(request, pk, cpk):
+    # Fetch the Elemente instance
+    element = get_object_or_404(Elemente, pk=pk)
+
+    if request.method == "POST":
+        # Bind the form to the POST data and the instance
+        form = ElementeCreateForm(request.POST, instance=element)
+        if form.is_valid():
+            # Save the main Elemente instance
+            element = form.save(commit=False)
+            
+            # Assign the selected Artikel to the Elemente instance
+            selected_artikel = form.cleaned_data.get('artikel')
+            element.artikel = selected_artikel  # Assign the ForeignKey relationship
+            
+            # Update dimensions based on the selected Artikel
+            if selected_artikel:
+                element.aussenbreite = selected_artikel.aussenbreite
+                element.aussenhöhe = selected_artikel.aussenhöhe
+            else:
+                element.aussenbreite = None
+                element.aussenhöhe = None
+
+            # Save the updated Elemente instance
+            element.save()
+
+            messages.success(request, "Das Element wurde erfolgreich aktualisiert.")
+            return redirect('store:cms_elemente', pk=cpk)
+        else:
+            messages.error(request, "Ein Fehler ist aufgetreten. Bitte überprüfen Sie die Eingaben.")
+    else:
+        # Initialize the form with the existing Elemente instance
+        form = ElementeCreateForm(instance=element)
+
+    context = {
+        'form': form,
+        'element': element,
+    }
+    return render(request, 'crm/cms-elemente-bearbeiten.html', context)
+
+
+
+
+@staff_member_required
+def cms_elemente_löschen(request, pk, cpk):
+    eintrag = get_object_or_404(Elemente, pk=pk)
+    eintrag.delete()
+    messages.info(request, "Der Eintrag wurde gelöscht.")
+    return redirect('store:cms_elemente', pk=cpk)   
+#ELEMENTE END
+
 @staff_member_required
 def generate_lieferschein(request, bestellung_id):
     try:
@@ -1616,450 +2183,7 @@ def lieferant_delete(request, pk):
     messages.info(request, "Der Lieferant wurde gelöscht.")
     return redirect("store:lieferanten")
 
-#CRM
 
-# View to list all Artikel
-def crm_artikel(request):
-    search_query = request.GET.get('search', '')
-    if search_query:
-        artikel = Artikel.objects.filter(
-            Q(artikelnr__icontains=search_query) |
-            Q(name__icontains=search_query)
-        ).order_by('-id')
-    else:
-        artikel = Artikel.objects.all().order_by('-id')
-    return render(request, 'crm/crm-artikel.html', {'artikel': artikel})
-
-# View to create a new Artikel
-def crm_artikel_create(request):
-    if request.method == 'POST':
-        form = ArtikelForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('store:crm_artikel')
-    else:
-        form = ArtikelForm()
-    return render(request, 'crm/crm-artikel-erfassen.html', {'form': form})
-
-# View to edit an existing Artikel
-def crm_artikel_edit(request, pk):
-    artikel = get_object_or_404(Artikel, pk=pk)
-    if request.method == 'POST':
-        form = ArtikelForm(request.POST, instance=artikel)
-        if form.is_valid():
-            form.save()
-            return redirect('store:crm_artikel')
-    else:
-        form = ArtikelForm(instance=artikel)
-    return render(request, 'crm/crm-artikel-bearbeiten.html', {'form': form})
-
-def crm_artikel_delete(request, pk):
-    eintrag = get_object_or_404(Artikel, pk=pk)
-    eintrag.delete()
-    messages.info(request, "Der Artikel wurde gelöscht.")
-    return redirect("store:crm_artikel")
-
-def crm_lagerbestand(request):
-    # Get the search parameters from GET
-    dichtungstyp = request.GET.get('dichtungstyp', '')
-    aussenbreite = request.GET.get('aussenbreite', '')
-    aussenhoehe = request.GET.get('aussenhöhe', '')  # Using aussenhöhe with umlaut
-    marke = request.GET.get('marke', '')
-
-    # Start with the base queryset
-    lager_queryset = CRMLager.objects.all()
-
-    # Apply filters for each search field
-    if dichtungstyp:
-        lager_queryset = lager_queryset.filter(dichtungstyp__icontains=dichtungstyp)
-
-    # Filter with tolerance for aussenbreite (+/- 10)
-    if aussenbreite:
-        try:
-            aussenbreite_value = int(aussenbreite)
-            lager_queryset = lager_queryset.filter(
-                aussenbreite__gte=aussenbreite_value - 10,
-                aussenbreite__lte=aussenbreite_value + 10
-            )
-        except ValueError:
-            pass  # In case a non-integer is entered
-
-    # Filter with tolerance for aussenhöhe (+/- 10)
-    if aussenhoehe:
-        try:
-            aussenhoehe_value = int(aussenhoehe)  # Ensure this is correctly converted to an integer
-            lager_queryset = lager_queryset.filter(
-                aussenhöhe__gte=aussenhoehe_value - 10,
-                aussenhöhe__lte=aussenhoehe_value + 10
-            )
-        except ValueError:
-            pass  # In case a non-integer is entered
-
-    if marke:
-        # Adjust this depending on the field name in the 'Marke' model
-        lager_queryset = lager_queryset.filter(marke__name__icontains=marke)
-
-    # Always order by '-dichtungstyp' after filtering
-    lager = lager_queryset.order_by('-dichtungstyp')
-
-    context = {
-        'lager': lager,
-    }
-
-    return render(request, 'crm/crm-lagerbestand.html', context)
-
-
-def crm_lager_erfassen(request):
-    if request.method == 'POST':
-        # Initialize the form with POST data
-        lager_form = CRMLagerForm(request.POST or None)
-
-        if lager_form.is_valid():
-            # Save the CRMLager instance
-            lager = lager_form.save()  # Save the CRMLager form and get the instance
-
-            # Redirect to another view or display a success message after saving
-            return redirect('store:crm_lagerbestand')  # Change to the appropriate URL for your project
-
-    else:
-        # Initialize an empty form for GET request
-        lager_form = CRMLagerForm()
-
-    return render(request, 'crm/crm-lager-erfassen.html', {
-        'lager_form': lager_form,
-    })
-
-@staff_member_required
-def crm_lagerbestand_bearbeiten(request, pk):
-    # Fetch the specific CRMLager instance using the primary key (pk)
-    lager = get_object_or_404(CRMLager, pk=pk)
-
-    if request.method == 'POST':
-        # Initialize the form with POST data and the existing CRMLager instance
-        lager_form = CRMLagerBestandForm(request.POST, instance=lager)
-
-        if lager_form.is_valid():
-            # Save only the 'lagerbestand' field
-            lager_form.save()
-
-            # Redirect to the lager overview page after successful update
-            return redirect('store:crm_lagerbestand')  # Adjust URL to match your project
-
-    else:
-        # Prepopulate the form with the existing CRMLager 'lagerbestand' data
-        lager_form = CRMLagerBestandForm(instance=lager)
-
-    return render(request, 'crm/crm-lager-erfassen.html', {
-        'lager_form': lager_form,
-    })
-
-
-
-@staff_member_required
-def crm_lager_bearbeiten(request, pk):
-    # Fetch the specific CRMLager instance using the primary key (pk)
-    lager = get_object_or_404(CRMLager, pk=pk)
-
-    if request.method == 'POST':
-        # Initialize the form with POST data and the existing CRMLager instance
-        lager_form = CRMLagerForm(request.POST, instance=lager)
-
-        if lager_form.is_valid():
-            # Save the updated CRMLager instance
-            lager = lager_form.save()
-
-            # Redirect to a lager overview page after successful update
-            return redirect('store:crm_lagerbestand')  # Change to the appropriate URL
-
-    else:
-        # Prepopulate the form with the existing CRMLager instance data
-        lager_form = CRMLagerForm(instance=lager)
-
-    return render(request, 'crm/crm-lager-erfassen.html', {
-        'lager_form': lager_form,
-    })
-
-
-@staff_member_required
-def crm_lager_löschen(request, pk):
-	eintrag = get_object_or_404(CRMLager, pk=pk)
-	eintrag.delete()
-	messages.info(request, "Der Artikel des Lagers wurde gelöscht.")
-	return redirect("store:crm_lagerbestand")	
-
-# CRM Kunden ---------------------------------------------------------------
-
-def crm_new_kunden(request):
-    search_query = request.GET.get('search', '')
-    if search_query:
-             
-        kunden = Kunde.objects.filter(
-            Q(firmenname__icontains=search_query) | 
-            Q(interne_nummer__icontains=search_query) |
-            Q(kunde_address__crm_ort__icontains=search_query) |
-            Q(kunde_address__crm_strasse__icontains=search_query) |
-            Q(kunde_address__crm_kanton__icontains=search_query)
-        ).order_by('-id')
-    else:
-        kunden = Kunde.objects.all().order_by('-interne_nummer')
-    
-    context = {
-
-        'kunden': kunden,
-    }
-    
-    return render(request, 'crm/crm-kunden.html', context)
-
-def crm_new_kunde_erfassen(request):
-    if request.method == 'POST':
-        # Initialize forms with POST data
-        kunde_form = CRMKundeForm(request.POST)
-        address_form = CRMAddressForm(request.POST)
-
-        if kunde_form.is_valid() and address_form.is_valid():
-            # First, save the Kunde instance
-            kunde = kunde_form.save()  # Save the Kunde form and get the instance
-            
-            # Now assign the Kunde instance to the CRMAddress form before saving
-            address = address_form.save(commit=False)  # Don't save yet
-            address.kunde = kunde  # Assign the saved Kunde instance
-            address.address_type = 'R'  # Set the address type (or whatever default)
-            address.save()  # Now save the CRMAddress instance
-
-            return redirect('store:crm_new_kunden')
-
-    else:
-        # Empty forms for GET request
-        kunde_form = CRMKundeForm()
-        address_form = CRMAddressForm()
-
-    return render(request, 'crm/crm-kunde-erfassen.html', {
-        'kunde_form': kunde_form,
-        'address_form': address_form,
-    })
-
-
-
-@staff_member_required
-def crm_new_kunde_bearbeiten(request, pk):
-    kunde = get_object_or_404(Kunde, pk=pk)
-    try:
-        address = CRMAddress.objects.get(kunde=kunde)  # Get the related address
-    except CRMAddress.DoesNotExist:
-        address = None  # Handle the case where the address does not exist
-
-    if request.method == 'POST':
-        # Initialize the forms with POST data and existing instances
-        kunde_form = CRMKundeForm(request.POST, instance=kunde)
-        address_form = CRMAddressForm(request.POST, instance=address)
-
-        if kunde_form.is_valid() and address_form.is_valid():
-            # Save the Kunde form and get the updated instance
-            kunde = kunde_form.save()
-
-            # Save the updated address, assigning the updated Kunde instance
-            address = address_form.save(commit=False)
-            address.kunde = kunde  # Ensure the address is still associated with the correct Kunde
-            address.address_type = 'R'  # Keep the same address type or update as needed
-            address.save()
-
-            return redirect('store:crm_new_kunden')
-
-    else:
-        # Prepopulate the forms with the existing Kunde and Address data
-        kunde_form = CRMKundeForm(instance=kunde)
-        address_form = CRMAddressForm(instance=address)
-
-    return render(request, 'crm/crm-kunde-bearbeiten.html', {
-        'kunde_form': kunde_form,
-        'address_form': address_form,
-    })
-
-@staff_member_required
-def cms_crm_adresse_bearbeiten(request, pk):
-    # Fetch the Kunde object (the customer)
-    kunde = get_object_or_404(Kunde, pk=pk)
-
-    # Try to get the existing address or create a new one for the Kunde
-    try:
-        address = CRMAddress.objects.get(kunde=kunde)
-    except CRMAddress.DoesNotExist:
-        address = CRMAddress(kunde=kunde)  # Create a new address with the linked Kunde
-
-    if request.method == "POST":
-        form = CRMAddressForm(request.POST, instance=address)
-        if form.is_valid():
-            # Manually set the Kunde field and address_type to 'R' before saving
-            address = form.save(commit=False)
-            address.kunde = kunde  # Set the 'kunde' field
-            address.address_type = 'R'  # Set the default address_type to 'R'
-            address.save()
-            messages.success(request, "Address updated successfully.")
-            return redirect('store:crm_new_kunden')
-        else:
-            messages.error(request, "Error updating address.")
-    else:
-        form = CRMAddressForm(instance=address)
-
-    context = {
-        'form': form,
-        'kunde': kunde,
-    }
-    return render(request, 'crm/crm-adresse-bearbeiten.html', context)
-
-@staff_member_required
-def cms_crm_kunde_löschen(request, pk):
-	eintrag = get_object_or_404(Kunde, pk=pk)
-	eintrag.delete()
-	messages.info(request, "Der Kunde wurde gelöscht.")
-	return redirect("store:crm_new_kunden")	
-
-@staff_member_required
-def crm_update_last_service(request, pk):
-    # Fetch the specific customer by primary key
-    kunde = get_object_or_404(Kunde, pk=pk)  
-
-    if request.method == 'POST':
-        # Pass POST data and instance of the Kunde to update
-        form = CRMLastService(request.POST, instance=kunde)
-
-        if form.is_valid():
-            form.save()  # Save the last_service update
-            messages.success(request, "Letzter Service erfolgreich aktualisiert!")
-            return redirect('store:crm_new_kunden')  # Redirect after successful save
-        else:
-            # Handle form validation errors
-            messages.error(request, "Fehler beim Aktualisieren des letzten Service.")
-    else:
-        # Initialize the form with existing data for GET request
-        form = CRMLastService(instance=kunde)
-
-    return render(request, 'crm/crm-update-last-service.html', {
-        'form': form,
-        'kunde': kunde,
-    })
-
-
-# CRM END
-
-# ELEMENTE
-
-
-@staff_member_required
-def cms_elemente(request, pk):
-    kunde_data = Kunde.objects.get(pk=pk)
-    search_query = request.GET.get('search', '')
-
-    if search_query:
-        elemente = Elemente.objects.filter(
-            Q(dichtungen__titel__icontains=search_query) |
-            Q(kuehlposition__icontains=search_query) |
-            Q(aussenbreite__icontains=search_query) |
-            Q(aussenhöhe__icontains=search_query) |
-            Q(elementnr__icontains=search_query) |
-            Q(artikel__name__icontains=search_query) |  # Added search for artikel name
-            Q(artikel__artikelnr__icontains=search_query)  # Added search for artikel artikelnr
-        ).filter(kunde=kunde_data).order_by('kunde', 'elementnr')
-    else:
-        elemente = Elemente.objects.filter(kunde=kunde_data).order_by('elementnr')
-
-    context = {
-        'elemente': elemente,
-        'kunde_id': pk,
-        'kunde_data': kunde_data,
-    }
-    return render(request, 'crm/cms-elemente.html', context)
-
-
-@staff_member_required
-def cms_elemente_create(request, pk):
-    kunde = get_object_or_404(Kunde, pk=pk)  # Get the Kunde instance
-    form = ElementeCreateForm(request.POST or None)
-
-    if request.method == "POST":
-        if form.is_valid():
-            # Save the main Elemente instance
-            elemente_instance = form.save(commit=False)
-
-            # Assign the selected Artikel to the Elemente instance
-            selected_artikel = form.cleaned_data.get('artikel')
-            elemente_instance.artikel = selected_artikel
-
-            # Assign aussenbreite and aussenhöhe from the selected Artikel
-            if selected_artikel:
-                elemente_instance.aussenbreite = selected_artikel.aussenbreite
-                elemente_instance.aussenhöhe = selected_artikel.aussenhöhe
-
-            # Save the Elemente instance
-            elemente_instance.save()
-
-            # Link the Elemente instance to the Kunde
-            elemente_instance.kunde.add(kunde)
-
-            messages.success(request, "Das Element wurde erfolgreich erstellt.")
-            return redirect('store:cms_elemente', pk=pk)
-        else:
-            messages.error(request, "Ein Fehler ist aufgetreten. Bitte überprüfen Sie die Eingaben.")
-
-    context = {
-        'form': form,
-        'kunde_id': pk,
-    }
-    return render(request, 'crm/cms-elemente-erfassen.html', context)
-
-
-
-@staff_member_required
-def cms_elemente_edit(request, pk, cpk):
-    # Fetch the Elemente instance
-    element = get_object_or_404(Elemente, pk=pk)
-
-    if request.method == "POST":
-        # Bind the form to the POST data and the instance
-        form = ElementeCreateForm(request.POST, instance=element)
-        if form.is_valid():
-            # Save the main Elemente instance
-            element = form.save(commit=False)
-            
-            # Assign the selected Artikel to the Elemente instance
-            selected_artikel = form.cleaned_data.get('artikel')
-            element.artikel = selected_artikel  # Assign the ForeignKey relationship
-            
-            # Update dimensions based on the selected Artikel
-            if selected_artikel:
-                element.aussenbreite = selected_artikel.aussenbreite
-                element.aussenhöhe = selected_artikel.aussenhöhe
-            else:
-                element.aussenbreite = None
-                element.aussenhöhe = None
-
-            # Save the updated Elemente instance
-            element.save()
-
-            messages.success(request, "Das Element wurde erfolgreich aktualisiert.")
-            return redirect('store:cms_elemente', pk=cpk)
-        else:
-            messages.error(request, "Ein Fehler ist aufgetreten. Bitte überprüfen Sie die Eingaben.")
-    else:
-        # Initialize the form with the existing Elemente instance
-        form = ElementeCreateForm(instance=element)
-
-    context = {
-        'form': form,
-        'element': element,
-    }
-    return render(request, 'crm/cms-elemente-bearbeiten.html', context)
-
-
-
-
-@staff_member_required
-def cms_elemente_löschen(request, pk, cpk):
-	eintrag = get_object_or_404(Elemente, pk=pk)
-	eintrag.delete()
-	messages.info(request, "Der Eintrag wurde gelöscht.")
-	return redirect('store:cms_elemente', pk=cpk)	
-#ELEMENTE END
 
 #webshop kunde
 

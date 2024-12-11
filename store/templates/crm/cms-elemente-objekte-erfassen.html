@@ -5,7 +5,7 @@
 {% block content %}
 
 		
-			<div class="produkt">
+			<div class="container">
 			
 			<h2>Objekte</h2>
 
@@ -14,8 +14,8 @@
 		    <form method="POST" enctype="multipart/form-data">
 		     {% csrf_token %}
 		      {{ form.as_p }}
-		      <button class="btn btn-primary btn-md ml-4">Erfassen <span class="fas fa-check-circle"></span></button>
-		      <button class="btn btn-light btn-md ml-4"><a href="{% url 'store:cms_elemente_objekte' pk cpk %}">Zurück <span class="fas fa-times"></span></a></button>
+		      <button class="btn btn-primary btn-md ml-4">Speichern <span class="fas fa-check-circle"></span></button>
+		      <button class="btn btn-light btn-md ml-4"><a href="{% url 'store:cms_elemente_objekte' pk cpk %}">Abbrechen <span class="fas fa-times"></span></a></button>
   			</div>
 			<br/>
 			   </form>

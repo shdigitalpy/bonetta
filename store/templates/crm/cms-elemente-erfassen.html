@@ -3,24 +3,89 @@
 {% block title %}CMS Elemente erfassen{% endblock %}
 
 {% block content %}
+<div class="container">
+    <h2>Elemente erfassen</h2>
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
 
-		
-			<div class="produkt">
-			
-			<h2>Elemente erfassen</h2>
+        <!-- Artikel Dropdown -->
+        <!-- Search Bar for Artikel -->
+        <div class="form-group">
+            <label for="artikel_search">Artikel durchsuchen:</label>
+            <input 
+                type="text" 
+                id="artikel_search" 
+                class="form-control" 
+                placeholder="Artikel suchen..." 
+                onkeyup="filterArtikel()" 
+                autocomplete="off">
+            
+            <!-- Hidden Input to Hold Selected Value -->
+            <input type="hidden" id="selected_artikel" name="artikel_name">
+            
+            <!-- List for Artikel -->
+            <ul id="artikel_list" class="list-group mt-2">
+                {% for artikel in artikel_liste %}
+                    <li class="list-group-item artikel-item" onclick="selectArtikel('{{ artikel.name }}')">
+                        {{ artikel.name }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
 
-			<div class="form-group">
-		    
-		    <form method="POST" enctype="multipart/form-data">
-		     {% csrf_token %}
-		      {{ form.as_p }}
-		      <button class="btn btn-primary btn-md ml-4">Erfassen <span class="fas fa-check-circle"></span></button>
-		      <button class="btn btn-light btn-md ml-4"><a href="{% url 'store:cms_elemente' kunde_id %}">Zurück <span class="fas fa-times"></span></a></button>
-  			</div>
-			<br/>
-			   </form>
-			   </div>
+        <!-- Kühlposition -->
+        <div class="form-group">
+            <label for="id_kuehlposition">{{ form.kuehlposition.label }}</label>
+            {{ form.kuehlposition }}
+        </div>
 
-			</div>
+        <!-- Element-Nr -->
+        <div class="form-group">
+            <label for="id_elementnr">{{ form.elementnr.label }}</label>
+            {{ form.elementnr }}
+        </div>
 
- {% endblock %}
+        <!-- Bemerkung -->
+        <div class="form-group">
+            <label for="id_bemerkung">{{ form.bemerkung.label }}</label>
+            {{ form.bemerkung }}
+        </div>
+
+        <!-- Submit and Cancel Buttons -->
+        <div class="form-group mt-3">
+            <button type="submit" class="btn btn-primary btn-md">
+                Speichern <span class="fas fa-check-circle"></span>
+            </button>
+            <a href="{% url 'store:cms_elemente' kunde_id %}" class="btn btn-secondary btn-md ml-2">
+                Abbrechen <span class="fas fa-times"></span>
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- JavaScript for Filtering Artikel and Selecting Value -->
+<script>
+    function filterArtikel() {
+        const searchInput = document.getElementById('artikel_search').value.toLowerCase();
+        const artikelItems = document.getElementById('artikel_list').getElementsByTagName('li');
+
+        for (let i = 0; i < artikelItems.length; i++) {
+            const artikelText = artikelItems[i].textContent.toLowerCase();
+            artikelItems[i].style.display = artikelText.includes(searchInput) ? '' : 'none';
+        }
+    }
+
+    function selectArtikel(artikelName) {
+        // Set the selected artikel name in the input field and hidden field
+        document.getElementById('artikel_search').value = artikelName;
+        document.getElementById('selected_artikel').value = artikelName;
+        
+        // Hide the list of suggestions
+        const artikelItems = document.getElementById('artikel_list').getElementsByTagName('li');
+        for (let i = 0; i < artikelItems.length; i++) {
+            artikelItems[i].style.display = 'none';
+        }
+    }
+</script>
+{% endblock %}

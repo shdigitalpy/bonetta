@@ -1,0 +1,17 @@
+{% extends 'base-cms.html' %}
+{% block title %}Lagerort Bearbeiten{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Lagerort Bearbeiten</h2>
+
+    <div class="form-group">
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary ml-4">Speichern</button>
+        <a href="{% url 'store:crm_artikel' %}" class="btn btn-secondary">Abbrechen</a>
+    </form>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,173 +1,35 @@
 {% extends 'base-cms.html' %}
 {% load static %}
-{% load i18n %}
-{% block title %}CRM Kunde bearbeiten{% endblock %}
-{% block stylesheet %}
-<!-- Add your custom styles here if needed -->
-{% endblock %}
+{% block title %}Kunde bearbeiten{% endblock %}
+
 {% block content %}
 
+<div class="container">
+    <h2>Kunde bearbeiten</h2>
+    
+    <div class="form-group">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Render Kunde Form -->
+            <fieldset>
+                
+                {{ kunde_form.as_p }}
+            </fieldset>
 
-<div class="produkt">
-    <h2 style="margin:0">CRM Kunde bearbeiten</h2>
-    <br>
-    <div class="row padding storepreview form">
-        <div class="col-sm-10">
-            <div class="form-group">
+            <!-- Render Address Form -->
+            <fieldset>
+               
+                {{ address_form.as_p }}
+            </fieldset>
 
-                <form method="post">
-                    {% csrf_token %}
-
-                    
-
-                    <div class="register-flex">
-                        <!-- Kunde Fields -->
-                        <div class="register-flex-wrapperitem">
-                            <div class="register-flex-label">
-                                {{ kunde_form.interne_nummer.label_tag }}
-                            </div>
-                            <div class="register-flex-item">
-                                {{ kunde_form.interne_nummer }}
-                                <br>
-                            </div>
-                        </div>
-
-                        <div class="register-flex-wrapperitem">
-                            <div class="register-flex-label">
-                                {{ kunde_form.firmenname.label_tag }}
-                            </div>
-                            <div class="register-flex-item">
-                                {{ kunde_form.firmenname }}
-                                <br>
-                            </div>
-                        </div>
-
-                        <div class="register-flex-wrapperitem">
-                            <div class="register-flex-label">
-                                {{ kunde_form.zusatz.label_tag }}
-                            </div>
-                            <div class="register-flex-item">
-                                {{ kunde_form.zusatz }}
-                                <br>
-                            </div>
-                        </div>
-
-                        <!-- CRM Address Fields -->
-                   
-                            <div class="register-flex-label">
-                                {{ address_form.crm_strasse.label_tag }}
-                            </div>
-                            <div class="register-flex-item">
-                                {{ address_form.crm_strasse }}
-                                <br>
-                            </div>
-                        </div>
-
-                        
-
-                        <div class="register-flex-wrapperitem">
-                            <div class="register-flex-label">
-                                {{ address_form.crm_plz.label_tag }}
-                            </div>
-                            <div class="register-flex-item">
-                                {{ address_form.crm_plz }}
-                                <br>
-                            </div>
-                        </div>
-
-                        <div class="register-flex-wrapperitem">
-                            <div class="register-flex-label">
-                                {{ address_form.crm_ort.label_tag }}
-                            </div>
-                            <div class="register-flex-item">
-                                {{ address_form.crm_ort }}
-                                <br>
-                            </div>
-                        </div>
-
-                        <div class="register-flex-wrapperitem">
-                            <div class="register-flex-label">
-                                {{ address_form.crm_kanton.label_tag }}
-                            </div>
-                            <div class="register-flex-item">
-                                {{ address_form.crm_kanton }}
-                                <br>
-                            </div>
-                        
-                    </div><!-- End CRM Address Fields -->
-
-                        <br><br>
-                        <div class="register-flex-wrapperitem">
-                            <div class="register-flex-label">
-                                {{ kunde_form.vorname.label_tag }}
-                            </div>
-                            <div class="register-flex-item">
-                                {{ kunde_form.vorname }}
-                                <br>
-                            </div>
-                        </div>
-
-                        <div class="register-flex-wrapperitem">
-                            <div class="register-flex-label">
-                                {{ kunde_form.nachname.label_tag }}
-                            </div>
-                            <div class="register-flex-item">
-                                {{ kunde_form.nachname }}
-                                <br>
-                            </div>
-                        </div>
-
-                        <div class="register-flex-wrapperitem">
-                            <div class="register-flex-label">
-                                {{ kunde_form.phone.label_tag }}
-                            </div>
-                            <div class="register-flex-item">
-                                {{ kunde_form.phone }}
-                                <br>
-                            </div>
-                        </div>
-
-                        <div class="register-flex-wrapperitem">
-                            <div class="register-flex-label">
-                                {{ kunde_form.email.label_tag }}
-                            </div>
-                            <div class="register-flex-item">
-                                {{ kunde_form.email }}
-                                <br>
-                            </div>
-                        </div>
-
-                        
-
-                        
-
-                        
-
-                        
-
-                    </div><!-- End Kunde Fields -->
-
-          
-
-                    
-
-                    <!-- Submit Button -->
-                    <div class="register-flex">
-                        <div class="register-flex-wrapperitem">
-                            <div class="register-flex-item">
-                                <button class="btn btn-primary">Speichern <span class="fas fa-check-circle"></button>
-                            </div>
-                            <div class="register-flex-item">
-                                <button class="btn btn-secondary btn-light"><a href="{% url 'store:crm_new_kunden' %}">Abbrechen <span class="fas fa-times"></span></a></a></button>
-                            </div>
-                        </div>
-                    </div>
-
-                    
-
-                </form>
+            <div class="row mt-3">
+                <div class="col">
+                    <button type="submit" class="btn btn-primary ml-4">Speichern</button>
+                    <a href="{% url 'store:crm_new_kunden' %}" class="btn btn-secondary">Abbrechen</a>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 

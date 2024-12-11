@@ -4,6 +4,7 @@ from .views import *
 from django.conf.urls.static import static
 from django.conf import settings
 from django.views.generic import TemplateView
+from django.urls import re_path
 
 app_name = 'store'
 
@@ -72,6 +73,15 @@ urlpatterns = [
     path('artikel/create/', views.crm_artikel_create, name='crm_artikel_create'),
     path('artikel/<int:pk>/edit/', views.crm_artikel_edit, name='crm_artikel_edit'),
     path('artikel/<int:pk>/delete/', views.crm_artikel_delete, name='crm_artikel_delete'),
+    path('preiscodes/', views.crm_preiscode, name='crm_preiscode'),
+    path('preiscodes/erfassen/', views.crm_preiscode_create, name='crm_preiscode_create'),
+    path('preiscodes/bearbeiten/<int:pk>/', views.crm_preiscode_edit, name='crm_preiscode_edit'),
+    path('preiscodes/loeschen/<int:pk>/', views.crm_preiscode_delete, name='crm_preiscode_delete'),
+    path('artikel/lagerbestand/bearbeiten/<int:pk>/', views.crm_artikel_lagerbestand_edit, name='crm_artikel_lagerbestand_edit'),
+    path('artikel/lagerort/bearbeiten/<int:pk>/', views.crm_artikel_lagerort_edit, name='crm_artikel_lagerort_edit'),
+    path('artikel/preiscode/edit/<int:pk>/', views.crm_artikel_preiscode_edit, name='crm_artikel_preiscode_edit'),
+    path('artikel/nettopreis/edit/<int:pk>/', views.crm_artikel_nettopreis_edit, name='crm_artikel_nettopreis_edit'),
+
 
 	#cms 
 	path('cms/', views.cms, name="cms"),
@@ -114,8 +124,8 @@ urlpatterns = [
 	path('cms/logout_user', views.logout_user, name='logout_user'),
 	path('cms/statistik/produkte', views.cms_statistik_produkte, name='cms_statistik_produkte'),
 	path('cms/crm/elemente-bestellungen', views.elemente_bestellungen, name='elemente_bestellungen'),
-	path('lieferschein/<int:bestellung_id>/', generate_lieferschein, name='generate_lieferschein'),	
-	
+	path('lieferschein/<int:bestellung_id>/', generate_lieferschein, name='generate_lieferschein'),
+
 	#objekte
 	path('cms/elemente/objekte/<int:pk>/<int:cpk>', views.cms_elemente_objekte, name='cms_elemente_objekte'),
 	path('cms/elemente/objekte-erfassen/<int:pk>/<int:cpk>', views.cms_elemente_objekte_erfassen, name='cms_elemente_objekte_erfassen'),

@@ -59,15 +59,17 @@
       <a href="{% url 'store:crm_new_kunden' %}">Kunden</a>
       </li> 
 
-     <li>
-      <a href="{% url 'store:crm_lagerbestand' %}">Lagerbestand</a>
-      </li> 
+     
       <li>
       <a href="{% url 'store:lieferanten' %}">Lieferanten</a>
     </li>
 
     <li>
       <a href="{% url 'store:crm_artikel' %}">Artikel</a>
+      </li> 
+
+      <li>
+      <a href="{% url 'store:crm_preiscode' %}">Preiscode</a>
       </li> 
 
       <li>
@@ -175,6 +177,10 @@ $(document).ready(function () {
         return confirm("Bist du sicher, dass du den Eintrag löschen willst?");
     }
 </script>
+
+
+
+
 
 
 </body>

@@ -271,6 +271,7 @@ class OrderItem(models.Model):
 	def get_total_item_price_pvc_total(self):
 		return self.get_total_item_price_pvc() * self.quantity 
 
+
 class ShippingCost(models.Model):
 	price_from = models.FloatField(null=True, blank=True,)
 	price_to = models.FloatField(null=True, blank=True,)
@@ -401,6 +402,7 @@ class ShippingAddress(models.Model):
 	def __str__(self):
 		return self.user.username + ' ' + str(self.lieferung_strasse) + ' '+ str(self.lieferung_nr) + ', ' + str(self.lieferung_plz) + ' '+ str(self.lieferung_ort)
 
+
 class Kunde(models.Model):
 	user = models.OneToOneField(User, unique=True, related_name ='profile', on_delete=models.CASCADE,null=True, blank=True)
 	firmenname = models.CharField(max_length=255, null=True, blank=True)
@@ -451,6 +453,7 @@ class Kunde(models.Model):
 	def elemente_count(self):
 		return self.kunden_elemente.count()
 
+
 class Elemente_Bestellungen(models.Model):
     kunden_nr = models.CharField(max_length=255, null=True, blank=True)
     betrieb_person = models.CharField(max_length=255, null=True, blank=True)
@@ -474,6 +477,7 @@ class Elemente_Bestellungen(models.Model):
     def __str__(self):
         return f"{self.kunden_nr} - {self.betrieb_person}"
 
+
 class CRMLager(models.Model):
 	titel = models.CharField(max_length=255, null=True, blank=True)
 	aussenbreite = models.IntegerField(null=True, blank=True)
@@ -489,6 +493,7 @@ class CRMLager(models.Model):
 
 	def __str__(self):
 		return self.titel
+
 
 class CRMAddress(models.Model):
 	kunde = models.ForeignKey(Kunde, related_name ='kunde_address', on_delete=models.CASCADE)
@@ -507,6 +512,7 @@ class CRMAddress(models.Model):
 	def __str__(self):
 		return self.user.firmenname + ' ' + str(self.crm_strasse)
 
+
 class Lieferanten(models.Model):
 	number = models.IntegerField(null=True, blank=True)
 	name = models.CharField(max_length=255, null=True, blank=True) 
@@ -524,23 +530,54 @@ class Lieferanten(models.Model):
 		return self.name or "Unbekannter Lieferant"
 
 
-
-
-class Artikel(models.Model):
-	artikelnr = models.CharField(max_length=255, null=True, blank=True) 
-	name = models.CharField(max_length=255, null=True, blank=True) 
-	aussenbreite = models.IntegerField(null=True, blank=True)
-	aussenhöhe = models.IntegerField(null=True, blank=True)
-	nettopreis = models.FloatField(null=True, blank=True)
-	vp = models.FloatField(null=True, blank=True)
+class Preiscode(models.Model):
+	preiscode = models.CharField(max_length=255, unique=True, null=False, blank=False) 
+	faktor = models.FloatField(null=True, blank=True)
+	transportkosten = models.IntegerField(null=True, blank=True)
+	rabatt = models.IntegerField(null=True, blank=True)
+	preisanpassung = models.IntegerField(null=True, blank=True)
 	
 	class Meta:
 		ordering = ['id']
-		verbose_name = 'Artikel'
-		verbose_name_plural = 'Artikel'
+		verbose_name = 'Preiscode'
+		verbose_name_plural = 'Preiscodes'
 
 	def __str__(self):
-		return f"{self.artikelnr or 'Keine Nummer'} - {self.name or 'Unbenannt'}"
+		return f"{self.preiscode or 'Keine Nummer'} - {self.faktor or 'Unbenannt'}"
+
+
+
+class Artikel(models.Model):
+    artikelnr = models.CharField(max_length=255, null=True, blank=True) 
+    name = models.CharField(max_length=255, null=True, blank=True)
+    lieferant = models.ForeignKey(Lieferanten, related_name='artikel_lieferanten', on_delete=models.SET_NULL, null=True, blank=True)
+    lieferantenartikel = models.CharField(max_length=255, unique=True, null=True, blank=True) 
+    aussenbreite = models.IntegerField(null=True, blank=True)
+    aussenhöhe = models.IntegerField(null=True, blank=True)
+    nettopreis = models.FloatField(null=True, blank=True)
+    zubehoerartikelnr = models.CharField(max_length=255, null=True, blank=True)
+    lagerbestand = models.IntegerField(null=True, blank=True, default=0)
+    lagerort = models.CharField(max_length=255, null=True, blank=True) 
+    preiscode = models.ForeignKey(Preiscode, related_name='artikel_preiscode', on_delete=models.SET_NULL, null=True, blank=True)
+    bestpreis = models.FloatField(null=True, blank=True)
+    bestpreis_lieferant = models.ForeignKey(Lieferanten, related_name='artikel_lieferanten_bestpreis', on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        ordering = ['-artikelnr']
+        verbose_name = 'Artikel'
+        verbose_name_plural = 'Artikel'
+
+    def __str__(self):
+        return f"{self.artikelnr or 'Keine Nummer'} - {self.name or 'Unbenannt'}"
+
+    @property
+    def vp(self):
+        """
+        Verkaufspreis (vp) is calculated as nettopreis * preiscode.faktor.
+        """
+        if self.nettopreis is not None and self.preiscode and self.preiscode.faktor is not None:
+            return round(self.nettopreis * self.preiscode.faktor, 2)
+        return None
 
 
 
@@ -588,6 +625,7 @@ class Elemente(models.Model):
 
 	def __str__(self):
 		return self.id or "Element ohne Namen"
+
 
 class Objekte(models.Model):
 	name = models.CharField(max_length=255, null=True, blank=True) 
