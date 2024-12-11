@@ -388,6 +388,7 @@ def crm_new_kunde_erfassen(request):
         # Initialize forms with POST data
         kunde_form = CRMKundeForm(request.POST)
         address_form = CRMAddressForm(request.POST)
+        kunde_form2 = CRMKundeRestForm(request.POST)
 
         if kunde_form.is_valid() and address_form.is_valid():
             # First, save the Kunde instance
@@ -405,10 +406,12 @@ def crm_new_kunde_erfassen(request):
         # Empty forms for GET request
         kunde_form = CRMKundeForm()
         address_form = CRMAddressForm()
+        kunde_form2 = CRMKundeRestForm()
 
     return render(request, 'crm/crm-kunde-erfassen.html', {
         'kunde_form': kunde_form,
         'address_form': address_form,
+        'kunde_form2' : kunde_form2,
     })
 
 
@@ -442,10 +445,12 @@ def crm_new_kunde_bearbeiten(request, pk):
         # Prepopulate the forms with the existing Kunde and Address data
         kunde_form = CRMKundeForm(instance=kunde)
         address_form = CRMAddressForm(instance=address)
+        kunde_form2 = CRMKundeRestForm(instance=kunde)
 
     return render(request, 'crm/crm-kunde-bearbeiten.html', {
         'kunde_form': kunde_form,
         'address_form': address_form,
+        'kunde_form2' : kunde_form2,
     })
 
 @staff_member_required

@@ -314,13 +314,14 @@ class CRMLastService(forms.ModelForm):
 class CRMKundeForm(forms.ModelForm):
     class Meta:
         model = Kunde
-        fields = ['interne_nummer', 'vorname', 'nachname', 'email', 'firmenname', 'phone', 'zusatz']
+        fields = ['interne_nummer','firmenname', 'zusatz']
         labels = {
-            'interne_nummer': "Interne-Nr.",
+            'interne_nummer': "Interne Nummer",
+            'firmenname': "Betrieb/Firma",
             'vorname': "Vorname",
             'nachname': "Nachname",
             'email': "E-Mail",
-            'firmenname': "Betrieb/Firma",
+            
             'phone': "Telefon/Handy",
             'zusatz': "Zusatz",
         }
@@ -341,7 +342,7 @@ class CRMAddressForm(forms.ModelForm):
         model = CRMAddress
         fields = (
             'crm_strasse',
-            'crm_nr',
+            
             'crm_plz',
             'crm_ort',
             'crm_kanton',  # Dropdown for Kanton
@@ -369,6 +370,32 @@ class CRMAddressForm(forms.ModelForm):
             'crm_kanton': forms.Select(attrs={
                 'class': 'form-control col-6',  # Dropdown for Kanton
             }),
+        }
+
+
+
+class CRMKundeRestForm(forms.ModelForm):
+    class Meta:
+        model = Kunde
+        fields = ['vorname', 'nachname', 'phone','email',]
+        labels = {
+            'interne_nummer': "Interne-Nr.",
+            'firmenname': "Betrieb/Firma",
+            'vorname': "Vorname",
+            'nachname': "Nachname",
+            'email': "E-Mail",
+            
+            'phone': "Telefon/Handy",
+            'zusatz': "Zusatz",
+        }
+        widgets = {
+            'interne_nummer': forms.TextInput(attrs={'class': 'form-control col-6'}),
+            'vorname': forms.TextInput(attrs={'class': 'form-control col-6'}),
+            'nachname': forms.TextInput(attrs={'class': 'form-control col-6'}),
+            'email': forms.TextInput(attrs={'class': 'form-control col-6'}),
+            'firmenname': forms.TextInput(attrs={'class': 'form-control col-6'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control col-6'}),
+            'zusatz': forms.TextInput(attrs={'class': 'form-control col-6'}),
         }
 
 
