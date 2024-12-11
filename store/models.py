@@ -548,7 +548,7 @@ class Preiscode(models.Model):
 
 
 class Artikel(models.Model):
-    artikelnr = models.CharField(max_length=255, null=True, blank=True) 
+    artikelnr = models.CharField(max_length=255, unique=True, null=True, blank=True) 
     name = models.CharField(max_length=255, null=True, blank=True)
     lieferant = models.ForeignKey(Lieferanten, related_name='artikel_lieferanten', on_delete=models.SET_NULL, null=True, blank=True)
     lieferantenartikel = models.CharField(max_length=255, unique=True, null=True, blank=True) 
