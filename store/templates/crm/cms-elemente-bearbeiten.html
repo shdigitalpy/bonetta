@@ -3,25 +3,103 @@
 {% block title %}CMS Elemente bearbeiten{% endblock %}
 
 {% block content %}
+<div class="container">
+    <h2>Elemente bearbeiten</h2>
 
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
 
-			<div class="container">
-			
-			<h2>Elemente bearbeiten</h2>
+        <!-- Debugging Marker -->
+        <p>Template Debug Marker: {{ element.id }}</p>
 
-			<div class="form-group">
-		    
-		    <form method="POST" enctype="multipart/form-data">
-		      {% csrf_token %}
-		      {{ form.as_p }}
-		      <button class="btn btn-primary ml-4">Speichern <span class="fas fa-check-circle"></span></button>
-		      </td>
-  			</div>
-			<br/>
-			   </form>
-			   </div>
+        <!-- Artikel Dropdown -->
+        <div class="form-group">
+            <label for="artikel_search">Artikel durchsuchen:</label>
+            <input 
+                type="text" 
+                id="artikel_search" 
+                class="form-control" 
+                placeholder="Artikel suchen..." 
+                onkeyup="filterArtikel()" 
+                autocomplete="off"
+                value="{% if element.artikel %}{{ element.artikel.artikelnr }}{% else %}{% endif %}">
 
-			</div>
+            <!-- Hidden Input to Hold Selected Value -->
+            <input type="hidden" id="selected_artikelnr" name="artikel_artikelnr" value="{% if element.artikel %}{{ element.artikel.artikelnr }}{% else %}{% endif %}">
 
- {% endblock %}
+            <!-- List for Artikel -->
+            <ul id="artikel_list" class="list-group mt-2">
+                {% for artikel in artikel_liste %}
+                    <li class="list-group-item artikel-item" onclick="selectArtikel('{{ artikel.artikelnr }}')">
+                        {{ artikel.artikelnr }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
 
+        <!-- Kühlposition (Dropdown) -->
+        <div class="form-group">
+            <label for="id_kuehlposition">{{ form.kuehlposition.label }}</label>
+            {{ form.kuehlposition }}
+        </div>
+
+        <!-- Element-Nr -->
+        <div class="form-group">
+            <label for="id_elementnr">{{ form.elementnr.label }}</label>
+            <input 
+                type="number" 
+                id="id_elementnr" 
+                class="form-control" 
+                name="elementnr" 
+                placeholder="Element-Nr." 
+                value="{{ form.elementnr.value|default_if_none:'' }}">
+        </div>
+
+        <!-- Bemerkung -->
+        <div class="form-group">
+            <label for="id_bemerkung">{{ form.bemerkung.label }}</label>
+            <textarea 
+                id="id_bemerkung" 
+                class="form-control" 
+                name="bemerkung" 
+                placeholder="Bemerkung">{{ form.bemerkung.value|default_if_none:'' }}</textarea>
+        </div>
+
+        <!-- Submit and Cancel Buttons -->
+        <div class="form-group mt-3">
+            <button type="submit" class="btn btn-primary btn-md">
+                Speichern <span class="fas fa-check-circle"></span>
+            </button>
+            <a href="{% url 'store:cms_elemente' cpk %}" class="btn btn-secondary btn-md ml-2">
+                Abbrechen <span class="fas fa-times"></span>
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- JavaScript for Filtering Artikel and Selecting Value -->
+<script>
+    function filterArtikel() {
+        const searchInput = document.getElementById('artikel_search').value.toLowerCase();
+        const artikelItems = document.getElementById('artikel_list').getElementsByTagName('li');
+
+        for (let i = 0; i < artikelItems.length; i++) {
+            const artikelText = artikelItems[i].textContent.toLowerCase();
+            artikelItems[i].style.display = artikelText.includes(searchInput) ? '' : 'none';
+        }
+    }
+
+    function selectArtikel(artikelnr) {
+        console.log("Selected Artikelnr: ", artikelnr); // Debug log
+        // Set the selected artikel artikelnr in the input field and hidden field
+        document.getElementById('artikel_search').value = artikelnr;
+        document.getElementById('selected_artikelnr').value = artikelnr;
+
+        // Hide the list of suggestions
+        const artikelItems = document.getElementById('artikel_list').getElementsByTagName('li');
+        for (let i = 0; i < artikelItems.length; i++) {
+            artikelItems[i].style.display = 'none';
+        }
+    }
+</script>
+{% endblock %}

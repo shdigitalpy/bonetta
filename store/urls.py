@@ -67,7 +67,8 @@ urlpatterns = [
     path('cms/crm/lieferanten/create/', views.lieferant_create, name='lieferant_create'),
     path('cms/crm/lieferanten/edit/<int:pk>/', views.lieferant_edit, name='lieferant_edit'),
     path('cms/crm/lieferanten/löschen/<int:pk>', views.lieferant_delete, name='lieferant_delete'),
-
+    path('lieferant-send-order-email/<int:pk>/', views.lieferant_send_order_email, name='lieferant_send_order_email'),
+    
     #crm artikel
     path('artikel/', views.crm_artikel, name='crm_artikel'),
     path('artikel/create/', views.crm_artikel_create, name='crm_artikel_create'),
@@ -125,6 +126,8 @@ urlpatterns = [
 	path('cms/statistik/produkte', views.cms_statistik_produkte, name='cms_statistik_produkte'),
 	path('cms/crm/elemente-bestellungen', views.elemente_bestellungen, name='elemente_bestellungen'),
 	path('lieferschein/<int:bestellung_id>/', generate_lieferschein, name='generate_lieferschein'),
+	path('cms/elemente/<int:pk>/duplicate/<int:elemente_pk>/', views.cms_elemente_duplicate, name='cms_elemente_duplicate'),
+
 
 	#objekte
 	path('cms/elemente/objekte/<int:pk>/<int:cpk>', views.cms_elemente_objekte, name='cms_elemente_objekte'),

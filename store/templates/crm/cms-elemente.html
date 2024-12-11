@@ -51,6 +51,7 @@
             <th scope="col">Lieferant</th>
             <th scope="col">Einkaufspreis</th>
             <th scope="col">Verkaufspreis</th>
+            <th scope="col">Duplizieren</th>
             <th scope="col">Aktionen</th>
         </tr>
     </thead>
@@ -94,16 +95,21 @@
             <td>
                 <!-- Prioritize Nettopreis from Artikel or Element -->
                 {% if data.artikel and data.artikel.nettopreis %}
-                    {{ data.artikel.nettopreis }}
+                    CHF {{ data.artikel.nettopreis }}
                 {% else %}
-                    {{ data.nettopreis }}
+                    CHF {{ data.nettopreis }}
                 {% endif %}
             </td>
             <td>
                 <!-- Show Verkaufspreis from Artikel -->
                 {% if data.artikel and data.artikel.vp %}
-                    {{ data.artikel.vp }}
+                    CHF {{ data.artikel.vp }}
                 {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'store:cms_elemente_duplicate' kunde_id data.pk %}" class="btn btn-sm btn-outline-info" title="Duplizieren">
+                    <i class="fas fa-copy"></i> 
+                </a>
             </td>
             <td>
                 <div class="btn-group" role="group">

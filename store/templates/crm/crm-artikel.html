@@ -57,9 +57,10 @@
                         <a href="{% url 'store:crm_artikel_preiscode_edit' artikel.pk %}" class="btn-sm btn-outline-primary">
                             <i class="fas fa-edit"></i>
                         </a>
-                        {{ artikel.preiscode.preiscode }}
+                        {% if artikel.preiscode.preiscode %}{{ artikel.preiscode.preiscode }}{% endif %}
+
                     </td>
-                    <td>{{ artikel.name }}</td>
+                    <td>{% if artikel.name %}{{ artikel.name }}{% endif %}</td>
                     <td>
                         {% if artikel.aussenbreite and artikel.aussenhöhe %}
                             {{ artikel.aussenbreite }}mm / {{ artikel.aussenhöhe }}mm
@@ -104,20 +105,41 @@
                       <a href="{% url 'store:crm_artikel_nettopreis_edit' artikel.pk %}" class="btn-sm btn-outline-primary">
                           <i class="fas fa-edit"></i>
                              </a>
-                                {{ artikel.nettopreis }}
+                               
+                                {% if artikel.nettopreis %}
+                                CHF {{ artikel.nettopreis }}
+                                 {% else %}
+                                    -
+                                {% endif %}
                             </td>
-                    <td>{{ artikel.vp }}</td>
+                    <td>
+                    {% if artikel.vp %}
+                                CHF {{ artikel.vp }}
+                                 {% else %}
+                                    -
+                                {% endif %}
+
+                       </td>
                     <td>
                         <a href="{% url 'store:crm_artikel_lagerbestand_edit' artikel.pk %}" class="btn-sm btn-outline-primary">
                             <i class="fas fa-edit"></i>
                         </a>
-                        {{ artikel.lagerbestand }}
+                        {% if artikel.lagerbestand %}
+                                {{ artikel.lagerbestand }}
+                                 {% else %}
+                                    -
+                                {% endif %}
                     </td>
                     <td>
                         <a href="{% url 'store:crm_artikel_lagerort_edit' artikel.pk %}" class="btn-sm btn-outline-primary">
                             <i class="fas fa-edit"></i>
                         </a>
-                        {{ artikel.lagerort }}
+                        {% if artikel.lagerort %}
+                                {{ artikel.lagerort }}
+                                 {% else %}
+                                    -
+                                {% endif %}
+                        
                     </td>
                     <td>
                         <a href="{% url 'store:crm_artikel_edit' artikel.pk %}" class="btn btn-sm btn-outline-primary">
@@ -130,11 +152,53 @@
                             </button>
                         </form>
                     </td>
-                    <td>
-                        <a href="#" class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-shopping-cart"></i>
-                        </a>
-                    </td>
+                    
+                   <td>
+    <!-- Button to Open Modal -->
+    <a href="#" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#orderModal{{ artikel.pk }}">
+        <i class="fas fa-shopping-cart"></i>
+    </a>
+
+    <!-- Modal -->
+    <div class="modal fade" id="orderModal{{ artikel.pk }}" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel{{ artikel.pk }}" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderModalLabel{{ artikel.pk }}">Bestellung an Lieferant</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% if artikel.lieferant and artikel.lieferant.email %}
+                        <p><strong>Lieferant:</strong> {{ artikel.lieferant.name }}</p>
+                        <p><strong>Email:</strong> {{ artikel.lieferant.email }}</p>
+                        <p><strong>Artikel:</strong> {{ artikel.name }}</p>
+                        <p><strong>Masse:</strong> {{ artikel.aussenbreite }} x {{ artikel.aussenhöhe }} mm</p>
+
+                        <!-- Form for Anzahl -->
+                        <form method="POST" action="{% url 'store:lieferant_send_order_email' artikel.pk %}" onsubmit="return confirmSendOrder();">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="anzahl{{ artikel.pk }}">Anzahl</label>
+                                <input type="number" id="anzahl{{ artikel.pk }}" name="anzahl" class="form-control" min="1" value="1">
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-3">Bestellung senden</button>
+                        </form>
+                    {% else %}
+                        <p>Keine E-Mail für diesen Lieferanten verfügbar.</p>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Schliessen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</td>
+
+
+
                 </tr>
             {% endfor %}
         {% else %}

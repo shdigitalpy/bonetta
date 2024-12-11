@@ -9,7 +9,7 @@ from django.views.generic import ListView, DetailView, View, UpdateView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from .forms import *
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage,send_mail
 from django.contrib.auth.models import User
 from django.shortcuts import reverse, HttpResponse
 from django.db.models import Q, Count, Sum
@@ -32,6 +32,54 @@ import boto3
 
 
 #CRM
+def lieferant_send_order_email(request, pk):
+    artikel = get_object_or_404(Artikel, pk=pk)
+    if request.method == "POST":
+        anzahl = request.POST.get("anzahl", 1)  # Default to 1 if not provided
+
+        if artikel.lieferant and artikel.lieferant.email:
+            # Prepare email content
+            subject = f"Bestellung für Artikel {artikel.artikelnr}"
+            template = render_to_string('emails/order_email.html', {
+                'lieferant': artikel.lieferant,
+                'artikel': artikel,
+                'anzahl': anzahl,
+            })
+
+            # Send email
+            email = EmailMessage(
+                subject,
+                template,
+                settings.EMAIL_HOST_USER,  # Sender email
+                [artikel.lieferant.email, 'sandro@sh-digital.ch', 'livio.bonetta@geboshop.ch'],  # Recipients
+            )
+            email.content_subtype = 'html'  # Send as HTML
+            email.send()
+
+            messages.success(request, "Die Bestellung wurde erfolgreich gesendet.")
+        else:
+            messages.error(request, "Keine gültige E-Mail-Adresse für diesen Lieferanten verfügbar.")
+    return redirect('store:crm_artikel')
+@staff_member_required
+def cms_elemente_duplicate(request, pk, elemente_pk):
+    kunde = get_object_or_404(Kunde, pk=pk)
+    
+    # Fetch the Elemente instance to duplicate
+    elemente_to_duplicate = get_object_or_404(Elemente, pk=elemente_pk, kunde=kunde)
+    
+    # Duplicate the specified Elemente instance
+    elemente_to_duplicate.pk = None  # Reset the primary key to create a new object
+    elemente_to_duplicate.elementnr = (elemente_to_duplicate.elementnr or 0) + 1  # Increment the elementnr
+    elemente_to_duplicate.produkt = "DUPLIKAT"  # Update produkt field
+    elemente_to_duplicate.kuehlposition = "Schublade"
+    elemente_to_duplicate.save()
+
+    # Link the duplicated Elemente instance to the Kunde
+    elemente_to_duplicate.kunde.add(kunde)
+
+    # Redirect to the Elemente list
+    messages.success(request, f"Das Element wurde erfolgreich dupliziert mit der neuen Elemente-Nr. {elemente_to_duplicate.elementnr}.")
+    return redirect('store:cms_elemente', pk=kunde.pk)
 
 
 @staff_member_required
@@ -101,7 +149,7 @@ def crm_preiscode(request):
             Q(preisanpassung__icontains=search_query)
         ).order_by('-id')
     else:
-        preiscodes = Preiscode.objects.all().order_by('-id')
+        preiscodes = Preiscode.objects.all().order_by('preiscode')
     return render(request, 'crm/crm-preiscodes.html', {'preiscodes': preiscodes})
 
 # View to create a new Preiscode
@@ -544,11 +592,11 @@ def cms_elemente_create(request, pk):
 
 
 
-
 @staff_member_required
 def cms_elemente_edit(request, pk, cpk):
     # Fetch the Elemente instance
     element = get_object_or_404(Elemente, pk=pk)
+    artikel_liste = Artikel.objects.all()  # Fetch list of all Artikel for dropdown
 
     if request.method == "POST":
         # Bind the form to the POST data and the instance
@@ -558,23 +606,31 @@ def cms_elemente_edit(request, pk, cpk):
             element = form.save(commit=False)
             
             # Assign the selected Artikel to the Elemente instance
-            selected_artikel = form.cleaned_data.get('artikel')
-            element.artikel = selected_artikel  # Assign the ForeignKey relationship
+            selected_artikelnr = request.POST.get('artikel_artikelnr')
+            print(f"Selected artikelnr: {selected_artikelnr}")  # Debug
+            if selected_artikelnr:
+                selected_artikel = Artikel.objects.filter(artikelnr=selected_artikelnr).first()
+                element.artikel = selected_artikel
             
             # Update dimensions based on the selected Artikel
-            if selected_artikel:
-                element.aussenbreite = selected_artikel.aussenbreite
-                element.aussenhöhe = selected_artikel.aussenhöhe
+            if element.artikel:
+                element.aussenbreite = element.artikel.aussenbreite
+                element.aussenhöhe = element.artikel.aussenhöhe
             else:
                 element.aussenbreite = None
                 element.aussenhöhe = None
 
             # Save the updated Elemente instance
+            print(f"Saving Element: {element}")  # Debug
             element.save()
 
             messages.success(request, "Das Element wurde erfolgreich aktualisiert.")
             return redirect('store:cms_elemente', pk=cpk)
         else:
+            # Debug form errors
+            print("Form is invalid. Errors:", form.errors.as_json())
+            for field, errors in form.errors.items():
+                print(f"Field: {field}, Errors: {errors}")
             messages.error(request, "Ein Fehler ist aufgetreten. Bitte überprüfen Sie die Eingaben.")
     else:
         # Initialize the form with the existing Elemente instance
@@ -583,9 +639,10 @@ def cms_elemente_edit(request, pk, cpk):
     context = {
         'form': form,
         'element': element,
+        'artikel_liste': artikel_liste,
+        'cpk': cpk,
     }
     return render(request, 'crm/cms-elemente-bearbeiten.html', context)
-
 
 
 
@@ -2246,8 +2303,6 @@ def cms_kunden_erfassen(request):
         'kunde_form': kunde_form,
         'address_form': address_form
     })
-
-
 
 
 @staff_member_required

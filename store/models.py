@@ -538,14 +538,12 @@ class Preiscode(models.Model):
 	preisanpassung = models.IntegerField(null=True, blank=True)
 	
 	class Meta:
-		ordering = ['id']
+		ordering = ['-preiscode']
 		verbose_name = 'Preiscode'
 		verbose_name_plural = 'Preiscodes'
 
 	def __str__(self):
 		return f"{self.preiscode or 'Keine Nummer'} - {self.faktor or 'Unbenannt'}"
-
-
 
 class Artikel(models.Model):
     artikelnr = models.CharField(max_length=255, unique=True, null=True, blank=True) 
@@ -578,8 +576,6 @@ class Artikel(models.Model):
         if self.nettopreis is not None and self.preiscode and self.preiscode.faktor is not None:
             return round(self.nettopreis * self.preiscode.faktor, 2)
         return None
-
-
 
 class Elemente(models.Model):
 	dichtungen = models.ForeignKey(
@@ -624,7 +620,7 @@ class Elemente(models.Model):
 		verbose_name_plural = 'Elemente'
 
 	def __str__(self):
-		return self.id or "Element ohne Namen"
+		return f"{self.elementnr}" 
 
 
 class Objekte(models.Model):

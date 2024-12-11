@@ -1,0 +1,111 @@
+{% load static %}
+
+<html lang="de">
+<head> 
+  <style type="text/css">
+    html, body {
+      font-family: 'Raleway', sans-serif;
+      background-color: #f6f6f6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 80%;
+      margin: 2% auto;
+      padding: 3%;
+      background-color: #ffffff;
+    }
+
+    h2 {
+      color: #29384e;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1rem;
+      margin: 0.5rem 0;
+    }
+
+    .table {
+      width: 100%;
+      text-align: left;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+    }
+
+    .table th, .table td {
+      border: 1px solid #e6e6e6;
+      padding: 0.8rem;
+    }
+
+    .table th {
+      background-color: #29384e;
+      color: white;
+      font-weight: bold;
+    }
+
+    .table td {
+      font-size: 0.95rem;
+    }
+
+    .footer {
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Bestellung Gebo Shop Bonetta {{ artikel }} für Kunden-Nr.: 1733</h2>
+    <p>Sehr geehrte Damen und Herren</p>
+    <p>Wir möchten die folgende Bestellung aufgeben:</p>
+
+    <!-- Supplier Information -->
+    <table class="table">
+      <tr>
+        <th>Bestellung für:</th>
+        <td>{{ lieferant.name }}, {{ lieferant.adresse }}, {{ lieferant.plz }} {{ lieferant.ort }}
+        </td>
+      </tr>
+      
+    </table>
+
+    <!-- Order Details -->
+    <table class="table">
+      <thead>
+        <tr>
+            <th>Anzahl</th>
+          <th>Artikel</th>
+          <th>Masse</th>
+          
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>{{ anzahl }}</td>
+          <td>{{ artikel.name }}</td>
+          <td>{{ artikel.aussenbreite }} x {{ artikel.aussenhöhe }} mm</td>
+          
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Vielen Dank im Voraus.</p>
+    <p>Freundliche Grüsse</p>
+    <p style="font-weight:bold">Gebo Shop Bonetta</p>
+    <p>Langmattstrasse 10<br>
+    8182 Hochfelden</p>
+    <p>Telefon: +41 (0)79 333 61 57</p>
+    <p>E-Mail: livio.bonetta@geboshop.ch </p>
+    
+
+    <div class="footer">
+      <p>Diese Nachricht wurde automatisch generiert. Bitte antworten Sie nicht auf diese E-Mail.</p>
+    </div>
+  </div>
+</body>
+</html>
