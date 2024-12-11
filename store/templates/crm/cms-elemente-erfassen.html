@@ -27,8 +27,8 @@
             <!-- List for Artikel -->
             <ul id="artikel_list" class="list-group mt-2">
                 {% for artikel in artikel_liste %}
-                    <li class="list-group-item artikel-item" onclick="selectArtikel('{{ artikel.name }}')">
-                        {{ artikel.name }}
+                    <li class="list-group-item artikel-item" onclick="selectArtikel('{{ artikel.artikelnr }}')">
+                        {{ artikel.artikelnr }}
                     </li>
                 {% endfor %}
             </ul>
