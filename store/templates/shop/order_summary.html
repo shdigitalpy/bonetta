@@ -38,7 +38,14 @@
           {% endif %}
         
        </td>
-        <td><img class="img-thumbnail" src="{{MEDIA_URL}}{{ order_item.item.titelbild.url }}" alt="image" style="width: 5em;"></td>
+        <td>
+          {% if order_item.item.titelbild and order_item.item.titelbild.url %}
+              <img class="img-thumbnail" src="{{MEDIA_URL}}{{ order_item.item.titelbild.url }}" alt="image" style="width: 5em;">
+          {% else %}
+              <!-- Leave blank or provide a placeholder -->
+          {% endif %}
+      </td>
+
         <td>
             <a href="{% url 'store:remove_single_item_from_cart' order_item.item.slug order_item.pk %}"><i class="fas fa-minus mr-1"></i></a>
             {{ order_item.quantity }}

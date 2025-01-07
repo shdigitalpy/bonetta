@@ -1622,36 +1622,42 @@ def remove_single_item_from_cart(request, slug, pk):
 		messages.info(request, "Es gibt keine aktuelle Bestellung.")
 		return redirect("store:product-detail", slug=slug)
 
-#Warenkorb
+# Warenkorb
 class OrderSummaryView(LoginRequiredMixin, View):
-	def get(self, *args, **kwargs):
-		try:
-			order = Order.objects.get(user=self.request.user, ordered=False)
-			total = order.get_total()
+    def get(self, *args, **kwargs):
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            total = order.get_total()
 
-			shipping1 = ShippingCost.objects.all().filter(price_from__lte=total, price_to__gt=total)
+            # Fetch shipping costs based on the total
+            shipping1 = ShippingCost.objects.filter(price_from__lte=total, price_to__gt=total)
 
-			if order.items.filter(item__subkategorie__sub_name="Duschdichtungen"):
-				order.shippingcost = shipping1[0].shipping_price + 18
-				zuschlag = 18
-				order.save()
-				context = {
-				'object': order,
-				'zuschlag': zuschlag,
-				}
-			else:
+            if shipping1.exists():  # Check if shipping costs exist
+                shipping_price = shipping1[0].shipping_price
+                zuschlag = 18 if order.items.filter(item__subkategorie__sub_name="Duschdichtungen") else 0
 
-				order.shippingcost = shipping1[0].shipping_price
-				order.save()
-				context = {
-					'object': order,
-				
-					}
-			
-			return render(self.request, 'shop/order_summary.html', context)
-		except ObjectDoesNotExist:
-			messages.info(self.request,"Es gibt keine Bestellung.")
-			return redirect("store:home")
+                # Apply shipping cost and Zuschlag (if applicable)
+                order.shippingcost = shipping_price + zuschlag
+                order.save()
+
+                context = {
+                    'object': order,
+                    'zuschlag': zuschlag if zuschlag > 0 else None,  # Only add if Zuschlag is applied
+                }
+            else:
+                # Handle case where no shipping costs are found
+                messages.warning(self.request, "Es wurden keine Versandkosten gefunden.")
+                context = {
+                    'object': order,
+                    'zuschlag': None,
+                }
+
+            return render(self.request, 'shop/order_summary.html', context)
+
+        except ObjectDoesNotExist:
+            messages.info(self.request, "Es gibt keine Bestellung.")
+            return redirect("store:home")
+
 
 
 #Bestellung abschliessen
