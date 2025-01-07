@@ -1650,6 +1650,7 @@ class OrderSummaryView(LoginRequiredMixin, View):
                 context = {
                     'object': order,
                     'zuschlag': None,
+                    'total': total,
                 }
 
             return render(self.request, 'shop/order_summary.html', context)
