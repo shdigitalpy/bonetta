@@ -1452,32 +1452,53 @@ def add_to_cart(request, slug, pk):
 #Kundendichtungen
 @login_required
 def mydichtungen(request):
-	allelements = Elemente.objects.filter(kunde=request.user.profile)
-	kunde = Kunde.objects.get(user=request.user)
-	if request.method == "POST":
-		mydslug = request.POST['mydslug']
-		aussenbreite = request.POST['aussenbreite']
-		aussenhöhe = request.POST['aussenhöhe']
-		anzahl = request.POST['anzahl']
-		element = request.POST['elementnr']
-		item = get_object_or_404(Item, slug=mydslug)
-		orderitem, created = OrderItem.objects.get_or_create(
-				item=item,
-				user=request.user,
-				ordered=False,
-				aussenbreite=aussenbreite, 
-				aussenhöhe=aussenhöhe,
-				element=element,
-			)
-		return redirect("store:add_to_cart_myd", slug=mydslug, pk=item.pk, aussenbreite=aussenbreite, aussenhöhe=aussenhöhe, anzahl=anzahl, element=element)
-	else:
-		orderitem = ' '
-		context = { 
-			'allelements': allelements,
-			'orderitem': orderitem,
-			'kunde': kunde,
-			}
-	return render(request, 'shop/mydichtungen.html', context)
+    try:
+        # Attempt to fetch the profile for the user
+        kunde = Kunde.objects.get(user=request.user)
+        allelements = Elemente.objects.filter(kunde=request.user.profile)
+    except Kunde.DoesNotExist:
+        # If no profile exists, set allelements to an empty list
+        kunde = None
+        allelements = []
+
+    if request.method == "POST":
+        mydslug = request.POST['mydslug']
+        aussenbreite = request.POST['aussenbreite']
+        aussenhöhe = request.POST['aussenhöhe']
+        anzahl = request.POST['anzahl']
+        element = request.POST['elementnr']
+        item = get_object_or_404(Item, slug=mydslug)
+        
+        # Create or get the order item
+        orderitem, created = OrderItem.objects.get_or_create(
+            item=item,
+            user=request.user,
+            ordered=False,
+            aussenbreite=aussenbreite, 
+            aussenhöhe=aussenhöhe,
+            element=element,
+        )
+        # Redirect to add_to_cart page
+        return redirect(
+            "store:add_to_cart_myd",
+            slug=mydslug,
+            pk=item.pk,
+            aussenbreite=aussenbreite,
+            aussenhöhe=aussenhöhe,
+            anzahl=anzahl,
+            element=element,
+        )
+    else:
+        orderitem = None  # Initialize orderitem for context
+
+    # Render the template with context
+    context = { 
+        'allelements': allelements,
+        'orderitem': orderitem,
+        'kunde': kunde,
+    }
+    return render(request, 'shop/mydichtungen.html', context)
+
 
 #add to cart for mydichtungen
 @login_required
