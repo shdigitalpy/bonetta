@@ -107,14 +107,14 @@
                              </a>
                                
                                 {% if artikel.nettopreis %}
-                                CHF {{ artikel.nettopreis }}
+                                CHF {{ artikel.nettopreis|floatformat:2 }}
                                  {% else %}
                                     -
                                 {% endif %}
                             </td>
                     <td>
                     {% if artikel.vp %}
-                                CHF {{ artikel.vp }}
+                                CHF {{ artikel.vp|floatformat:2 }}
                                  {% else %}
                                     -
                                 {% endif %}

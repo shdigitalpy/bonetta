@@ -426,7 +426,7 @@ class Kunde(models.Model):
 
 	def __str__(self):
         # Convert any datetime or timedelta object to a string
-		return f"{self.firmenname or 'Kunde'} - Due Date: {self.get_due_date()}"
+		return f"{self.firmenname or 'Kunde'}"
 
 	# Method to calculate the due date (1 year after the last service)
 	def get_due_date(self):
@@ -538,7 +538,7 @@ class Preiscode(models.Model):
 	preisanpassung = models.IntegerField(null=True, blank=True)
 	
 	class Meta:
-		ordering = ['-preiscode']
+		ordering = ['preiscode']
 		verbose_name = 'Preiscode'
 		verbose_name_plural = 'Preiscodes'
 
@@ -592,6 +592,7 @@ class Elemente(models.Model):
 	nettopreis = models.CharField(max_length=255, blank=True, null=True)
 	lieferant = models.ForeignKey(Lieferanten, related_name ='elemente_lieferanten', on_delete=models.SET_NULL, null=True, blank=True)
 	artikel = models.ForeignKey(Artikel, related_name='artikel_elemente', on_delete=models.SET_NULL, null=True, blank=True)
+	bezeichnung = models.CharField(max_length=255, blank=True, null=True)
 
 	def elemente_laufmeter(self):
 	    # Use the dimensions from `Elemente` if available

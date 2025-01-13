@@ -81,29 +81,29 @@
             </td>
             <td>
                 <!-- Prioritize Artikel dimensions or Element dimensions -->
-                {% if data.artikel %}
+                {% if data.artikel.aussenbreite %}
                     {{ data.artikel.aussenbreite }}mm / {{ data.artikel.aussenhöhe }}mm
                 {% else %}
-                    {{ data.aussenbreite }}mm / {{ data.aussenhöhe }}mm
+                    
                 {% endif %}
             </td>
             <td>
-                {% if data.lieferant %}
-                    {{ data.lieferant }}
+                {% if data.artikel.lieferant %}
+                    {{ data.artikel.lieferant }}
                 {% endif %}
             </td>
             <td>
                 <!-- Prioritize Nettopreis from Artikel or Element -->
-                {% if data.artikel and data.artikel.nettopreis %}
-                    CHF {{ data.artikel.nettopreis }}
+                {% if data.artikel.nettopreis %}
+                    CHF {{ data.artikel.nettopreis|floatformat:2 }}
                 {% else %}
-                    CHF {{ data.nettopreis }}
+                    
                 {% endif %}
             </td>
             <td>
                 <!-- Show Verkaufspreis from Artikel -->
                 {% if data.artikel and data.artikel.vp %}
-                    CHF {{ data.artikel.vp }}
+                    CHF {{ data.artikel.vp|floatformat:2 }}
                 {% endif %}
             </td>
             <td>

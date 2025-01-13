@@ -37,13 +37,13 @@ def fetch_artikel(request):
     print("Query received:", query)  # Debugging
 
     if query:
-        artikel_list = Artikel.objects.filter(artikelnr__icontains=query)[:20]
-        print("Articles found:", [artikel.artikelnr for artikel in artikel_list])  # Debugging
+        artikel_list = Artikel.objects.filter(artikelnr__icontains=query)[:5]
+        print("Articles found:", [(artikel.artikelnr, artikel.name) for artikel in artikel_list])  # Debugging
     else:
         artikel_list = []
         print("No query provided")  # Debugging
 
-    artikel_data = [{'artikelnr': artikel.artikelnr} for artikel in artikel_list]
+    artikel_data = [{'artikelnr': artikel.artikelnr, 'name': artikel.name} for artikel in artikel_list]
     return JsonResponse(artikel_data, safe=False)
 
 def lieferant_send_order_email(request, pk):
@@ -234,9 +234,12 @@ def crm_artikel_edit(request, pk):
         if form.is_valid():
             form.save()
             return redirect('store:crm_artikel')
+        else:
+            print(form.errors)  # Debug: Print form errors
     else:
         form = ArtikelForm(instance=artikel)
-    return render(request, 'crm/crm-artikel-bearbeiten.html', {'form': form})
+    return render(request, 'crm/crm-artikel-bearbeiten.html', {'form': form, 'artikel': artikel})
+
 
 @staff_member_required
 def crm_artikel_delete(request, pk):
@@ -613,52 +616,45 @@ def cms_elemente_create(request, pk):
 
 @staff_member_required
 def cms_elemente_edit(request, pk, cpk):
-    # Fetch the Elemente instance
-    element = get_object_or_404(Elemente, pk=pk)
-    artikel_liste = Artikel.objects.all()  # Fetch list of all Artikel for dropdown
+    element = get_object_or_404(Elemente, pk=pk)  # Get the Elemente instance
+    artikel_liste = Artikel.objects.all()  # Get all Artikel
+    form = ElementeCreateForm(request.POST or None, instance=element)
 
     if request.method == "POST":
-        # Bind the form to the POST data and the instance
-        form = ElementeCreateForm(request.POST, instance=element)
-        if form.is_valid():
-            # Save the main Elemente instance
-            element = form.save(commit=False)
-            
-            # Assign the selected Artikel to the Elemente instance
-            selected_artikelnr = request.POST.get('artikel_artikelnr')
-            print(f"Selected artikelnr: {selected_artikelnr}")  # Debug
-            if selected_artikelnr:
-                selected_artikel = Artikel.objects.filter(artikelnr=selected_artikelnr).first()
-                element.artikel = selected_artikel
-            
-            # Update dimensions based on the selected Artikel
-            if element.artikel:
-                element.aussenbreite = element.artikel.aussenbreite
-                element.aussenhöhe = element.artikel.aussenhöhe
-            else:
-                element.aussenbreite = None
-                element.aussenhöhe = None
+        artikel_name = request.POST.get('artikel_name', None)  # Get selected Artikel name
+        selected_artikel = None
 
-            # Save the updated Elemente instance
-            print(f"Saving Element: {element}")  # Debug
+        # Attempt to find the Artikel by artikelnr or another identifier
+        if artikel_name:
+            try:
+                selected_artikel = Artikel.objects.get(artikelnr=artikel_name)  # Adjust field if needed
+            except Artikel.DoesNotExist:
+                messages.error(request, f"Der Artikel '{artikel_name}' wurde nicht gefunden.")
+
+        if form.is_valid():
+            # Update the Elemente instance but do not save to the database yet
+            element = form.save(commit=False)
+
+            # Link the selected Artikel if found
+            if selected_artikel:
+                element.artikel = selected_artikel
+                element.aussenbreite = selected_artikel.aussenbreite
+                element.aussenhöhe = selected_artikel.aussenhöhe
+            else:
+                messages.error(request, "Bitte wählen Sie einen gültigen Artikel aus.")
+
+            # Save the Elemente instance
             element.save()
 
             messages.success(request, "Das Element wurde erfolgreich aktualisiert.")
             return redirect('store:cms_elemente', pk=cpk)
         else:
-            # Debug form errors
-            print("Form is invalid. Errors:", form.errors.as_json())
-            for field, errors in form.errors.items():
-                print(f"Field: {field}, Errors: {errors}")
             messages.error(request, "Ein Fehler ist aufgetreten. Bitte überprüfen Sie die Eingaben.")
-    else:
-        # Initialize the form with the existing Elemente instance
-        form = ElementeCreateForm(instance=element)
 
     context = {
         'form': form,
-        'element': element,
         'artikel_liste': artikel_liste,
+        'element': element,
         'cpk': cpk,
     }
     return render(request, 'crm/cms-elemente-bearbeiten.html', context)

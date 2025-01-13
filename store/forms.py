@@ -23,32 +23,31 @@ COUNTRY_CHOICES = [
 
 
 class ElementeCreateForm(forms.ModelForm):
-    # Define choices for kuehlposition
     KUEHLPOSITION_CHOICES = [
         ('Schublade', 'Schublade'),
         ('Kühlunterbautür', 'Kühlunterbautür'),
+        ('Kühlschrank', 'Kühlschrank'),
         ('Kühlraumtür', 'Kühlraumtür'),
-        
     ]
 
-    kuehlposition = forms.ChoiceField(
+    bezeichnung = forms.ChoiceField(
         choices=KUEHLPOSITION_CHOICES,
         widget=forms.Select(attrs={
-            'class': 'form-control',  # Add Bootstrap styling
+            'class': 'form-control',
         }),
-        label="Kühlposition"
+        label="Bezeichnung"
     )
 
     class Meta:
         model = Elemente
-        fields = ('artikel', 'kuehlposition', 'elementnr', 'bemerkung')
+        fields = ('artikel', 'kuehlposition', 'elementnr', 'bezeichnung', 'bemerkung')
+
         widgets = {
+            'kuehlposition': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Kühlposition'}),
             'elementnr': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Element-Nr.'}),
             'bemerkung': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Bemerkung'}),
         }
-    
 
-''
 class NettopreisArtikelForm(forms.ModelForm):
     class Meta:
         model = Artikel

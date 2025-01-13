@@ -12,34 +12,36 @@
         <!-- Artikel Dropdown -->
         <div class="form-group">
             <label for="artikel_search">Artikel durchsuchen:</label>
-             <input 
-            type="text" 
-            id="artikel_search" 
-            class="form-control" 
-            placeholder="Artikel suchen..." 
-            onkeyup="fetchArtikel()" 
-            autocomplete="off"
-            value="{% if element.artikel %}{{ element.artikel.artikelnr }}{% endif %}">
+            <input 
+                type="text" 
+                id="artikel_search" 
+                class="form-control" 
+                placeholder="Artikel suchen..." 
+                onkeyup="fetchArtikel()" 
+                autocomplete="off" 
+                value="{% if element.artikel %}{{ element.artikel.artikelnr }}{% endif %}">
 
-        <input 
-            type="hidden" 
-            id="selected_artikel" 
-            name="artikel_name" 
-            value="{% if element.artikel %}{{ element.artikel.artikelnr }}{% endif %}">
+            <!-- Hidden Input for Selected Artikel -->
+            <input 
+                type="hidden" 
+                id="selected_artikel" 
+                name="artikel_name" 
+                value="{% if element.artikel %}{{ element.artikel.artikelnr }}{% endif %}">
 
-            <!-- List for Artikel -->
+            <!-- Dropdown/List for Artikel Suggestions -->
             <ul id="artikel_list" class="list-group mt-2"></ul>
         </div>
 
-        <!-- Kühlposition (Dropdown) -->
+
+        <!-- Kühlposition -->
         <div class="form-group">
-            <label for="id_kuehlposition">{{ form.kuehlposition.label }}</label>
+           <label for="id_kuehlposition">Kühlposition</label>
             {{ form.kuehlposition }}
         </div>
 
         <!-- Element-Nr -->
         <div class="form-group">
-            <label for="id_elementnr">{{ form.elementnr.label }}</label>
+           <label for="id_elementnr">Element-Nr.</label>
             <input 
                 type="number" 
                 id="id_elementnr" 
@@ -49,9 +51,15 @@
                 value="{{ form.elementnr.value|default_if_none:'' }}">
         </div>
 
+        <!-- Bezeichnung -->
+        <div class="form-group">
+           <label for="id_bezeichnung">Bezeichnung</label>
+            {{ form.bezeichnung }}
+        </div>
+
         <!-- Bemerkung -->
         <div class="form-group">
-            <label for="id_bemerkung">{{ form.bemerkung.label }}</label>
+             <label for="id_bemerkung">Bemerkung</label>
             <textarea 
                 id="id_bemerkung" 
                 class="form-control" 
