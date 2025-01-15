@@ -50,7 +50,7 @@
                 <tr>
                     <th scope="row">{{ user.pk }}</th>
                     <td>
-                        {% if user.profile.firmenname %}
+                       
                             {{ user.profile.firmenname }} <br>
                             {% for x in user.address.all %}
                                 
@@ -61,7 +61,7 @@
                                    <br>
                                
                             {% endfor %}
-                        {% endif %}
+                        
                     </td>
                     
                         <td>
