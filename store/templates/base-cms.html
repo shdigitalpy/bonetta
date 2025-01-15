@@ -192,7 +192,7 @@ $(document).ready(function () {
     const artikelList = document.getElementById('artikel_list');
     artikelList.innerHTML = ''; // Clear the current list
 
-    // Fetch only if the input has at least 6 characters
+    // Fetch only if the input has at least 4 characters
     if (searchInput.length >= 4) {
         fetch("{% url 'store:fetch_artikel' %}?query=" + encodeURIComponent(searchInput))
             .then(response => {
@@ -204,6 +204,13 @@ $(document).ready(function () {
             })
             .then(data => {
                 console.log("Fetched Articles:", data);
+
+                // Sort articles in ascending order by artikelnr
+                data.sort((a, b) => {
+                    if (a.artikelnr < b.artikelnr) return -1;
+                    if (a.artikelnr > b.artikelnr) return 1;
+                    return 0;
+                });
 
                 // Display no result message if no articles found
                 if (data.length === 0) {
@@ -230,9 +237,10 @@ $(document).ready(function () {
                 artikelList.appendChild(errorItem);
             });
     } else {
-        console.log("Input length is less than 6. Fetch not initiated.");
+        console.log("Input length is less than 4. Fetch not initiated.");
     }
 }
+
 
 function selectArtikel(artikelName) {
     // Set the selected artikel name in both the visible and hidden input fields

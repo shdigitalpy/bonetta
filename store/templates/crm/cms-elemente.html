@@ -52,6 +52,7 @@
             <th scope="col">Einkaufspreis</th>
             <th scope="col">Verkaufspreis</th>
             <th scope="col">Duplizieren</th>
+            <th scope="col">Notiz</th>
             <th scope="col">Aktionen</th>
         </tr>
     </thead>
@@ -60,7 +61,7 @@
         <tr>
             <td>{{ data.kuehlposition }}</td>
             <td>{{ data.elementnr }}</td>
-            <td>{{ data.bemerkung }}</td>
+            <td>{{ data.bezeichnung }}</td>
             <td>
                 {% for obj in data.elemente_objekte.all %}
                 {{ obj.name }}<br>
@@ -110,6 +111,39 @@
                 <a href="{% url 'store:cms_elemente_duplicate' kunde_id data.pk %}" class="btn btn-sm btn-outline-info" title="Duplizieren">
                     <i class="fas fa-copy"></i> 
                 </a>
+            </td>
+            <td>
+                {% if data.bemerkung %}
+                    <a href="#" 
+                       class="btn btn-sm btn-outline-info" 
+                       title="Notiz anzeigen" 
+                       data-toggle="modal" 
+                       data-target="#notizModal{{ data.pk }}">
+                        <i class="fas fa-comment-dots" aria-hidden="true"></i>
+                    </a>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="notizModal{{ data.pk }}" tabindex="-1" role="dialog" aria-labelledby="notizModalLabel{{ data.pk }}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="notizModalLabel{{ data.pk }}">Notiz</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    {{ data.bemerkung }}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <span class="text-muted">Keine</span>
+                {% endif %}
             </td>
             <td>
                 <div class="btn-group" role="group">

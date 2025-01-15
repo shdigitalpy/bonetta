@@ -583,7 +583,7 @@ class Elemente(models.Model):
 	produkt = models.CharField(max_length=255, blank=True, null=True)
 	elementnr = models.IntegerField(null=True, blank=True) 
 	kuehlposition = models.CharField(max_length=255)
-	bemerkung = models.CharField(max_length=255)
+	bemerkung = models.CharField(max_length=255, blank=True, null=True)
 	kunde = models.ManyToManyField(Kunde, related_name='kunden_elemente', blank=True)
 	aussenbreite = models.IntegerField(null=True, blank=True)
 	aussenhöhe = models.IntegerField(null=True, blank=True)
