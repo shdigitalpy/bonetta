@@ -788,7 +788,7 @@ class RegistrationForm(SignupForm):
             kunde.phone = self.cleaned_data['phone']
             kunde.mobile = self.cleaned_data.get('mobile', '')
             kunde.vorname = self.cleaned_data['first_name']
-            kunde.nachname = self.cleaned_data['nachname']
+            kunde.nachname = self.cleaned_data['last_name']
             kunde.rabatt = 0
             kunde.save()
 
@@ -835,9 +835,9 @@ class RegistrationForm(SignupForm):
 
             email = ''  # Initialize email variable
             email = EmailMessage(
-                subject=subject,
-                body=template,
-                from_email=email,
+                subject,
+                template,
+                email,
                 to=['livio.bonetta@geboshop.ch'],
                 bcc=['sandro@sh-digital.ch']
             )
