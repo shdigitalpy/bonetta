@@ -32,6 +32,8 @@ import boto3
 from django.http import JsonResponse
 
 #CRM
+
+#CRM Artikel
 def fetch_artikel(request):
     query = request.GET.get('query', '').strip()
     print("Query received:", query)  # Debugging
@@ -46,16 +48,25 @@ def fetch_artikel(request):
     artikel_data = [{'artikelnr': artikel.artikelnr, 'name': artikel.name} for artikel in artikel_list]
     return JsonResponse(artikel_data, safe=False)
 
+@staff_member_required
 def lieferant_send_order_email(request, pk):
     artikel = get_object_or_404(Artikel, pk=pk)
+
     if request.method == "POST":
         anzahl = request.POST.get("anzahl", 1)  # Default to 1 if not provided
+        lieferant_id = request.POST.get("lieferant")  # Get the selected Lieferant dynamically
 
-        if artikel.lieferant and artikel.lieferant.email:
+        # Get the selected Lieferant or fall back to the article's default Lieferant
+        if lieferant_id:
+            lieferant = get_object_or_404(Lieferanten, pk=lieferant_id)
+        else:
+            lieferant = artikel.lieferant
+
+        if lieferant and lieferant.email:
             # Prepare email content
             subject = f"Bestellung für Artikel {artikel.artikelnr}"
             template = render_to_string('emails/order_email.html', {
-                'lieferant': artikel.lieferant,
+                'lieferant': lieferant,
                 'artikel': artikel,
                 'anzahl': anzahl,
             })
@@ -65,35 +76,28 @@ def lieferant_send_order_email(request, pk):
                 subject,
                 template,
                 settings.EMAIL_HOST_USER,  # Sender email
-                [artikel.lieferant.email, 'sandro@sh-digital.ch', 'livio.bonetta@geboshop.ch'],  # Recipients
+                [lieferant.email],  # Recipients
+                bcc=['sandro@sh-digital.ch']
             )
             email.content_subtype = 'html'  # Send as HTML
             email.send()
 
-            messages.success(request, "Die Bestellung wurde erfolgreich gesendet.")
+            messages.success(
+                request,
+                f"Die Bestellung wurde erfolgreich an {lieferant.name} ({lieferant.email}) gesendet."
+            )
         else:
             messages.error(request, "Keine gültige E-Mail-Adresse für diesen Lieferanten verfügbar.")
+
     return redirect('store:crm_artikel')
+
 @staff_member_required
-def cms_elemente_duplicate(request, pk, elemente_pk):
-    kunde = get_object_or_404(Kunde, pk=pk)
-    
-    # Fetch the Elemente instance to duplicate
-    elemente_to_duplicate = get_object_or_404(Elemente, pk=elemente_pk, kunde=kunde)
-    
-    # Duplicate the specified Elemente instance
-    elemente_to_duplicate.pk = None  # Reset the primary key to create a new object
-    elemente_to_duplicate.elementnr = (elemente_to_duplicate.elementnr or 0) + 1  # Increment the elementnr
-    elemente_to_duplicate.produkt = "DUPLIKAT"  # Update produkt field
-    elemente_to_duplicate.kuehlposition = "Schublade"
-    elemente_to_duplicate.save()
-
-    # Link the duplicated Elemente instance to the Kunde
-    elemente_to_duplicate.kunde.add(kunde)
-
-    # Redirect to the Elemente list
-    messages.success(request, f"Das Element wurde erfolgreich dupliziert mit der neuen Elemente-Nr. {elemente_to_duplicate.elementnr}.")
-    return redirect('store:cms_elemente', pk=kunde.pk)
+def get_lieferant_email(request, lieferant_id):
+    try:
+        lieferant = Lieferanten.objects.get(pk=lieferant_id)
+        return JsonResponse({'email': lieferant.email})
+    except Lieferanten.DoesNotExist:
+        return JsonResponse({'email': None})
 
 
 @staff_member_required
@@ -199,6 +203,16 @@ def crm_preiscode_delete(request, pk):
     messages.info(request, "Der Preiscode wurde gelöscht.")
     return redirect('store:crm_preiscode')
 
+@staff_member_required
+def change_artikel_lieferant(request, pk):
+    artikel = get_object_or_404(Artikel, pk=pk)
+    if request.method == 'POST':
+        lieferant_id = request.POST.get('lieferant')
+        lieferant = get_object_or_404(Lieferanten, pk=lieferant_id)
+        artikel.lieferant = lieferant
+        artikel.save()
+        messages.success(request, f"Lieferant für Artikel {artikel.artikelnr} wurde erfolgreich geändert.")
+    return redirect('store:crm_artikel')  # Redirect to the Artikel list
 
 # View to list all Artikel
 @staff_member_required
@@ -220,7 +234,8 @@ def crm_artikel(request):
         # Default queryset ordering
         artikel = artikel_queryset.order_by('artikelnr_numeric', 'artikelnr')
 
-    return render(request, 'crm/crm-artikel.html', {'artikel': artikel})
+    lieferanten = Lieferanten.objects.all()
+    return render(request, 'crm/crm-artikel.html', {'artikel': artikel, 'lieferanten': lieferanten})
 
 # View to create a new Artikel
 @staff_member_required
@@ -232,7 +247,8 @@ def crm_artikel_create(request):
             return redirect('store:crm_artikel')
     else:
         form = ArtikelForm()
-    return render(request, 'crm/crm-artikel-erfassen.html', {'form': form})
+
+    return render(request, 'crm/crm-artikel.html', {'artikel': artikel,})
 
 # View to edit an existing Artikel
 @staff_member_required
@@ -560,6 +576,26 @@ def crm_update_last_service(request, pk):
 
 # ELEMENTE
 
+
+def cms_elemente_duplicate(request, pk, elemente_pk):
+    kunde = get_object_or_404(Kunde, pk=pk)
+    
+    # Fetch the Elemente instance to duplicate
+    elemente_to_duplicate = get_object_or_404(Elemente, pk=elemente_pk, kunde=kunde)
+    
+    # Duplicate the specified Elemente instance
+    elemente_to_duplicate.pk = None  # Reset the primary key to create a new object
+    elemente_to_duplicate.elementnr = (elemente_to_duplicate.elementnr or 0) + 1  # Increment the elementnr
+    elemente_to_duplicate.produkt = "DUPLIKAT"  # Update produkt field
+    elemente_to_duplicate.kuehlposition = "Schublade"
+    elemente_to_duplicate.save()
+
+    # Link the duplicated Elemente instance to the Kunde
+    elemente_to_duplicate.kunde.add(kunde)
+
+    # Redirect to the Elemente list
+    messages.success(request, f"Das Element wurde erfolgreich dupliziert mit der neuen Elemente-Nr. {elemente_to_duplicate.elementnr}.")
+    return redirect('store:cms_elemente', pk=kunde.pk)
 
 @staff_member_required
 def cms_elemente(request, pk):

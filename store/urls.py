@@ -83,7 +83,9 @@ urlpatterns = [
     path('artikel/preiscode/edit/<int:pk>/', views.crm_artikel_preiscode_edit, name='crm_artikel_preiscode_edit'),
     path('artikel/nettopreis/edit/<int:pk>/', views.crm_artikel_nettopreis_edit, name='crm_artikel_nettopreis_edit'),
     path('fetch-artikel/', fetch_artikel, name='fetch_artikel'),
-
+    path('artikel/<int:pk>/change-lieferant/', views.change_artikel_lieferant, name='change_artikel_lieferant'),
+    path('lieferant-email/<int:lieferant_id>/', views.get_lieferant_email, name='get_lieferant_email'),
+    
 	#cms 
 	path('cms/', views.cms, name="cms"),
 	path('cms/bestellungen', views.cms_bestellungen, name='cms_bestellungen'),

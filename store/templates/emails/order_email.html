@@ -60,7 +60,7 @@
 </head>
 <body>
   <div class="container">
-    <h2>Bestellung Gebo Shop Bonetta {{ artikel }} für Kunden-Nr.: 1733</h2>
+    <h2>Bestellung Gebo Shop Bonetta</h2>
     <p>Sehr geehrte Damen und Herren</p>
     <p>Wir möchten die folgende Bestellung aufgeben:</p>
 
@@ -68,31 +68,49 @@
     <table class="table">
       <tr>
         <th>Bestellung für:</th>
-        <td>{{ lieferant.name }}, {{ lieferant.adresse }}, {{ lieferant.plz }} {{ lieferant.ort }}
-        </td>
+        <td>{{ lieferant.name }}, {{ lieferant.adresse }}, {{ lieferant.plz }} {{ lieferant.ort }}</td>
       </tr>
-      
     </table>
 
     <!-- Order Details -->
     <table class="table">
       <thead>
         <tr>
-            <th>Anzahl</th>
+          <th>Anzahl</th>
+          <th>Artikel-Nr.</th>
           <th>Artikel</th>
-          <th>Masse</th>
+          <th>Maße</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ anzahl }}</td>
+          <td>{{ artikel.artikelnr }}</td>
+          <td>{{ artikel.name }}</td>
+          <td>{{ artikel.aussenbreite }} x {{ artikel.aussenhöhe }} mm</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Additional Order for Zubehörartikel -->
+    {% if artikel.zubehoerartikelnr %}
+    
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Zubehör Artikel-Nr.</th>
           
         </tr>
       </thead>
       <tbody>
         <tr>
-            <td>{{ anzahl }}</td>
-          <td>{{ artikel.name }}</td>
-          <td>{{ artikel.aussenbreite }} x {{ artikel.aussenhöhe }} mm</td>
+          
+          <td>{{ artikel.zubehoerartikelnr }}</td>
           
         </tr>
       </tbody>
     </table>
+    {% endif %}
 
     <p>Vielen Dank im Voraus.</p>
     <p>Freundliche Grüsse</p>
@@ -101,7 +119,6 @@
     8406 Winterthur</p>
     <p>Telefon: +41 (0)79 333 61 57</p>
     <p>E-Mail: livio.bonetta@geboshop.ch </p>
-    
 
     <div class="footer">
       <p>Diese Nachricht wurde automatisch generiert. Bitte antworten Sie nicht auf diese E-Mail.</p>

@@ -251,8 +251,35 @@ function selectArtikel(artikelName) {
     document.getElementById('artikel_list').innerHTML = '';
 }
 
-    
+
 </script>
+
+<script>
+function updateEmail(artikelPk, lieferantId, baseUrl) {
+    const emailSpan = document.getElementById(`emailDisplay${artikelPk}`);
+    const fetchUrl = baseUrl.replace('0', lieferantId);
+    console.log(`Generated fetch URL: ${fetchUrl}`); // Debugging log
+
+    fetch(fetchUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Failed to fetch: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            emailSpan.textContent = data.email || 'Keine E-Mail verfügbar';
+        })
+        .catch(error => {
+            console.error('Error fetching Lieferant email:', error);
+            emailSpan.textContent = 'Fehler beim Laden der E-Mail';
+        });
+}
+
+
+
+</script>
+
 
 
 

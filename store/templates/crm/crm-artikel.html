@@ -227,50 +227,78 @@
                             </button>
                         </form>
                     </td>
-                    
+
+
+
                    <td>
-    <!-- Button to Open Modal -->
-    <a href="#" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#orderModal{{ artikel.pk }}">
-        <i class="fas fa-shopping-cart"></i>
-    </a>
+                    <!-- Button to Open Modal -->
+                    <a href="#" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#orderModal{{ artikel.pk }}">
+                        <i class="fas fa-shopping-cart"></i>
+                    </a>
 
-    <!-- Modal -->
-    <div class="modal fade" id="orderModal{{ artikel.pk }}" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel{{ artikel.pk }}" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="orderModalLabel{{ artikel.pk }}">Bestellung an Lieferant</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    {% if artikel.lieferant and artikel.lieferant.email %}
-                        <p><strong>Lieferant:</strong> {{ artikel.lieferant.name }}</p>
-                        <p><strong>Email:</strong> {{ artikel.lieferant.email }}</p>
-                        <p><strong>Artikel:</strong> {{ artikel.name }}</p>
-                        <p><strong>Masse:</strong> {{ artikel.aussenbreite }} x {{ artikel.aussenhöhe }} mm</p>
+                    <!-- Modal -->
+                    <div class="modal fade" id="orderModal{{ artikel.pk }}" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel{{ artikel.pk }}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="orderModalLabel{{ artikel.pk }}">Bestellung an Lieferant</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    {% if artikel.lieferant %}
+                                        <!-- Display Artikel Details -->
+                                        <p><strong>Artikel:</strong> {{ artikel.name }}</p>
+                                        <p><strong>Maße:</strong> {{ artikel.aussenbreite }} x {{ artikel.aussenhöhe }} mm</p>
+                                        
+                                        {% if artikel.zubehoerartikelnr %}
+                                        <p><strong>Zubehörartikel:</strong> {{ artikel.zubehoerartikelnr }}</p>
+                                        <hr>
+                                        {% endif %}
 
-                        <!-- Form for Anzahl -->
-                        <form method="POST" action="{% url 'store:lieferant_send_order_email' artikel.pk %}" onsubmit="return confirmSendOrder();">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="anzahl{{ artikel.pk }}">Anzahl</label>
-                                <input type="number" id="anzahl{{ artikel.pk }}" name="anzahl" class="form-control" min="1" value="1">
+                                        <!-- Form for Sending Email -->
+                                        <form method="POST" action="{% url 'store:lieferant_send_order_email' artikel.pk %}" onsubmit="return confirmSendOrder();">
+                                            {% csrf_token %}
+                                            <!-- Dropdown to Temporarily Choose Lieferant -->
+                                            <div class="form-group">
+                                                <label for="lieferant{{ artikel.pk }}">Lieferant auswählen</label>
+                                                <select 
+                                                    id="lieferant{{ artikel.pk }}" 
+                                                    name="lieferant" 
+                                                    class="form-control" 
+                                                    data-base-url="{% url 'store:get_lieferant_email' 0 %}" 
+                                                    onchange="updateEmail('{{ artikel.pk }}', this.value, this.dataset.baseUrl)">
+                                                    {% for lieferant in lieferanten %}
+                                                        <option value="{{ lieferant.pk }}" {% if lieferant.pk == artikel.lieferant.pk %}selected{% endif %}>
+                                                            {{ lieferant.name }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+
+                                            <!-- Display Email of Selected Lieferant -->
+                                            <p><strong>E-Mail:</strong> <span id="emailDisplay{{ artikel.pk }}">{{ artikel.lieferant.email }}</span></p>
+
+                                            <!-- Input for Anzahl -->
+                                            <div class="form-group">
+                                                <label for="anzahl{{ artikel.pk }}">Anzahl</label>
+                                                <input type="number" id="anzahl{{ artikel.pk }}" name="anzahl" class="form-control" min="1" value="1">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary mt-3">Bestellung senden</button>
+                                        </form>
+                                    {% else %}
+                                        <p>Kein Lieferant verfügbar.</p>
+                                    {% endif %}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Schliessen</button>
+                                </div>
                             </div>
-                            <button type="submit" class="btn btn-primary mt-3">Bestellung senden</button>
-                        </form>
-                    {% else %}
-                        <p>Keine E-Mail für diesen Lieferanten verfügbar.</p>
-                    {% endif %}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Schliessen</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</td>
+                        </div>
+                    </div>
+                </td>
+
 
 
 
