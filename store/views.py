@@ -56,10 +56,17 @@ def lieferant_send_order_email(request, pk):
         anzahl = request.POST.get("anzahl", 1)  # Default to 1 if not provided
         lieferant_id = request.POST.get("lieferant")  # Get the selected Lieferant dynamically
 
-        # Get the selected Lieferant or fall back to the article's default Lieferant
+        # Validate and retrieve the Lieferant
+        lieferant = None
         if lieferant_id:
-            lieferant = get_object_or_404(Lieferanten, pk=lieferant_id)
-        else:
+            try:
+                lieferant = get_object_or_404(Lieferanten, pk=int(lieferant_id))
+            except (ValueError, TypeError):
+                messages.error(request, "Ungültige Lieferant-ID.")
+                return redirect('store:crm_artikel')
+
+        # Fallback to the article's default Lieferant
+        if not lieferant:
             lieferant = artikel.lieferant
 
         if lieferant and lieferant.email:
@@ -77,7 +84,7 @@ def lieferant_send_order_email(request, pk):
                 template,
                 settings.EMAIL_HOST_USER,  # Sender email
                 [lieferant.email],  # Recipients
-                bcc=['sandro@sh-digital.ch','livio.bonetta@geboshop.ch']
+                bcc=['sandro@sh-digital.ch', 'livio.bonetta@geboshop.ch']
             )
             email.content_subtype = 'html'  # Send as HTML
             email.send()
@@ -90,6 +97,7 @@ def lieferant_send_order_email(request, pk):
             messages.error(request, "Keine gültige E-Mail-Adresse für diesen Lieferanten verfügbar.")
 
     return redirect('store:crm_artikel')
+
 
 @staff_member_required
 def get_lieferant_email(request, lieferant_id):
