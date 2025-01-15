@@ -12,7 +12,7 @@ from .forms import *
 from django.core.mail import EmailMessage,send_mail
 from django.contrib.auth.models import User
 from django.shortcuts import reverse, HttpResponse
-from django.db.models import Q, Count, Sum,IntegerField
+from django.db.models import Q, F, Case, When, IntegerField, Value
 from django.db.models.functions import Coalesce,Cast
 from django.template.loader import render_to_string, get_template
 from django.conf import settings
@@ -214,14 +214,18 @@ def change_artikel_lieferant(request, pk):
         messages.success(request, f"Lieferant für Artikel {artikel.artikelnr} wurde erfolgreich geändert.")
     return redirect('store:crm_artikel')  # Redirect to the Artikel list
 
-# View to list all Artikel
+
 @staff_member_required
 def crm_artikel(request):
     search_query = request.GET.get('search', '')
 
-    # Base queryset with annotated numeric sorting field
+    # Annotate with a numeric field, defaulting to 0 if not numeric
     artikel_queryset = Artikel.objects.annotate(
-        artikelnr_numeric=Cast('artikelnr', IntegerField())  # Cast numeric portion of artikelnr
+        artikelnr_numeric=Case(
+            When(artikelnr__regex=r'^\d+$', then=Cast('artikelnr', IntegerField())),
+            default=Value(0),  # Default for non-numeric artikelnr
+            output_field=IntegerField()
+        )
     )
 
     if search_query:
@@ -236,6 +240,7 @@ def crm_artikel(request):
 
     lieferanten = Lieferanten.objects.all()
     return render(request, 'crm/crm-artikel.html', {'artikel': artikel, 'lieferanten': lieferanten})
+
 
 # View to create a new Artikel
 @staff_member_required

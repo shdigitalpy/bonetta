@@ -783,7 +783,7 @@ class RegistrationForm(SignupForm):
         user = super().save(request)
         try:
             kunde, created = Kunde.objects.get_or_create(user=user)
-            kunde.firmenname = self.cleaned_data.get('firmenname', '')
+            kunde.firmenname = self.cleaned_data.get('firmenname', 'Privatperson')
             kunde.newsletter = self.cleaned_data.get('newsletter', False)
             kunde.phone = self.cleaned_data['phone']
             kunde.mobile = self.cleaned_data.get('mobile', '')
