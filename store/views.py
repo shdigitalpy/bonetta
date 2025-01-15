@@ -34,6 +34,10 @@ from django.http import JsonResponse
 #CRM
 
 #CRM Artikel
+
+
+
+@staff_member_required   
 def fetch_artikel(request):
     query = request.GET.get('query', '').strip()
     print("Query received:", query)  # Debugging
@@ -261,7 +265,7 @@ def crm_artikel_create(request):
     else:
         form = ArtikelForm()
 
-    return render(request, 'crm/crm-artikel.html', {'artikel': artikel,})
+    return render(request, 'crm/crm-artikel-erfassen.html',{'form': form,})
 
 # View to edit an existing Artikel
 @staff_member_required
@@ -589,27 +593,6 @@ def crm_update_last_service(request, pk):
 
 # ELEMENTE
 
-
-def cms_elemente_duplicate(request, pk, elemente_pk):
-    kunde = get_object_or_404(Kunde, pk=pk)
-    
-    # Fetch the Elemente instance to duplicate
-    elemente_to_duplicate = get_object_or_404(Elemente, pk=elemente_pk, kunde=kunde)
-    
-    # Duplicate the specified Elemente instance
-    elemente_to_duplicate.pk = None  # Reset the primary key to create a new object
-    elemente_to_duplicate.elementnr = (elemente_to_duplicate.elementnr or 0) + 1  # Increment the elementnr
-    elemente_to_duplicate.produkt = "DUPLIKAT"  # Update produkt field
-    elemente_to_duplicate.kuehlposition = "Schublade"
-    elemente_to_duplicate.save()
-
-    # Link the duplicated Elemente instance to the Kunde
-    elemente_to_duplicate.kunde.add(kunde)
-
-    # Redirect to the Elemente list
-    messages.success(request, f"Das Element wurde erfolgreich dupliziert mit der neuen Elemente-Nr. {elemente_to_duplicate.elementnr}.")
-    return redirect('store:cms_elemente', pk=kunde.pk)
-
 @staff_member_required
 def cms_elemente(request, pk):
     kunde_data = Kunde.objects.get(pk=pk)
@@ -634,6 +617,31 @@ def cms_elemente(request, pk):
         'kunde_data': kunde_data,
     }
     return render(request, 'crm/cms-elemente.html', context)
+
+
+
+
+def cms_elemente_duplicate(request, pk, elemente_pk):
+    kunde = get_object_or_404(Kunde, pk=pk)
+    
+    # Fetch the Elemente instance to duplicate
+    elemente_to_duplicate = get_object_or_404(Elemente, pk=elemente_pk, kunde=kunde)
+    
+    # Duplicate the specified Elemente instance
+    elemente_to_duplicate.pk = None  # Reset the primary key to create a new object
+    elemente_to_duplicate.elementnr = (elemente_to_duplicate.elementnr or 0) + 1  # Increment the elementnr
+    elemente_to_duplicate.produkt = "DUPLIKAT"  # Update produkt field
+    elemente_to_duplicate.kuehlposition = "Schublade"
+    elemente_to_duplicate.save()
+
+    # Link the duplicated Elemente instance to the Kunde
+    elemente_to_duplicate.kunde.add(kunde)
+
+    # Redirect to the Elemente list
+    messages.success(request, f"Das Element wurde erfolgreich dupliziert mit der neuen Elemente-Nr. {elemente_to_duplicate.elementnr}.")
+    return redirect('store:cms_elemente', pk=kunde.pk)
+
+
 
 
 @staff_member_required

@@ -53,6 +53,7 @@
             <th scope="col">Verkaufspreis</th>
             <th scope="col">Duplizieren</th>
             <th scope="col">Notiz</th>
+   
             <th scope="col">Aktionen</th>
         </tr>
     </thead>
@@ -136,7 +137,7 @@
                                     {{ data.bemerkung }}
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Schliessen</button>
                                 </div>
                             </div>
                         </div>
@@ -145,6 +146,10 @@
                     <span class="text-muted">Keine</span>
                 {% endif %}
             </td>
+                           
+              
+
+
             <td>
                 <div class="btn-group" role="group">
                     <a href="{% url 'store:cms_elemente_edit' data.pk kunde_id %}" class="btn btn-sm btn-outline-primary" title="Bearbeiten">
