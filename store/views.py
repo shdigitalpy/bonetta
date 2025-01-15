@@ -12,8 +12,8 @@ from .forms import *
 from django.core.mail import EmailMessage,send_mail
 from django.contrib.auth.models import User
 from django.shortcuts import reverse, HttpResponse
-from django.db.models import Q, Count, Sum
-from django.db.models.functions import Coalesce
+from django.db.models import Q, Count, Sum,IntegerField
+from django.db.models.functions import Coalesce,Cast
 from django.template.loader import render_to_string, get_template
 from django.conf import settings
 from xhtml2pdf import pisa
@@ -204,13 +204,22 @@ def crm_preiscode_delete(request, pk):
 @staff_member_required
 def crm_artikel(request):
     search_query = request.GET.get('search', '')
+
+    # Base queryset with annotated numeric sorting field
+    artikel_queryset = Artikel.objects.annotate(
+        artikelnr_numeric=Cast('artikelnr', IntegerField())  # Cast numeric portion of artikelnr
+    )
+
     if search_query:
-        artikel = Artikel.objects.filter(
+        # Filter by search query
+        artikel = artikel_queryset.filter(
             Q(artikelnr__icontains=search_query) |
             Q(name__icontains=search_query)
-        ).order_by('artikelnr')
+        ).order_by('artikelnr_numeric', 'artikelnr')  # Sort by numeric prefix first
     else:
-        artikel = Artikel.objects.all().order_by('artikelnr')
+        # Default queryset ordering
+        artikel = artikel_queryset.order_by('artikelnr_numeric', 'artikelnr')
+
     return render(request, 'crm/crm-artikel.html', {'artikel': artikel})
 
 # View to create a new Artikel

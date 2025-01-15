@@ -52,7 +52,47 @@
         {% if artikel %}
             {% for artikel in artikel %}
                 <tr>
-                    <td>{{ artikel.artikelnr }}</td>
+                    <td>
+                        <a href="#" 
+                           
+                           title="Artikel Details anzeigen" 
+                           data-toggle="modal" 
+                           data-target="#artikelDetailsModal{{ artikel.pk }}">
+                            {{ artikel.artikelnr }}
+                        </a>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="artikelDetailsModal{{ artikel.pk }}" tabindex="-1" role="dialog" aria-labelledby="artikelDetailsModalLabel{{ artikel.pk }}" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="artikelDetailsModalLabel{{ artikel.pk }}">Artikel Details</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><strong>Artikelnummer:</strong> {{ artikel.artikelnr }}</p>
+                                        <p><strong>Dichtungstyp::</strong> {{ artikel.name }}</p>
+                                        <p><strong>Aussenbreite:</strong> {{ artikel.aussenbreite }}</p>
+                                        <p><strong>Aussenhöhe:</strong> {{ artikel.aussenhöhe }}</p>
+                                        <p><strong>Lieferant:</strong> {{ artikel.lieferant }}</p>
+                                        <p><strong>Lieferantenartikel:</strong> {{ artikel.lieferantenartikel }}</p>
+                                        <p><strong>Einkaufspreis:</strong> {{ artikel.nettopreis|floatformat:2 }}</p>
+                                        <p><strong>Verkaufspreis:</strong> {{ artikel.vp|floatformat:2 }}</p>
+                                        <p><strong>Preiscode:</strong> {{ artikel.preiscode }}</p>
+                                        <p><strong>Zubehörartikel-Nr.:</strong> {{ artikel.zubehoerartikelnr }}</p>
+                                        <p><strong>Bestpreis:</strong> {{ artikel.bestpreis|floatformat:2 }}</p>
+                                        <p><strong>Bestpreis Lieferant:</strong> {{ artikel.bestpreis_lieferant }}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+
                     <td>
                         <a href="{% url 'store:crm_artikel_preiscode_edit' artikel.pk %}" class="btn-sm btn-outline-primary">
                             <i class="fas fa-edit"></i>

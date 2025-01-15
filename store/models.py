@@ -8,6 +8,8 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 from datetime import timedelta
 from django.utils import timezone
+from django.db.models import IntegerField
+from django.db.models.functions import Cast
 
 ADDRESS_CHOICES = (
     ('B', 'Rechnungsadresse'),
@@ -545,8 +547,15 @@ class Preiscode(models.Model):
 	def __str__(self):
 		return f"{self.preiscode or 'Keine Nummer'} - {self.faktor or 'Unbenannt'}"
 
+class ArtikelManager(models.Manager):
+    def get_queryset(self):
+        # Annotate artikelnr_numeric for sorting by numeric values
+        return super().get_queryset().annotate(
+            artikelnr_numeric=Cast('artikelnr', IntegerField())
+        ).order_by('artikelnr_numeric', 'artikelnr')
+
 class Artikel(models.Model):
-    artikelnr = models.CharField(max_length=255, unique=True, null=True, blank=True) 
+    artikelnr = models.CharField(max_length=255, unique=True, null=True, blank=True)
     name = models.CharField(max_length=255, null=True, blank=True)
     lieferant = models.ForeignKey(Lieferanten, related_name='artikel_lieferanten', on_delete=models.SET_NULL, null=True, blank=True)
     lieferantenartikel = models.CharField(max_length=255, unique=True, null=True, blank=True) 
@@ -555,13 +564,15 @@ class Artikel(models.Model):
     nettopreis = models.FloatField(null=True, blank=True)
     zubehoerartikelnr = models.CharField(max_length=255, null=True, blank=True)
     lagerbestand = models.IntegerField(null=True, blank=True, default=0)
-    lagerort = models.CharField(max_length=255, null=True, blank=True) 
+    lagerort = models.CharField(max_length=255, null=True, blank=True)
     preiscode = models.ForeignKey(Preiscode, related_name='artikel_preiscode', on_delete=models.SET_NULL, null=True, blank=True)
     bestpreis = models.FloatField(null=True, blank=True)
     bestpreis_lieferant = models.ForeignKey(Lieferanten, related_name='artikel_lieferanten_bestpreis', on_delete=models.SET_NULL, null=True, blank=True)
 
+    # Attach custom manager
+    objects = ArtikelManager()
+
     class Meta:
-        ordering = ['-artikelnr']
         verbose_name = 'Artikel'
         verbose_name_plural = 'Artikel'
 
