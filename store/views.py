@@ -400,6 +400,8 @@ def crm_new_kunden(request):
     
     return render(request, 'crm/crm-kunden.html', context)
 
+
+@staff_member_required
 def crm_new_kunde_erfassen(request):
     if request.method == 'POST':
         # Initialize forms with POST data
@@ -410,6 +412,10 @@ def crm_new_kunde_erfassen(request):
         if kunde_form.is_valid() and address_form.is_valid():
             # First, save the Kunde instance
             kunde = kunde_form.save()  # Save the Kunde form and get the instance
+
+            # Save kunde_form2 with the updated kunde instance
+            kunde_form2.instance = kunde
+            kunde_form2.save()
             
             # Now assign the Kunde instance to the CRMAddress form before saving
             address = address_form.save(commit=False)  # Don't save yet
@@ -444,15 +450,20 @@ def crm_new_kunde_bearbeiten(request, pk):
     if request.method == 'POST':
         # Initialize the forms with POST data and existing instances
         kunde_form = CRMKundeForm(request.POST, instance=kunde)
+        kunde_form2 = CRMKundeRestForm(request.POST, instance=kunde)
         address_form = CRMAddressForm(request.POST, instance=address)
 
-        if kunde_form.is_valid() and address_form.is_valid():
-            # Save the Kunde form and get the updated instance
+        if kunde_form.is_valid() and kunde_form2.is_valid() and address_form.is_valid():
+            # Save kunde_form first
             kunde = kunde_form.save()
 
-            # Save the updated address, assigning the updated Kunde instance
+            # Save kunde_form2 with the updated kunde instance
+            kunde_form2.instance = kunde
+            kunde_form2.save()
+
+            # Save the updated address
             address = address_form.save(commit=False)
-            address.kunde = kunde  # Ensure the address is still associated with the correct Kunde
+            address.kunde = kunde  # Ensure the address is associated with the correct Kunde
             address.address_type = 'R'  # Keep the same address type or update as needed
             address.save()
 
@@ -461,14 +472,15 @@ def crm_new_kunde_bearbeiten(request, pk):
     else:
         # Prepopulate the forms with the existing Kunde and Address data
         kunde_form = CRMKundeForm(instance=kunde)
-        address_form = CRMAddressForm(instance=address)
         kunde_form2 = CRMKundeRestForm(instance=kunde)
+        address_form = CRMAddressForm(instance=address)
 
     return render(request, 'crm/crm-kunde-bearbeiten.html', {
         'kunde_form': kunde_form,
+        'kunde_form2': kunde_form2,
         'address_form': address_form,
-        'kunde_form2' : kunde_form2,
     })
+
 
 @staff_member_required
 def cms_crm_adresse_bearbeiten(request, pk):
