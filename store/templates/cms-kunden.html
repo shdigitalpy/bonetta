@@ -51,16 +51,19 @@
                     <th scope="row">{{ user.pk }}</th>
                     <td>
                        
+                        {% if user.profile.firmenname or user.address.all %}
+                        {% if user.profile.firmenname %}
                             {{ user.profile.firmenname }} <br>
-                            {% for x in user.address.all %}
-                                
-                                    {{ x.rechnung_strasse }} {{ x.rechnung_nr }}<br>
-                                   
+                        {% endif %}
+                        {% for x in user.address.all %}
+                            {% if x.rechnung_strasse or x.rechnung_nr or x.rechnung_plz or x.rechnung_ort %}
+                                {{ x.rechnung_strasse }} {{ x.rechnung_nr }}<br>
+                                {{ x.rechnung_plz }} {{ x.rechnung_ort }}<br>
+                                <br>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
 
-                                    {{ x.rechnung_plz }} {{ x.rechnung_ort }}<br>
-                                   <br>
-                               
-                            {% endfor %}
                         
                     </td>
                     
