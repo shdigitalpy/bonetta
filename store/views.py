@@ -2426,43 +2426,48 @@ def cms_user_bearbeiten(request, pk):
 		return render(request, 'cms-user-bearbeiten.html', context)
 
 
-from django.shortcuts import get_object_or_404
-from .models import Kunde, Address
-
+@staff_member_required
 def cms_kunde_bearbeiten(request, pk):
-    # Get the Kunde instance
     kunde = get_object_or_404(Kunde, pk=pk)
-
-    # Fetch the address using the user field (since Address is linked to User, not Kunde)
     try:
-        address = Address.objects.get(user=kunde.user, address_type='R')  # Assuming 'R' is the main address type
-    except Address.DoesNotExist:
-        address = None  # Handle case if no address is found
+        address = CRMAddress.objects.get(kunde=kunde)  # Get the related address
+    except CRMAddress.DoesNotExist:
+        address = None  # Handle the case where the address does not exist
 
-    # Handle POST request and forms
-    if request.method == "POST":
-        kunde_form = KundeEditAdvancedForm(request.POST, instance=kunde)
-        address_form = AddressForm(request.POST, instance=address)
+    if request.method == 'POST':
+        # Initialize the forms with POST data and existing instances
+        kunde_form = CRMKundeForm(request.POST, instance=kunde)
+        kunde_form2 = CRMKundeRestForm(request.POST, instance=kunde)
+        address_form = CRMAddressForm(request.POST, instance=address)
 
-        if kunde_form.is_valid() and address_form.is_valid():
-            kunde_form.save()
+        if kunde_form.is_valid() and kunde_form2.is_valid() and address_form.is_valid():
+            # Save kunde_form first
+            kunde = kunde_form.save()
+
+            # Save kunde_form2 with the updated kunde instance
+            kunde_form2.instance = kunde
+            kunde_form2.save()
+
+            # Save the updated address
             address = address_form.save(commit=False)
-            address.user = kunde.user  # Make sure the address is linked to the correct user
+            address.kunde = kunde  # Ensure the address is associated with the correct Kunde
+            address.address_type = 'R'  # Keep the same address type or update as needed
             address.save()
-            return redirect('store:cms_kunden')
-        else:
-            messages.error(request, "Fehler beim Speichern der Daten.")
-    else:
-        kunde_form = KundeEditAdvancedForm(instance=kunde)
-        address_form = AddressForm(instance=address)
 
-    context = {
+            return redirect('store:cms_kunden')
+
+    else:
+        # Prepopulate the forms with the existing Kunde and Address data
+        kunde_form = CRMKundeForm(instance=kunde)
+        kunde_form2 = CRMKundeRestForm(instance=kunde)
+        address_form = CRMAddressForm(instance=address)
+
+    return render(request, 'cms-kunden-bearbeiten.html', {
         'kunde_form': kunde_form,
+        'kunde_form2': kunde_form2,
         'address_form': address_form,
-        'kunde': kunde,
-    }
-    
-    return render(request, 'cms-kunden-bearbeiten.html', context)
+    })
+
 
 
 @staff_member_required

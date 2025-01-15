@@ -787,6 +787,8 @@ class RegistrationForm(SignupForm):
             kunde.newsletter = self.cleaned_data.get('newsletter', False)
             kunde.phone = self.cleaned_data['phone']
             kunde.mobile = self.cleaned_data.get('mobile', '')
+            kunde.vorname = self.cleaned_data['first_name']
+            kunde.nachname = self.cleaned_data['nachname']
             kunde.rabatt = 0
             kunde.save()
 

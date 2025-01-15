@@ -33,8 +33,8 @@
         <thead>
             <tr>
                 <th scope="col">Webshop<br>Kunden-Nr.</th>
-                <th scope="col">Firma</th>
-                <th scope="col">Kunde</th>
+                <th scope="col">Betrieb/Firma</th>
+                <th scope="col">Ansprechpartner</th>
                 <th scope="col">Telefon</th>
                 
                 <th scope="col">Rabatt</th>
@@ -52,19 +52,29 @@
                     <td>
                         {% if user.profile.firmenname %}
                             {{ user.profile.firmenname }} <br>
-                            {% for address in user.address.all %}
-                                {{ address.rechnung_strasse }} {{ address.rechnung_nr }}<br>
-                                {{ address.rechnung_plz }} {{ address.rechnung_ort }}<br>
+                            {% for x in user.address.all %}
+                                
+                                    {{ x.rechnung_strasse }} {{ x.rechnung_nr }}<br>
+                                   
+
+                                    {{ x.rechnung_plz }} {{ x.rechnung_ort }}<br>
+                                   <br>
+                               
                             {% endfor %}
-                        {% endif %}  <!-- Missing endif added here -->
+                        {% endif %}
                     </td>
-                    <td>
-                        {% if user.first_name %} {{user.first_name}} {{user.last_name}}{% endif %}<br>
-                        {% if user.profile.phone %}Tel. {{user.profile.phone}}{% endif %}<br>
-                        {% if user.email %}{{user.email}}{% endif %}
+                    
+                        <td>
+
+                           
+                        {{ user.profile.vorname|default:"" }} {{ user.profile.nachname|default:"" }}<br>
+                        Tel: {{ user.profile.phone|default:"" }} {{ user.profile.mobile|default:"" }}<br>
+                        {{ user.profile.email|default:"" }}
+
+                       
+                    
                     </td>
                     <td>{% if user.profile.phone %}{{ user.profile.phone }}{% endif %}</td>
-                   
                     <td>{{ user.profile.rabatt }}%</td>
                     <td>
                         {% if user.profile.newsletter %}
@@ -73,6 +83,7 @@
                             <p>Nein</p>
                         {% endif %}
                     </td>
+
                     <td><a href="{{ user.profile.get_absolute_url }}"><i class="fas fa-edit"></i></a></td>
                     <td><a href="{% url 'store:cms_kunde_löschen' user.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i></a></td>
                     <td>
