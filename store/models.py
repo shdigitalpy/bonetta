@@ -8,7 +8,7 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 from datetime import timedelta
 from django.utils import timezone
-from django.db.models import IntegerField
+from django.db.models import IntegerField, Value, Case, When, CharField
 from django.db.models.functions import Cast
 
 ADDRESS_CHOICES = (
@@ -549,9 +549,12 @@ class Preiscode(models.Model):
 
 class ArtikelManager(models.Manager):
     def get_queryset(self):
-        # Annotate artikelnr_numeric for sorting by numeric values
         return super().get_queryset().annotate(
-            artikelnr_numeric=Cast('artikelnr', IntegerField())
+            artikelnr_numeric=Case(
+                When(artikelnr__regex=r'^\d+$', then=Cast('artikelnr', IntegerField())),  # Cast numeric strings
+                default=Value(0),  # Fallback for non-numeric values
+                output_field=IntegerField()
+            )
         ).order_by('artikelnr_numeric', 'artikelnr')
 
 class Artikel(models.Model):
