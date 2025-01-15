@@ -1,177 +1,118 @@
 {% load static %}
-
-
+<!DOCTYPE html>
 <html lang="de">
-  <head> 
-  <style type="text/css">
-
-    /*
-      --blue: #29384e;
-      --lightblue: #BFDAF3;
-      --white: #ffffff;
-      --yellow: #ffc107;
-      --grey: #f6f6f6;
-      --lightgrey: #e6e6e6;
-      --darkergrey: #A0A0A0;
-      --green: #73C44D;
-      --muted: #999999;
-      --hellblau: #ebf5ff;
-    */
-
-    html, body {
-      height: 100%;
-      width: 100%;
-      font-family: 'Raleway', sans-serif;
-      background-color: #e6e6e6;
-  }
-
-    .container {
-      width: 90%;
-      margin: 2% auto;
-      padding: 3%;
-      background-color: white;
-
-    }
-
-    h2 {
-      margin: 2.5% 0 0.5% 0;
-    }
-
-    p {
-      font-size: 1.1rem;
-      margin: 0.5% 0;
-    }
-
-    .table-big {
-      width: 90%;
-      background-color: #f6f6f6;
-      text-align: center;
-      border-spacing: 0;
-      border-collapse: collapse;
-    }
-
-    .table-big thead th {
-      font-size: 1.3rem;
-      font-weight: bold;
-      color: #ffffff;
-      border-left: 0.25px solid #ffffff;
-    }
-
-    .table-big td, .table-big th {
-      border: 0.1px solid #29384e;
-      padding: 1%;
-  
-    }
-
-    .table-big tbody td {
-      font-size: 1.1rem;
-      padding: 1%;
-
-    }
-
-    .table-big thead {
-      background: #29384e;
-      
-    }
-
-     .table-small {
-      width: 30%;
-      text-align: left !important;
-      border: none;
-      background-color: white;
-      table-layout: fixed;
-    }
-
-      .table-small thead th {
-        font-size: 1rem;
-        font-weight: 400;
-        color: #29384e;
-        border: none;
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neue Registration</title>
+     <style>
+      body {
+        font-family: 'Raleway', sans-serif;
+        background-color: #e6e6e6;
+        margin: 0;
+        padding: 0;
+        color: #333;
       }
 
-      .table-small td, .table-small th {
-        border: none;
-        padding: 1%;
-    
-      }
-
-      .table-small tbody td {
-        font-size: 1rem;
-        padding: 1%;
-
-      }
-
-      .table-small thead {
+      .container {
+        max-width: 600px;
+        margin: 20px auto;
         background: #ffffff;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .header {
+        text-align: center;
+        border-bottom: 2px solid #ffc107;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+      }
+
+      .header h1 {
+        color: #29384e;
+        font-size: 24px;
+        margin: 10px 0;
+      }
+
+      .content {
+        line-height: 1.5;
+        margin-bottom: 20px;
+      }
+
+      .content p {
+        font-size: 16px;
+        color: #555;
+        margin: 0;
+      }
+
+      .content a {
+        color: #29384e;
+        text-decoration: none;
+      }
+
+      .details {
+        background-color: white;
+        padding: 15px;
         
       }
 
-      img {
-        width: 15vw;
-        height: auto;
+      .details p {
+        margin: 10px 0;
+        font-size: 16px;
       }
 
-      .flex {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+      .details strong {
+        color: #29384e;
       }
 
-      .flex-item1 {
-        flex: 20% 0 0;
-        font-size: 1.5rem;
-        text-decoration: none;
-        background-color: #29384e;
+      .footer {
         text-align: center;
-        padding: 1%;
-        color: white;
+        font-size: 14px;
+        color: #999999;
+        margin-top: 20px;
       }
 
-      .flex-item2 {
-        flex: 20% 0 0;
+      .footer a {
+        color: #29384e;
+        text-decoration: none;
       }
-
-      
-
-</style>  
+    </style>
   </head>
   <body>
+    <div class="container">
+      <!-- Header Section -->
+      <div class="header">
+        <img src="https://www.gastrodichtung.ch/static/images/bonetta-icon.png" class="d-inline-block align-top" alt="Gastrodichtungen.ch Logo">
+        <h1>Neue Registration {{ first_name }} {{ last_name }}</h1>
+      </div>
 
-<div class="container">
+      <!-- Content Section -->
+      <div class="content">
+        <p><strong>Seite eingesendet am:</strong> <a href="https://www.gastrodichtung.ch/accounts/signup/">gastrodichtung.ch/accounts/signup/</a></p>
+      </div>
 
-<h2>Registration</h2>
-<p>Die nachfolgende Person hat sich registriert.</p>
-<br>
+      <!-- Details Section -->
+      <div class="details">
+        <p><strong>Vorname:</strong> {{ first_name }}</p>
+        <p><strong>Nachname:</strong> {{ last_name }}</p>
+        <p><strong>User:</strong> {{ username }}</p>
+        <p><strong>E-Mail:</strong> {{ email }}</p>
 
-
-<table class="table-big">
-  <thead>
-    <tr>
-        <th scope="col">Firmenname</th>
-        <th scope="col">Benutzer</th>
-        <th scope="col">Telefon</th>
-        <th scope="col">Mobile</th>
-        <th scope="col">PLZ</th>
-        <th scope="col">Ort</th>
+        <br><br>
+        <p><strong>Firma / Betrieb:</strong> {{ firmenname }}</p>
+        <p><strong>Adresse:</strong> {{ strasse }} {{ nr }}</p>
+        <p><strong>PLZ/Ort:</strong> {{ plz }} {{ ort }} {{ land }}</p>
+        <br><br>
+        <p><strong>Telefon / Mobile:</strong> {{ phone }} / {{ mobile }}</p>
         
-    </tr>
-  </thead>
-  <tbody>
-  	
-    <tr>
-      <td>{{ firmenname }}</td>
-      <td>{{ username }}</td>
-      <td>{{ phone }}</td>
-      <td>{{ mobile }}</td>
-      <td>{{ plz }}</td>
-      <td>{{ ort }}</td>
+      </div>
 
-    </tr>
-     
-  </tbody>
-</table>
-
-
-</div><!--end container-->
-</body>
+      <!-- Footer Section -->
+      <div class="footer">
+        <p>© 2025 Gebo Shop Bonetta. Alle Rechte vorbehalten.</p>
+        
+      </div>
+    </div>
+  </body>
 </html>

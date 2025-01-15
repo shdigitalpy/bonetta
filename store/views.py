@@ -77,7 +77,7 @@ def lieferant_send_order_email(request, pk):
                 template,
                 settings.EMAIL_HOST_USER,  # Sender email
                 [lieferant.email],  # Recipients
-                bcc=['sandro@sh-digital.ch']
+                bcc=['sandro@sh-digital.ch','livio.bonetta@geboshop.ch']
             )
             email.content_subtype = 'html'  # Send as HTML
             email.send()

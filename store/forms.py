@@ -636,165 +636,219 @@ class PaymentForm(forms.Form):
 
 
 class RegistrationForm(SignupForm):
-	username = forms.CharField(max_length=500, required=True, label="",
-					widget=forms.TextInput(attrs={
-						'placeholder': 'Benutzername',
-						'class': 'form-control',
-						}),
-					help_text='Bitte einen gültigen Benutzernamen eingeben'
-					)
+    username = forms.CharField(
+        max_length=500,
+        required=True,
+        label="",
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Benutzername',
+            'class': 'form-control',
+        }),
+        help_text='Bitte einen gültigen Benutzernamen eingeben'
+    )
 
-	first_name = forms.CharField(max_length=500, required=True, label="",
-					widget=forms.TextInput(attrs={
-						'placeholder': 'Vorname',
-						'class': 'form-control',
-						}),
-					help_text='Bitte einen gültigen Vornamen eingeben')
+    first_name = forms.CharField(
+        max_length=500,
+        required=True,
+        label="",
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Vorname',
+            'class': 'form-control',
+        }),
+        help_text='Bitte einen gültigen Vornamen eingeben'
+    )
 
-	last_name = forms.CharField(max_length=500, required=True, label="",
-					widget=forms.TextInput(attrs={
-						'placeholder': 'Nachname',
-						'class': 'form-control',
-						}),
-					help_text='Bitte einen gültigen Nachnamen eingeben')
+    last_name = forms.CharField(
+        max_length=500,
+        required=True,
+        label="",
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Nachname',
+            'class': 'form-control',
+        }),
+        help_text='Bitte einen gültigen Nachnamen eingeben'
+    )
 
-	email = forms.EmailField(max_length=500, required=True, label="",
-					widget=forms.EmailInput(attrs={
-						'placeholder': 'E-Mail Adresse',
-						'required': True, 
-						'class': 'form-control',
-						'type': 'email'
-						}),
-					help_text='Bitte eine gültige E-Mail Adresse eingeben')
+    email = forms.EmailField(
+        max_length=500,
+        required=True,
+        label="",
+        widget=forms.EmailInput(attrs={
+            'placeholder': 'E-Mail Adresse',
+            'class': 'form-control',
+            'type': 'email'
+        }),
+        help_text='Bitte eine gültige E-Mail Adresse eingeben'
+    )
 
-	firmenname = forms.CharField(max_length=500, required=False, label="",
-					widget=forms.TextInput(attrs={
-						'placeholder': 'Firmenname',
-						'class': 'form-control'
+    firmenname = forms.CharField(
+        max_length=500,
+        required=False,
+        label="",
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Firmenname',
+            'class': 'form-control',
+        })
+    )
 
-						}))
+    strasse = forms.CharField(
+        max_length=500,
+        required=True,
+        label="Adresse",
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Strasse',
+            'class': 'form-control',
+        }),
+        help_text='Bitte eine gültige Strasse eingeben'
+    )
 
-	strasse = forms.CharField(max_length=500, required=True, label="Adresse",
-					widget=forms.TextInput(attrs={
-						'placeholder': 'Strasse',
-						'class': 'form-control'
+    nr = forms.CharField(
+        max_length=500,
+        required=True,
+        label="",
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Nr.',
+            'class': 'form-control',
+        }),
+        help_text='Bitte eine gültige Strassen-Nr. eingeben'
+    )
 
-						}),
-					help_text='Bitte eine gültige Strasse eingeben')
+    plz = forms.CharField(
+        max_length=500,
+        required=True,
+        label="",
+        widget=forms.TextInput(attrs={
+            'placeholder': 'PLZ',
+            'class': 'form-control',
+        })
+    )
 
-	nr = forms.CharField(max_length=500, required=True, label="",
-					widget=forms.TextInput(attrs={
-						'placeholder': 'Nr.',
-						'class': 'form-control'
+    ort = forms.CharField(
+        max_length=500,
+        required=True,
+        label="",
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Ort',
+            'class': 'form-control',
+        }),
+        help_text='Bitte einen gültigen Ort eingeben'
+    )
 
-						}),
-					help_text='Bitte eine gültige Strassen-Nr. eingeben')
+    phone = forms.CharField(
+        max_length=500,
+        required=True,
+        label="",
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Telefon- oder Mobile-Nr.',
+            'class': 'form-control',
+        }),
+        help_text='Bitte eine gültige Telefon-Nr. eingeben'
+    )
 
-	plz = forms.CharField(max_length=500, required=True, label="",
-					widget=forms.TextInput(attrs={
-						'placeholder': 'PLZ',
-						'class': 'form-control'
+    mobile = forms.CharField(
+        max_length=500,
+        required=False,
+        label="",
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Mobile-Nr.',
+            'class': 'form-control',
+        })
+    )
 
-						}))
+    land = CountryField().formfield(
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+        }),
+        help_text='Bitte ein gültiges Land auswählen'
+    )
 
-	ort = forms.CharField(max_length=500, required=True, label="",
-					widget=forms.TextInput(attrs={
-						'placeholder': 'Ort',
-						'class': 'form-control'
+    newsletter = forms.BooleanField(required=False)
 
-						}),
-					help_text='Bitte einen gültigen Ort eingeben')
+    def __init__(self, *args, **kwargs):
+        super(RegistrationForm, self).__init__(*args, **kwargs)
+        self.fields['email'].label = ""
+        self.fields['password1'].label = "Passwort:"
+        self.fields['password2'].label = "Passwort (wiederholen):"
+        self.fields['password1'].widget = forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Passwort'})
+        self.fields['password2'].widget = forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Passwort wiederholen'})
 
-	phone = forms.CharField(max_length=500, required=True, label="",
-					widget=forms.TextInput(attrs={
-						'placeholder': 'Telefon- oder Mobile-Nr.',
-						'class': 'form-control'
+    def signup(self, request, user):
+        user.username = self.cleaned_data['username']
+        user.email = self.cleaned_data['email']
+        user.set_password(self.cleaned_data['password1'])
+        user.save()
+        return user
 
-						}),
-					help_text='Bitte eine gültige Telefon-Nr. eingeben')
+    def save(self, request):
+        user = super().save(request)
+        try:
+            kunde, created = Kunde.objects.get_or_create(user=user)
+            kunde.firmenname = self.cleaned_data.get('firmenname', '')
+            kunde.newsletter = self.cleaned_data.get('newsletter', False)
+            kunde.phone = self.cleaned_data['phone']
+            kunde.mobile = self.cleaned_data.get('mobile', '')
+            kunde.rabatt = 0
+            kunde.save()
 
-	mobile = forms.CharField(max_length=500, required=False, label="",
-					widget=forms.TextInput(attrs={
-						'placeholder': 'Mobile-Nr.',
-						'class': 'form-control'
+            address, created = Address.objects.get_or_create(user=user)
+            address.user.first_name = self.cleaned_data['first_name']
+            address.user.last_name = self.cleaned_data['last_name']
+            address.rechnung_strasse = self.cleaned_data['strasse']
+            address.rechnung_nr = self.cleaned_data['nr']
+            address.rechnung_ort = self.cleaned_data['ort']
+            address.rechnung_land = self.cleaned_data['land']
+            address.rechnung_plz = self.cleaned_data['plz']
+            address.address_type = "B"
+            address.save()
 
-						}))
+            firmenname = self.cleaned_data.get('firmenname', '')
+            username = user.username
+            phone = self.cleaned_data['phone']
+            mobile = self.cleaned_data.get('mobile', '')
+            plz = self.cleaned_data['plz']
+            ort = self.cleaned_data['ort']
+            email_address = self.cleaned_data['email']
+            strasse = self.cleaned_data['strasse']
+            nr = self.cleaned_data['nr']
+            land = self.cleaned_data['land']
+            first_name = self.cleaned_data['first_name']
+            last_name = self.cleaned_data['last_name']
 
-	land = CountryField().formfield(
-					widget=forms.Select(attrs={
-						'class': 'form-control'
+            subject = 'Registration Neuer Kunde'
+            template = render_to_string('shop/registration-email.html', {
+                'firmenname': firmenname,
+                'username': username,
+                'phone': phone,
+                'mobile': mobile,
+                'plz': plz,
+                'ort': ort,
+                'email': email_address,
+                'strasse': strasse,
+                'nr': nr,
+                'land': land,
+                'first_name':first_name,
+                'last_name':last_name,
 
-						}),
-					help_text='Bitte ein gültiges Land auswählen')
-	newsletter = forms.BooleanField(required=False)
+            })
 
-	def __init__(self, *args, **kwargs):
-		super(RegistrationForm, self).__init__(*args, **kwargs)
-		self.fields['email'].label = ""
-		self.fields['password1'].label = "Passwort:"
-		self.fields['password2'].label = "Passwort (wiederholen):"
-		self.fields['password1'].widget = forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Passwort'})
-		self.fields['password2'].widget = forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Passwort wiederholen'})
-		
+            email = ''  # Initialize email variable
+            email = EmailMessage(
+                subject=subject,
+                body=template,
+                from_email=email,
+                to=['sandro@sh-digital.ch'],
+                bcc=['sandro@sh-digital.ch']
+            )
+            email.content_subtype = "html"
+            email.fail_silently = False
+            email.send()
 
-	def signup(self, request, user):
-		user.username = self.cleaned_data['username']
-		user.email = self.cleaned_data['email']
-		user.password1 = self.cleaned_data['password1']
-		user.password2 = self.cleaned_data['password2']
-		user.save()
-		return user
+        except Exception as e:
+            print(f"Error processing registration: {e}")
 
-	def save(self, request):
-		user = super(RegistrationForm, self).save(request)
-		kunde, created = Kunde.objects.get_or_create(user=user)
-		kunde.firmenname = self.cleaned_data['firmenname']
-		kunde.newsletter = self.cleaned_data['newsletter']
-		kunde.phone = self.cleaned_data['phone']
-		kunde.mobile = self.cleaned_data['mobile']
-		kunde.rabatt = 0
-		kunde.save()
-		address, created = Address.objects.get_or_create(user=user)
-		address.user.first_name = self.cleaned_data['first_name']
-		address.user.last_name = self.cleaned_data['last_name']
-		address.rechnung_strasse = self.cleaned_data['strasse']
-		address.rechnung_nr = self.cleaned_data['nr']
-		address.rechnung_ort = self.cleaned_data['ort']
-		address.rechnung_land = self.cleaned_data['land']
-		address.rechnung_plz = self.cleaned_data['plz']
-		address.address_type = "B"
-		address.save()
-		#email
-		firmenname = self.cleaned_data['firmenname']
-		username = user.username
-		phone = self.cleaned_data['phone']
-		mobile = self.cleaned_data['mobile']
-		plz = self.cleaned_data['plz']
-		ort = self.cleaned_data['ort']
-		subject = 'Registration Neuer Kunde'
-		template = render_to_string('shop/registration-email.html', {
-			
-			'firmenname': firmenname, 
-			'username': username,
-			'phone': phone,
-			'mobile': mobile,
-			'plz': plz,
-			'ort': ort,			
-			 })
-		
-		#send email for order
-		email = ''
-		email = EmailMessage(
-			subject,
-			template,
-			email,
-			['bestellungen@gastrodichtung.ch', 'livio.bonetta@geboshop.ch', 'sandro@sh-digital.ch'],
-		)
+        return user
 
-		email.fail_silently=False
-		email.content_subtype = "html"
-		email.send()
-		return user
+
 
 
 
