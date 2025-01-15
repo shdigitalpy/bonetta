@@ -836,7 +836,7 @@ class RegistrationForm(SignupForm):
                 subject=subject,
                 body=template,
                 from_email=email,
-                to=['sandro@sh-digital.ch'],
+                to=['livio.bonetta@geboshop.ch'],
                 bcc=['sandro@sh-digital.ch']
             )
             email.content_subtype = "html"
