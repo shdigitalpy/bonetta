@@ -102,16 +102,51 @@
                         {% endif %}
                     </td>
                     <td>
-                      <a href="{% url 'store:crm_artikel_nettopreis_edit' artikel.pk %}" class="btn-sm btn-outline-primary">
-                          <i class="fas fa-edit"></i>
-                             </a>
-                               
-                                {% if artikel.nettopreis %}
-                                CHF {{ artikel.nettopreis|floatformat:2 }}
-                                 {% else %}
-                                    -
-                                {% endif %}
-                            </td>
+                        <!-- Edit Nettopreis -->
+                        <a href="{% url 'store:crm_artikel_nettopreis_edit' artikel.pk %}" class="btn-sm btn-outline-primary" title="Nettopreis bearbeiten">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        
+                        <!-- Display Nettopreis -->
+                        {% if artikel.nettopreis %}
+                            CHF {{ artikel.nettopreis|floatformat:2 }}
+                        {% else %}
+                            -
+                        {% endif %}
+
+                        <!-- Bestpreis Icon -->
+                        {% if artikel.bestpreis %}
+                            <a href="#" 
+                               class="btn-sm btn-outline-success" 
+                               title="Bestpreis anzeigen" 
+                               data-toggle="modal" 
+                               data-target="#bestpreisModal{{ artikel.pk }}">
+                                <i class="fas fa-tag"></i>
+                            </a>
+
+                            <!-- Bestpreis Modal -->
+                            <div class="modal fade" id="bestpreisModal{{ artikel.pk }}" tabindex="-1" role="dialog" aria-labelledby="bestpreisModalLabel{{ artikel.pk }}" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="bestpreisModalLabel{{ artikel.pk }}">Bestpreis Details</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p><strong>Bestpreis:</strong> CHF {{ artikel.bestpreis|floatformat:2 }}</p>
+                                            <p><strong>Lieferant:</strong> {{ artikel.bestpreis_lieferant }}</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </td>
+
                     <td>
                     {% if artikel.vp %}
                                 CHF {{ artikel.vp|floatformat:2 }}
