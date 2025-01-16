@@ -631,7 +631,7 @@ def cms_elemente_duplicate(request, pk, elemente_pk):
     elemente_to_duplicate.pk = None  # Reset the primary key to create a new object
     elemente_to_duplicate.elementnr = (elemente_to_duplicate.elementnr or 0) + 1  # Increment the elementnr
     elemente_to_duplicate.produkt = "DUPLIKAT"  # Update produkt field
-    elemente_to_duplicate.kuehlposition = "Schublade"
+    elemente_to_duplicate.kuehlposition = elemente_to_duplicate.kuehlposition
     elemente_to_duplicate.save()
 
     # Link the duplicated Elemente instance to the Kunde
