@@ -20,6 +20,7 @@ from xhtml2pdf import pisa
 from io import BytesIO
 from datetime import datetime
 from django.contrib.admin.views.decorators import staff_member_required
+from django.views.decorators.csrf import csrf_exempt
 from itertools import chain
 import qrcode
 import base64
@@ -30,11 +31,55 @@ from django.conf import settings
 from docx import Document
 import boto3
 from django.http import JsonResponse
+import json
 
 #CRM
 
 #CRM Artikel
 
+def bestellformular_view(request):
+    # Initialize session data for cart and customer number if not already set
+    if "cart_items" not in request.session:
+        request.session["cart_items"] = []
+    if "kunden_nr" not in request.session:
+        request.session["kunden_nr"] = None
+
+    return render(request, "bestellformular-neu.html", {
+        "cart_items": request.session["cart_items"],
+        "kunden_nr": request.session["kunden_nr"]
+    })
+
+@csrf_exempt
+def update_cart_view(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            kunden_nr = data.get("kunden_nr", None)
+            cart_items = data.get("cart_items", [])
+
+            # Save Kunden-Nr. in session if provided
+            if kunden_nr:
+                request.session["kunden_nr"] = kunden_nr
+
+            # Update cart items
+            request.session["cart_items"] = cart_items
+            request.session.modified = True
+
+            return JsonResponse({"message": "Cart updated successfully"}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+@csrf_exempt
+def checkout_view(request):
+    if request.method == "POST":
+        try:
+            cart_items = json.loads(request.body)  # Receive cart data as JSON
+            # Handle checkout logic (e.g., save order to the database)
+            return JsonResponse({"message": "Checkout successful!"}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+    return JsonResponse({"error": "Invalid request method"}, status=405)
 
 
 @staff_member_required   
