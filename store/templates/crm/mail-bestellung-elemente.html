@@ -1,190 +1,157 @@
 {% load static %}
-
-
+<!DOCTYPE html>
 <html lang="de">
-  <head> 
-  <style type="text/css">
-
-    /*
-      --blue: #29384e;
-      --lightblue: #BFDAF3;
-      --white: #ffffff;
-      --yellow: #ffc107;
-      --grey: #f6f6f6;
-      --lightgrey: #e6e6e6;
-      --darkergrey: #A0A0A0;
-      --green: #73C44D;
-      --muted: #999999;
-      --hellblau: #ebf5ff;
-    */
-
-    html, body {
-      height: 100%;
-      width: 100%;
-      font-family: 'Raleway', sans-serif;
-      background-color: #e6e6e6;
-  }
-
-    .container {
-      width: 90%;
-      margin: 2% auto;
-      padding: 3%;
-      background-color: white;
-
-    }
-
-    h2 {
-      margin: 2.5% 0 0.5% 0;
-    }
-
-    p {
-      font-size: 1.1rem;
-      margin: 0.5% 0;
-    }
-
-    .table-big {
-      width: 90%;
-      background-color: #f6f6f6;
-      text-align: center;
-      border-spacing: 0;
-      border-collapse: collapse;
-    }
-
-    .table-big thead th {
-      font-size: 1.3rem;
-      font-weight: bold;
-      color: #ffffff;
-      border-left: 0.25px solid #ffffff;
-    }
-
-    .table-big td, .table-big th {
-      border: 0.1px solid #29384e;
-      padding: 1%;
-  
-    }
-
-    .table-big tbody td {
-      font-size: 1.1rem;
-      padding: 1%;
-
-    }
-
-    .table-big thead {
-      background: #29384e;
-      
-    }
-
-     .table-small {
-      width: 30%;
-      text-align: left !important;
-      border: none;
-      background-color: white;
-      table-layout: fixed;
-    }
-
-      .table-small thead th {
-        font-size: 1rem;
-        font-weight: 400;
-        color: #29384e;
-        border: none;
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bestellung Elemente</title>
+     <style>
+      body {
+        font-family: 'Raleway', sans-serif;
+        background-color: #e6e6e6;
+        margin: 0;
+        padding: 0;
+        color: #333;
       }
 
-      .table-small td, .table-small th {
-        border: none;
-        padding: 1%;
-    
-      }
-
-      .table-small tbody td {
-        font-size: 1rem;
-        padding: 1%;
-
-      }
-
-      .table-small thead {
+      .container {
+        max-width: 600px;
+        margin: 20px auto;
         background: #ffffff;
-        
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
 
-      img {
-        width: 15vw;
-        height: auto;
-      }
-
-      .flex {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .flex-item1 {
-        flex: 20% 0 0;
-        font-size: 1.5rem;
-        text-decoration: none;
-        background-color: #29384e;
+      .header {
         text-align: center;
-        padding: 1%;
+        border-bottom: 2px solid #ffc107;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+      }
+
+      .header h1 {
+        color: #29384e;
+        font-size: 24px;
+        margin: 10px 0;
+      }
+
+      .content {
+        line-height: 1.5;
+        margin-bottom: 20px;
+      }
+
+      .content p {
+        font-size: 16px;
+        color: #555;
+        margin: 0;
+      }
+
+      .details {
+        background-color: white;
+        padding: 15px;
+      }
+
+      .details p {
+        margin: 10px 0;
+        font-size: 16px;
+      }
+
+      .details strong {
+        color: #29384e;
+      }
+
+      .footer {
+        text-align: center;
+        font-size: 14px;
+        color: #999999;
+        margin-top: 20px;
+      }
+
+      .footer a {
+        color: #29384e;
+        text-decoration: none;
+      }
+
+      .table {
+        width: 100%;
+        text-align: left;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+
+      .table th, .table td {
+        border: 1px solid #e6e6e6;
+        padding: 8px;
+        font-size: 16px;
+      }
+
+      .table th {
+        background-color: #29384e;
         color: white;
+        font-weight: bold;
       }
 
-      .flex-item2 {
-        flex: 20% 0 0;
+      .table td {
+        color: #555;
       }
-
-      
-
-</style>  
+    </style>
   </head>
   <body>
+    <div class="container">
+      <!-- Header Section -->
+      <div class="header">
+        <img style="max-width:100px" src="https://www.gastrodichtung.ch/static/images/bonetta-icon.png" alt="Gastrodichtungen.ch Logo">
+        <h1>Bestellung Elemente</h1>
+      </div>
 
-<div class="container">
+      <!-- Content Section -->
+      <div class="content">
+        <p><strong>Die nachfolgende Person hat Elemente über die Webseite bestellt:</strong></p>
+      </div>
 
-    <h2>Bestellung Elemente</h2>
-    <p>Die nachfolgende Person hat Elemente über die Webseite bestellt.</p>
-    <br>
+      <!-- Details Section -->
+      <div class="details">
+        <p><strong>Kunden-Nr.:</strong> {{ kunden_nr }}</p>
+        <p><strong>Betrieb / Person:</strong> {{ betrieb_person }}</p>
+        <p><strong>Adresse:</strong> {{ adresse }}</p>
+        <p><strong>PLZ/Ort:</strong> {{ plz }} {{ ort }}</p>
+        <p><strong>Telefon / Mobile:</strong> {{ phone }} / {{ mobile }}</p>
+      </div>
 
-    <table class="table-big">
+      <!-- Order Details Section -->
+      <table class="table">
         <thead>
-            <tr>
-                <th scope="col">Kunden-Nr.</th>
-                <th scope="col">Betrieb / Person</th>
-                <th scope="col">Adresse</th>
-                <th scope="col">PLZ</th>
-                <th scope="col">Ort</th>
-                <th scope="col">Elemente</th>
-                <th scope="col">Montage</th>
-               
-            </tr>
+          <tr>
+            <th>Elemente</th>
+            <th>Montage</th>
+          </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>{{ kunden_nr }}</td> <!-- Kunden-Nr. -->
-                <td>{{ betrieb_person }}</td> <!-- Betrieb / Person -->
-                <td>{{ adresse }}</td> <!-- Adresse -->
-                <td>{{ plz }}</td> <!-- PLZ -->
-                <td>{{ ort }}</td> <!-- Ort -->
-                <td>{{ elemente_nr }}</td> <!-- Elemente (join checkboxes into a string in view) -->
-                <td>{{ montage }}</td> <!-- Mit oder ohne Montage -->
-                
-            </tr>
+          <tr>
+            <td>{{ elemente_nr }}</td>
+            <td>{{ montage }}</td>
+          </tr>
         </tbody>
-    </table>
+      </table>
 
-    <br><br><br>
-
-    <table class="table-big">
+      <!-- Remark Section -->
+      <table class="table">
         <thead>
-            <tr>
-                <th scope="col">Bemerkung</th>
-            </tr>
+          <tr>
+            <th>Bemerkung</th>
+          </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>{{ bemerkung }}</td> <!-- Nachricht -->
-            </tr>
+          <tr>
+            <td>{{ bemerkung }}</td>
+          </tr>
         </tbody>
-    </table>
+      </table>
 
-</div><!--end container-->
-</body>
+      <!-- Footer Section -->
+      <div class="footer">
+        <p>© 2025 Gebo Shop Bonetta. Alle Rechte vorbehalten.</p>
+      </div>
+    </div>
+  </body>
 </html>

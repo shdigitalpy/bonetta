@@ -95,11 +95,46 @@
         </tbody>
     </table>
 
+    <!-- Montage Selection -->
     <form method="POST">
         {% csrf_token %}
-        <button type="submit" name="checkout" class="btn btn-success" {% if not cart_items_with_details %} disabled {% endif %}>
+        <div class="form-group">
+            <label for="montage">Montage:</label>
+            <select name="montage" id="montage" class="form-control" required>
+                <option value="mit">Mit Montage</option>
+                <option value="ohne">Ohne Montage</option>
+            </select>
+        </div>
+
+        <!-- Zur Kasse Button with Modal Trigger -->
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#confirmCheckoutModal" {% if not cart_items_with_details %} disabled {% endif %}>
             Zur Kasse
         </button>
     </form>
+</div>
+
+<!-- Modal for Confirmation -->
+<div class="modal fade" id="confirmCheckoutModal" tabindex="-1" role="dialog" aria-labelledby="confirmCheckoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmCheckoutModalLabel">Bestellung Abschicken</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Wollen Sie die Bestellung wirklich abschicken?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="montage" value="mit">
+                    <button type="submit" name="checkout" class="btn btn-success">Bestellung abschicken</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
