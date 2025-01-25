@@ -35,53 +35,108 @@ import json
 
 #CRM
 
-#CRM Artikel
-
-def bestellformular_view(request):
-    # Initialize session data for cart and customer number if not already set
-    if "cart_items" not in request.session:
-        request.session["cart_items"] = []
+# start new warenkorb elemente
+def bestellformular_cart(request):
+    """
+    Handles the cart functionality, validates element-nr, and renders the bestellformular template.
+    """
     if "kunden_nr" not in request.session:
         request.session["kunden_nr"] = None
 
+    kunden_nr_form = KundenNrForm()
+    form = ElementeCartItemForm()
+
+    # Initialize variables
+    kunde_details = None
+    cart_items_with_details = []  # To store details dynamically
+
+    if request.method == "POST":
+        if "set_kunden_nr" in request.POST:  # Set Kunden-Nr.
+            kunden_nr_form = KundenNrForm(request.POST)
+            if kunden_nr_form.is_valid():
+                kunden_nr = kunden_nr_form.cleaned_data["kunden_nr"]
+                kunde_details = Kunde.objects.filter(interne_nummer=kunden_nr).first()
+                if not kunde_details:
+                    messages.warning(request, "Dieser Kunde existiert nicht. Bitte geben Sie eine gültige Kunden-Nr. ein.")
+                else:
+                    request.session["kunden_nr"] = kunden_nr
+                    request.session.modified = True
+                    return redirect("store:bestellformular_cart")
+
+        elif "add_to_cart" in request.POST:  # Add item to cart
+            form = ElementeCartItemForm(request.POST)
+            if form.is_valid():
+                kunden_nr = request.session.get("kunden_nr")
+                if not kunden_nr:
+                    messages.warning(request, "Bitte geben Sie zuerst eine Kunden-Nr. ein.")
+                else:
+                    element_nr = form.cleaned_data["element_nr"]
+                    anzahl = form.cleaned_data["anzahl"]
+
+                    # Check if the entered element-nr exists in the Elemente model
+                    element = Elemente.objects.filter(elementnr=element_nr).first()
+                    if not element:
+                        messages.warning(request, f"Das Element-Nr. '{element_nr}' existiert nicht.")
+                    else:
+                        # Create the cart item
+                        order, _ = ElementeCartOrder.objects.get_or_create(kunden_nr=kunden_nr)
+                        ElementeCartItem.objects.create(
+                            order=order,
+                            element_nr=element_nr,
+                            anzahl=anzahl,
+                        )
+                        messages.success(request, f"Element-Nr. '{element_nr}' erfolgreich hinzugefügt.")
+                        return redirect("store:bestellformular_cart")
+
+        elif "delete_item" in request.POST:  # Handle item deletion
+            delete_item_id = request.POST.get("delete_item_id")
+            if delete_item_id:
+                ElementeCartItem.objects.filter(id=delete_item_id).delete()
+                messages.success(request, "Artikel erfolgreich aus dem Warenkorb entfernt.")
+                return redirect("store:bestellformular_cart")
+
+        elif "checkout" in request.POST:  # Checkout
+            request.session["kunden_nr"] = None
+            request.session.modified = True
+            messages.success(request, "Bestellung erfolgreich abgeschlossen.")
+            return redirect("store:bestellformular_cart")
+
+    # Fetch Kunde details if Kunden-Nr. is set
+    kunden_nr = request.session.get("kunden_nr")
+    if kunden_nr:
+        kunde_details = Kunde.objects.filter(interne_nummer=kunden_nr).first()
+
+    # Fetch cart items and dynamically get their corresponding Elemente details
+    if kunden_nr and kunde_details:
+        try:
+            order = ElementeCartOrder.objects.get(kunden_nr=kunden_nr)
+            for item in order.items.all():
+                element = Elemente.objects.filter(elementnr=item.element_nr).first()
+                cart_items_with_details.append({
+                    "element_nr": item.element_nr,
+                    "anzahl": item.anzahl,
+                    "kuehlposition": element.kuehlposition if element else "Nicht verfügbar",
+                    "bezeichnung": element.bezeichnung if element else "Nicht verfügbar",
+                    "id": item.id,
+                })
+        except ElementeCartOrder.DoesNotExist:
+            pass
+
     return render(request, "bestellformular-neu.html", {
-        "cart_items": request.session["cart_items"],
-        "kunden_nr": request.session["kunden_nr"]
+        "kunden_nr_form": kunden_nr_form,
+        "form": form,
+        "cart_items_with_details": cart_items_with_details,
+        "kunden_nr": kunden_nr,
+        "kunde_details": kunde_details,
     })
 
-@csrf_exempt
-def update_cart_view(request):
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            kunden_nr = data.get("kunden_nr", None)
-            cart_items = data.get("cart_items", [])
 
-            # Save Kunden-Nr. in session if provided
-            if kunden_nr:
-                request.session["kunden_nr"] = kunden_nr
-
-            # Update cart items
-            request.session["cart_items"] = cart_items
-            request.session.modified = True
-
-            return JsonResponse({"message": "Cart updated successfully"}, status=200)
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON"}, status=400)
-    return JsonResponse({"error": "Invalid request method"}, status=405)
-
-@csrf_exempt
-def checkout_view(request):
-    if request.method == "POST":
-        try:
-            cart_items = json.loads(request.body)  # Receive cart data as JSON
-            # Handle checkout logic (e.g., save order to the database)
-            return JsonResponse({"message": "Checkout successful!"}, status=200)
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON"}, status=400)
-    return JsonResponse({"error": "Invalid request method"}, status=405)
+# end new warenkorb elemente
 
 
+
+
+# Start CRM Artikel
 @staff_member_required   
 def fetch_artikel(request):
     query = request.GET.get('query', '').strip()

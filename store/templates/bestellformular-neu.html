@@ -1,164 +1,105 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container mt-4">
-    <h1 class="mb-4">Bestellformular</h1>
+    <h1 class="mb-4">ElementeCart Bestellformular</h1>
 
-    <!-- Form Section -->
-    <form id="addItemForm">
-        <div id="kundenNrField" class="form-group" style="display: {% if not cart_items %}block{% else %}none{% endif %};">
+    <!-- Message info -->
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}" role="alert">
+            <button class="close" data-dismiss="alert"><small>x</small></button>
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+    <!-- Message info end -->
+
+    <!-- Kunden-Nr. Section -->
+    <form method="POST">
+        {% csrf_token %}
+        {% if not kunden_nr %}
+        <div class="form-group">
             <label for="kunden-nr">Kunden-Nr.</label>
-            <input
-                type="text"
-                id="kunden-nr"
-                name="kunden_nr"
-                class="form-control"
-                placeholder="Kunden-Nr. eingeben"
-                required
-            />
+            {{ kunden_nr_form.kunden_nr }}
         </div>
-
-        <div class="form-group">
-            <label for="element-nr">Element-Nr.</label>
-            <input
-                type="text"
-                id="element-nr"
-                name="element_nr"
-                class="form-control"
-                placeholder="Element-Nr. eingeben"
-                required
-            />
-        </div>
-
-        <div class="form-group">
-            <label for="anzahl">Anzahl</label>
-            <input
-                type="number"
-                id="anzahl"
-                name="anzahl"
-                class="form-control"
-                placeholder="Anzahl eingeben"
-                min="1"
-                required
-            />
-        </div>
-
-        <button type="submit" class="btn btn-primary">Hinzufügen</button>
+        <button type="submit" name="set_kunden_nr" class="btn btn-primary">Kunden-Nr. Festlegen</button>
+        {% else %}
+        <p><strong>Kunden-Nr.:</strong> {{ kunden_nr }}</p>
+        {% if kunde_details %}
+        <p><strong>Kunde:</strong> 
+            {% if kunde_details.firmenname %}
+                {{ kunde_details.firmenname }}
+            {% endif %}
+            {% if kunde_details.vorname and kunde_details.nachname %}
+                {{ kunde_details.vorname }} {{ kunde_details.nachname }}
+            {% endif %}
+        </p>
+        {% endif %}
+        {% endif %}
     </form>
 
-    <!-- Display Kunden-Nr. Below Table -->
-    <div id="kundenNrDisplay" class="mt-4" style="display: {% if cart_items %}block{% else %}none{% endif %};">
-        <strong>Kunden-Nr.:</strong> <span id="displayedKundenNr"></span>
-    </div>
+    <hr>
 
-    <!-- Warenkorb Section -->
-    <hr class="mt-4" />
-    <h2 class="mb-3">Warenkorb</h2>
+    <!-- Add Item to Cart Section -->
+    {% if kunde_details %}
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="element-nr">Element-Nr.</label>
+            {{ form.element_nr }}
+        </div>
+        <div class="form-group">
+            <label for="anzahl">Anzahl</label>
+            {{ form.anzahl }}
+        </div>
+        <button type="submit" name="add_to_cart" class="btn btn-primary">Hinzufügen</button>
+    </form>
+    {% endif %}
+
+    <hr>
 
     <!-- Cart Table -->
+    <h2 class="mt-4">Warenkorb</h2>
     <table class="table table-bordered">
-        <thead class="thead-dark">
+        <thead>
             <tr>
                 <th>Element-Nr.</th>
                 <th>Anzahl</th>
+                <th>Kühlposition</th>
+                <th>Bezeichnung</th>
                 <th>Aktion</th>
             </tr>
         </thead>
-        <tbody id="cartTable">
-            <tr>
-                <td colspan="3" class="text-center">Der Warenkorb ist leer.</td>
-            </tr>
+        <tbody>
+            {% if cart_items_with_details %}
+                {% for item in cart_items_with_details %}
+                <tr>
+                    <td>{{ item.element_nr }}</td>
+                    <td>{{ item.anzahl }}</td>
+                    <td>{{ item.kuehlposition }}</td>
+                    <td>{{ item.bezeichnung }}</td>
+                    <td>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="delete_item_id" value="{{ item.id }}">
+                            <button type="submit" name="delete_item" class="btn btn-danger btn-sm">Löschen</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">Der Warenkorb ist leer.</td>
+                </tr>
+            {% endif %}
         </tbody>
     </table>
 
-    <!-- Checkout Button -->
-    <button id="checkoutButton" class="btn btn-success" disabled>Zur Kasse</button>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" name="checkout" class="btn btn-success" {% if not cart_items_with_details %} disabled {% endif %}>
+            Zur Kasse
+        </button>
+    </form>
 </div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const addItemForm = document.getElementById("addItemForm");
-    const cartTableBody = document.getElementById("cartTable");
-    const checkoutButton = document.getElementById("checkoutButton");
-    const kundenNrField = document.getElementById("kundenNrField");
-    const kundenNrDisplay = document.getElementById("kundenNrDisplay");
-    const displayedKundenNr = document.getElementById("displayedKundenNr");
-
-    // Temporary cart storage
-    let kundenNr = null;
-    let cartItems = []; // Array to store all rows
-
-    // Function to update the cart table
-    function updateCartTable() {
-        cartTableBody.innerHTML = ""; // Clear the table content
-
-        if (cartItems.length === 0) {
-            cartTableBody.innerHTML = `<tr><td colspan="3" class="text-center">Der Warenkorb ist leer.</td></tr>`;
-            checkoutButton.disabled = true;
-            kundenNrField.style.display = "block"; // Show Kunden-Nr. input
-            kundenNrDisplay.style.display = "none"; // Hide Kunden-Nr. display
-            return;
-        }
-
-        cartItems.forEach((item, index) => {
-            const row = `
-                <tr>
-                    <td>${item.element_nr}</td>
-                    <td>${item.anzahl}</td>
-                    <td>
-                        <button class="btn btn-danger btn-sm delete-item" data-index="${index}">Löschen</button>
-                    </td>
-                </tr>
-            `;
-            cartTableBody.insertAdjacentHTML("beforeend", row);
-        });
-
-        checkoutButton.disabled = false;
-        kundenNrField.style.display = "none"; // Hide Kunden-Nr. input
-        kundenNrDisplay.style.display = "block"; // Show Kunden-Nr. display
-        displayedKundenNr.textContent = kundenNr; // Update displayed Kunden-Nr.
-    }
-
-    addItemForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-
-        const kundenNrInput = document.getElementById("kunden-nr");
-        const elementNr = document.getElementById("element-nr").value.trim();
-        const anzahl = parseInt(document.getElementById("anzahl").value, 10);
-
-        // Validation
-        if (!elementNr || isNaN(anzahl) || anzahl <= 0) {
-            alert("Bitte fülle alle Felder korrekt aus.");
-            return;
-        }
-
-        if (!kundenNr && kundenNrInput) {
-            kundenNr = kundenNrInput.value.trim();
-            if (!kundenNr) {
-                alert("Bitte Kunden-Nr. eingeben.");
-                return;
-            }
-        }
-
-        // Add item to the cart
-        cartItems.push({ element_nr: elementNr, anzahl: anzahl });
-        updateCartTable(); // Update the cart table
-        addItemForm.reset(); // Clear the form inputs
-    });
-
-    // Event delegation for deleting items
-    cartTableBody.addEventListener("click", (e) => {
-        if (e.target.classList.contains("delete-item")) {
-            const index = e.target.dataset.index;
-            cartItems.splice(index, 1); // Remove item from the cart array
-            updateCartTable(); // Update the cart table
-        }
-    });
-
-    // Initialize the cart table
-    updateCartTable();
-});
-
-</script>
 {% endblock %}

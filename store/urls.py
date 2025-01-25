@@ -13,9 +13,7 @@ urlpatterns = [
 	path('', views.home, name='home'),
 
 	#elemente warenkorb
-	path('bestellformular-neu/', views.bestellformular_view, name='bestellformular_neu'),
-    path('update-cart/', views.update_cart_view, name='update_cart'),
-    path('checkout/', views.checkout_view, name='checkout'),
+    path("bestellformular-neu/", views.bestellformular_cart, name="bestellformular_cart"),
 
 	#pages
 	path('kontakt', views.kontakt, name='kontakt'),

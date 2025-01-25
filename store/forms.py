@@ -22,6 +22,36 @@ COUNTRY_CHOICES = [
 	]
 
 
+
+class KundenNrForm(forms.Form):
+    kunden_nr = forms.CharField(
+        label="Kunden-Nr.",
+        max_length=100,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "placeholder": "Kunden-Nr. eingeben"
+        })
+    )
+    
+class ElementeCartItemForm(forms.Form):
+    element_nr = forms.CharField(
+        label="Element-Nr.",
+        max_length=100,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "placeholder": "Element-Nr. eingeben"
+        })
+    )
+    anzahl = forms.IntegerField(
+        label="Anzahl",
+        min_value=1,
+        widget=forms.NumberInput(attrs={
+            "class": "form-control",
+            "placeholder": "Anzahl eingeben"
+        })
+    )
+
+
 class ElementeCreateForm(forms.ModelForm):
     KUEHLPOSITION_CHOICES = [
         ('Schublade', 'Schublade'),

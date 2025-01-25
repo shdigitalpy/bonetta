@@ -60,6 +60,22 @@ KANTON_CHOICES = (
     ('Zürich', 'Zürich'),
 )
 
+class ElementeCartOrder(models.Model):
+    kunden_nr = models.CharField(max_length=100, verbose_name="Kunden-Nr.")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order {self.id} - Kunden-Nr.: {self.kunden_nr}"
+
+
+class ElementeCartItem(models.Model):
+    order = models.ForeignKey(ElementeCartOrder, on_delete=models.CASCADE, related_name="items")
+    element_nr = models.CharField(max_length=100, verbose_name="Element-Nr.")
+    anzahl = models.PositiveIntegerField(verbose_name="Anzahl")
+
+    def __str__(self):
+        return f"Item {self.id} - Element-Nr.: {self.element_nr}, Anzahl: {self.anzahl}"
+
 
 class Subcategory(models.Model):
 	sub_name = models.CharField(max_length=255)
