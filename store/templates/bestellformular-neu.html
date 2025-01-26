@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load custom_filters %}
+
 {% block content %}
 <div class="container mt-4">
     <h1 class="mb-4">ElementeCart Bestellformular</h1>
@@ -14,29 +16,40 @@
     {% endif %}
     <!-- Message info end -->
 
-    <!-- Kunden-Nr. Section -->
-    <form method="POST">
-        {% csrf_token %}
-        {% if not kunden_nr %}
-        <div class="form-group">
-            <label for="kunden-nr">Kunden-Nr.</label>
-            {{ kunden_nr_form.kunden_nr }}
-        </div>
-        <button type="submit" name="set_kunden_nr" class="btn btn-primary">Kunden-Nr. Festlegen</button>
+   <!-- Kunden-Nr. Section -->
+<form method="POST">
+    {% csrf_token %}
+    {% if not kunden_nr %}
+    <div class="form-group">
+        <label for="kunden-nr">Kunden-Nr.</label>
+        {{ kunden_nr_form.kunden_nr }}
+    </div>
+    <button type="submit" name="set_kunden_nr" class="btn btn-primary">Kunden-Nr. bestätigen</button>
+    {% else %}
+    <p><strong>Kunden-Nr.:</strong> {{ kunden_nr }}</p>
+    
+    {% if kunde_details %}
+    <p><strong>Kunde:</strong> 
+        {% if kunde_details.firmenname %}
+            {{ kunde_details.firmenname|truncate_each_word_with_ellipsis:4 }}
         {% else %}
-        <p><strong>Kunden-Nr.:</strong> {{ kunden_nr }}</p>
-        {% if kunde_details %}
-        <p><strong>Kunde:</strong> 
-            {% if kunde_details.firmenname %}
-                {{ kunde_details.firmenname }}
-            {% endif %}
             {% if kunde_details.vorname and kunde_details.nachname %}
-                {{ kunde_details.vorname }} {{ kunde_details.nachname }}
+                {{ kunde_details.vorname|truncate_each_word_with_ellipsis:4 }} {{ kunde_details.nachname|truncate_each_word_with_ellipsis:4 }}
+            {% else %}
+                Kunde unbekannt
             {% endif %}
-        </p>
         {% endif %}
-        {% endif %}
+    </p>
+    {% endif %}
+    
+    <!-- Reset Kunden-Nr. Button -->
+    <form method="POST" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" name="reset_kunden_nr" class="btn btn-link btn-sm">zurücksetzen</button>
     </form>
+    {% endif %}
+</form>
+
 
     <hr>
 
@@ -108,7 +121,7 @@
 
         <!-- Zur Kasse Button with Modal Trigger -->
         <button type="button" class="btn btn-success" data-toggle="modal" data-target="#confirmCheckoutModal" {% if not cart_items_with_details %} disabled {% endif %}>
-            Zur Kasse
+            Bestellen
         </button>
     </form>
 </div>
@@ -118,7 +131,8 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirmCheckoutModalLabel">Bestellung Abschicken</h5>
+                <h5 class="modal-title" id="confirmCheckoutModalLabel">Bestellung 
+                abschicken</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

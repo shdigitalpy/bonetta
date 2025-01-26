@@ -35,7 +35,8 @@ import json
 
 #CRM
 
-# start new warenkorb elemente
+# start new warenkorb
+
 def bestellformular_cart(request):
     """
     Handles the cart functionality, validates element-nr, sends an email for checkout,
@@ -46,8 +47,6 @@ def bestellformular_cart(request):
 
     kunden_nr_form = KundenNrForm()
     form = ElementeCartItemForm()
-
-    # Initialize variables
     kunde_details = None
     cart_items_with_details = []
 
@@ -58,11 +57,20 @@ def bestellformular_cart(request):
                 kunden_nr = kunden_nr_form.cleaned_data["kunden_nr"]
                 kunde_details = Kunde.objects.filter(interne_nummer=kunden_nr).first()
                 if not kunde_details:
-                    messages.warning(request, "Dieser Kunde existiert nicht. Bitte geben Sie eine gültige Kunden-Nr. ein.")
+                    messages.warning(
+                        request,
+                        "Dieser Kunde existiert nicht. Bitte geben Sie eine gültige Kunden-Nr. ein.",
+                    )
                 else:
                     request.session["kunden_nr"] = kunden_nr
                     request.session.modified = True
                     return redirect("store:bestellformular_cart")
+
+        elif "reset_kunden_nr" in request.POST:  # Reset Kunden-Nr.
+            request.session["kunden_nr"] = None
+            request.session.modified = True
+            messages.success(request, "Kunden-Nr. wurde erfolgreich zurückgesetzt.")
+            return redirect("store:bestellformular_cart")
 
         elif "add_to_cart" in request.POST:  # Add item to cart
             form = ElementeCartItemForm(request.POST)
@@ -74,108 +82,149 @@ def bestellformular_cart(request):
                     element_nr = form.cleaned_data["element_nr"]
                     anzahl = form.cleaned_data["anzahl"]
 
-                    element = Elemente.objects.filter(elementnr=element_nr, kunde__interne_nummer=kunden_nr).first()
+                    element = Elemente.objects.filter(
+                        elementnr=element_nr, kunde__interne_nummer=kunden_nr
+                    ).first()
                     if not element:
-                        messages.warning(request, f"Das Element-Nr. '{element_nr}' existiert nicht für diesen Kunden.")
+                        messages.warning(
+                            request,
+                            f"Das Element-Nr. '{element_nr}' existiert nicht für diesen Kunden.",
+                        )
                     else:
-                        # Create the cart item
-                        order, _ = ElementeCartOrder.objects.get_or_create(kunden_nr=kunden_nr)
+                        order, _ = ElementeCartOrder.objects.get_or_create(
+                            kunden_nr=kunden_nr
+                        )
                         ElementeCartItem.objects.create(
                             order=order,
                             element_nr=element_nr,
                             anzahl=anzahl,
                         )
-                        messages.success(request, f"Element-Nr. '{element_nr}' erfolgreich hinzugefügt.")
+                        messages.success(
+                            request, f"Element-Nr. '{element_nr}' erfolgreich hinzugefügt."
+                        )
                         return redirect("store:bestellformular_cart")
 
         elif "delete_item" in request.POST:  # Handle item deletion
             delete_item_id = request.POST.get("delete_item_id")
-            if delete_item_id:
-                ElementeCartItem.objects.filter(id=delete_item_id).delete()
+            try:
+                item_to_delete = ElementeCartItem.objects.get(id=delete_item_id)
+                item_to_delete.delete()
                 messages.success(request, "Artikel erfolgreich aus dem Warenkorb entfernt.")
-                return redirect("store:bestellformular_cart")
+            except ElementeCartItem.DoesNotExist:
+                messages.error(request, "Artikel konnte nicht gefunden werden.")
+            return redirect("store:bestellformular_cart")
 
         elif "checkout" in request.POST:  # Checkout
             kunden_nr = request.session.get("kunden_nr")
             order = ElementeCartOrder.objects.filter(kunden_nr=kunden_nr).first()
 
             if not kunden_nr or not order or not order.items.exists():
-                messages.warning(request, "Bestellung konnte nicht abgeschlossen werden. Bitte fügen Sie Artikel hinzu.")
+                messages.warning(
+                    request,
+                    "Bestellung konnte nicht abgeschlossen werden. Bitte fügen Sie Artikel hinzu.",
+                )
             else:
-                # Prepare email content
                 if not kunde_details:
                     kunde_details = Kunde.objects.filter(interne_nummer=kunden_nr).first()
 
-                # Check if kunde_details is still None
                 if not kunde_details:
-                    messages.warning(request, "Kundendetails nicht verfügbar. Bitte erneut versuchen.")
+                    messages.warning(
+                        request,
+                        "Kundendetails nicht verfügbar. Bitte erneut versuchen.",
+                    )
                     return redirect("store:bestellformular_cart")
 
-                 # Dynamically fetch Kunde's details and related CRMAddress
                 betrieb_person = (
                     kunde_details.firmenname
                     if kunde_details.firmenname
                     else f"{kunde_details.vorname} {kunde_details.nachname}"
                 )
 
-                # Fetch related CRMAddress (assuming one-to-many relationship)
-                crm_address = kunde_details.kunde_address.first()  # Fetch the first related address
+                crm_address = kunde_details.kunde_address.first()
                 if crm_address:
-                    adresse = f"{crm_address.crm_strasse} {crm_address.crm_nr}" if crm_address.crm_strasse else "Adresse nicht verfügbar"
+                    adresse = (
+                        f"{crm_address.crm_strasse} {crm_address.crm_nr}"
+                        if crm_address.crm_strasse
+                        else "Adresse nicht verfügbar"
+                    )
                     plz = crm_address.crm_plz if crm_address.crm_plz else "PLZ nicht verfügbar"
                     ort = crm_address.crm_ort if crm_address.crm_ort else "Ort nicht verfügbar"
-                    land = crm_address.crm_land.name if crm_address.crm_land else "Land nicht verfügbar"
+                    land = (
+                        crm_address.crm_land.name
+                        if crm_address.crm_land
+                        else "Land nicht verfügbar"
+                    )
                 else:
                     adresse = "Adresse nicht verfügbar"
                     plz = "PLZ nicht verfügbar"
                     ort = "Ort nicht verfügbar"
                     land = "Land nicht verfügbar"
 
-                mobile = kunde_details.mobile if kunde_details.mobile else "Mobilnummer nicht verfügbar"
-                phone = kunde_details.phone if kunde_details.phone else "Telefonnummer nicht verfügbar"
-                email_address = kunde_details.email if kunde_details.email else "E-Mail nicht verfügbar"
-
-                # Prepare elemente details
-                elemente_nr = [str(item.element_nr) for item in order.items.all()]
-                montage = "Mit Montage" if request.POST.get("montage") == "mit" else "Ohne Montage"
-                bemerkung = request.POST.get("bemerkung", "")
-
-                # Render email template
-                subject = f"Bestellung Elemente {betrieb_person} {kunden_nr}"
-                template = render_to_string("crm/mail-bestellung-elemente.html", {
-                    "kunden_nr": kunden_nr,
-                    "betrieb_person": betrieb_person,
-                    "adresse": adresse,
-                    "plz": plz,
-                    "ort": ort,
-                    "land": land,
-                    "mobile": mobile,
-                    "phone": phone,
-                    "email_address": email_address,
-                    "elemente_nr": ", ".join(elemente_nr),
-                    "montage": montage,
-                    "bemerkung": bemerkung,
-                })
-
-                # Send email
-                email = EmailMessage(
-                    subject,
-                    template,
-                    settings.EMAIL_HOST_USER,
-                    ["sandro@sh-digital.ch", "livio.bonetta@geboshop.ch"],
+                mobile = (
+                    kunde_details.mobile
+                    if kunde_details.mobile
+                    else "Mobilnummer nicht verfügbar"
                 )
-                email.content_subtype = "html"
-                email.fail_silently = False
-                email.send()
+                phone = (
+                    kunde_details.phone
+                    if kunde_details.phone
+                    else "Telefonnummer nicht verfügbar"
+                )
+                email_address = (
+                    kunde_details.email
+                    if kunde_details.email
+                    else "E-Mail nicht verfügbar"
+                )
 
+                elemente_nr = [str(item.element_nr) for item in order.items.all()]
+                montage = (
+                    "Mit Montage"
+                    if request.POST.get("montage") == "mit"
+                    else "Ohne Montage"
+                )
+                bemerkung = escape(request.POST.get("bemerkung", ""))
 
-                # Clear session and display success
+                subject = f"Bestellung Elemente {betrieb_person} {kunden_nr}"
+                template = render_to_string(
+                    "crm/mail-bestellung-elemente.html",
+                    {
+                        "kunden_nr": kunden_nr,
+                        "betrieb_person": betrieb_person,
+                        "adresse": adresse,
+                        "plz": plz,
+                        "ort": ort,
+                        "land": land,
+                        "mobile": mobile,
+                        "phone": phone,
+                        "email_address": email_address,
+                        "elemente_nr": ", ".join(elemente_nr),
+                        "montage": montage,
+                        "bemerkung": bemerkung,
+                    },
+                )
+
+                try:
+                    email = EmailMessage(
+                        subject,
+                        template,
+                        settings.EMAIL_HOST_USER,
+                        ["sandro@sh-digital.ch", "livio.bonetta@geboshop.ch"],
+                    )
+                    email.content_subtype = "html"
+                    email.send()
+                    messages.success(
+                        request,
+                        "Bestellung erfolgreich abgeschlossen.",
+                    )
+                except Exception as e:
+                    messages.error(
+                        request, f"E-Mail konnte nicht versendet werden: {str(e)}"
+                    )
+
                 request.session["kunden_nr"] = None
                 request.session.modified = True
-                messages.success(request, "Bestellung erfolgreich abgeschlossen und E-Mail versandt.")
                 return redirect("store:bestellformular_cart")
 
-    # Fetch Kunde details and Elemente details
     kunden_nr = request.session.get("kunden_nr")
     if kunden_nr:
         kunde_details = Kunde.objects.filter(interne_nummer=kunden_nr).first()
@@ -184,24 +233,33 @@ def bestellformular_cart(request):
         try:
             order = ElementeCartOrder.objects.get(kunden_nr=kunden_nr)
             for item in order.items.all():
-                element = Elemente.objects.filter(elementnr=item.element_nr, kunde=kunde_details).first()
-                cart_items_with_details.append({
-                    "element_nr": item.element_nr,
-                    "anzahl": item.anzahl,
-                    "kuehlposition": element.kuehlposition if element else "Nicht verfügbar",
-                    "bezeichnung": element.bezeichnung if element else "Nicht verfügbar",
-                    "id": item.id,
-                })
+                element = Elemente.objects.filter(
+                    elementnr=item.element_nr, kunde=kunde_details
+                ).first()
+                cart_items_with_details.append(
+                    {
+                        "element_nr": item.element_nr,
+                        "anzahl": item.anzahl,
+                        "kuehlposition": element.kuehlposition if element else "Nicht verfügbar",
+                        "bezeichnung": element.bezeichnung if element else "Nicht verfügbar",
+                        "id": item.id,
+                    }
+                )
         except ElementeCartOrder.DoesNotExist:
             pass
 
-    return render(request, "bestellformular-neu.html", {
-        "kunden_nr_form": kunden_nr_form,
-        "form": form,
-        "cart_items_with_details": cart_items_with_details,
-        "kunden_nr": kunden_nr,
-        "kunde_details": kunde_details,
-    })
+    return render(
+        request,
+        "bestellformular-neu.html",
+        {
+            "kunden_nr_form": kunden_nr_form,
+            "form": form,
+            "cart_items_with_details": cart_items_with_details,
+            "kunden_nr": kunden_nr,
+            "kunde_details": kunde_details,
+        },
+    )
+
 
 # end new warenkorb elemente
 
