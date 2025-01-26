@@ -16,15 +16,33 @@ def days_until_due(last_service, due_date):
     return None
 
 @register.filter
-def truncate_each_word_with_ellipsis(value, length=5):
+def anonymize_name(value, visible=3):
     """
-    Truncate each word in the input string to the specified length and append ellipsis 
-    if the word exceeds the given length.
+    Anonymisiert jeden Teil des Namens, indem alle Buchstaben außer den ersten 
+    und optional letzten Zeichen durch Punkte ersetzt werden.
+
+    :param value: Der Name (String), der anonymisiert werden soll.
+    :param visible: Anzahl der sichtbaren Buchstaben am Anfang (Standard: 1).
+    :return: Der anonymisierte Name.
     """
     if not isinstance(value, str):
-        return value
-    truncated_words = [
-        word if len(word) <= int(length) else f"{word[:int(length)]}..."
-        for word in value.split()
-    ]
-    return " ".join(truncated_words)
+        return value  # Rückgabe des Originals, wenn keine Zeichenkette
+
+    try:
+        visible = int(visible)  # Sicherstellen, dass 'visible' eine Ganzzahl ist
+    except ValueError:
+        visible = 1  # Fallback auf Standardwert
+
+    # Sicherstellen, dass 'visible' mindestens 1 ist
+    if visible < 1:
+        visible = 1
+
+    # Verarbeitung: Jedes Wort anonymisieren
+    anonymized_words = []
+    for word in value.split():
+        if len(word) <= visible:  # Wenn das Wort zu kurz ist, bleibt es bestehen
+            anonymized_words.append(word)
+        else:
+            anonymized_words.append(f"{word[:visible]}{'*' * (len(word) - visible)}")
+
+    return " ".join(anonymized_words)

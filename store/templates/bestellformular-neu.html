@@ -30,16 +30,12 @@
     
     {% if kunde_details %}
     <p><strong>Kunde:</strong> 
-        {% if kunde_details.firmenname %}
-            {{ kunde_details.firmenname|truncate_each_word_with_ellipsis:4 }}
-        {% else %}
-            {% if kunde_details.vorname and kunde_details.nachname %}
-                {{ kunde_details.vorname|truncate_each_word_with_ellipsis:4 }} {{ kunde_details.nachname|truncate_each_word_with_ellipsis:4 }}
-            {% else %}
-                Kunde unbekannt
-            {% endif %}
-        {% endif %}
-    </p>
+    {% if kunde_details.firmenname %}
+        {{ kunde_details.firmenname|anonymize_name:2 }}
+    {% else %}
+        {{ kunde_details.vorname|anonymize_name }} {{ kunde_details.nachname|anonymize_name }}
+    {% endif %}
+</p>
     {% endif %}
     
     <!-- Reset Kunden-Nr. Button -->
