@@ -3,49 +3,47 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1 class="mb-4">ElementeCart Bestellformular</h1>
+    <h1 class="mb-4">Bestellformular</h1>
 
-    <!-- Message info -->
+    <!-- Message Info -->
     {% if messages %}
         {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}" role="alert">
-            <button class="close" data-dismiss="alert"><small>x</small></button>
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
             {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
         {% endfor %}
     {% endif %}
-    <!-- Message info end -->
+    <!-- Message Info End -->
 
-   <!-- Kunden-Nr. Section -->
-<form method="POST">
-    {% csrf_token %}
-    {% if not kunden_nr %}
-    <div class="form-group">
-        <label for="kunden-nr">Kunden-Nr.</label>
-        {{ kunden_nr_form.kunden_nr }}
-    </div>
-    <button type="submit" name="set_kunden_nr" class="btn btn-primary">Kunden-Nr. bestätigen</button>
-    {% else %}
-    <p><strong>Kunden-Nr.:</strong> {{ kunden_nr }}</p>
-    
-    {% if kunde_details %}
-    <p><strong>Kunde:</strong> 
-    {% if kunde_details.firmenname %}
-        {{ kunde_details.firmenname|anonymize_name:2 }}
-    {% else %}
-        {{ kunde_details.vorname|anonymize_name }} {{ kunde_details.nachname|anonymize_name }}
-    {% endif %}
-</p>
-    {% endif %}
-    
-    <!-- Reset Kunden-Nr. Button -->
-    <form method="POST" style="display: inline;">
+    <!-- Kunden-Nr. Section -->
+    <form method="POST">
         {% csrf_token %}
-        <button type="submit" name="reset_kunden_nr" class="btn btn-link btn-sm">zurücksetzen</button>
-    </form>
-    {% endif %}
-</form>
+        {% if not kunden_nr %}
+            <div class="form-group">
+                <label for="kunden-nr">Kunden-Nr.</label>
+                {{ kunden_nr_form.kunden_nr }}
+            </div>
+            <button type="submit" name="set_kunden_nr" class="btn btn-primary">Kunden-Nr. bestätigen</button>
+        {% else %}
+            <p><strong>Kunden-Nr.:</strong> {{ kunden_nr }}</p>
 
+            {% if kunde_details %}
+            <p><strong>Kunde:</strong> 
+                {% if kunde_details.firmenname %}
+                    {{ kunde_details.firmenname|anonymize_name:2 }}
+                {% else %}
+                    {{ kunde_details.vorname|anonymize_name }} {{ kunde_details.nachname|anonymize_name }}
+                {% endif %}
+            </p>
+            {% endif %}
+            
+            <!-- Reset Kunden-Nr. Button -->
+            <button type="submit" name="reset_kunden_nr" class="btn btn-warning">Kunden-Nr. zurücksetzen</button>
+        {% endif %}
+    </form>
 
     <hr>
 
@@ -127,8 +125,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirmCheckoutModalLabel">Bestellung 
-                abschicken</h5>
+                <h5 class="modal-title" id="confirmCheckoutModalLabel">Bestellung abschicken</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -140,11 +137,21 @@
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
                 <form method="POST">
                     {% csrf_token %}
-                    <input type="hidden" name="montage" value="mit">
+                    <input type="hidden" name="montage" id="modalMontage">
                     <button type="submit" name="checkout" class="btn btn-success">Bestellung abschicken</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<br><br>
+<script>
+    // Set the selected montage value when opening the modal
+    $('#confirmCheckoutModal').on('show.bs.modal', function () {
+        let montageValue = document.getElementById("montage").value;
+        document.getElementById("modalMontage").value = montageValue;
+    });
+</script>
+
 {% endblock %}

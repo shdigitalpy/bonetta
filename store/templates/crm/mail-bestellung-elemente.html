@@ -1,157 +1,58 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="de">
-  <head>
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bestellung Elemente</title>
-     <style>
-      body {
-        font-family: 'Raleway', sans-serif;
-        background-color: #e6e6e6;
-        margin: 0;
-        padding: 0;
-        color: #333;
-      }
-
-      .container {
-        max-width: 600px;
-        margin: 20px auto;
-        background: #ffffff;
-        padding: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
-
-      .header {
-        text-align: center;
-        border-bottom: 2px solid #ffc107;
-        padding-bottom: 10px;
-        margin-bottom: 20px;
-      }
-
-      .header h1 {
-        color: #29384e;
-        font-size: 24px;
-        margin: 10px 0;
-      }
-
-      .content {
-        line-height: 1.5;
-        margin-bottom: 20px;
-      }
-
-      .content p {
-        font-size: 16px;
-        color: #555;
-        margin: 0;
-      }
-
-      .details {
-        background-color: white;
-        padding: 15px;
-      }
-
-      .details p {
-        margin: 10px 0;
-        font-size: 16px;
-      }
-
-      .details strong {
-        color: #29384e;
-      }
-
-      .footer {
-        text-align: center;
-        font-size: 14px;
-        color: #999999;
-        margin-top: 20px;
-      }
-
-      .footer a {
-        color: #29384e;
-        text-decoration: none;
-      }
-
-      .table {
-        width: 100%;
-        text-align: left;
-        border-collapse: collapse;
-        margin: 20px 0;
-      }
-
-      .table th, .table td {
-        border: 1px solid #e6e6e6;
-        padding: 8px;
-        font-size: 16px;
-      }
-
-      .table th {
-        background-color: #29384e;
-        color: white;
-        font-weight: bold;
-      }
-
-      .table td {
-        color: #555;
-      }
+    <style>
+        body { font-family: 'Raleway', sans-serif; background-color: #e6e6e6; color: #333; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 20px auto; background: #ffffff; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+        .header { text-align: center; border-bottom: 2px solid #ffc107; padding-bottom: 10px; margin-bottom: 20px; }
+        .table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .table th, .table td { border: 1px solid #e6e6e6; padding: 8px; font-size: 16px; }
+        .table th { background-color: #29384e; color: white; font-weight: bold; }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="container">
-      <!-- Header Section -->
-      <div class="header">
-        <img style="max-width:100px" src="https://www.gastrodichtung.ch/static/images/bonetta-icon.png" alt="Gastrodichtungen.ch Logo">
-        <h1>Bestellung Elemente</h1>
-      </div>
+        <!-- Header Section -->
+        <div class="header">
+            <h1>Bestellung Elemente</h1>
+        </div>
 
-      <!-- Content Section -->
-      <div class="content">
-        <p><strong>Die nachfolgende Person hat Elemente über die Webseite bestellt:</strong></p>
-      </div>
+        <!-- Customer Details -->
+        <p><strong>Kunden-Nr.:</strong> {{ kunden_nr|default:"Nicht verfügbar" }}</p>
+        <p><strong>Betrieb / Person:</strong> {{ betrieb_person|default:"Nicht verfügbar" }}</p>
+        <p><strong>Adresse:</strong> {{ adresse|default:"Nicht verfügbar" }}</p>
+        <p><strong>PLZ/Ort:</strong> {{ plz|default:"Nicht verfügbar" }} {{ ort|default:"Nicht verfügbar" }}</p>
+        <p><strong>Telefon / Mobile:</strong> {{ phone|default:"Nicht verfügbar" }} / {{ mobile|default:"Nicht verfügbar" }}</p>
 
-      <!-- Details Section -->
-      <div class="details">
-        <p><strong>Kunden-Nr.:</strong> {{ kunden_nr }}</p>
-        <p><strong>Betrieb / Person:</strong> {{ betrieb_person }}</p>
-        <p><strong>Adresse:</strong> {{ adresse }}</p>
-        <p><strong>PLZ/Ort:</strong> {{ plz }} {{ ort }}</p>
-        <p><strong>Telefon / Mobile:</strong> {{ phone }} / {{ mobile }}</p>
-      </div>
+        <!-- Order Table -->
+        <table class="table">
+            <thead>
+                <tr><th>Element-Nr.</th><th>Anzahl</th></tr>
+            </thead>
+            <tbody>
+                {% if elemente_list %}
+                    {% for item in elemente_list %}
+                    <tr>
+                        <td>{{ item.element_nr|default:"-" }}</td>
+                        <td>{{ item.anzahl|default:"-" }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="2" style="text-align:center;">Keine Elemente bestellt.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
 
-      <!-- Order Details Section -->
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Elemente</th>
-            <th>Montage</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{{ elemente_nr }}</td>
-            <td>{{ montage }}</td>
-          </tr>
-        </tbody>
-      </table>
+        <!-- Montage Section -->
+        <p><strong>Montage:</strong> {{ montage|default:"Nicht angegeben" }}</p>
 
-      <!-- Remark Section -->
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Bemerkung</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{{ bemerkung }}</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <!-- Footer Section -->
-      <div class="footer">
-        <p>© 2025 Gebo Shop Bonetta. Alle Rechte vorbehalten.</p>
-      </div>
+        <!-- Footer Section -->
+        <div class="footer">
+            <p>© 2025 Gebo Shop Bonetta. Alle Rechte vorbehalten.</p>
+        </div>
     </div>
-  </body>
+</body>
 </html>

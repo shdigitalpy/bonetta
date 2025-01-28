@@ -13,14 +13,14 @@ urlpatterns = [
 	path('', views.home, name='home'),
 
 	#elemente warenkorb
-    path("bestellformular-neu/", views.bestellformular_cart, name="bestellformular_cart"),
+    path("bestellformular/", views.bestellformular_cart, name="bestellformular_cart"),
 
 	#pages
 	path('kontakt', views.kontakt, name='kontakt'),
 	path('montage', views.firma, name='firma'),
 	path('anleitungen', views.anleitung_videos, name='anleitung_videos'),
 	path('impressum', views.impressum, name='impressum'),
-	path('bestellformular', views.bestellformular, name='bestellformular'),
+	path('bestellformular-alt', views.bestellformular, name='bestellformular'),
 	path('danke', views.danke, name='danke'),
 	path('qr-code/', qr_code_view, name='qr_code_view'),
 	path('qr-code/download/', views.download_qr_code, name='download_qr_code'),
