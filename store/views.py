@@ -231,7 +231,7 @@ def bestellformular_cart(request):
                 )
 
                 try:
-                    email = EmailMessage(subject, template, settings.EMAIL_HOST_USER, ["sandro@sh-digital.ch"])
+                    email = EmailMessage(subject, template, settings.EMAIL_HOST_USER, ["sandro@sh-digital.ch","livio.bonetta@geboshop.ch"])
                     email.content_subtype = "html"
                     email.send()
                     messages.success(request, "Bestellung erfolgreich abgeschlossen.")
