@@ -61,11 +61,19 @@ KANTON_CHOICES = (
 )
 
 class ElementeCartOrder(models.Model):
+    STATUS_CHOICES = [
+        ("warenkorb", "In den Warenkorb"),
+        ("nicht_bestellt", "Nicht bestellt"),
+        ("bestellt", "Bestellt"),
+    ]
+
     kunden_nr = models.CharField(max_length=100, verbose_name="Kunden-Nr.")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="warenkorb", verbose_name="Bestellstatus")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Order {self.id} - Kunden-Nr.: {self.kunden_nr}"
+        return f"Order {self.id} - {self.kunden_nr} - {self.get_status_display()}"
+
 
 
 class ElementeCartItem(models.Model):
@@ -76,6 +84,28 @@ class ElementeCartItem(models.Model):
     def __str__(self):
         return f"Item {self.id} - Element-Nr.: {self.element_nr}, Anzahl: {self.anzahl}"
 
+class Elemente_Bestellungen(models.Model):
+    kunden_nr = models.CharField(max_length=255, null=True, blank=True)
+    betrieb_person = models.CharField(max_length=255, null=True, blank=True)
+    adresse = models.CharField(max_length=255, null=True, blank=True)
+    plz = models.CharField(max_length=255, null=True, blank=True)
+    ort = models.CharField(max_length=255, null=True, blank=True)
+    elemente_nr = models.CharField(max_length=255, null=True, blank=True)
+    montage = models.CharField(max_length=255, null=True, blank=True)
+    bemerkung = models.CharField(max_length=255, null=True, blank=True)
+    
+    # New fields
+    lieferant_ausgeloest = models.BooleanField(default=False, verbose_name="Lieferant Ausgelöst")
+    lieferant_date = models.DateField(null=True, blank=True, verbose_name="Lieferant Datum")
+    lieferschein_pdf = models.FileField(upload_to='lieferscheine/', null=True, blank=True)
+    
+    class Meta:
+        ordering = ['id']
+        verbose_name = 'Elemente Bestellung'
+        verbose_name_plural = 'Elemente Bestellungen'
+
+    def __str__(self):
+        return f"{self.kunden_nr} - {self.betrieb_person}"
 
 class Subcategory(models.Model):
 	sub_name = models.CharField(max_length=255)
@@ -472,28 +502,7 @@ class Kunde(models.Model):
 		return self.kunden_elemente.count()
 
 
-class Elemente_Bestellungen(models.Model):
-    kunden_nr = models.CharField(max_length=255, null=True, blank=True)
-    betrieb_person = models.CharField(max_length=255, null=True, blank=True)
-    adresse = models.CharField(max_length=255, null=True, blank=True)
-    plz = models.CharField(max_length=255, null=True, blank=True)
-    ort = models.CharField(max_length=255, null=True, blank=True)
-    elemente_nr = models.CharField(max_length=255, null=True, blank=True)
-    montage = models.CharField(max_length=255, null=True, blank=True)
-    bemerkung = models.CharField(max_length=255, null=True, blank=True)
-    
-    # New fields
-    lieferant_ausgeloest = models.BooleanField(default=False, verbose_name="Lieferant Ausgelöst")
-    lieferant_date = models.DateField(null=True, blank=True, verbose_name="Lieferant Datum")
-    lieferschein_pdf = models.FileField(upload_to='lieferscheine/', null=True, blank=True)
-    
-    class Meta:
-        ordering = ['id']
-        verbose_name = 'Elemente Bestellung'
-        verbose_name_plural = 'Elemente Bestellungen'
 
-    def __str__(self):
-        return f"{self.kunden_nr} - {self.betrieb_person}"
 
 
 class CRMLager(models.Model):

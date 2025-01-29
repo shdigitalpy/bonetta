@@ -46,3 +46,10 @@ def anonymize_name(value, visible=3):
             anonymized_words.append(f"{word[:visible]}{'*' * (len(word) - visible)}")
 
     return " ".join(anonymized_words)
+
+@register.filter
+def dict_item(dictionary, key):
+    """ Custom template filter to safely access dictionary keys in Django templates. """
+    if isinstance(dictionary, dict):
+        return dictionary.get(key, {})
+    return {}

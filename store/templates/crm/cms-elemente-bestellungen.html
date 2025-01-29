@@ -1,20 +1,20 @@
 {% extends 'base-cms.html' %}
 {% load static %}
+{% load custom_filters %}
 {% block title %}Elemente Bestellungen{% endblock %}
 
 {% block content %}
     <div class="flexbox">
-        <div class="h2">Elemente Bestellungen</div>
+        <div class="h2">Elemente Warenkorb</div>
     </div>
 
     <!-- Search and Action Buttons -->
     <div class="flexbox" style="align-items:start; margin-bottom: 20px;">
-        <!-- Search form -->
         <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="{% url 'store:elemente_bestellungen' %}">
             {% csrf_token %}
             <div style="display: flex">
                 <div style="flex: 0 0 20%">
-                    <input id="textsuche" class="form-control" type="text" placeholder="Suche" aria-label="Search" name="search">
+                    <input id="textsuche" class="form-control" type="text" placeholder="Suche nach Kunden-Nr., Betrieb oder Element-Nr." name="search" value="{{ request.GET.search }}">
                 </div>
                 <div style="flex: 0 0 15%">
                     <button type="submit" style="border: none;" class="btn btn-outline-primary">
@@ -34,62 +34,106 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th scope="col">Kunden Nr.</th>
-                <th scope="col">Betrieb/Person</th>
-                <th scope="col">Elemente Nr.</th>
-                <th scope="col">Montage</th>
-                <th scope="col">Bemerkung</th>
-                <th scope="col">Lieferschein</th>
-                <th scope="col">Lieferant auslösen</th>
-                <th scope="col">Lieferant bestellt</th>
-                <th scope="col">Lieferant wann bestellt</th>
+                <th>Kunden Nr.</th>
+                <th>Betrieb/Person</th>
+                <th>Elemente</th>
+                <th>Montage</th>
+                <th>Bestellstatus</th> 
+                <th>Lieferant auslösen</th>
             </tr>
         </thead>
         <tbody>
             {% for bestellung in bestellungen %}
             <tr>
                 <td>{{ bestellung.kunden_nr }}</td>
-
                 <td>
-                {{ bestellung.betrieb_person }}<br>
-                {{ bestellung.adresse }}<br>
-                {{ bestellung.plz }} {{ bestellung.ort }} 
-                    </td>
-                    <td>{{ bestellung.elemente_nr }}</td>
+                    {{ bestellung.kunde_details.firmenname|default:"-" }}<br>
+                    {{ bestellung.kunde_details.vorname }} {{ bestellung.kunde_details.nachname }}<br>
+                    {{ bestellung.kunde_details.kunde_address.first.crm_strasse }} {{ bestellung.kunde_details.kunde_address.first.crm_nr }}<br>
+                    {{ bestellung.kunde_details.kunde_address.first.crm_plz }} {{ bestellung.kunde_details.kunde_address.first.crm_ort }} 
+                </td>
                 <td>
-                    {% if bestellung.montage == 'mit' %}
-                        Ja
-                    {% elif bestellung.montage == 'ohne' %}
-                        Nein
+                    <table class="table table-borderless">
+                        <thead>
+                            <tr>
+                                <th>Element-Nr.</th>
+                                <th>Anzahl</th>
+                                <th>Artikel Nr.</th>
+                                <th>Artikel Name</th>
+                                <th>Dichtungstyp</th>
+                                <th>Lieferant</th>
+                                <th>Bestellung</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in bestellung.items.all %}
+                            <tr>
+                                <td>{{ item.element_nr }}</td>
+                                <td>{{ item.anzahl }}</td>
+                                <td>{{ item.artikel_data.artikelnr|default:"Nicht verfügbar" }}</td>
+                                <td>{{ item.artikel_data.name|default:"Nicht verfügbar" }}</td>
+                                <td>{{ item.artikel_data.dichtungstyp|default:"-" }}</td>
+                                <td>{{ item.artikel_data.lieferant|default:"Nicht verfügbar" }}</td>
+                                <td>
+                                    {% if item.artikel_data.pk %}
+                                        <a href="#" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#orderModal{{ item.artikel_data.pk }}">
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </a>
+                                        <div class="modal fade" id="orderModal{{ item.artikel_data.pk }}" tabindex="-1" role="dialog">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Bestellung an Lieferant</h5>
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p><strong>Artikel:</strong> {{ item.artikel_data.name }}</p>
+                                                        <p><strong>Maße:</strong> {{ item.artikel_data.aussenbreite|default:"-" }} x {{ item.artikel_data.aussenhöhe|default:"-" }} mm</p>
+                                                        <form method="POST" action="{% url 'store:lieferant_send_order_email' item.artikel_data.pk %}">
+                                                            {% csrf_token %}
+                                                            <div class="form-group">
+                                                                <label for="anzahl{{ item.artikel_data.pk }}">Anzahl</label>
+                                                                <input type="number" id="anzahl{{ item.artikel_data.pk }}" name="anzahl" class="form-control" min="1" value="1">
+                                                            </div>
+                                                            <button type="submit" class="btn btn-primary">Bestellung senden</button>
+                                                        </form>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Schliessen</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Kein Artikel</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7">Keine Artikel</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+                <td>{{ bestellung.montage|default:"Keine Montage angegeben" }}</td>
+                <td>
+                    {% if bestellung.status == "warenkorb" %}
+                        <span class="badge bg-secondary">In den Warenkorb</span>
+                    {% elif bestellung.status == "nicht_bestellt" %}
+                        <span class="badge bg-warning text-dark">Nicht bestellt</span>
+                    {% elif bestellung.status == "bestellt" %}
+                        <span class="badge bg-success">Bestellt</span>
                     {% else %}
-                        Keine Montage angegeben
-                    {% endif %}
-
-                </td>
-                <td>
-                    {% if bestellung.bemerkung %}
-                        {{ bestellung.bemerkung }}
-                    {% else %}
-                        Keine Bemerkung
+                        <span class="badge bg-secondary">Unbekannt</span>
                     {% endif %}
                 </td>
-
                 <td>
-                    <a href="{% url 'store:generate_lieferschein' bestellung.id %}" class="btn btn-outline-primary lieferschein-download" data-id="{{ bestellung.id }}">
-                        <i class="fas fa-file"></i> Lieferschein
-                    </a>
-                </td>
-
-
-                <td>
-                <button type="submit" style="border: none;" class="btn btn-outline-primary">
-                        <i class="fas fa-envelope"></i>
-
+                    <button type="button" class="btn btn-outline-primary">
+                        <i class="fas fa-envelope"></i> 
                     </button>
                 </td>
-                <td>{{ bestellung.lieferant_ausgeloest|yesno:"Ja,Nein" }}</td>
-                <td>{% if bestellung.lieferant_date %}{{ bestellung.lieferant_date|date:"d.m.Y" }}{% else %}Kein Datum{% endif %}</td>
-               
             </tr>
             {% empty %}
             <tr>
