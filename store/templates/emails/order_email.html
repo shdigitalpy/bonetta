@@ -84,9 +84,30 @@
       </thead>
       <tbody>
         <tr>
-          <td>{{ anzahl }}</td>
-          <td>{{ artikel.lieferantenartikel }}</td>
-          <td>{{ artikel.name }}</td>
+          <td>
+       
+
+           {% if artikel.anzahl %}
+          {{ artikel.anzahl }}
+
+          {% endif %}
+
+        </td>
+          <td>
+            {% if artikel.lieferantenartikel %}
+          {{ artikel.lieferantenartikel }}
+
+          {% endif %}
+
+        </td>
+          <td>
+
+             {% if artikel.name %}
+          {{ artikel.name }}
+
+          {% endif %}
+
+        </td>
           <td>{{ artikel.aussenbreite }} x {{ artikel.aussenhöhe }} mm</td>
         </tr>
       </tbody>
