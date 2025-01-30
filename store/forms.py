@@ -61,7 +61,6 @@ class ElementeCreateForm(forms.ModelForm):
         ('Ofen / Steamer', 'Ofen / Steamer'),
         ('Glacéschublade', 'Glacéschublade'),
         ('Glacédeckel', 'Glacédeckel'),
-        ('Ofen / Steamer', 'Ofen / Steamer'),
         ('Eismaschine ', 'Eismaschine '),
     ]
 
