@@ -58,6 +58,11 @@ class ElementeCreateForm(forms.ModelForm):
         ('Kühlunterbautür', 'Kühlunterbautür'),
         ('Kühlschrank', 'Kühlschrank'),
         ('Kühlraumtür', 'Kühlraumtür'),
+        ('Ofen / Steamer', 'Ofen / Steamer'),
+        ('Glacéschublade', 'Glacéschublade'),
+        ('Glacédeckel', 'Glacédeckel'),
+        ('Ofen / Steamer', 'Ofen / Steamer'),
+        ('Eismaschine ', 'Eismaschine '),
     ]
 
     bezeichnung = forms.ChoiceField(
