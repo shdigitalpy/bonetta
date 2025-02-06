@@ -34,7 +34,7 @@ from django.http import JsonResponse
 import json
 from django.utils.html import escape
 
-email_master = ["sandro@sh-digital.ch"]
+email_master = ["sandro@sh-digital.ch", "livio.bonetta@geboshop.ch"]
 
 
 #CRM
