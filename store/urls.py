@@ -12,8 +12,9 @@ urlpatterns = [
 
 	path('', views.home, name='home'),
 
-	#elemente warenkorb
+	#aktuell elemente warenkorb
     path("bestellformular/", views.bestellformular_cart, name="bestellformular_cart"),
+    path('cms/crm/elemente-bestellungen', views.elemente_bestellungen, name='elemente_bestellungen'),
 
 	#pages
 	path('kontakt', views.kontakt, name='kontakt'),
@@ -129,7 +130,7 @@ urlpatterns = [
 	path('cms/login_user', views.login_user, name='login_user'),
 	path('cms/logout_user', views.logout_user, name='logout_user'),
 	path('cms/statistik/produkte', views.cms_statistik_produkte, name='cms_statistik_produkte'),
-	path('cms/crm/elemente-bestellungen', views.elemente_bestellungen, name='elemente_bestellungen'),
+	
 	path('lieferschein/<int:bestellung_id>/', generate_lieferschein, name='generate_lieferschein'),
 	path('cms/elemente/<int:pk>/duplicate/<int:elemente_pk>/', views.cms_elemente_duplicate, name='cms_elemente_duplicate'),
 

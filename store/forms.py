@@ -24,24 +24,26 @@ COUNTRY_CHOICES = [
 
 
 class KundenNrForm(forms.Form):
-    kunden_nr = forms.CharField(
+    kunden_nr = forms.IntegerField(
         label="Kunden-Nr.",
-        max_length=100,
-        widget=forms.TextInput(attrs={
+        min_value=1,  # Ensures only positive numbers are allowed
+        widget=forms.NumberInput(attrs={
             "class": "form-control",
             "placeholder": "Kunden-Nr. eingeben"
         })
     )
+
     
 class ElementeCartItemForm(forms.Form):
-    element_nr = forms.CharField(
+    element_nr = forms.IntegerField(  # Now ensures only numbers are entered
         label="Element-Nr.",
-        max_length=100,
-        widget=forms.TextInput(attrs={
+        min_value=1,  # Prevents negative or zero values
+        widget=forms.NumberInput(attrs={
             "class": "form-control",
             "placeholder": "Element-Nr. eingeben"
         })
     )
+    
     anzahl = forms.IntegerField(
         label="Anzahl",
         min_value=1,
@@ -50,6 +52,7 @@ class ElementeCartItemForm(forms.Form):
             "placeholder": "Anzahl eingeben"
         })
     )
+
 
 
 class ElementeCreateForm(forms.ModelForm):
