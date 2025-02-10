@@ -17,6 +17,9 @@ admin.site.register(CRMAddress)
 admin.site.register(Artikel)
 admin.site.register(Elemente_Bestellungen)
 admin.site.register(ElementeCartItem)
+admin.site.register(LieferantenBestellungen)
+admin.site.register(LieferantenStatus)
+admin.site.register(LieferantenBestellungenArtikel)
 
 admin.site.site_header = 'Bonetta CMS'                    # default: "Django Administration"
 admin.site.index_title = 'Übersicht Module'                 # default: "Site administration"

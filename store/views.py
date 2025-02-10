@@ -40,6 +40,86 @@ email_master = ["sandro@sh-digital.ch", "livio.bonetta@geboshop.ch"]
 #CRM
 
 @staff_member_required
+def update_lieferanten_status(request, pk):
+    bestellung = get_object_or_404(LieferantenBestellungen, id=pk)
+    
+    if request.method == "POST":
+        form = LieferantenStatusForm(request.POST)
+        if form.is_valid():
+            new_status = form.save(commit=False)
+            new_status.date = now()
+            new_status.order = bestellung
+            new_status.save()
+            bestellung.status.add(new_status)
+            messages.success(request, "Status erfolgreich aktualisiert.")
+            return redirect('store:lieferanten_bestellungen')
+    else:
+        form = LieferantenStatusForm()
+    
+    return render(request, 'crm/lieferant-update-status.html', {'form': form, 'bestellung': bestellung})
+
+
+@staff_member_required
+def lieferanten_bestellungen(request):
+    lieferanten_bestellungen = LieferantenBestellungen.objects.all()
+    
+    return render(request, 'crm/cms-bestellungen-lieferanten.html', {'lieferanten_bestellungen': lieferanten_bestellungen})
+
+
+
+@staff_member_required
+def elemente_bestellung_detail(request, pk):
+    bestellung = get_object_or_404(Elemente_Bestellungen, id=pk)
+    
+    # Get all cart items for the order
+    cart_items = ElementeCartItem.objects.filter(order=bestellung)
+
+    # Fetch all Lieferanten (suppliers)
+    lieferanten = Lieferanten.objects.all()
+
+    # Create list of elements with additional details from `Elemente` model
+    elemente_list = []
+    for item in cart_items:
+        # Retrieve the matching `Elemente` instance using `elementnr`
+        element = Elemente.objects.filter(elementnr=item.element_nr).first()
+
+        if element:
+            artikel = element.artikel  # ✅ Get related Artikel object
+
+            elemente_list.append({
+                "element_nr": item.element_nr,
+                "dichtungstyp": getattr(element, 'bemerkung', 'Unbekannt'),  
+                "artikel": {
+                    "id": artikel.id if artikel else None,
+                    "artikelnr": artikel.artikelnr if artikel else "Unbekannt",
+                    "name": artikel.name if artikel else "Unbekannt",
+                    "aussenbreite": artikel.aussenbreite if artikel else "Unbekannt",
+                    "aussenhöhe": artikel.aussenhöhe if artikel else "Unbekannt",
+                    "lieferant": artikel.lieferant if artikel and artikel.lieferant else None,
+                    "zubehoerartikelnr": artikel.zubehoerartikelnr if artikel else None
+                },
+                "masse": f"{getattr(element, 'aussenbreite', 'Unbekannt')}mm x {getattr(element, 'aussenhöhe', 'Unbekannt')}mm",
+                "stk_zahl": item.anzahl
+            })
+
+    context = {
+        "bestellung": {
+            "id": bestellung.id,
+            "kunden_nr": bestellung.kunden_nr,
+            "status": bestellung.status,
+            "start_date": bestellung.start_date,
+            "montage": bestellung.montage
+        },
+        "elemente": elemente_list,  # ✅ Include enriched elements list
+        "lieferanten": lieferanten  # ✅ Include all suppliers for dropdown
+    }
+    
+    return render(request, "crm/cms-elemente-bestellungen-detail.html", context)
+
+
+
+
+@staff_member_required
 def elemente_bestellungen(request):
     search_query = request.GET.get('search', '')
 
@@ -294,7 +374,6 @@ def bestellformular_cart(request):
 
 
 
-
 # Start CRM Artikel
 @staff_member_required   
 def fetch_artikel(request):
@@ -333,6 +412,11 @@ def lieferant_send_order_email(request, pk):
             lieferant = artikel.lieferant
 
         if lieferant and lieferant.email:
+            bestellung = LieferantenBestellungen.objects.create(lieferant_id=lieferant.id,)
+            bestellartikel = LieferantenBestellungenArtikel.objects.create(order=bestellung, artikel=artikel, anzahl=anzahl)
+            status = LieferantenStatus.objects.create(order=bestellung, name="In Bearbeitung")
+            bestellung.status.add(status)
+            
             # Prepare email content
             subject = f"Bestellung für Artikel {artikel.artikelnr}"
             template = render_to_string('emails/order_email.html', {
@@ -347,7 +431,7 @@ def lieferant_send_order_email(request, pk):
                 template,
                 settings.EMAIL_HOST_USER,  # Sender email
                 [lieferant.email],  # Recipients
-                bcc=['sandro@sh-digital.ch', 'livio.bonetta@geboshop.ch']
+                bcc=email_master
             )
             email.content_subtype = 'html'  # Send as HTML
             email.send()
@@ -359,7 +443,7 @@ def lieferant_send_order_email(request, pk):
         else:
             messages.error(request, "Keine gültige E-Mail-Adresse für diesen Lieferanten verfügbar.")
 
-    return redirect('store:crm_artikel')
+    return redirect('store:lieferanten_bestellungen')
 
 
 @staff_member_required

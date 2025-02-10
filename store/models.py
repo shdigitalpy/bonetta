@@ -63,6 +63,40 @@ KANTON_CHOICES = (
 
 
 
+
+class LieferantenStatus(models.Model):
+    date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    order = models.ForeignKey("LieferantenBestellungen", on_delete=models.CASCADE, related_name="status_updates")
+    name = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return f"Status {self.id}: {self.name}" if self.name else f"Status {self.id}"  
+
+
+class LieferantenBestellungen(models.Model):
+    start_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    kunden_nr = models.CharField(max_length=255, null=True, blank=True)
+    status = models.ManyToManyField(LieferantenStatus, related_name='bestellungen_status', blank=True)
+    lieferant = models.ForeignKey("Lieferanten", on_delete=models.CASCADE, null=True, blank=True, related_name="lieferanten_id")
+    
+    class Meta:
+        ordering = ['id']
+        verbose_name = 'Lieferanten-Bestellung'
+        verbose_name_plural = 'Lieferanten-Bestellungen'
+
+    def __str__(self):
+        return f"Bestellung {self.id} - Kunde: {self.kunden_nr}" if self.kunden_nr else f"Bestellung {self.id}"  
+
+
+class LieferantenBestellungenArtikel(models.Model):
+    order = models.ForeignKey(LieferantenBestellungen, on_delete=models.CASCADE, related_name="artikel_bestellungen")
+    artikel = models.ForeignKey("Artikel", on_delete=models.CASCADE, related_name="lieferanten_artikel")
+    anzahl = models.PositiveIntegerField(verbose_name="Anzahl")
+
+    def __str__(self):
+        return f"Artikel {self.artikel.id} - Anzahl: {self.anzahl}"
+
+
 STATUS_CHOICES = [
         ("offen", "offen"),
         ("bestellt", "bestellt"),
@@ -666,5 +700,6 @@ class Objekte(models.Model):
 
 	def __str__(self):
 		return str(self.serie) + ' ' + self.modell + ' ' + self.typ
+
 
 

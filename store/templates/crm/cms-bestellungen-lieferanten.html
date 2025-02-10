@@ -1,0 +1,124 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block title %}Lieferanten Bestellungen{% endblock %}
+
+{% block content %}
+    <div class="flexbox">
+        <div class="h2">Lieferanten Bestellungen</div>
+    </div>
+
+    <!-- Table Display -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Datum</th>
+                <th>Lieferant</th>
+                <th>Artikel</th> <!-- Artikel Modal Trigger Column -->
+                <th>Aktueller Status</th> 
+                <th>Status</th> 
+            </tr>
+        </thead>
+        <tbody>
+            {% for x in lieferanten_bestellungen %}
+            <tr>
+                <td>{{ x.start_date|date:"d.m.Y" }}</td>
+                <td>{{ x.lieferant.name }}</td>
+
+                <!-- Artikel Modal Trigger -->
+                <td>
+                    <a href="#" 
+                       data-toggle="modal" 
+                       data-target="#artikelModal"
+                       class="artikel-link"
+                       data-artikel='[{% for artikel in x.artikel_bestellungen.all %}{"artikel_nr": "{{ artikel.artikel.artikelnr }}", "anzahl": "{{ artikel.anzahl }}"}{% if not forloop.last %},{% endif %}{% endfor %}]'>
+                        Artikel ansehen
+                    </a>
+                </td>
+                
+                <!-- Latest Status with Modal Trigger -->
+                <td>
+                    {% with x.status.all|dictsortreversed:"date"|first as latest_status %}
+                        <a href="#" data-toggle="modal" data-target="#statusModal"
+                           class="status-link"
+                           data-status='[{% for status in x.status.all|dictsortreversed:"date" %}{"date": "{{ status.date|date:"d.m.Y H:i" }}", "name": "{{ status.name }}"}{% if not forloop.last %},{% endif %}{% endfor %}]'>
+                            {{ latest_status.name }}
+                        </a>
+                    {% endwith %}
+                </td>
+
+                <!-- Status Update Button -->
+                <td>
+                    <a href="{% url 'store:update_lieferanten_status' x.pk %}" class="btn btn-primary">Status aktualisieren</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center;">Es wurden keine Bestellungen gefunden.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Artikel History Modal (Placed Outside the Loop) -->
+    <div class="modal fade" id="artikelModal" tabindex="-1" role="dialog" aria-labelledby="artikelModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="artikelModalLabel">Bestellte Artikel</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Schließen">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Artikel-Nr.</th>
+                                <th>Anzahl</th>
+                            </tr>
+                        </thead>
+                        <tbody id="artikelHistory">
+                            <!-- Artikel history will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status History Modal (Placed Outside the Loop) -->
+    <div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="statusModalLabel">Statusverlauf</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Schließen">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Datum</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="statusHistory">
+                            <!-- Status history will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+{% endblock %}

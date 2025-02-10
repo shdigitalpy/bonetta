@@ -73,7 +73,10 @@
       <a href="{% url 'store:cms_elemente_statistik' %}">Elemente Statistik</a>
     </li>
     <li>
-      <a href="{% url 'store:elemente_bestellungen' %}">Bestellungen</a>
+      <a href="{% url 'store:elemente_bestellungen' %}">Bestellungen Kunden</a>
+    </li>
+     <li>
+      <a href="{% url 'store:lieferanten_bestellungen' %}">Bestellungen Lieferanten</a>
     </li>
 
      <li>
@@ -280,7 +283,56 @@ function updateEmail(artikelPk, lieferantId, baseUrl) {
 
 </script>
 
+<!-- JavaScript to Load Status & Artikel History Dynamically -->
+    <script>
+        $(document).ready(function() {
+            // Load Artikel Data into Modal
+            $('.artikel-link').on('click', function(e) {
+                e.preventDefault();
+                var rawData = $(this).attr('data-artikel'); // Get JSON string
+                var artikelHistory = [];
 
+                try {
+                    artikelHistory = JSON.parse(rawData.replace(/'/g, '"')); // Convert to valid JSON
+                } catch (error) {
+                    console.error("Error parsing artikel history:", error);
+                }
+
+                $('#artikelHistory').empty();
+                
+                if (artikelHistory.length > 0) {
+                    artikelHistory.forEach(function(artikel) {
+                        $('#artikelHistory').append('<tr><td>' + artikel.artikel_nr + '</td><td>' + artikel.anzahl + '</td></tr>');
+                    });
+                } else {
+                    $('#artikelHistory').append('<tr><td colspan="2" class="text-center">Keine Artikel gefunden.</td></tr>');
+                }
+            });
+
+            // Load Status Data into Modal
+            $('.status-link').on('click', function(e) {
+                e.preventDefault();
+                var rawData = $(this).attr('data-status'); // Get JSON string
+                var statusHistory = [];
+
+                try {
+                    statusHistory = JSON.parse(rawData.replace(/'/g, '"')); // Convert to valid JSON
+                } catch (error) {
+                    console.error("Error parsing status history:", error);
+                }
+
+                $('#statusHistory').empty();
+                
+                if (statusHistory.length > 0) {
+                    statusHistory.forEach(function(status) {
+                        $('#statusHistory').append('<tr><td>' + status.date + '</td><td>' + status.name + '</td></tr>');
+                    });
+                } else {
+                    $('#statusHistory').append('<tr><td colspan="2" class="text-center">Kein Statusverlauf vorhanden.</td></tr>');
+                }
+            });
+        });
+    </script>
 
 
 </body>

@@ -21,7 +21,22 @@ COUNTRY_CHOICES = [
 
 	]
 
+STATUS_CHOICES = [
+    ("In Bearbeitung", "In Bearbeitung"),
+    ("Versendet", "Versendet"),
+    ("Eingang Bestellung", "Eingang Bestellung"),
+    ("Auftrag versendet", "Auftrag versendet"),
+    ("Montage pendent", "Montage pendent"),
+]
 
+class LieferantenStatusForm(forms.ModelForm):
+    name = forms.ChoiceField(choices=STATUS_CHOICES, widget=forms.Select(attrs={
+        "class": "form-control"
+    }))
+
+    class Meta:
+        model = LieferantenStatus
+        fields = ['name']
 
 class KundenNrForm(forms.Form):
     kunden_nr = forms.IntegerField(
