@@ -42,7 +42,7 @@
             <tbody>
                 <tr>
                     <td>{{ anzahl|default:"-" }}</td>
-                    <td>{{ artikel.lieferantenartikel|default:"-" }}</td>
+                    {% if artikel.lieferantenartikel %}<td>{{ artikel.lieferantenartikel|default:"-" }}</td>{% endif %}
                     <td>{{ artikel.name|default:"-" }}</td>
                     <td>{{ artikel.aussenbreite }} x {{ artikel.aussenhöhe }} mm</td>
                 </tr>
