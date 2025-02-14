@@ -34,7 +34,8 @@ from django.http import JsonResponse
 import json
 from django.utils.html import escape
 
-email_master = ["sandro@sh-digital.ch", "livio.bonetta@geboshop.ch"]
+
+email_master = settings.EMAIL_MASTER
 
 
 #CRM
@@ -102,6 +103,24 @@ def elemente_bestellung_detail(request, pk):
                 "stk_zahl": item.anzahl
             })
 
+    # Handle the submission of new articles from the modal
+    if request.method == "POST":
+        selected_artikelnr = request.POST.getlist("artikelnr")
+        artikel_anzahl = request.POST.getlist("artikel_anzahl")
+
+        for index, artikelnr in enumerate(selected_artikelnr):
+            artikel = Artikel.objects.filter(artikelnr=artikelnr).first()
+            if artikel:
+                # Create a new cart item entry
+                ElementeCartItem.objects.create(
+                    order=bestellung,
+                    element_nr=artikelnr,
+                    anzahl=int(artikel_anzahl[index])
+                )
+
+        messages.success(request, "Bestellung erfolgreich aktualisiert.")
+        return redirect("store:elemente_bestellung_detail", pk=pk)
+
     context = {
         "bestellung": {
             "id": bestellung.id,
@@ -115,6 +134,7 @@ def elemente_bestellung_detail(request, pk):
     }
     
     return render(request, "crm/cms-elemente-bestellungen-detail.html", context)
+
 
 
 

@@ -61,24 +61,17 @@
                                         <form method="POST" action="{% url 'store:lieferant_send_order_email' element.artikel.id %}" onsubmit="return confirmSendOrder();">
                                             {% csrf_token %}
                                             <div class="form-group">
-                                                <label for="lieferant{{ element.artikel.id }}">Lieferant auswählen</label>
-                                                <select id="lieferant{{ element.artikel.id }}" name="lieferant" class="form-control">
-                                                    {% for lieferant in lieferanten %}
-                                                        <option value="{{ lieferant.id }}" {% if lieferant.id == element.artikel.lieferant.id %}selected{% endif %}>
-                                                            {{ lieferant.name }}
-                                                        </option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-
-                                            <!-- Display Email of Selected Lieferant -->
-                                            <p><strong>E-Mail:</strong> <span id="emailDisplay{{ element.artikel.id }}">{{ element.artikel.lieferant.email }}</span></p>
-
-                                            <!-- Input for Anzahl -->
-                                            <div class="form-group">
                                                 <label for="anzahl{{ element.artikel.id }}">Anzahl</label>
                                                 <input type="number" id="anzahl{{ element.artikel.id }}" name="anzahl" class="form-control" min="1" value="1">
                                             </div>
+                                            <hr>
+                                            <!-- Additional Artikel Order Search -->
+                                            <div class="form-group">
+                                                <label for="additional_artikel_{{ element.artikel.id }}">Zusätzlichen Artikel suchen</label>
+                                                <input type="text" id="additional_artikel_{{ element.artikel.id }}" class="form-control" placeholder="Artikel-Nr. eingeben" onkeyup="fetchArtikel(this.value, '{{ element.artikel.id }}')">
+                                                <div id="artikel_suggestions_{{ element.artikel.id }}" class="suggestions"></div>
+                                            </div>
+                                            <div id="selected_articles_{{ element.artikel.id }}"></div>
                                             <button type="submit" class="btn btn-primary mt-3">Bestellung senden</button>
                                         </form>
                                     {% else %}
@@ -103,4 +96,6 @@
             {% endfor %}
         </tbody>
     </table>
+
+   
 {% endblock %}

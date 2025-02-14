@@ -283,7 +283,7 @@ function updateEmail(artikelPk, lieferantId, baseUrl) {
 
 </script>
 
-<!-- JavaScript to Load Status & Artikel History Dynamically -->
+ <!-- JavaScript to Load Status & Artikel History Dynamically -->
     <script>
         $(document).ready(function() {
             // Load Artikel Data into Modal
@@ -334,6 +334,51 @@ function updateEmail(artikelPk, lieferantId, baseUrl) {
         });
     </script>
 
+     <script>
+        function fetchArtikel(query, modalId) {
+            let suggestionBox = document.getElementById("artikel_suggestions_" + modalId);
+            suggestionBox.innerHTML = "";
+
+            if (query.length < 4) {
+                return;
+            }
+
+            fetch("{% url 'store:fetch_artikel' %}?query=" + encodeURIComponent(query))
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length === 0) {
+                        suggestionBox.innerHTML = `<div class="suggestion-item text-muted">Keine Artikel gefunden</div>`;
+                        return;
+                    }
+
+                    suggestionBox.innerHTML = data
+                        .map(artikel => `
+                            <div class="suggestion-item" onclick="addArtikel('${artikel.artikelnr}', '${artikel.name}', '${modalId}')">
+                                <strong>${artikel.artikelnr}</strong> - ${artikel.name}
+                            </div>`)
+                        .join("");
+                })
+                .catch(error => {
+                    console.error("Fehler beim Abrufen von Artikeln:", error);
+                    suggestionBox.innerHTML = `<div class="suggestion-item text-danger">Fehler beim Abrufen</div>`;
+                });
+        }
+
+        function addArtikel(artikelnr, name, modalId) {
+            let container = document.getElementById("selected_articles_" + modalId);
+            let entry = document.createElement("div");
+            entry.classList.add("input-group", "mt-2");
+
+            entry.innerHTML = `
+                <input type="text" class="form-control" value="${artikelnr} - ${name}" readonly>
+                <input type="number" class="form-control" name="artikel_anzahl" min="1" value="1">
+                <div class="input-group-append">
+                    <button class="btn btn-danger" type="button" onclick="this.parentElement.parentElement.remove()">❌</button>
+                </div>`;
+
+            container.appendChild(entry);
+        }
+    </script>
 
 </body>
 </html>
