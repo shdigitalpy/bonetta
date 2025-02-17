@@ -4,18 +4,19 @@ from django.utils.translation import gettext_lazy as _
 
 
 class ElementeAdmin(admin.ModelAdmin):
-    list_display = ('elementnr', 'get_artikelnummer', 'get_kunde')  # Anzeige-Spalten
-    search_fields = ('elementnr', 'artikel__artikelnr', 'kunde__name')  # Suchfelder
+    list_display = ('elementnr', 'get_artikelnummer', 'get_kunden')  # Anzeige-Spalten
+    search_fields = ('elementnr', 'artikel__artikelnr', 'kunden__name')  # Suchfelder
+    filter_horizontal = ('kunde',)  # Improves ManyToMany selection in admin
 
     def get_artikelnummer(self, obj):
         """ Zeigt die Artikelnummer des verknüpften Artikels an """
         return obj.artikel.artikelnr if obj.artikel else "Kein Artikel"
     get_artikelnummer.short_description = "Artikelnummer"  # Spaltenüberschrift setzen
 
-    def get_kunde(self, obj):
-        """ Zeigt den Kunden des Elements an """
-        return obj.kunde.name if obj.kunde else "Kein Kunde"
-    get_kunde.short_description = "Kunde"
+    def get_kunden(self, obj):
+        """ Zeigt die verknüpften Kunden als Liste an """
+        return ", ".join([kunde.firmenname for kunde in obj.kunde.all()]) if obj.kunde.exists() else "Kein Kunde"
+    get_kunden.short_description = "Kunden"
 
     
 admin.site.register(Item)
