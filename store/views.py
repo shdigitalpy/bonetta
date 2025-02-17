@@ -169,7 +169,8 @@ def elemente_bestellung_detail(request, pk, betrieb):
 
 
     # ✅ Correct filtering to avoid AttributeError
-    zubehoer_liste = [item for item in elemente_list if item["artikel"].get("zubehoerartikelnr")]
+    zubehoer_liste = [item for item in elemente_list if item.get("artikel") and item["artikel"].get("zubehoerartikelnr")]
+
 
     # ✅ Handle the submission of new articles from the modal
     if request.method == "POST":
