@@ -259,9 +259,9 @@ def elemente_bestellungen(request):
     if search_query:
         bestellungen = Elemente_Bestellungen.objects.filter(
             Q(id__icontains=search_query)
-        ).order_by('-id')
+        ).order_by('-start_date')
     else:
-        bestellungen = Elemente_Bestellungen.objects.all().order_by('id')
+        bestellungen = Elemente_Bestellungen.objects.all().order_by('-start_date')
 
     # Fetch Kunde details for each Bestellung
     bestellungen_list = []
