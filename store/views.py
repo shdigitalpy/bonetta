@@ -135,16 +135,20 @@ def elemente_bestellung_detail(request, pk, betrieb):
     # Fetch all Lieferanten (suppliers)
     lieferanten = Lieferanten.objects.all()
 
+    # ✅ Hilfsfunktion zur Abfrage des Artikels anhand der Elementnummer
+    def get_artikel(element_nr):
+        element = Elemente.objects.filter(elementnr=element_nr).select_related("artikel").first()
+        return element.artikel if element and element.artikel else None
+
     # Create list of elements with additional details from `Elemente` model
     elemente_list = []
-    artikeldaten = []  # ✅ Liste für alle Artikeldaten
     for item in cart_items:
-        element = Elemente.objects.filter(elementnr=item.element_nr).select_related("artikel").first()
+        artikel = get_artikel(item.element_nr)  # ✅ Artikel über `get_artikel()` abrufen
 
-        if element:
-            artikel = element.artikel if element.artikel else None
-
-            artikel_daten = {
+        elemente_list.append({
+            "element_nr": item.element_nr,
+            "dichtungstyp": "Unbekannt",  # Falls später benötigt, kann angepasst werden
+            "artikel": {
                 "id": artikel.id if artikel else None,
                 "artikelnr": artikel.artikelnr if artikel else "Unbekannt",
                 "name": artikel.name if artikel else "Unbekannt",
@@ -152,29 +156,12 @@ def elemente_bestellung_detail(request, pk, betrieb):
                 "aussenhöhe": artikel.aussenhöhe if artikel else "Unbekannt",
                 "lieferant": artikel.lieferant if artikel and artikel.lieferant else None,
                 "zubehoerartikelnr": artikel.zubehoerartikelnr if artikel else None
-            } if artikel else None
+            } if artikel else None,
+            "masse": f"{artikel.aussenbreite}mm x {artikel.aussenhöhe}mm" if artikel else "Unbekannt",
+            "stk_zahl": item.anzahl
+        })
 
-            elemente_list.append({
-                "element_nr": item.element_nr,
-                "dichtungstyp": getattr(element, 'bemerkung', 'Unbekannt'),
-                "artikel": artikel_daten,  # ✅ Artikel-Daten korrekt in Element setzen
-                "masse": f"{getattr(element, 'aussenbreite', 'Unbekannt')}mm x {getattr(element, 'aussenhöhe', 'Unbekannt')}mm",
-                "stk_zahl": item.anzahl
-            })
-
-            if artikel:
-                artikeldaten.append(artikel_daten)  # ✅ Artikeldaten in Liste speichern
-
-        else:
-            elemente_list.append({
-                "element_nr": item.element_nr,
-                "dichtungstyp": "Unbekannt",
-                "artikel": None,
-                "masse": "Unbekannt",
-                "stk_zahl": item.anzahl
-            })
-
-    # ✅ Vermeidung von Fehlern durch NoneType
+    # ✅ Zubehörliste nur für Artikel mit `zubehoerartikelnr`
     zubehoer_liste = [item for item in elemente_list if item.get("artikel") and item["artikel"].get("zubehoerartikelnr")]
 
     # ✅ Handle the submission of new articles from the modal
@@ -187,7 +174,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
             return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
 
         bestellung_artikel_list = []
-        lieferant = None  # Define `lieferant` to use later
+        lieferant = None
 
         for index, artikelnr in enumerate(selected_artikelnr):
             artikel = Artikel.objects.filter(artikelnr=artikelnr).first()
@@ -258,11 +245,12 @@ def elemente_bestellung_detail(request, pk, betrieb):
         "elemente": elemente_list,  # ✅ Elemente mit Artikeln
         "lieferanten": lieferanten,  # ✅ Lieferanten-Liste
         "zubehoer_liste": zubehoer_liste,  # ✅ Zubehörartikel-Liste
-        "artikeldaten": artikeldaten,  # ✅ Neu: Alle Artikeldaten im Kontext
         "betrieb": betrieb,
     }
     
     return render(request, "crm/cms-elemente-bestellungen-detail.html", context)
+
+
 
 
 

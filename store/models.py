@@ -125,8 +125,16 @@ class ElementeCartItem(models.Model):
     element_nr = models.CharField(max_length=100, verbose_name="Element-Nr.")
     anzahl = models.PositiveIntegerField(verbose_name="Anzahl")
 
+    def get_artikel(self):
+        """ Fetch the related Artikel object through Elemente """
+        element = Elemente.objects.filter(elementnr=self.element_nr).select_related("artikel").first()
+        return element.artikel if element and element.artikel else None
+
     def __str__(self):
-        return f"Item {self.id} - Element-Nr.: {self.element_nr}, Anzahl: {self.anzahl}"
+        artikel = self.get_artikel()
+        artikelnr = artikel.artikelnr if artikel else "Kein Artikel"
+        return f"Item {self.id} - Element-Nr.: {self.element_nr}, Artikel-Nr.: {artikelnr}, Anzahl: {self.anzahl}"
+
 
 class Subcategory(models.Model):
 	sub_name = models.CharField(max_length=255)
