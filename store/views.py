@@ -138,7 +138,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
     # Create list of elements with additional details from `Elemente` model
     elemente_list = []
     for item in cart_items:
-        element = Elemente.objects.filter(elementnr=item.element_nr).first()
+        element = Elemente.objects.filter(elementnr=item.element_nr).select_related("artikel").first()  # ✅ Sichere Suche nach dem zugehörigen Element mit Artikel
 
         if element:
             artikel = element.artikel if element.artikel else None
@@ -154,8 +154,16 @@ def elemente_bestellung_detail(request, pk, betrieb):
                     "aussenhöhe": artikel.aussenhöhe if artikel else "Unbekannt",
                     "lieferant": artikel.lieferant if artikel and artikel.lieferant else None,
                     "zubehoerartikelnr": artikel.zubehoerartikelnr if artikel else None
-                },
+                } if artikel else None,  # Falls kein Artikel existiert, setzt dies 'artikel' auf None
                 "masse": f"{getattr(element, 'aussenbreite', 'Unbekannt')}mm x {getattr(element, 'aussenhöhe', 'Unbekannt')}mm",
+                "stk_zahl": item.anzahl
+            })
+        else:
+            elemente_list.append({
+                "element_nr": item.element_nr,
+                "dichtungstyp": "Unbekannt",
+                "artikel": None,  # Keine Artikel-Info vorhanden
+                "masse": "Unbekannt",
                 "stk_zahl": item.anzahl
             })
 
