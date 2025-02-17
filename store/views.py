@@ -141,8 +141,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
         element = Elemente.objects.filter(elementnr=item.element_nr).first()
 
         if element:
-            artikelid = element.artikel.id  # ✅ Get related Artikel object
-            artikel = get_object_or_404(Artikel,id=artikelid)
+            artikel = element.artikel if element.artikel else None
 
             elemente_list.append({
                 "element_nr": item.element_nr,
@@ -159,6 +158,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
                 "masse": f"{getattr(element, 'aussenbreite', 'Unbekannt')}mm x {getattr(element, 'aussenhöhe', 'Unbekannt')}mm",
                 "stk_zahl": item.anzahl
             })
+
 
     # ✅ Correct filtering to avoid AttributeError
     zubehoer_liste = [item for item in elemente_list if item["artikel"].get("zubehoerartikelnr")]
