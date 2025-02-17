@@ -29,9 +29,9 @@
                 <td>{{ element.dichtungstyp }}</td>
                 <td>
                     {% if element.artikel and element.artikel.artikelnr %}
-                        {{ element.artikel.artikelnr }}
+                        {{ element.artikel.artikelnr }} / {{ element.artikel.id }}
                     {% else %}
-                        Unbekannt
+                        <span class="text-muted">Unbekannt</span>
                     {% endif %}
                 </td>
                 <td>{{ element.masse }}</td>
@@ -55,7 +55,7 @@
                                 <div class="modal-body">
                                     {% if element.artikel.lieferant %}
                                         <!-- Display Artikel Details -->
-                                        <p><strong>Artikel:</strong> {{ element.artikel.name }}</p>
+                                        <p><strong>Artikel:</strong> {{ element.artikel.id }}</p>
                                         <p><strong>Masse:</strong> {{ element.artikel.aussenbreite }} x {{ element.artikel.aussenhöhe }} mm</p>
 
                                         {% if element.artikel.zubehoerartikelnr %}
@@ -65,34 +65,34 @@
 
                                         <!-- Form for Sending Email -->
                                         <form method="POST" action="{% url 'store:elemente_bestellung_detail' bestellung.id betrieb %}" onsubmit="return confirmSendOrder();">
-                                        {% csrf_token %}
+                                            {% csrf_token %}
 
-                                        <!-- Main Artikel Bestellung -->
-                                        <div class="form-group">
-                                            <label for="anzahl{{ element.artikel.id }}">Anzahl</label>
-                                            <input type="hidden" name="artikelnr" value="{{ element.artikel.artikelnr }}">  <!-- ✅ Hidden input -->
-                                            <input type="number" id="anzahl{{ element.artikel.id }}" name="artikel_anzahl" class="form-control" min="1" value="1">
-                                        </div>
+                                            <!-- Main Artikel Bestellung -->
+                                            <div class="form-group">
+                                                <label for="anzahl{{ element.artikel.id }}">Anzahl</label>
+                                                <input type="hidden" name="artikelnr" value="{{ element.artikel.artikelnr }}">
+                                                <input type="number" id="anzahl{{ element.artikel.id }}" name="artikel_anzahl" class="form-control" min="1" value="1">
+                                            </div>
 
-                                        <hr>
+                                            <hr>
 
-                                        <!-- Additional Artikel Order Search -->
-                                        <div class="form-group">
-                                            <label for="additional_artikel_{{ element.artikel.id }}">Zusätzlichen Artikel suchen</label>
-                                            <input type="text" id="additional_artikel_{{ element.artikel.id }}" class="form-control" 
-                                                placeholder="Artikel-Nr. eingeben" 
-                                                onkeyup="fetchArtikelInModal(this.value, '{{ element.artikel.id }}')">
-                                            <div id="artikel_suggestions_{{ element.artikel.id }}" class="suggestions"></div>
-                                        </div>
+                                            <!-- Additional Artikel Order Search -->
+                                            <div class="form-group">
+                                                <label for="additional_artikel_{{ element.artikel.id }}">Zusätzlichen Artikel suchen</label>
+                                                <input type="text" id="additional_artikel_{{ element.artikel.id }}" class="form-control" 
+                                                    placeholder="Artikel-Nr. eingeben" 
+                                                    onkeyup="fetchArtikelInModal(this.value, '{{ element.artikel.id }}')">
+                                                <div id="artikel_suggestions_{{ element.artikel.id }}" class="suggestions"></div>
+                                            </div>
 
-                                        <!-- Selected articles will be appended here -->
-                                        <div id="selected_articles_{{ element.artikel.id }}"></div>
+                                            <!-- Selected articles will be appended here -->
+                                            <div id="selected_articles_{{ element.artikel.id }}"></div>
 
-                                        <button type="submit" class="btn btn-primary mt-3">Bestellung senden</button>
-                                    </form>
+                                            <button type="submit" class="btn btn-primary mt-3">Bestellung senden</button>
+                                        </form>
 
                                     {% else %}
-                                        <p>Kein Lieferant verfügbar.</p>
+                                        <p class="text-danger">Kein Lieferant verfügbar.</p>
                                     {% endif %}
                                 </div>
                                 <div class="modal-footer">
@@ -102,13 +102,13 @@
                         </div>
                     </div>
                     {% else %}
-                        <p>Kein Artikel verfügbar.</p>
+                        <span class="text-muted">Kein Artikel verfügbar.</span>
                     {% endif %}
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="6" style="text-align: center;">Keine Elemente gefunden.</td>
+                <td colspan="6" style="text-align: center; font-weight: bold;">Keine Elemente gefunden.</td>
             </tr>
             {% endfor %}
         </tbody>

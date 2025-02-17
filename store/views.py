@@ -137,40 +137,45 @@ def elemente_bestellung_detail(request, pk, betrieb):
 
     # Create list of elements with additional details from `Elemente` model
     elemente_list = []
+    artikeldaten = []  # ✅ Liste für alle Artikeldaten
     for item in cart_items:
-        element = Elemente.objects.filter(elementnr=item.element_nr).select_related("artikel").first()  # ✅ Sichere Suche nach dem zugehörigen Element mit Artikel
+        element = Elemente.objects.filter(elementnr=item.element_nr).select_related("artikel").first()
 
         if element:
             artikel = element.artikel if element.artikel else None
 
+            artikel_daten = {
+                "id": artikel.id if artikel else None,
+                "artikelnr": artikel.artikelnr if artikel else "Unbekannt",
+                "name": artikel.name if artikel else "Unbekannt",
+                "aussenbreite": artikel.aussenbreite if artikel else "Unbekannt",
+                "aussenhöhe": artikel.aussenhöhe if artikel else "Unbekannt",
+                "lieferant": artikel.lieferant if artikel and artikel.lieferant else None,
+                "zubehoerartikelnr": artikel.zubehoerartikelnr if artikel else None
+            } if artikel else None
+
             elemente_list.append({
                 "element_nr": item.element_nr,
                 "dichtungstyp": getattr(element, 'bemerkung', 'Unbekannt'),
-                "artikel": {
-                    "id": artikel.id if artikel else None,
-                    "artikelnr": artikel.artikelnr if artikel else "Unbekannt",
-                    "name": artikel.name if artikel else "Unbekannt",
-                    "aussenbreite": artikel.aussenbreite if artikel else "Unbekannt",
-                    "aussenhöhe": artikel.aussenhöhe if artikel else "Unbekannt",
-                    "lieferant": artikel.lieferant if artikel and artikel.lieferant else None,
-                    "zubehoerartikelnr": artikel.zubehoerartikelnr if artikel else None
-                } if artikel else None,  # Falls kein Artikel existiert, setzt dies 'artikel' auf None
+                "artikel": artikel_daten,  # ✅ Artikel-Daten korrekt in Element setzen
                 "masse": f"{getattr(element, 'aussenbreite', 'Unbekannt')}mm x {getattr(element, 'aussenhöhe', 'Unbekannt')}mm",
                 "stk_zahl": item.anzahl
             })
+
+            if artikel:
+                artikeldaten.append(artikel_daten)  # ✅ Artikeldaten in Liste speichern
+
         else:
             elemente_list.append({
                 "element_nr": item.element_nr,
                 "dichtungstyp": "Unbekannt",
-                "artikel": None,  # Keine Artikel-Info vorhanden
+                "artikel": None,
                 "masse": "Unbekannt",
                 "stk_zahl": item.anzahl
             })
 
-
-    # ✅ Correct filtering to avoid AttributeError
+    # ✅ Vermeidung von Fehlern durch NoneType
     zubehoer_liste = [item for item in elemente_list if item.get("artikel") and item["artikel"].get("zubehoerartikelnr")]
-
 
     # ✅ Handle the submission of new articles from the modal
     if request.method == "POST":
@@ -187,7 +192,6 @@ def elemente_bestellung_detail(request, pk, betrieb):
         for index, artikelnr in enumerate(selected_artikelnr):
             artikel = Artikel.objects.filter(artikelnr=artikelnr).first()
             if artikel:
-                # ✅ Get the Lieferant from the first Artikel
                 if not lieferant:
                     lieferant = artikel.lieferant
 
@@ -198,19 +202,16 @@ def elemente_bestellung_detail(request, pk, betrieb):
 
         if lieferant and bestellung_artikel_list:
             try:
-                # ✅ Create LieferantenBestellungen before creating `LieferantenBestellungenArtikel`
                 lieferanten_bestellung = LieferantenBestellungen.objects.create(
                     lieferant=lieferant
                 )
 
-                # ✅ Create Status Entry & Assign to Order
                 status = LieferantenStatus.objects.create(order=lieferanten_bestellung, name="Versendet")
-                lieferanten_bestellung.status.set([status])  # ✅ Correct way to assign ManyToManyField
+                lieferanten_bestellung.status.set([status])
 
-                # ✅ Create `LieferantenBestellungenArtikel` and assign correct `order`
                 for bestell_artikel in bestellung_artikel_list:
                     LieferantenBestellungenArtikel.objects.create(
-                        order=lieferanten_bestellung,  # ✅ Assign the correct LieferantenBestellungen instance
+                        order=lieferanten_bestellung,
                         artikel=bestell_artikel["artikel"],
                         anzahl=bestell_artikel["anzahl"]
                     )
@@ -226,18 +227,18 @@ def elemente_bestellung_detail(request, pk, betrieb):
                     email = EmailMessage(
                         subject,
                         template,
-                        settings.EMAIL_HOST_USER,  # Sender email
+                        settings.EMAIL_HOST_USER,
                         [lieferant.email],  
-                        bcc=email_master  # Optional BCC
+                        bcc=email_master
                     )
-                    email.content_subtype = 'html'  # Send as HTML
+                    email.content_subtype = 'html'
                     email.send()
 
                     messages.success(request, f"Bestellung erfolgreich versendet und E-Mail an {lieferant.name} gesendet.")
                 else:
                     messages.error(request, "Keine gültige E-Mail-Adresse für diesen Lieferanten verfügbar.")
 
-                return redirect("store:lieferanten_bestellungen")  # ✅ Redirect to `lieferanten_bestellungen`
+                return redirect("store:lieferanten_bestellungen")
             
             except Exception as e:
                 messages.error(request, f"Fehler beim Speichern der Bestellung: {str(e)}")
@@ -253,15 +254,16 @@ def elemente_bestellung_detail(request, pk, betrieb):
             "status": bestellung.status,
             "start_date": bestellung.start_date,
             "montage": bestellung.montage,
-
         },
-        "elemente": elemente_list,  # ✅ Include enriched elements list
-        "lieferanten": lieferanten,  # ✅ Include all suppliers for dropdown
-        "zubehoer_liste": zubehoer_liste,
-        'betrieb':betrieb,
+        "elemente": elemente_list,  # ✅ Elemente mit Artikeln
+        "lieferanten": lieferanten,  # ✅ Lieferanten-Liste
+        "zubehoer_liste": zubehoer_liste,  # ✅ Zubehörartikel-Liste
+        "artikeldaten": artikeldaten,  # ✅ Neu: Alle Artikeldaten im Kontext
+        "betrieb": betrieb,
     }
     
     return render(request, "crm/cms-elemente-bestellungen-detail.html", context)
+
 
 
 @staff_member_required
