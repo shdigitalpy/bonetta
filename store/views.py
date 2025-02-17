@@ -141,7 +141,8 @@ def elemente_bestellung_detail(request, pk, betrieb):
         element = Elemente.objects.filter(elementnr=item.element_nr).first()
 
         if element:
-            artikel = element.artikel  # ✅ Get related Artikel object
+            artikelid = element.artikel.id  # ✅ Get related Artikel object
+            artikel = get_object_or_404(Artikel,id=artikelid)
 
             elemente_list.append({
                 "element_nr": item.element_nr,
