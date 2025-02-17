@@ -27,10 +27,16 @@
                 <td>{{ element.element_nr }}</td>
                 <td>{{ element.stk_zahl }}</td>
                 <td>{{ element.dichtungstyp }}</td>
-                <td>{{ element.artikel.artikelnr }}</td>
+                <td>
+                    {% if element.artikel and element.artikel.artikelnr %}
+                        {{ element.artikel.artikelnr }}
+                    {% else %}
+                        Unbekannt
+                    {% endif %}
+                </td>
                 <td>{{ element.masse }}</td>
                 <td>
-                    {% if element.artikel.id %}
+                    {% if element.artikel and element.artikel.id %}
                     <!-- Button to Open Modal -->
                     <a href="#" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#orderModal{{ element.artikel.id }}">
                         <i class="fas fa-shopping-cart"></i>
@@ -51,10 +57,10 @@
                                         <!-- Display Artikel Details -->
                                         <p><strong>Artikel:</strong> {{ element.artikel.name }}</p>
                                         <p><strong>Masse:</strong> {{ element.artikel.aussenbreite }} x {{ element.artikel.aussenhöhe }} mm</p>
-                                        
+
                                         {% if element.artikel.zubehoerartikelnr %}
-                                        <p><strong>Zubehörartikel:</strong> {{ element.artikel.zubehoerartikelnr }}</p>
-                                        <hr>
+                                            <p><strong>Zubehörartikel:</strong> {{ element.artikel.zubehoerartikelnr }}</p>
+                                            <hr>
                                         {% endif %}
 
                                         <!-- Form for Sending Email -->
@@ -85,7 +91,6 @@
                                         <button type="submit" class="btn btn-primary mt-3">Bestellung senden</button>
                                     </form>
 
-
                                     {% else %}
                                         <p>Kein Lieferant verfügbar.</p>
                                     {% endif %}
@@ -97,7 +102,7 @@
                         </div>
                     </div>
                     {% else %}
-                    <p>Kein Artikel verfügbar.</p>
+                        <p>Kein Artikel verfügbar.</p>
                     {% endif %}
                 </td>
             </tr>
