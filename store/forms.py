@@ -157,6 +157,7 @@ class ArtikelForm(forms.ModelForm):
         }
 
 
+
 class PreiscodeForm(forms.ModelForm):
     class Meta:
         model = Preiscode

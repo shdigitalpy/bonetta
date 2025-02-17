@@ -69,9 +69,66 @@ def lieferanten_bestellungen(request):
 
 
 @staff_member_required
+def lieferant_send_order_email(request, pk):
+    artikel = get_object_or_404(Artikel, pk=pk)
+
+    if request.method == "POST":
+        anzahl = request.POST.get("anzahl", 1)  # Default to 1 if not provided
+        lieferant_id = request.POST.get("lieferant")  # Get the selected Lieferant dynamically
+
+        # Validate and retrieve the Lieferant
+        lieferant = None
+        if lieferant_id:
+            try:
+                lieferant = get_object_or_404(Lieferanten, pk=int(lieferant_id))
+            except (ValueError, TypeError):
+                messages.error(request, "Ungültige Lieferant-ID.")
+                return redirect('store:crm_artikel')
+
+        # Fallback to the article's default Lieferant
+        if not lieferant:
+            lieferant = artikel.lieferant
+
+        if lieferant and lieferant.email:
+            bestellung = LieferantenBestellungen.objects.create(lieferant_id=lieferant.id,)
+            bestellartikel = LieferantenBestellungenArtikel.objects.create(order=bestellung, artikel=artikel, anzahl=anzahl)
+            status = LieferantenStatus.objects.create(order=bestellung, name="In Bearbeitung")
+            bestellung.status.add(status)
+            
+            # Prepare email content
+            subject = f"Bestellung für Artikel {artikel.artikelnr}"
+            template = render_to_string('emails/order_email.html', {
+                'lieferant': lieferant,
+                'artikel': artikel,
+                'anzahl': anzahl,
+            })
+
+            # Send email
+            email = EmailMessage(
+                subject,
+                template,
+                settings.EMAIL_HOST_USER,  # Sender email
+                [lieferant.email],  # Recipients
+                bcc=email_master
+            )
+            email.content_subtype = 'html'  # Send as HTML
+            email.send()
+
+            messages.success(
+                request,
+                f"Die Bestellung wurde erfolgreich an {lieferant.name} ({lieferant.email}) gesendet."
+            )
+        else:
+            messages.error(request, "Keine gültige E-Mail-Adresse für diesen Lieferanten verfügbar.")
+
+    return redirect('store:lieferanten_bestellungen')
+
+
+
+@staff_member_required
 def elemente_bestellung_detail(request, pk):
     bestellung = get_object_or_404(Elemente_Bestellungen, id=pk)
-    
+
     # Get all cart items for the order
     cart_items = ElementeCartItem.objects.filter(order=bestellung)
 
@@ -81,7 +138,6 @@ def elemente_bestellung_detail(request, pk):
     # Create list of elements with additional details from `Elemente` model
     elemente_list = []
     for item in cart_items:
-        # Retrieve the matching `Elemente` instance using `elementnr`
         element = Elemente.objects.filter(elementnr=item.element_nr).first()
 
         if element:
@@ -89,7 +145,7 @@ def elemente_bestellung_detail(request, pk):
 
             elemente_list.append({
                 "element_nr": item.element_nr,
-                "dichtungstyp": getattr(element, 'bemerkung', 'Unbekannt'),  
+                "dichtungstyp": getattr(element, 'bemerkung', 'Unbekannt'),
                 "artikel": {
                     "id": artikel.id if artikel else None,
                     "artikelnr": artikel.artikelnr if artikel else "Unbekannt",
@@ -103,23 +159,82 @@ def elemente_bestellung_detail(request, pk):
                 "stk_zahl": item.anzahl
             })
 
-    # Handle the submission of new articles from the modal
+    # ✅ Correct filtering to avoid AttributeError
+    zubehoer_liste = [item for item in elemente_list if item["artikel"].get("zubehoerartikelnr")]
+
+    # ✅ Handle the submission of new articles from the modal
     if request.method == "POST":
         selected_artikelnr = request.POST.getlist("artikelnr")
         artikel_anzahl = request.POST.getlist("artikel_anzahl")
 
+        if not selected_artikelnr or not artikel_anzahl:
+            messages.error(request, "Keine Artikel zur Bestellung ausgewählt.")
+            return redirect("store:elemente_bestellung_detail", pk=pk)
+
+        bestellung_artikel_list = []
+        lieferant = None  # Define `lieferant` to use later
+
         for index, artikelnr in enumerate(selected_artikelnr):
             artikel = Artikel.objects.filter(artikelnr=artikelnr).first()
             if artikel:
-                # Create a new cart item entry
-                ElementeCartItem.objects.create(
-                    order=bestellung,
-                    element_nr=artikelnr,
-                    anzahl=int(artikel_anzahl[index])
+                # ✅ Get the Lieferant from the first Artikel
+                if not lieferant:
+                    lieferant = artikel.lieferant
+
+                bestellung_artikel_list.append({
+                    "artikel": artikel,
+                    "anzahl": int(artikel_anzahl[index]) if artikel_anzahl[index].isdigit() else 1
+                })
+
+        if lieferant and bestellung_artikel_list:
+            try:
+                # ✅ Create LieferantenBestellungen before creating `LieferantenBestellungenArtikel`
+                lieferanten_bestellung = LieferantenBestellungen.objects.create(
+                    lieferant=lieferant
                 )
 
-        messages.success(request, "Bestellung erfolgreich aktualisiert.")
-        return redirect("store:elemente_bestellung_detail", pk=pk)
+                # ✅ Create Status Entry & Assign to Order
+                status = LieferantenStatus.objects.create(order=lieferanten_bestellung, name="Versendet")
+                lieferanten_bestellung.status.set([status])  # ✅ Correct way to assign ManyToManyField
+
+                # ✅ Create `LieferantenBestellungenArtikel` and assign correct `order`
+                for bestell_artikel in bestellung_artikel_list:
+                    LieferantenBestellungenArtikel.objects.create(
+                        order=lieferanten_bestellung,  # ✅ Assign the correct LieferantenBestellungen instance
+                        artikel=bestell_artikel["artikel"],
+                        anzahl=bestell_artikel["anzahl"]
+                    )
+
+                # ✅ Send Email Directly from Here
+                if lieferant.email:
+                    subject = f"Bestellung für {bestellung.kunden_nr} - Auftrag #{bestellung.id}"
+                    template = render_to_string('emails/bestellung_lieferant.html', {
+                        'lieferant': lieferant,
+                        'artikel_liste': bestellung_artikel_list,
+                    })
+
+                    email = EmailMessage(
+                        subject,
+                        template,
+                        settings.EMAIL_HOST_USER,  # Sender email
+                        [lieferant.email],  
+                        bcc=email_master  # Optional BCC
+                    )
+                    email.content_subtype = 'html'  # Send as HTML
+                    email.send()
+
+                    messages.success(request, f"Bestellung erfolgreich versendet und E-Mail an {lieferant.name} gesendet.")
+                else:
+                    messages.error(request, "Keine gültige E-Mail-Adresse für diesen Lieferanten verfügbar.")
+
+                return redirect("store:lieferanten_bestellungen")  # ✅ Redirect to `lieferanten_bestellungen`
+            
+            except Exception as e:
+                messages.error(request, f"Fehler beim Speichern der Bestellung: {str(e)}")
+                return redirect("store:elemente_bestellung_detail", pk=pk)
+
+        else:
+            messages.error(request, "Es wurden keine Artikel zur Bestellung hinzugefügt.")
 
     context = {
         "bestellung": {
@@ -130,13 +245,11 @@ def elemente_bestellung_detail(request, pk):
             "montage": bestellung.montage
         },
         "elemente": elemente_list,  # ✅ Include enriched elements list
-        "lieferanten": lieferanten  # ✅ Include all suppliers for dropdown
+        "lieferanten": lieferanten,  # ✅ Include all suppliers for dropdown
+        "zubehoer_liste": zubehoer_liste,
     }
     
     return render(request, "crm/cms-elemente-bestellungen-detail.html", context)
-
-
-
 
 
 @staff_member_required
@@ -395,75 +508,6 @@ def bestellformular_cart(request):
 
 
 # Start CRM Artikel
-@staff_member_required   
-def fetch_artikel(request):
-    query = request.GET.get('query', '').strip()
-    print("Query received:", query)  # Debugging
-
-    if query:
-        artikel_list = Artikel.objects.filter(artikelnr__icontains=query)[:5]
-        print("Articles found:", [(artikel.artikelnr, artikel.name) for artikel in artikel_list])  # Debugging
-    else:
-        artikel_list = []
-        print("No query provided")  # Debugging
-
-    artikel_data = [{'artikelnr': artikel.artikelnr, 'name': artikel.name} for artikel in artikel_list]
-    return JsonResponse(artikel_data, safe=False)
-
-@staff_member_required
-def lieferant_send_order_email(request, pk):
-    artikel = get_object_or_404(Artikel, pk=pk)
-
-    if request.method == "POST":
-        anzahl = request.POST.get("anzahl", 1)  # Default to 1 if not provided
-        lieferant_id = request.POST.get("lieferant")  # Get the selected Lieferant dynamically
-
-        # Validate and retrieve the Lieferant
-        lieferant = None
-        if lieferant_id:
-            try:
-                lieferant = get_object_or_404(Lieferanten, pk=int(lieferant_id))
-            except (ValueError, TypeError):
-                messages.error(request, "Ungültige Lieferant-ID.")
-                return redirect('store:crm_artikel')
-
-        # Fallback to the article's default Lieferant
-        if not lieferant:
-            lieferant = artikel.lieferant
-
-        if lieferant and lieferant.email:
-            bestellung = LieferantenBestellungen.objects.create(lieferant_id=lieferant.id,)
-            bestellartikel = LieferantenBestellungenArtikel.objects.create(order=bestellung, artikel=artikel, anzahl=anzahl)
-            status = LieferantenStatus.objects.create(order=bestellung, name="In Bearbeitung")
-            bestellung.status.add(status)
-            
-            # Prepare email content
-            subject = f"Bestellung für Artikel {artikel.artikelnr}"
-            template = render_to_string('emails/order_email.html', {
-                'lieferant': lieferant,
-                'artikel': artikel,
-                'anzahl': anzahl,
-            })
-
-            # Send email
-            email = EmailMessage(
-                subject,
-                template,
-                settings.EMAIL_HOST_USER,  # Sender email
-                [lieferant.email],  # Recipients
-                bcc=email_master
-            )
-            email.content_subtype = 'html'  # Send as HTML
-            email.send()
-
-            messages.success(
-                request,
-                f"Die Bestellung wurde erfolgreich an {lieferant.name} ({lieferant.email}) gesendet."
-            )
-        else:
-            messages.error(request, "Keine gültige E-Mail-Adresse für diesen Lieferanten verfügbar.")
-
-    return redirect('store:lieferanten_bestellungen')
 
 
 @staff_member_required
@@ -1053,6 +1097,18 @@ def cms_elemente_create(request, pk):
         'kunde_id': pk,
     }
     return render(request, 'crm/cms-elemente-erfassen.html', context)
+
+@staff_member_required
+def fetch_artikel(request):
+    query = request.GET.get('query', '').strip()
+
+    if query:
+        artikel_list = Artikel.objects.filter(artikelnr__icontains=query)[:5]  # Get first 5 matching results
+    else:
+        artikel_list = []
+
+    artikel_data = [{'artikelnr': artikel.artikelnr, 'name': artikel.name} for artikel in artikel_list]
+    return JsonResponse(artikel_data, safe=False)
 
 
 @staff_member_required

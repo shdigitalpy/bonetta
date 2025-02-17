@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Bestellung Gebo Shop Bonetta</title>
+    <style>
+        body { font-family: 'Raleway', sans-serif; background-color: #e6e6e6; color: #333; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 20px auto; background: #ffffff; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+        .header { text-align: center; border-bottom: 2px solid #ffc107; padding-bottom: 10px; margin-bottom: 20px; }
+        .table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .table th, .table td { border: 1px solid #e6e6e6; padding: 8px; font-size: 16px; text-align: left; }
+        .table th { background-color: #29384e; color: white; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img style="max-width:75px" src="https://www.gastrodichtung.ch/static/images/bonetta-icon.png" class="d-inline-block align-top" alt="Gastrodichtungen.ch Logo">
+            <h1>Bestellung Gebo Shop Bonetta</h1>
+        </div>
+
+        <p>Sehr geehrte Damen und Herren,</p>
+        <p>Wir möchten die folgende Bestellung aufgeben:</p>
+
+        <table class="table">
+            <tr>
+                <th>Bestellung für:</th>
+                <td>{{ lieferant.name }}, {{ lieferant.adresse }}, {{ lieferant.plz }} {{ lieferant.ort }}</td>
+            </tr>
+        </table>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Anzahl</th>
+                    <th>Artikel-Nr.</th>
+                    <th>Dichtungstyp</th>
+                    <th>Masse</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in artikel_liste %}
+                <tr>
+                    <td>{{ item.anzahl|default:"-" }}</td>
+                    <td>{{ item.artikel.lieferantenartikel|default:"-" }}</td>
+                    <td>{{ item.artikel.name|default:"-" }}</td>
+                    <td>{{ item.artikel.aussenbreite|default:"-" }} x {{ item.artikel.aussenhöhe|default:"-" }} mm</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="text-align: center;">Keine Artikel ausgewählt.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if zubehoer_liste %}
+            <table class="table">
+                <thead>
+                    <tr><th>Zubehör Artikel-Nr.</th></tr>
+                </thead>
+                <tbody>
+                    {% for item in zubehoer_liste %}
+                    <tr><td>{{ item.artikel.zubehoerartikelnr }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+
+
+        <p>Wir verwenden immer das Aussenmass sofern nicht spezifisch erwähnt ist und die Standardfarbe blaugrau/grau und sonst die Standardfarbe.</p>
+        <p>Versand der Rechnung per E-Mail an livio.bonetta@geboshop.ch</p>
+        <p>Vielen Dank im Voraus.</p>
+        <p>Freundliche Grüsse</p>
+        <p style="font-weight:bold">Gebo Shop Bonetta</p>
+        <p>Neumühlestrasse 19<br>8406 Winterthur</p>
+        <p>Telefon: +41 (0)79 333 61 57</p>
+        <p>E-Mail: livio.bonetta@geboshop.ch</p>
+
+        <div class="footer">
+            <p>© 2025 Gebo Shop Bonetta. Alle Rechte vorbehalten.</p>
+        </div>
+    </div>
+</body>
+</html>

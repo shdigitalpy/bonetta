@@ -6,22 +6,22 @@
     <title>{% block title %}CMS Dashboard{% endblock %}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">    
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
-	<link rel="stylesheet" href="{% static '/css/cms-style.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
+    <link rel="stylesheet" href="{% static '/css/cms-style.css' %}">
 
 </head>
 <body>
 
 <div class="wrapper">
-	
+    
     <nav id="sidebar">
- 	 	<div class="sidebar-header">
-   	<a href="{% url 'store:cms' %}"><img src="{% static 'images/bonetta.png' %}" class="d-inline-block align-top" alt=""></a>   
-   	</div>
-   	<ul class="list-unstyled components">
- 	  <a href="{% url 'store:cms' %}"><p>Startseite</p></a> 
+        <div class="sidebar-header">
+    <a href="{% url 'store:cms' %}"><img src="{% static 'images/bonetta.png' %}" class="d-inline-block align-top" alt=""></a>   
+    </div>
+    <ul class="list-unstyled components">
+      <a href="{% url 'store:cms' %}"><p>Startseite</p></a> 
 
       <p style="color:  var(--white);background-color: var(--red);text-transform:uppercase;margin: 1rem 0;">Webshop</p>
 
@@ -83,7 +83,7 @@
       <a href="{% url 'store:qr_code_view' %}">QR Code</a>
       </li> 
 
- 	 			
+                
 
         <p style="color:  var(--white);background-color: var(--red);text-transform:uppercase;margin: 1rem 0;">Weiteres</p>
       <li>
@@ -91,8 +91,8 @@
         </li>
 
          <li>
- 	 				<a href="{% url 'store:logout_user' %}">Logout</a>
- 	 			</li>
+                    <a href="{% url 'store:logout_user' %}">Logout</a>
+                </li>
         <li>
           <a href=""></a>
         </li>
@@ -118,20 +118,20 @@
           <p>Powered by <a class="nohover" href="https://www.sh-digital.ch/"><img style="width: 50%" src="{% static 'images/sh-digital-logo-weiss.png' %}"></a></p>
         </li>
 
- 	 </ul>
+     </ul>
    
  </nav>
 
  <div id="content">
-	
+    
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  	<div class="container-fluid">
-  		<button type="button" id="sidebarCollapse" class="btn btn-muted">
-  			<i class="fas fa-align-left"></i>
-  			<span></span>
-  			
-  		</button>
-  	</div>
+    <div class="container-fluid">
+        <button type="button" id="sidebarCollapse" class="btn btn-muted">
+            <i class="fas fa-align-left"></i>
+            <span></span>
+            
+        </button>
+    </div>
   </nav>
 
   <!-- Message info -->
@@ -186,77 +186,7 @@ $(document).ready(function () {
     }
 </script>
 
-<!-- JavaScript for Fetching Artikel Dynamically -->
-<script>
-    function fetchArtikel() {
-    const searchInput = document.getElementById('artikel_search').value.trim();
-    console.log("Search input:", searchInput);
-
-    const artikelList = document.getElementById('artikel_list');
-    artikelList.innerHTML = ''; // Clear the current list
-
-    // Fetch only if the input has at least 4 characters
-    if (searchInput.length >= 4) {
-        fetch("{% url 'store:fetch_artikel' %}?query=" + encodeURIComponent(searchInput))
-            .then(response => {
-                console.log("Response status:", response.status);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log("Fetched Articles:", data);
-
-                // Sort articles in ascending order by artikelnr
-                data.sort((a, b) => {
-                    if (a.artikelnr < b.artikelnr) return -1;
-                    if (a.artikelnr > b.artikelnr) return 1;
-                    return 0;
-                });
-
-                // Display no result message if no articles found
-                if (data.length === 0) {
-                    const noResultItem = document.createElement('li');
-                    noResultItem.textContent = 'Keine Artikel gefunden';
-                    noResultItem.className = 'list-group-item text-muted';
-                    artikelList.appendChild(noResultItem);
-                } else {
-                    // Populate the list with articles
-                    data.forEach(artikel => {
-                        const listItem = document.createElement('li');
-                        listItem.textContent = artikel.artikelnr;
-                        listItem.className = 'list-group-item artikel-item';
-                        listItem.onclick = () => selectArtikel(artikel.artikelnr);
-                        artikelList.appendChild(listItem);
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching articles:', error);
-                const errorItem = document.createElement('li');
-                errorItem.textContent = 'Fehler beim Abrufen von Artikeln';
-                errorItem.className = 'list-group-item text-danger';
-                artikelList.appendChild(errorItem);
-            });
-    } else {
-        console.log("Input length is less than 4. Fetch not initiated.");
-    }
-}
-
-
-function selectArtikel(artikelName) {
-    // Set the selected artikel name in both the visible and hidden input fields
-    document.getElementById('artikel_search').value = artikelName;
-    document.getElementById('selected_artikel').value = artikelName;
-
-    // Clear the list of suggestions
-    document.getElementById('artikel_list').innerHTML = '';
-}
-
-
-</script>
-
+<!-- E-Mail Update for Lieferant -->
 <script>
 function updateEmail(artikelPk, lieferantId, baseUrl) {
     const emailSpan = document.getElementById(`emailDisplay${artikelPk}`);
@@ -278,12 +208,80 @@ function updateEmail(artikelPk, lieferantId, baseUrl) {
             emailSpan.textContent = 'Fehler beim Laden der E-Mail';
         });
 }
-
-
-
 </script>
 
- <!-- JavaScript to Load Status & Artikel History Dynamically -->
+<!-- Javascript for Elemente Edit -->
+<script>
+function fetchArtikel() {
+    const searchInput = document.getElementById("artikel_search");
+    const query = searchInput.value.trim();
+    const resultsContainer = document.getElementById("artikel_list");
+
+    resultsContainer.innerHTML = ""; // Clear existing suggestions
+
+    if (query.length < 4) {
+        resultsContainer.style.display = "none"; // Hide list if query is too short
+        return;
+    }
+
+    // Fetch articles from the backend
+    fetch(`/fetch-artikel/?query=${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log("📩 Fetched Articles:", data);
+            resultsContainer.innerHTML = ""; // Clear previous results
+
+            if (data.length === 0) {
+                // Show "No Artikel Found" message
+                const noResultItem = document.createElement("li");
+                noResultItem.textContent = "❌ Keine Artikel gefunden";
+                noResultItem.classList.add("list-group-item", "text-muted");
+                resultsContainer.appendChild(noResultItem);
+                resultsContainer.style.display = "block"; // Keep list open
+                return;
+            }
+
+            data.forEach(item => {
+                const listItem = document.createElement("li");
+                listItem.classList.add("list-group-item", "artikel-item");
+                listItem.textContent = `${item.artikelnr}`;
+                listItem.style.cursor = "pointer";
+
+                listItem.addEventListener("click", function() {
+                    searchInput.value = item.artikelnr;
+                    document.getElementById("selected_artikel").value = item.artikelnr;
+                    resultsContainer.innerHTML = "";
+                    resultsContainer.style.display = "none";
+                });
+
+                resultsContainer.appendChild(listItem);
+            });
+
+            resultsContainer.style.display = "block"; // Show suggestions
+        })
+        .catch(error => {
+            console.error("❌ Fehler beim Abrufen der Artikel:", error);
+            const errorItem = document.createElement("li");
+            errorItem.textContent = "⚠ Fehler beim Abrufen";
+            errorItem.classList.add("list-group-item", "text-danger");
+            resultsContainer.appendChild(errorItem);
+            resultsContainer.style.display = "block"; // Show error message
+        });
+}
+
+// Hide dropdown when clicking outside
+document.addEventListener("click", function(event) {
+    const searchInput = document.getElementById("artikel_search");
+    const resultsContainer = document.getElementById("artikel_list");
+
+    if (!searchInput.contains(event.target) && !resultsContainer.contains(event.target)) {
+        resultsContainer.style.display = "none";
+    }
+});
+</script>
+
+
+<!-- JavaScript to Load Status & Artikel History Dynamically -->
     <script>
         $(document).ready(function() {
             // Load Artikel Data into Modal
@@ -334,51 +332,64 @@ function updateEmail(artikelPk, lieferantId, baseUrl) {
         });
     </script>
 
-     <script>
-        function fetchArtikel(query, modalId) {
-            let suggestionBox = document.getElementById("artikel_suggestions_" + modalId);
-            suggestionBox.innerHTML = "";
+<!-- fetchArtikelInModal -->
 
-            if (query.length < 4) {
+<script>
+function fetchArtikelInModal(query, modalId) {
+    let suggestionBox = document.getElementById("artikel_suggestions_" + modalId);
+    suggestionBox.innerHTML = "";
+
+    if (query.length < 4) {
+        return;
+    }
+
+    fetch("{% url 'store:fetch_artikel' %}?query=" + encodeURIComponent(query))
+        .then(response => response.json())
+        .then(data => {
+            if (data.length === 0) {
+                suggestionBox.innerHTML = `<div class="suggestion-item text-muted">Keine Artikel gefunden</div>`;
                 return;
             }
 
-            fetch("{% url 'store:fetch_artikel' %}?query=" + encodeURIComponent(query))
-                .then(response => response.json())
-                .then(data => {
-                    if (data.length === 0) {
-                        suggestionBox.innerHTML = `<div class="suggestion-item text-muted">Keine Artikel gefunden</div>`;
-                        return;
-                    }
+            suggestionBox.innerHTML = data
+                .map(artikel => `
+                    <div class="suggestion-item" onclick="addArtikelInModal('${artikel.artikelnr}', '${artikel.name}', '${modalId}')">
+                        ${artikel.artikelnr}
+                    </div>`)
+                .join("");
+        })
+        .catch(error => {
+            console.error("Fehler beim Abrufen von Artikeln:", error);
+            suggestionBox.innerHTML = `<div class="suggestion-item text-danger">Fehler beim Abrufen</div>`;
+        });
+}
 
-                    suggestionBox.innerHTML = data
-                        .map(artikel => `
-                            <div class="suggestion-item" onclick="addArtikel('${artikel.artikelnr}', '${artikel.name}', '${modalId}')">
-                                <strong>${artikel.artikelnr}</strong> - ${artikel.name}
-                            </div>`)
-                        .join("");
-                })
-                .catch(error => {
-                    console.error("Fehler beim Abrufen von Artikeln:", error);
-                    suggestionBox.innerHTML = `<div class="suggestion-item text-danger">Fehler beim Abrufen</div>`;
-                });
-        }
+function addArtikelInModal(artikelnr, name, modalId) {
+    let container = document.getElementById("selected_articles_" + modalId);
+    let entry = document.createElement("div");
+    entry.classList.add("input-group", "mt-2");
 
-        function addArtikel(artikelnr, name, modalId) {
-            let container = document.getElementById("selected_articles_" + modalId);
-            let entry = document.createElement("div");
-            entry.classList.add("input-group", "mt-2");
+    entry.innerHTML = `
+        <input type="hidden" name="artikelnr" value="${artikelnr}">  <!-- ✅ Hidden input for artikelnr -->
+        <input type="text" class="form-control" value="${artikelnr}" readonly>
+        <input type="number" class="form-control artikel-anzahl" name="artikel_anzahl" min="1" value="1" onchange="updateArtikelAnzahl(this)">
+        <div class="input-group-append">
+            <button class="btn btn-danger" type="button" onclick="this.parentElement.parentElement.remove()">x</button>
+        </div>`;
 
-            entry.innerHTML = `
-                <input type="text" class="form-control" value="${artikelnr} - ${name}" readonly>
-                <input type="number" class="form-control" name="artikel_anzahl" min="1" value="1">
-                <div class="input-group-append">
-                    <button class="btn btn-danger" type="button" onclick="this.parentElement.parentElement.remove()">❌</button>
-                </div>`;
+    container.appendChild(entry);
+}
 
-            container.appendChild(entry);
-        }
-    </script>
+function updateArtikelAnzahl(inputField) {
+    // Ensure the value is at least 1
+    if (inputField.value < 1) {
+        inputField.value = 1;
+    }
+}
+
+</script>
+
+
 
 </body>
 </html>
