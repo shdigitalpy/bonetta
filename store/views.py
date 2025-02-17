@@ -62,7 +62,7 @@ def update_lieferanten_status(request, pk):
 
 @staff_member_required
 def lieferanten_bestellungen(request):
-    lieferanten_bestellungen = LieferantenBestellungen.objects.all()
+    lieferanten_bestellungen = LieferantenBestellungen.objects.all().order_by('-start_date')
     
     return render(request, 'crm/cms-bestellungen-lieferanten.html', {'lieferanten_bestellungen': lieferanten_bestellungen})
 
@@ -126,7 +126,7 @@ def lieferant_send_order_email(request, pk):
 
 
 @staff_member_required
-def elemente_bestellung_detail(request, pk):
+def elemente_bestellung_detail(request, pk, betrieb):
     bestellung = get_object_or_404(Elemente_Bestellungen, id=pk)
 
     # Get all cart items for the order
@@ -169,7 +169,7 @@ def elemente_bestellung_detail(request, pk):
 
         if not selected_artikelnr or not artikel_anzahl:
             messages.error(request, "Keine Artikel zur Bestellung ausgewählt.")
-            return redirect("store:elemente_bestellung_detail", pk=pk)
+            return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
 
         bestellung_artikel_list = []
         lieferant = None  # Define `lieferant` to use later
@@ -231,7 +231,7 @@ def elemente_bestellung_detail(request, pk):
             
             except Exception as e:
                 messages.error(request, f"Fehler beim Speichern der Bestellung: {str(e)}")
-                return redirect("store:elemente_bestellung_detail", pk=pk)
+                return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
 
         else:
             messages.error(request, "Es wurden keine Artikel zur Bestellung hinzugefügt.")
@@ -242,11 +242,13 @@ def elemente_bestellung_detail(request, pk):
             "kunden_nr": bestellung.kunden_nr,
             "status": bestellung.status,
             "start_date": bestellung.start_date,
-            "montage": bestellung.montage
+            "montage": bestellung.montage,
+
         },
         "elemente": elemente_list,  # ✅ Include enriched elements list
         "lieferanten": lieferanten,  # ✅ Include all suppliers for dropdown
         "zubehoer_liste": zubehoer_liste,
+        'betrieb':betrieb,
     }
     
     return render(request, "crm/cms-elemente-bestellungen-detail.html", context)

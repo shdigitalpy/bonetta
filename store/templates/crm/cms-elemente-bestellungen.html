@@ -51,7 +51,7 @@
                
 
                <td>
-                        <a href="{% url 'store:elemente_bestellung_detail' bestellung.id %}">
+                        <a href="{% url 'store:elemente_bestellung_detail' bestellung.id bestellung.betrieb_person %}">
                             {{ bestellung.id }}
                         </a>
                     </td>

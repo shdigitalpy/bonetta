@@ -5,7 +5,7 @@
 
 {% block content %}
     <div class="flexbox">
-        <div class="h2">Auftrags-Nr. {{ bestellung.id }} - Details
+        <div class="h2">{{ betrieb }} - Auftrags-Nr. {{ bestellung.id }} - Details
             <a href="{% url 'store:elemente_bestellungen' %}" class="btn btn-secondary">Zurück zur Übersicht</a>
         </div>
     </div>
@@ -58,7 +58,7 @@
                                         {% endif %}
 
                                         <!-- Form for Sending Email -->
-                                        <form method="POST" action="{% url 'store:elemente_bestellung_detail' bestellung.id %}" onsubmit="return confirmSendOrder();">
+                                        <form method="POST" action="{% url 'store:elemente_bestellung_detail' bestellung.id betrieb %}" onsubmit="return confirmSendOrder();">
                                         {% csrf_token %}
 
                                         <!-- Main Artikel Bestellung -->

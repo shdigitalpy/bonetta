@@ -249,7 +249,7 @@
                                 <div class="modal-body">
                                     {% if artikel.lieferant %}
                                         <!-- Display Artikel Details -->
-                                        <p><strong>Artikel:</strong> {{ artikel.name }}</p>
+                                        <p><strong>Artikel:</strong> {{ artikel.artikelnr }}, {{ artikel.name }}</p>
                                         <p><strong>Maße:</strong> {{ artikel.aussenbreite }} x {{ artikel.aussenhöhe }} mm</p>
                                         
                                         {% if artikel.zubehoerartikelnr %}
