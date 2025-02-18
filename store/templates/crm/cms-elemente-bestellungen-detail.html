@@ -71,7 +71,7 @@
                                             <div class="form-group">
                                                 <label for="anzahl{{ item.artikel.id }}">Anzahl</label>
                                                 <input type="hidden" name="artikelnr" value="{{ item.artikel.artikelnr }}">
-                                                <input type="number" id="anzahl{{ item.artikel.id }}" name="artikel_anzahl" class="form-control" min="1" value="1">
+                                                <input type="number" id="anzahl{{ item.artikel.id }}" name="artikel_anzahl" class="form-control" min="1" value="{{ item.stk_zahl }}">
                                             </div>
 
                                             <hr>
