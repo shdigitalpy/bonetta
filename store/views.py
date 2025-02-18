@@ -142,22 +142,31 @@ def elemente_bestellung_detail(request, pk, betrieb):
 
     # Create list of elements with additional details from `ElementeCartItem` model
     elemente_list = []
+    show_lieferantenartikel = False  # ✅ Flag to check if we need the column
+
     for item in cart_items:
         artikel = item.artikel  # ✅ Artikel direkt aus `ElementeCartItem`
         dichtungstyp = get_dichtungstyp(item.element_nr)  # ✅ Bemerkung als Dichtungstyp holen
 
+        artikel_data = {
+            "id": artikel.id if artikel else None,
+            "artikelnr": artikel.artikelnr if artikel else "Unbekannt",
+            "name": artikel.name if artikel else "Unbekannt",
+            "aussenbreite": artikel.aussenbreite if artikel else "Unbekannt",
+            "aussenhöhe": artikel.aussenhöhe if artikel else "Unbekannt",
+            "lieferant": artikel.lieferant if artikel and artikel.lieferant else None,
+            "zubehoerartikelnr": artikel.zubehoerartikelnr if artikel else None,
+            "lieferantenartikel": artikel.lieferantenartikel if artikel else None,
+        } if artikel else None
+
+        # ✅ Set flag if any article has a Lieferantenartikel number
+        if artikel and artikel.lieferantenartikel:
+            show_lieferantenartikel = True
+
         elemente_list.append({
             "element_nr": item.element_nr,
             "dichtungstyp": dichtungstyp,  # ✅ Dynamisch aus `Elemente.bemerkung`
-            "artikel": {
-                "id": artikel.id if artikel else None,
-                "artikelnr": artikel.artikelnr if artikel else "Unbekannt",
-                "name": artikel.name if artikel else "Unbekannt",
-                "aussenbreite": artikel.aussenbreite if artikel else "Unbekannt",
-                "aussenhöhe": artikel.aussenhöhe if artikel else "Unbekannt",
-                "lieferant": artikel.lieferant if artikel and artikel.lieferant else None,
-                "zubehoerartikelnr": artikel.zubehoerartikelnr if artikel else None
-            } if artikel else None,
+            "artikel": artikel_data,
             "masse": f"{artikel.aussenbreite}mm x {artikel.aussenhöhe}mm" if artikel else "Unbekannt",
             "stk_zahl": item.anzahl
         })
@@ -190,9 +199,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
 
         if lieferant and bestellung_artikel_list:
             try:
-                lieferanten_bestellung = LieferantenBestellungen.objects.create(
-                    lieferant=lieferant
-                )
+                lieferanten_bestellung = LieferantenBestellungen.objects.create(lieferant=lieferant)
 
                 status = LieferantenStatus.objects.create(order=lieferanten_bestellung, name="Versendet")
                 lieferanten_bestellung.status.set([status])
@@ -210,6 +217,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
                     template = render_to_string('emails/bestellung_lieferant.html', {
                         'lieferant': lieferant,
                         'artikel_liste': bestellung_artikel_list,
+                        "show_lieferantenartikel": show_lieferantenartikel,  # ✅ Pass this to the template
                     })
 
                     email = EmailMessage(
@@ -235,8 +243,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
         else:
             messages.error(request, "Es wurden keine Artikel zur Bestellung hinzugefügt.")
 
-    alle_artikel = Artikel.objects.all()
-
+    # ✅ Context for the template
     context = {
         "bestellung": {
             "id": bestellung.id,
@@ -249,11 +256,10 @@ def elemente_bestellung_detail(request, pk, betrieb):
         "lieferanten": lieferanten,  # ✅ Lieferanten-Liste
         "zubehoer_liste": zubehoer_liste,  # ✅ Zubehörartikel-Liste
         "betrieb": betrieb,
-        'alle_artikel': alle_artikel,
+        "show_lieferantenartikel": show_lieferantenartikel,  # ✅ Pass to template
     }
-    
-    return render(request, "crm/cms-elemente-bestellungen-detail.html", context)
 
+    return render(request, "crm/cms-elemente-bestellungen-detail.html", context)
 
 
 
@@ -286,8 +292,6 @@ def elemente_bestellungen(request):
     }
 
     return render(request, "crm/cms-elemente-bestellungen.html", context)
-
-
 
 @staff_member_required
 def bestellformular_cart(request):
@@ -454,7 +458,9 @@ def bestellformular_cart(request):
                 messages.error(request, f"Fehler beim Senden der E-Mail: {str(e)}")
 
             order.status = "bestellt"
-            order.save(update_fields=["status"])
+            order.montage = montage
+            order.save(update_fields=["montage", "status"])  # ✅ This ensures both fields are saved
+
 
             request.session["kunden_nr"] = None
             request.session.modified = True
