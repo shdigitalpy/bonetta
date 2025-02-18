@@ -18,12 +18,12 @@ urlpatterns = [
     path('cms/crm/elemente-bestellungen/detail/<int:pk>/<str:betrieb>', views.elemente_bestellung_detail, name='elemente_bestellung_detail'),
     path('cms/crm/lieferanten_bestellungen', views.lieferanten_bestellungen,name="lieferanten_bestellungen"),
     path('cms/crm/lieferant_update_status/<int:pk>', views.update_lieferanten_status,name="update_lieferanten_status"),
+	
 	#pages
 	path('kontakt', views.kontakt, name='kontakt'),
 	path('montage', views.firma, name='firma'),
 	path('anleitungen', views.anleitung_videos, name='anleitung_videos'),
 	path('impressum', views.impressum, name='impressum'),
-	path('bestellformular-alt', views.bestellformular, name='bestellformular'),
 	path('danke', views.danke, name='danke'),
 	path('qr-code/', qr_code_view, name='qr_code_view'),
 	path('qr-code/download/', views.download_qr_code, name='download_qr_code'),
@@ -135,8 +135,6 @@ urlpatterns = [
 	
 	path('lieferschein/<int:bestellung_id>/', generate_lieferschein, name='generate_lieferschein'),
 	path('cms/elemente/<int:pk>/duplicate/<int:elemente_pk>/', views.cms_elemente_duplicate, name='cms_elemente_duplicate'),
-
-
 
 	#objekte
 	path('cms/elemente/objekte/<int:pk>/<int:cpk>', views.cms_elemente_objekte, name='cms_elemente_objekte'),
