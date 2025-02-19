@@ -4,10 +4,10 @@
 {% block title %}Bestellungsdetails{% endblock %}
 
 {% block content %}
-    <div class="flexbox">
-        <div class="h2">{{ betrieb }} - Auftrags-Nr. {{ bestellung.id }} - Details
-            <a href="{% url 'store:elemente_bestellungen' %}" class="btn btn-secondary">Zurück zur Übersicht</a>
+    <div class="flexbox" style="align-items:start">
+        <div class="h2">Auftrags-Nr. {{ bestellung.id }}<br> {{ betrieb }} 
         </div>
+        <a href="{% url 'store:elemente_bestellungen' %}" class="btn btn-secondary">Zurück zur Übersicht</a>
     </div>
 
     <table class="table table-striped">
@@ -36,74 +36,12 @@
                 </td>
                 <td>{{ item.masse }}</td>
                 <td>
-                    {% if item.artikel and item.artikel.id %}
-                    <!-- Button to Open Modal -->
-                    <a href="#" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#orderModal{{ item.artikel.id }}">
-                        <i class="fas fa-shopping-cart"></i>
+                    <a href="{% url 'store:elemente_bestellung_edit' item.element_nr bestellung.id %}" class="btn btn-sm btn-outline-warning">
+                        <i class="fas fa-edit"></i>
                     </a>
-
-                    <!-- Modal -->
-                    <div class="modal fade" id="orderModal{{ item.artikel.id }}" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel{{ item.artikel.id }}" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="orderModalLabel{{ item.artikel.id }}">Bestellung an Lieferant</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    {% if item.artikel.lieferant %}
-                                        <!-- Display Artikel Details -->
-                                        <p><strong>Artikel:</strong> {{ item.artikel.artikelnr }}</p>
-                                        <p><strong>Masse:</strong> {{ item.artikel.aussenbreite }} x {{ item.artikel.aussenhöhe }} mm</p>
-
-                                        {% if item.artikel.zubehoerartikelnr %}
-                                            <p><strong>Zubehörartikel:</strong> {{ item.artikel.zubehoerartikelnr }}</p>
-                                            <hr>
-                                        {% endif %}
-
-                                        <!-- Form for Sending Email -->
-                                        <form method="POST" action="{% url 'store:elemente_bestellung_detail' bestellung.id betrieb %}" onsubmit="return confirmSendOrder();">
-                                            {% csrf_token %}
-
-                                            <!-- Main Artikel Bestellung -->
-                                            <div class="form-group">
-                                                <label for="anzahl{{ item.artikel.id }}">Anzahl</label>
-                                                <input type="hidden" name="artikelnr" value="{{ item.artikel.artikelnr }}">
-                                                <input type="number" id="anzahl{{ item.artikel.id }}" name="artikel_anzahl" class="form-control" min="1" value="{{ item.stk_zahl }}">
-                                            </div>
-
-                                            <hr>
-
-                                            <!-- Additional Artikel Order Search -->
-                                            <div class="form-group">
-                                                <label for="additional_artikel_{{ item.artikel.id }}">Zusätzlichen Artikel suchen</label>
-                                                <input type="text" id="additional_artikel_{{ item.artikel.id }}" class="form-control" 
-                                                    placeholder="Artikel-Nr. eingeben" 
-                                                    onkeyup="fetchArtikelInModal(this.value, '{{ item.artikel.id }}')">
-                                                <div id="artikel_suggestions_{{ item.artikel.id }}" class="suggestions"></div>
-                                            </div>
-
-                                            <!-- Selected articles will be appended here -->
-                                            <div id="selected_articles_{{ item.artikel.id }}"></div>
-
-                                            <button type="submit" class="btn btn-primary mt-3">Bestellung senden</button>
-                                        </form>
-
-                                    {% else %}
-                                        <p class="text-danger">Kein Lieferant verfügbar.</p>
-                                    {% endif %}
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Schliessen</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% else %}
-                        <span class="text-muted">Kein Artikel verfügbar.</span>
-                    {% endif %}
+                    <a href="{% url 'store:elemente_bestellung_delete' item.element_nr bestellung.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Möchten Sie dieses Element wirklich löschen?');">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
                 </td>
             </tr>
             {% empty %}
@@ -113,4 +51,76 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <!-- Bestellung an Lieferant & Position hinzufügen (Buttons nebeneinander) -->
+    <div class="mt-4 d-flex gap-2">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmOrderModal">
+            <i class="fas fa-shopping-cart"></i> Bestellung senden
+        </button>
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addPositionModal">
+            Position hinzufügen
+        </button>
+    </div>
+
+    <!-- Bestellung senden Bestätigung Modal -->
+    <div class="modal fade" id="confirmOrderModal" tabindex="-1" role="dialog" aria-labelledby="confirmOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmOrderModalLabel">Bestellung bestätigen</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Möchten Sie die Bestellung wirklich senden?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                    <form method="POST" action="{% url 'store:elemente_bestellung_detail' bestellung.id betrieb %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="send_order" value="true">
+                        <input type="hidden" name="artikel_ids" value="{% for item in elemente %}{{ item.artikel.id }},{% endfor %}">
+                        <button type="submit" class="btn btn-primary">Ja, Bestellung senden</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Position hinzufügen Modal -->
+    <div class="modal fade show" id="addPositionModal" tabindex="-1" role="dialog" aria-labelledby="addPositionModalLabel" aria-hidden="false" style="display: {% if error_message %}block{% else %}none{% endif %};">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPositionModalLabel">Neue Position hinzufügen</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="POST" action="{% url 'store:elemente_bestellung_detail' bestellung.id betrieb %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        {% if error_message %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error_message }}
+                        </div>
+                        {% endif %}
+                        <div class="form-group">
+                            <label>Element-Nr.</label>
+                            <input type="text" name="element_nr" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Anzahl</label>
+                            <input type="number" name="anzahl" class="form-control" min="1" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+                        <button type="submit" class="btn btn-success">Position hinzufügen</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}

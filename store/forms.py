@@ -48,6 +48,19 @@ class KundenNrForm(forms.Form):
         })
     )
 
+
+
+class ElementeCartItemEditForm(forms.Form):
+   
+    
+    anzahl = forms.IntegerField(
+        label="Anzahl",
+        min_value=1,
+        widget=forms.NumberInput(attrs={
+            "class": "form-control",
+            "placeholder": "Anzahl eingeben"
+        })
+    )
     
 class ElementeCartItemForm(forms.Form):
     element_nr = forms.IntegerField(  # Now ensures only numbers are entered

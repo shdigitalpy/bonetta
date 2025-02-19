@@ -124,7 +124,6 @@ def lieferant_send_order_email(request, pk):
     return redirect('store:lieferanten_bestellungen')
 
 
-
 @staff_member_required
 def elemente_bestellung_detail(request, pk, betrieb):
     bestellung = get_object_or_404(Elemente_Bestellungen, id=pk)
@@ -142,11 +141,11 @@ def elemente_bestellung_detail(request, pk, betrieb):
 
     # Create list of elements with additional details from `ElementeCartItem` model
     elemente_list = []
-    show_lieferantenartikel = False  # ✅ Flag to check if we need the column
+    show_lieferantenartikel = False
 
     for item in cart_items:
-        artikel = item.artikel  # ✅ Artikel direkt aus `ElementeCartItem`
-        dichtungstyp = get_dichtungstyp(item.element_nr)  # ✅ Bemerkung als Dichtungstyp holen
+        artikel = item.artikel
+        dichtungstyp = get_dichtungstyp(item.element_nr)
 
         artikel_data = {
             "id": artikel.id if artikel else None,
@@ -159,89 +158,104 @@ def elemente_bestellung_detail(request, pk, betrieb):
             "lieferantenartikel": artikel.lieferantenartikel if artikel else None,
         } if artikel else None
 
-        # ✅ Set flag if any article has a Lieferantenartikel number
         if artikel and artikel.lieferantenartikel:
             show_lieferantenartikel = True
 
         elemente_list.append({
             "element_nr": item.element_nr,
-            "dichtungstyp": dichtungstyp,  # ✅ Dynamisch aus `Elemente.bemerkung`
+            "dichtungstyp": dichtungstyp,
             "artikel": artikel_data,
             "masse": f"{artikel.aussenbreite}mm x {artikel.aussenhöhe}mm" if artikel else "Unbekannt",
             "stk_zahl": item.anzahl
         })
 
-    # ✅ Zubehörliste nur für Artikel mit `zubehoerartikelnr`
-    zubehoer_liste = [item for item in elemente_list if item.get("artikel") and item["artikel"].get("zubehoerartikelnr")]
+    error_message = None
 
-    # ✅ Handle the submission of new articles from the modal
+    # ✅ Handle form submission
     if request.method == "POST":
-        selected_artikelnr = request.POST.getlist("artikelnr")
-        artikel_anzahl = request.POST.getlist("artikel_anzahl")
+        if "send_order" in request.POST:
+            # ✅ Send Order Logic (Restoring Email Functionality)
+            bestellung_artikel_list = []
+            lieferant = None
 
-        if not selected_artikelnr or not artikel_anzahl:
-            messages.error(request, "Keine Artikel zur Bestellung ausgewählt.")
-            return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
+            for item in cart_items:
+                artikel = item.artikel
+                if artikel:
+                    if not lieferant:
+                        lieferant = artikel.lieferant
 
-        bestellung_artikel_list = []
-        lieferant = None
-
-        for index, artikelnr in enumerate(selected_artikelnr):
-            artikel = Artikel.objects.filter(artikelnr=artikelnr).first()
-            if artikel:
-                if not lieferant:
-                    lieferant = artikel.lieferant
-
-                bestellung_artikel_list.append({
-                    "artikel": artikel,
-                    "anzahl": int(artikel_anzahl[index]) if artikel_anzahl[index].isdigit() else 1
-                })
-
-        if lieferant and bestellung_artikel_list:
-            try:
-                lieferanten_bestellung = LieferantenBestellungen.objects.create(lieferant=lieferant)
-
-                status = LieferantenStatus.objects.create(order=lieferanten_bestellung, name="Versendet")
-                lieferanten_bestellung.status.set([status])
-
-                for bestell_artikel in bestellung_artikel_list:
-                    LieferantenBestellungenArtikel.objects.create(
-                        order=lieferanten_bestellung,
-                        artikel=bestell_artikel["artikel"],
-                        anzahl=bestell_artikel["anzahl"]
-                    )
-
-                # ✅ Send Email Directly from Here
-                if lieferant.email:
-                    subject = f"Bestellung für {bestellung.kunden_nr} - Auftrag #{bestellung.id}"
-                    template = render_to_string('emails/bestellung_lieferant.html', {
-                        'lieferant': lieferant,
-                        'artikel_liste': bestellung_artikel_list,
-                        "show_lieferantenartikel": show_lieferantenartikel,  # ✅ Pass this to the template
+                    bestellung_artikel_list.append({
+                        "artikel": artikel,
+                        "anzahl": item.anzahl
                     })
 
-                    email = EmailMessage(
-                        subject,
-                        template,
-                        settings.EMAIL_HOST_USER,
-                        [lieferant.email],  
-                        bcc=email_master
-                    )
-                    email.content_subtype = 'html'
-                    email.send()
+            if lieferant and bestellung_artikel_list:
+                try:
+                    lieferanten_bestellung = LieferantenBestellungen.objects.create(lieferant=lieferant)
+                    status = LieferantenStatus.objects.create(order=lieferanten_bestellung, name="Versendet")
+                    lieferanten_bestellung.status.set([status])
 
-                    messages.success(request, f"Bestellung erfolgreich versendet und E-Mail an {lieferant.name} gesendet.")
+                    for bestell_artikel in bestellung_artikel_list:
+                        LieferantenBestellungenArtikel.objects.create(
+                            order=lieferanten_bestellung,
+                            artikel=bestell_artikel["artikel"],
+                            anzahl=bestell_artikel["anzahl"]
+                        )
+
+                    # ✅ Send Email
+                    if lieferant.email:
+                        subject = f"Bestellung für {bestellung.kunden_nr} - Auftrag #{bestellung.id}"
+                        template = render_to_string('emails/bestellung_lieferant.html', {
+                            'lieferant': lieferant,
+                            'artikel_liste': bestellung_artikel_list,
+                            "show_lieferantenartikel": show_lieferantenartikel,
+                        })
+
+                        email = EmailMessage(
+                            subject,
+                            template,
+                            settings.EMAIL_HOST_USER,
+                            [lieferant.email],  
+                            bcc=email_master
+                        )
+                        email.content_subtype = 'html'
+                        email.send()
+
+                        messages.success(request, f"Bestellung erfolgreich versendet und E-Mail an {lieferant.name} gesendet.")
+                    else:
+                        messages.error(request, "Keine gültige E-Mail-Adresse für diesen Lieferanten verfügbar.")
+
+                    return redirect("store:lieferanten_bestellungen")
+
+                except Exception as e:
+                    messages.error(request, f"Fehler beim Speichern der Bestellung: {str(e)}")
+                    return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
+
+            else:
+                messages.error(request, "Es wurden keine Artikel zur Bestellung hinzugefügt.")
+
+        elif "element_nr" in request.POST and "anzahl" in request.POST:
+            # ✅ Position hinzufügen (Update wenn vorhanden)
+            element_nr = request.POST["element_nr"]
+            anzahl = int(request.POST["anzahl"])
+
+            # Check if element exists in `Elemente` model
+            element = Elemente.objects.filter(elementnr=element_nr).first()
+            if not element:
+                error_message = "Das eingegebene Element existiert nicht."
+            else:
+                artikel = element.artikel
+                existing_item = ElementeCartItem.objects.filter(order=bestellung, element_nr=element_nr).first()
+
+                if existing_item:
+                    existing_item.anzahl += anzahl
+                    existing_item.save()
+                    messages.success(request, "Menge erfolgreich aktualisiert.")
                 else:
-                    messages.error(request, "Keine gültige E-Mail-Adresse für diesen Lieferanten verfügbar.")
+                    ElementeCartItem.objects.create(order=bestellung, element_nr=element_nr, artikel=artikel, anzahl=anzahl)
+                    messages.success(request, "Position erfolgreich hinzugefügt.")
 
-                return redirect("store:lieferanten_bestellungen")
-            
-            except Exception as e:
-                messages.error(request, f"Fehler beim Speichern der Bestellung: {str(e)}")
                 return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
-
-        else:
-            messages.error(request, "Es wurden keine Artikel zur Bestellung hinzugefügt.")
 
     # ✅ Context for the template
     context = {
@@ -252,14 +266,56 @@ def elemente_bestellung_detail(request, pk, betrieb):
             "start_date": bestellung.start_date,
             "montage": bestellung.montage,
         },
-        "elemente": elemente_list,  # ✅ Elemente mit Artikeln aus `ElementeCartItem`
-        "lieferanten": lieferanten,  # ✅ Lieferanten-Liste
-        "zubehoer_liste": zubehoer_liste,  # ✅ Zubehörartikel-Liste
+        "elemente": elemente_list,
+        "lieferanten": lieferanten,
         "betrieb": betrieb,
-        "show_lieferantenartikel": show_lieferantenartikel,  # ✅ Pass to template
+        "show_lieferantenartikel": show_lieferantenartikel,
+        "error_message": error_message,
     }
 
     return render(request, "crm/cms-elemente-bestellungen-detail.html", context)
+
+
+
+
+@staff_member_required
+def elemente_bestellung_delete(request, element_nr, bestellung_id):
+    bestellung = get_object_or_404(Elemente_Bestellungen, id=bestellung_id)
+    kunde = get_object_or_404(Kunde, interne_nummer=bestellung.kunden_nr)
+    betrieb = kunde.firmenname
+    eintraege = ElementeCartItem.objects.filter(order=bestellung, element_nr=element_nr)
+    
+    if not eintraege.exists():
+        messages.error(request, "Das Element wurde nicht gefunden.")
+        return redirect("store:elemente_bestellung_detail", pk=bestellung.id, betrieb=betrieb)
+    
+    eintraege.delete()
+    messages.info(request, "Das Element wurde gelöscht.")
+    return redirect("store:elemente_bestellung_detail", pk=bestellung.id, betrieb=betrieb)
+
+@staff_member_required
+def elemente_bestellung_edit(request, element_nr, bestellung_id):
+    bestellung = get_object_or_404(Elemente_Bestellungen, id=bestellung_id)
+    kunde = get_object_or_404(Kunde, interne_nummer=bestellung.kunden_nr)
+    betrieb = kunde.firmenname
+    item = get_object_or_404(ElementeCartItem, order=bestellung, element_nr=element_nr)
+
+    if request.method == "POST":
+        form = ElementeCartItemEditForm(request.POST)
+        if form.is_valid():
+            item.anzahl = form.cleaned_data["anzahl"]
+            item.save()
+            messages.success(request, "Element erfolgreich aktualisiert.")
+            return redirect("store:elemente_bestellung_detail", pk=bestellung.id, betrieb=betrieb)
+        else:
+            messages.error(request, "Ungültige Eingabe. Bitte überprüfen Sie die Werte.")
+    else:
+        form = ElementeCartItemEditForm(initial={"anzahl": item.anzahl})
+
+    context = {"form": form, "item": item, "bestellung": bestellung, "betrieb": betrieb}
+    return render(request, "crm/crm-elemente-bestellung-edit.html", context)
+
+
 
 
 
@@ -406,7 +462,7 @@ def bestellformular_cart(request):
 
             # ✅ Update `montage` and save it
             order.montage = montage
-            order.status = "bestellt"
+            order.status = "offen"
             order.save(update_fields=["montage", "status"])  # ✅ Ensure fields are stored in the database
 
             # ✅ Fetch customer details
@@ -1194,7 +1250,7 @@ def generate_lieferschein(request, bestellung_id):
             row_cells[0].text = bestellung.kunden_nr or "N/A"
             row_cells[1].text = f"{bestellung.betrieb_person}\n{bestellung.adresse}\n{bestellung.plz} {bestellung.ort}"
             row_cells[2].text = bestellung.elemente_nr or "N/A"
-            row_cells[3].text = "Ja" if bestellung.montage == "mit" else "Nein"
+            row_cells[3].text = "Ja" if bestellung.montage == "Ja" else "Nein"
             row_cells[4].text = bestellung.bemerkung or "Keine Bemerkung"
 
             # Insert the table directly after the placeholder paragraph

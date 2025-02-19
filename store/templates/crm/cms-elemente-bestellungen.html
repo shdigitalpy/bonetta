@@ -1,11 +1,11 @@
 {% extends 'base-cms.html' %}
 {% load static %}
 {% load custom_filters %}
-{% block title %}Kunden Bestellungen{% endblock %}
+{% block title %}Bestellung Kunde{% endblock %}
 
 {% block content %}
     <div class="flexbox">
-        <div class="h2">Bestellungen Kunden Elemente</div>
+        <div class="h2">Bestellung Kunde</div>
     </div>
 
     <!-- Search and Action Buttons -->
@@ -50,10 +50,11 @@
 
                
 
-               <td>
-                        <a href="{% url 'store:elemente_bestellung_detail' bestellung.id bestellung.betrieb_person %}">
+               <td >
+                       <a href="{% url 'store:elemente_bestellung_detail' bestellung.id bestellung.betrieb_person %}" style="text-decoration: underline !important;">
                             {{ bestellung.id }}
                         </a>
+
                     </td>
 
 
