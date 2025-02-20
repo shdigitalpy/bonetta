@@ -10,47 +10,83 @@
         <a href="{% url 'store:elemente_bestellungen' %}" class="btn btn-secondary">Zurück zur Übersicht</a>
     </div>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Element-Nr.</th>
-                <th>Stk.-Zahl</th>
-                <th>Dichtungstyp</th>
-                <th>Artikel</th>
-                <th>Masse</th>
-                <th>Aktion</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in elemente %}
-            <tr>
-                <td>{{ item.element_nr }}</td>
-                <td>{{ item.stk_zahl }}</td>
-                <td>{{ item.dichtungstyp }}</td>
-                <td>
-                    {% if item.artikel and item.artikel.artikelnr %}
+  <table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Element-Nr.</th>
+            <th>Stk.-Zahl</th>
+            <th>Artikel</th>
+            <th>Masse</th>
+            <th>Aktion</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in elemente %}
+        <tr>
+            <td>{{ item.element_nr }}</td>
+            <td>{{ item.stk_zahl }}</td>
+            <td>
+                {% if item.artikel and item.artikel.artikelnr %}
+                    <a href="#" 
+                       title="Artikel Details anzeigen" 
+                       data-toggle="modal" 
+                       data-target="#artikelDetailsModal{{ item.artikel.pk }}">
                         {{ item.artikel.artikelnr }}
-                    {% else %}
-                        <span class="text-muted">Unbekannt</span>
-                    {% endif %}
-                </td>
-                <td>{{ item.masse }}</td>
-                <td>
-                    <a href="{% url 'store:elemente_bestellung_edit' item.element_nr bestellung.id %}" class="btn btn-sm btn-outline-warning">
-                        <i class="fas fa-edit"></i>
                     </a>
-                    <a href="{% url 'store:elemente_bestellung_delete' item.element_nr bestellung.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Möchten Sie dieses Element wirklich löschen?');">
-                        <i class="fas fa-trash-alt"></i>
-                    </a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6" style="text-align: center; font-weight: bold;">Keine Elemente gefunden.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+                    <!-- Modal for Artikel Details -->
+                    <div class="modal fade" id="artikelDetailsModal{{ item.artikel.pk }}" tabindex="-1" role="dialog" aria-labelledby="artikelDetailsModalLabel{{ item.artikel.pk }}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="artikelDetailsModalLabel{{ item.artikel.pk }}">Artikel Details</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><strong>Artikelnummer:</strong> {{ item.artikel.artikelnr }}</p>
+                                    <p><strong>Dichtungstyp:</strong> {{ item.artikel.name }}</p>  {# Dichtungstyp is shown inside the modal #}
+                                    <p><strong>Aussenbreite:</strong> {{ item.artikel.aussenbreite }}</p>
+                                    <p><strong>Aussenhöhe:</strong> {{ item.artikel.aussenhöhe }}</p>
+                                    <p><strong>Lieferant:</strong> {{ item.artikel.lieferant }}</p>
+                                    <p><strong>Lieferantenartikel:</strong> {{ item.artikel.lieferantenartikel }}</p>
+                                    <p><strong>Einkaufspreis:</strong> {{ item.artikel.nettopreis|floatformat:2 }}</p>
+                                    <p><strong>Verkaufspreis:</strong> {{ item.artikel.vp|floatformat:2 }}</p>
+                                    <p><strong>Preiscode:</strong> {{ item.artikel.preiscode }}</p>
+                                    <p><strong>Zubehörartikel-Nr.:</strong> {{ item.artikel.zubehoerartikelnr }}</p>
+                                    <p><strong>Bestpreis:</strong> {{ item.artikel.bestpreis|floatformat:2 }}</p>
+                                    <p><strong>Bestpreis Lieferant:</strong> {{ item.artikel.bestpreis_lieferant }}</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <span class="text-muted">Unbekannt</span>
+                {% endif %}
+            </td>
+            <td>{{ item.masse }}</td>
+            <td>
+                <a href="{% url 'store:elemente_bestellung_edit' item.element_nr bestellung.id %}" class="btn btn-sm btn-outline-warning">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <a href="{% url 'store:elemente_bestellung_delete' item.element_nr bestellung.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Möchten Sie dieses Element wirklich löschen?');">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" style="text-align: center; font-weight: bold;">Keine Elemente gefunden.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
 
     <!-- Bestellung an Lieferant & Position hinzufügen (Buttons nebeneinander) -->
     <div class="mt-4 d-flex gap-2">

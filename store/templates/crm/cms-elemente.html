@@ -5,7 +5,18 @@
 {% block content %}
 
 <div class="flexbox">
-    <div class="h2">Elemente<br><br> {{ kunde_data.firmenname }}</div>
+    <div class="h2">Elemente<br><br> {{ kunde_data.firmenname }}<br>
+
+    <span style="font-size:1rem">
+    {% for address in kunde_data.kunde_address.all %}
+                            {{ address.crm_strasse|default:"" }} {{ address.crm_nr|default:"" }},
+                            {{ address.crm_plz|default:"" }} {{ address.crm_ort|default:"" }}
+                            
+                        {% empty %}
+                        {% endfor %}
+</span>
+
+</div>
     <!-- Search form -->
     <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="">
         {% csrf_token %}
