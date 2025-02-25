@@ -349,7 +349,7 @@ def elemente_bestellungen(request):
 
     return render(request, "crm/cms-elemente-bestellungen.html", context)
 
-@staff_member_required
+
 def bestellformular_cart(request):
     """
     Handles the cart functionality, validates element-nr, saves the linked article,
