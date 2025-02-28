@@ -18,7 +18,13 @@ def extras_marke(request):
 
 
 def first_cat(request):
-	catquery = Category.objects.order_by('name').first()
-	first_cat = catquery.name
-	return {'first_cat' : first_cat}
+    catquery = Category.objects.order_by('name').first()
+    
+    if catquery:  # Check if catquery is not None
+        first_cat = catquery.name
+    else:
+        first_cat = None  # Or a default value if no category exists
+    
+    return {'first_cat': first_cat}
+
 	
