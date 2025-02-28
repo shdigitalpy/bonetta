@@ -456,13 +456,14 @@ def bestellformular_cart(request):
             montage = request.POST.get("montage", "Nein")  # ✅ Ensure montage is retrieved from form
 
             order = Elemente_Bestellungen.objects.filter(kunden_nr=str(kunden_nr), status="offen").first()
+            
             if not order or not order.elementeitems_bestellung.exists():
                 messages.warning(request, "Bestellung konnte nicht abgeschlossen werden. Bitte fügen Sie Artikel hinzu.")
                 return redirect("store:bestellformular_cart")
 
-            # ✅ Update `montage` and save it
+            # ✅ Update `montage` and set status to "bestellt"
             order.montage = montage
-            order.status = "offen"
+            order.status = "bestellt"
             order.save(update_fields=["montage", "status"])  # ✅ Ensure fields are stored in the database
 
             # ✅ Fetch customer details
@@ -501,7 +502,7 @@ def bestellformular_cart(request):
             except Exception as e:
                 messages.error(request, f"E-Mail konnte nicht versendet werden: {str(e)}")
 
-            # ✅ Second Email Confirmation
+            # ✅ Second Email Confirmation to Kunde
             subject = f"Auftragsbestätigung Kühlschrankdichtungen - Bestellung {order.id}"
             template = render_to_string("crm/mail-bestaetigung-elemente.html", {
                 "id": order.id,
@@ -518,9 +519,11 @@ def bestellformular_cart(request):
             except Exception as e:
                 messages.error(request, f"Fehler beim Senden der E-Mail: {str(e)}")
 
+            # ✅ Exclude items from the next cart view
             request.session["kunden_nr"] = None
             request.session.modified = True
             return redirect("store:bestellformular_cart")
+
 
     # ✅ Retrieve cart contents
     if kunden_nr:
@@ -545,16 +548,11 @@ def bestellformular_cart(request):
         "kunden_nr": kunden_nr,
         "kunde_details": kunde_details,
     })
-
-
-
 # end new warenkorb elemente
 
 
 
 # Start CRM Artikel
-
-
 @staff_member_required
 def get_lieferant_email(request, lieferant_id):
     try:
