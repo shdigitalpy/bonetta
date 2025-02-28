@@ -94,7 +94,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_brotli.middleware.BrotliMiddleware',
 
-    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'webshop.urls'

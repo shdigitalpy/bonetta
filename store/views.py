@@ -532,7 +532,7 @@ def bestellformular_cart(request):
                     "anzahl": item.anzahl,
                     "artikel": item.artikel,
                     "kuehlposition": item.artikel.artikel_elemente.first().kuehlposition if item.artikel and item.artikel.artikel_elemente.exists() else 'N/A',
-                    "bemerkung": item.artikel.artikel_elemente.first().bemerkung if item.artikel and item.artikel.artikel_elemente.exists() else 'N/A',
+                    "bezeichnung": item.artikel.artikel_elemente.first().bezeichnung if item.artikel and item.artikel.artikel_elemente.exists() else 'N/A',
                     "id": item.id,
                 }
                 for item in order.elementeitems_bestellung.all()
