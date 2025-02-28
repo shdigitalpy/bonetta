@@ -76,8 +76,8 @@ INSTALLED_APPS = [
     'storages',
     'mathfilters',
     'django_template_maths',
-    'store.templatetags.custom_filters'
-
+    'store.templatetags.custom_filters',
+    'django_brotli',
     
 ]
 
@@ -93,6 +93,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_brotli.middleware.BrotliMiddleware',
+
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'webshop.urls'
@@ -239,3 +241,6 @@ django_heroku.settings(locals())
 
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
