@@ -525,10 +525,12 @@ def bestellformular_cart(request):
             return redirect("store:bestellformular_cart")
 
 
-    # ✅ Retrieve cart contents
+    # ✅ Retrieve cart contents and exclude completed orders
     if kunden_nr:
         order = Elemente_Bestellungen.objects.filter(kunden_nr=kunden_nr, status="offen").first()
-        if order:
+
+        # Ensure only items from open orders are shown
+        if order and order.elementeitems_bestellung.exists():
             cart_items_with_details = [
                 {
                     "element_nr": item.element_nr,
@@ -540,6 +542,9 @@ def bestellformular_cart(request):
                 }
                 for item in order.elementeitems_bestellung.all()
             ]
+        else:
+            cart_items_with_details = []
+
 
     return render(request, "bestellformular-neu.html", {
         "kunden_nr_form": kunden_nr_form,
