@@ -52,18 +52,25 @@
 
     <p style="color:  var(--white);background-color: var(--red);text-transform:uppercase;margin: 1rem 0;">CRM</p>
 
-    <li>
-      <a href="{% url 'store:crm_new_kunden' %}">Kunden</a>
-      </li> 
-
-     
-      <li>
-      <a href="{% url 'store:lieferanten' %}">Lieferanten</a>
-    </li>
 
     <li>
       <a href="{% url 'store:crm_artikel' %}">Artikel</a>
       </li> 
+
+    <li>
+      <a href="{% url 'store:crm_new_kunden' %}">Kunde</a>
+      </li> 
+
+     
+      <li>
+      <a href="{% url 'store:lieferanten' %}">Lieferant</a>
+    </li>
+    <li>
+      <a href="{% url 'store:elemente_bestellungen' %}">Auftrag Kunde</a>
+    </li>
+     <li>
+      <a href="{% url 'store:lieferanten_bestellungen' %}">Bestellung Lieferant</a>
+    </li>    
 
       <li>
       <a href="{% url 'store:crm_preiscode' %}">Preiscode</a>
@@ -72,19 +79,6 @@
       <li>
       <a href="{% url 'store:cms_elemente_statistik' %}">Statistik</a>
     </li>
-    <li>
-      <a href="{% url 'store:elemente_bestellungen' %}">Bestellung Kunden</a>
-    </li>
-     <li>
-      <a href="{% url 'store:lieferanten_bestellungen' %}">Bestellung Lieferanten</a>
-    </li>
-
-     <li>
-      <a href="{% url 'store:qr_code_view' %}">QR Code</a>
-      </li> 
-
-                
-
         <p style="color:  var(--white);background-color: var(--red);text-transform:uppercase;margin: 1rem 0;">Weiteres</p>
       <li>
           <a href="{% url 'store:cms_benutzerdaten' %}">Benutzerdaten</a>
