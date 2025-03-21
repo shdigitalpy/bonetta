@@ -876,26 +876,53 @@ def crm_lager_löschen(request, pk):
 
 # CRM Kunden ---------------------------------------------------------------
 
+# def crm_new_kunden(request):
+#     search_query = request.GET.get('search', '')
+#     if search_query:
+             
+#         kunden = Kunde.objects.filter(
+#             Q(firmenname__icontains=search_query) | 
+#             Q(interne_nummer__icontains=search_query) |
+#             Q(kunde_address__crm_ort__icontains=search_query) |
+#             Q(kunde_address__crm_strasse__icontains=search_query) |
+#             Q(kunde_address__crm_kanton__icontains=search_query)
+#         ).order_by('-id')
+#     else:
+#         kunden = Kunde.objects.all().order_by('-interne_nummer')
+    
+#     context = {
+
+#         'kunden': kunden,
+#     }
+    
+#     return render(request, 'crm/crm-kunden.html', context)
+
 def crm_new_kunden(request):
     search_query = request.GET.get('search', '')
-    if search_query:
-             
+    crm_kanton_search = request.GET.get('crm_kanton_search', '')  # Get the value from the form
+
+    # Initialize the CRMAddressForm with GET data to display the dropdown
+    address_form = CRMKundenForm(request.GET or None)
+
+    # Filter customers based on the search query and crm_kanton_search
+    if search_query or crm_kanton_search:
         kunden = Kunde.objects.filter(
             Q(firmenname__icontains=search_query) | 
             Q(interne_nummer__icontains=search_query) |
             Q(kunde_address__crm_ort__icontains=search_query) |
             Q(kunde_address__crm_strasse__icontains=search_query) |
-            Q(kunde_address__crm_kanton__icontains=search_query)
-        ).order_by('-id')
+            Q(kunde_address__crm_kanton__icontains=crm_kanton_search)
+        ).distinct().order_by('-id')
     else:
         kunden = Kunde.objects.all().order_by('-interne_nummer')
     
     context = {
-
         'kunden': kunden,
+        'address_form': address_form,  # Pass the form to the template
     }
     
     return render(request, 'crm/crm-kunden.html', context)
+
 
 
 @staff_member_required
@@ -3095,3 +3122,8 @@ def logout_user(request):
 	logout(request)
 	messages.success(request, ('Sie wurden erfolgreich abgemeldet.'))
 	return redirect('store:login_user')
+
+
+
+# code for requirement no-3
+

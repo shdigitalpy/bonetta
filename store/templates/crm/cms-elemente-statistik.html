@@ -3,6 +3,65 @@
 {% block title %}CMS Elemente Statistik{% endblock %}
 
 {% block content %}
+
+<style>
+    .flexbox{
+      align-items: center;
+      border-radius: 40px;
+    }
+    .price-code-btn{
+      background-color: #29384f;
+      border-color: #29384f;
+      border-width: 2px;
+      font-weight: 600 !important;
+      padding: .375rem .75rem;
+      font-size: 18px;
+      color: #fff;
+      transition: .3s all;
+      border-radius: 10px;
+    }
+    .form-control {
+        padding: .5rem .75rem;
+        font-size: 1rem;
+    }
+    .price-code-btn:hover{
+      background-color: #fff;
+      border-color: #29384f;
+      color: #29384f;
+    }
+    #textsuche {
+      border-radius: 10px;
+    }
+    .suche-btn, .reset-btn{
+      background-color: #29384f;
+      border: 2px solid #29384f !important;
+      padding: 8px;
+      font-weight: 600;
+      color: #fff;
+      border-radius: 10px;
+      transition: .3s all;
+    }
+    .suche-btn:hover {
+      background-color: transparent;
+       color: #29384f;
+    }
+    .reset-btn:hover{
+      background-color: transparent;
+        color: #29384f;
+    }
+    .flexbox-header{
+       padding: 40px 20px;
+       background-color: #e4e3e8;
+    }
+    .flexbox .h2{
+      color: #29384f;
+      font-weight: 800;
+    }
+    .alert{
+        margin: 20px auto;
+    }
+  </style>
+
 <div class="flexbox">
     <div class="h2">Elemente Statistik</div>
     <!-- Extended Search form -->
@@ -37,16 +96,20 @@
                 <input class="form-control" type="text" placeholder="Serien-Nr."
                        name="typ" value="{{ request.GET.typ }}">
             </div>
-            <div style="flex: 0 0 5%; padding: 5px;">
-                <button type="submit" class="btn btn-outline-primary btn-sm">
-                    <span class="fas fa-search"></span> Suche
+
+            
+            <div style="flex: 0 0 5%; margin-left: 5px;">
+                <button type="submit" style="border: none;" class="btn btn-outline-primary btn-sm suche-btn mr-2">
+                  <span class="fas fa-search"></span> Suche
                 </button>
             </div>
-            <div style="flex: 0 0 5%; padding: 5px;">
-                <a href="{% url 'store:cms_elemente_statistik' %}" class="btn btn-light btn-sm">
+
+            <div style="flex: 0 0 5%; margin-left: 8px;">
+                <a href="{% url 'store:cms_elemente_statistik' %}" style="border: none;" class="btn btn-light btn-sm reset-btn">
                     <span class="fas fa-times"></span> zurücksetzen
                 </a>
             </div>
+
             <div class="alert alert-info">
                 <strong>Gesamte Laufmeter:</strong> {{ total_laufmeter|floatformat:0 }}m | 
                 <strong>Anzahl Elemente:</strong> {{ elemente_count }}
