@@ -899,20 +899,26 @@ def crm_lager_löschen(request, pk):
 
 def crm_new_kunden(request):
     search_query = request.GET.get('search', '')
-    crm_kanton_search = request.GET.get('crm_kanton_search', '')  # Get the value from the form
+    crm_kanton = request.GET.get('crm_kanton', '')
 
     # Initialize the CRMAddressForm with GET data to display the dropdown
     address_form = CRMKundenForm(request.GET or None)
 
-    # Filter customers based on the search query and crm_kanton_search
-    if search_query or crm_kanton_search:
-        kunden = Kunde.objects.filter(
+    kunden = Kunde.objects.all().order_by('-id')  # Start with all customers
+
+    if search_query:
+        kunden = kunden.filter(
             Q(firmenname__icontains=search_query) | 
             Q(interne_nummer__icontains=search_query) |
             Q(kunde_address__crm_ort__icontains=search_query) |
             Q(kunde_address__crm_strasse__icontains=search_query) |
-            Q(kunde_address__crm_kanton__icontains=crm_kanton_search)
-        ).distinct().order_by('-id')
+            Q(kunde_address__crm_kanton__icontains=search_query)
+        )
+
+    if crm_kanton:
+        kunden = kunden.filter(
+            kunde_address__crm_kanton__icontains=crm_kanton
+        )
     else:
         kunden = Kunde.objects.all().order_by('-interne_nummer')
     

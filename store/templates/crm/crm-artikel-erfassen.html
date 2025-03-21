@@ -4,13 +4,103 @@
 
 {% block content %}
 
+<style>
+    .form-group {
+        padding: 5px;
+        margin-left: 8px;
+    }
+    .special-background {
+        background-color: #e4e3e8;
+        padding: 10px;
+        border-radius: 10px;
+        width: 520px;
+    }
+</style>
+
 <div class="container">
     <h2>Artikel erfassen</h2>
     
     <div class="form-group">
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            {{ form.as_p }}
+
+            <!-- test -->
+            <div class="form-group special-background">
+                <label for="{{ form.artikelnr.id_for_label }}">{{ form.artikelnr.label_tag }}</label>
+                {{ form.artikelnr }}
+            </div>
+    
+            <!-- name -->
+            <div class="form-group special-background">
+                <label for="{{ form.name.id_for_label }}">{{ form.name.label_tag }}</label>
+                {{ form.name }}
+            </div>
+    
+            <!-- aussenbreite -->
+            <div class="form-group special-background">
+                <label for="{{ form.aussenbreite.id_for_label }}">{{ form.aussenbreite.label_tag }}</label>
+                {{ form.aussenbreite }}
+            </div>
+    
+            <!-- aussenhöhe -->
+            <div class="form-group special-background">
+                <label for="{{ form.aussenhöhe.id_for_label }}">{{ form.aussenhöhe.label_tag }}</label>
+                {{ form.aussenhöhe }}
+            </div>
+    
+            <!-- lieferant -->
+            <div class="form-group special-background">
+                <label for="{{ form.lieferant.id_for_label }}">{{ form.lieferant.label_tag }}</label>
+                {{ form.lieferant }}
+            </div>
+    
+            <!-- lieferantenartikel -->
+            <div class="form-group special-background">
+                <label for="{{ form.lieferantenartikel.id_for_label }}">{{ form.lieferantenartikel.label_tag }}</label>
+                {{ form.lieferantenartikel }}
+            </div>
+    
+            <!-- lieferanten_artikelnummern with background -->
+            <div class="form-group special-background">
+                <label for="{{ form.lieferanten_artikelnummern.id_for_label }}">{{ form.lieferanten_artikelnummern.label_tag }}</label>
+                {{ form.lieferanten_artikelnummern }}
+            </div>
+    
+            <!-- dichtungstypen with background -->
+            <div class="form-group special-background">
+                <label for="{{ form.dichtungstypen.id_for_label }}">{{ form.dichtungstypen.label_tag }}</label>
+                {{ form.dichtungstypen }}
+            </div>
+    
+            <!-- nettopreis -->
+            <div class="form-group special-background">
+                <label for="{{ form.nettopreis.id_for_label }}">{{ form.nettopreis.label_tag }}</label>
+                {{ form.nettopreis }}
+            </div>
+    
+            <!-- preiscode -->
+            <div class="form-group special-background">
+                <label for="{{ form.preiscode.id_for_label }}">{{ form.preiscode.label_tag }}</label>
+                {{ form.preiscode }}
+            </div>
+    
+            <!-- zubehoerartikelnr -->
+            <div class="form-group special-background">
+                <label for="{{ form.zubehoerartikelnr.id_for_label }}">{{ form.zubehoerartikelnr.label_tag }}</label>
+                {{ form.zubehoerartikelnr }}
+            </div>
+    
+            <!-- bestpreis -->
+            <div class="form-group special-background">
+                <label for="{{ form.bestpreis.id_for_label }}">{{ form.bestpreis.label_tag }}</label>
+                {{ form.bestpreis }}
+            </div>
+    
+            <!-- bestpreis_lieferant -->
+            <div class="form-group special-background">
+                <label for="{{ form.bestpreis_lieferant.id_for_label }}">{{ form.bestpreis_lieferant.label_tag }}</label>
+                {{ form.bestpreis_lieferant }}
+            </div>
             
             
                 <button type="submit" class="btn btn-primary ml-4">Speichern</button>
@@ -19,5 +109,9 @@
         </form>
     </div>
 </div>
+
+
+
+
 
 {% endblock %}

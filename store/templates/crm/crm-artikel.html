@@ -58,6 +58,9 @@
       color: #29384f;
       font-weight: 800;
     }
+    .search-box{
+      margin-right: 250px;
+    }
   </style>
   
   
@@ -71,14 +74,15 @@
   
     <a class="btn btn-outline-primary btn-sm price-code-btn" href="{% url 'store:crm_artikel_create' %}">Artikel erfassen</a>
   
-    <div style="flex: 0 0 20%" class="search-box">
-      <input id="textsuche" class="form-control" type="text" placeholder="Suche" aria-label="Search" name="search">
-    </div>
-  
     <!-- Search form -->
     <form class="form-inline d-flex justify-content-center md-form form-sm" action="{% url 'store:crm_artikel' %}">
       {% csrf_token %}
       <div style="display: flex">
+
+        <div style="flex: 0 0 20%" class="search-box">
+            <input id="textsuche" class="form-control" type="text" placeholder="Suche" aria-label="Search" name="search">
+        </div>
+
         <div style="flex: 0 0 15%">
           <button type="submit" style="border: none;" class="btn btn-outline-primary btn-sm suche-btn mr-2">
             <span class="fas fa-search"></span> Suche
