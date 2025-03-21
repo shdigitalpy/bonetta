@@ -251,6 +251,7 @@ ul ul a{
 	-webkit-box-pack: justify;
 	    -ms-flex-pack: justify;
 	        justify-content: space-between; 
+    
 }
 
 .flexelement {
@@ -365,3 +366,5 @@ ul ul a{
 .register-flex-item .form-control {
 	width:100%;
 }
+
+

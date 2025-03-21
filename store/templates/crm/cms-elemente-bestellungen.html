@@ -4,32 +4,92 @@
 {% block title %}Bestellung Kunde{% endblock %}
 
 {% block content %}
-    <div class="flexbox">
-        <div class="h2">Bestellung Kunde</div>
-    </div>
 
-    <!-- Search and Action Buttons -->
-    <div class="flexbox" style="align-items:start; margin-bottom: 20px;">
-        <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="{% url 'store:elemente_bestellungen' %}">
-            {% csrf_token %}
-            <div style="display: flex">
-                <div style="flex: 0 0 40%">
-                    <input id="textsuche" class="form-control" type="text" placeholder="Suche nach Auftrags-Nr." name="search" value="{{ request.GET.search }}">
-                </div>
-                <div style="flex: 0 0 15%">
-                    <button type="submit" style="border: none;" class="btn btn-outline-primary">
-                        <span class="fas fa-search"></span> Suche
-                    </button>
-                </div>
-                <div style="flex: 0 0 15%">
-                    <a href="{% url 'store:elemente_bestellungen' %}" style="border: none;" class="btn btn-light">
-                        <span class="fas fa-times"></span> zurücksetzen
-                    </a>
-                </div>
+
+    <style>
+        .flexbox{
+          align-items: center;
+          border-radius: 40px;
+        }
+        .price-code-btn{
+          background-color: #29384f;
+          border-color: #29384f;
+          border-width: 2px;
+          font-weight: 600 !important;
+          padding: .375rem .75rem;
+          font-size: 18px;
+          color: #fff;
+          transition: .3s all;
+          border-radius: 10px;
+        }
+        .form-control {
+            padding: .5rem .75rem;
+            font-size: 1rem;
+        }
+        .price-code-btn:hover{
+          background-color: #fff;
+          border-color: #29384f;
+          color: #29384f;
+        }
+        #textsuche {
+          border-radius: 10px;
+        }
+        .suche-btn, .reset-btn{
+          background-color: #29384f;
+          border: 2px solid #29384f !important;
+          padding: 8px;
+          font-weight: 600;
+          color: #fff;
+          border-radius: 10px;
+          transition: .3s all;
+        }
+        .suche-btn:hover {
+          background-color: transparent;
+           color: #29384f;
+        }
+        .reset-btn:hover{
+          background-color: transparent;
+            color: #29384f;
+        }
+        .flexbox-header{
+           padding: 40px 20px;
+           background-color: #e4e3e8;
+        }
+        .flexbox .h2{
+          color: #29384f;
+          font-weight: 800;
+        }
+      </style>
+      
+      
+      <div class="flexbox">
+        <div class="h2">
+          Bestellung Kunde
+        </div>
+      </div>
+      
+      <div class="flexbox flexbox-header">
+      
+      
+        <div style="flex: 0 0 20%" class="search-box">
+          <input id="textsuche" class="form-control" type="text" placeholder="Suche" aria-label="Search" name="search">
+        </div>
+      
+        <!-- Search form -->
+        <form class="form-inline d-flex justify-content-center md-form form-sm" action="{% url 'store:elemente_bestellungen' %}">
+          {% csrf_token %}
+          <div style="display: flex">
+            <div style="flex: 0 0 15%">
+              <button type="submit" style="border: none;" class="btn btn-outline-primary btn-sm suche-btn mr-2">
+                <span class="fas fa-search"></span> Suche
+              </button>
             </div>
+            <div style="flex: 0 0 15%">
+              <a href="{% url 'store:elemente_bestellungen' %}" style="border: none;" class="btn btn-light btn-sm reset-btn"><span class="fas fa-times"></span> zurücksetzen</a>
+            </div>
+          </div>
         </form>
-    </div>
-
+      </div>
     <!-- Table Display -->
     <table class="table table-striped">
         <thead>

@@ -130,6 +130,8 @@ class ArtikelForm(forms.ModelForm):
         fields = [
             'artikelnr', 'name', 
             'aussenbreite', 'aussenhöhe', 'lieferant', 'lieferantenartikel', 
+            'lieferanten_artikelnummern',
+            'dichtungstypen',
             'nettopreis', 'preiscode', 
             'zubehoerartikelnr', 
             'bestpreis', 'bestpreis_lieferant'
@@ -150,6 +152,8 @@ class ArtikelForm(forms.ModelForm):
             'preiscode': "Preiscode",
             'bestpreis': "Bestpreis (CHF)",
             'bestpreis_lieferant': "Bestpreis Lieferant",
+            'lieferanten_artikelnummern': "Lieferant-Dichtungstyp",
+            'dichtungstypen': "Lieferant-Artikel-Nr",
         }
         
         widgets = {
@@ -167,6 +171,8 @@ class ArtikelForm(forms.ModelForm):
             'preiscode': forms.Select(attrs={'class': 'form-control col-6'}),
             'bestpreis': forms.NumberInput(attrs={'class': 'form-control col-6'}),
             'bestpreis_lieferant': forms.Select(attrs={'class': 'form-control col-6'}),
+            'lieferanten_artikelnummern': forms.TextInput(attrs={'class': 'form-control col-6'}),
+            'dichtungstypen': forms.TextInput(attrs={'class': 'form-control col-6'}),
         }
 
 
@@ -437,7 +443,25 @@ class CRMAddressForm(forms.ModelForm):
             }),
         }
 
+# updated form for part-3
+class CRMKundenForm(forms.ModelForm):
 
+    class Meta:
+        model = CRMAddress
+        fields = (
+            'crm_kanton',
+        )
+        labels = {
+            'crm_kanton': "",
+        }
+        widgets = {
+		'crm_kanton': forms.Select(attrs={
+			'class': 'form-control col-15',
+			'style': 'border-radius: 10px; padding: 10px; margin-top: 10px;'  # Add border-radius via inline CSS
+		}),
+}
+
+# end of part-3
 
 class CRMKundeRestForm(forms.ModelForm):
     class Meta:

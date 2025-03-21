@@ -122,7 +122,7 @@ class Elemente_Bestellungen(models.Model):
 
 class ElementeCartItem(models.Model):
     order = models.ForeignKey(Elemente_Bestellungen, on_delete=models.CASCADE, related_name="elementeitems_bestellung")
-    element_nr = models.CharField(max_length=100, verbose_name="Element-Nr.")
+    element_nr = models.ForeignKey("Elemente", on_delete=models.CASCADE, related_name="elemente_cart_items")  # ForeignKey to Elemente model
     artikel = models.ForeignKey("Artikel", on_delete=models.CASCADE, related_name="elementebestellung_artikel", null=True, blank=True)
     anzahl = models.PositiveIntegerField(verbose_name="Anzahl")
 
@@ -627,6 +627,9 @@ class Artikel(models.Model):
     preiscode = models.ForeignKey(Preiscode, related_name='artikel_preiscode', on_delete=models.SET_NULL, null=True, blank=True)
     bestpreis = models.FloatField(null=True, blank=True)
     bestpreis_lieferant = models.ForeignKey(Lieferanten, related_name='artikel_lieferanten_bestpreis', on_delete=models.SET_NULL, null=True, blank=True)
+    lieferanten_artikelnummern = models.CharField(max_length=255, null=True, blank=True)
+    dichtungstypen = models.CharField(max_length=255, null=True, blank=True)
+
 
     # Attach custom manager
     objects = ArtikelManager()
