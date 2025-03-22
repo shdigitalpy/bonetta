@@ -432,7 +432,7 @@ def bestellformular_cart(request):
                     else:
                         ElementeCartItem.objects.create(
                             order=order,
-                            element_nr=element_nr,
+                            element_nr=element,
                             artikel=artikel,  # ✅ Save article
                             anzahl=anzahl,
                         )
