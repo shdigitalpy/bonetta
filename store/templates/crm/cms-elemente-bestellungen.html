@@ -68,33 +68,34 @@
       
       <div class="flexbox">
         <div class="h2">
-          Bestellung Kunde
+          Auftrag Kunde
         </div>
       </div>
       
-      <div class="flexbox flexbox-header">
-      
-        <!-- Search form -->
-        <form class="form-inline d-flex justify-content-center md-form form-sm" action="{% url 'store:elemente_bestellungen' %}">
-          {% csrf_token %}
-          <div style="display: flex">
+      <div class="flexbox flexbox-header" style="display: flex; justify-content: space-between; align-items: center;">
+  
+  <!-- Linker Button -->
+  <a class="btn btn-outline-primary btn-sm price-code-btn" href="">
+    Auftrag erfassen (in Bearbeitung)
+  </a>
 
-            <div style="flex: 0 0 20%" class="search-box">
-              <input id="textsuche" class="form-control" type="text" placeholder="Suche" aria-label="Search" name="search">
-            </div>
-            <div class="right-section">
-              <div style="flex: 0 0 15%">
-                <button type="submit" style="border: none;" class="btn btn-outline-primary btn-sm suche-btn mr-2">
-                  <span class="fas fa-search"></span> Suche
-                </button>
-              </div>
-              <div style="flex: 0 0 15%">
-                <a href="{% url 'store:elemente_bestellungen' %}" style="border: none;" class="btn btn-light btn-sm reset-btn"><span class="fas fa-times"></span> zurücksetzen</a>
-              </div>
-            </div>
-          </div>
-        </form>
+  <!-- Rechter Suchbereich -->
+  <form class="form-inline d-flex align-items-center" action="{% url 'store:elemente_bestellungen' %}" method="get">
+    {% csrf_token %}
+    <div style="display: flex; align-items: center;">
+      <div class="search-box" style="margin-right: 10px;">
+        <input id="textsuche" class="form-control" type="text" placeholder="Suche" aria-label="Search" name="search">
       </div>
+      <button type="submit" class="btn btn-outline-primary btn-sm suche-btn mr-2">
+        <span class="fas fa-search"></span> Suche
+      </button>
+      <a href="{% url 'store:elemente_bestellungen' %}" class="btn btn-light btn-sm reset-btn">
+        <span class="fas fa-times"></span> zurücksetzen
+      </a>
+    </div>
+  </form>
+</div>
+
     <!-- Table Display -->
     <table class="table table-striped">
         <thead>

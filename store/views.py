@@ -64,7 +64,7 @@ def update_lieferanten_status(request, pk):
 def lieferanten_bestellungen(request):
     lieferanten_bestellungen = LieferantenBestellungen.objects.all().order_by('-start_date')
     
-    return render(request, 'crm/cms-bestellungen-lieferanten.html', {'lieferanten_bestellungen': lieferanten_bestellungen})
+    return render(request, 'crm/lieferanten-bestellungen.html', {'lieferanten_bestellungen': lieferanten_bestellungen})
 
 
 

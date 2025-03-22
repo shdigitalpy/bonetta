@@ -93,7 +93,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_brotli.middleware.BrotliMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
+   
 
 ]
 

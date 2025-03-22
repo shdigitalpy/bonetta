@@ -65,34 +65,35 @@
       
       <div class="flexbox">
         <div class="h2">
-          Preiscodes
+          Preiscode
         </div>
       </div>
       
-      <div class="flexbox flexbox-header">
-      
-        <a class="btn btn-outline-primary btn-sm price-code-btn" href="{% url 'store:crm_preiscode_create' %}">Preiscode erfassen</a>
-      
-        <!-- Search form -->
-        <form class="form-inline d-flex justify-content-center md-form form-sm" action="{% url 'store:crm_preiscode' %}">
-          {% csrf_token %}
-          <div style="display: flex">
+      <div class="flexbox flexbox-header" style="display: flex; justify-content: space-between; align-items: center;">
 
-            <div style="flex: 0 0 20%" class="search-box">
-              <input id="textsuche" class="form-control" type="text" placeholder="Suche" aria-label="Search" name="search">
-            </div>
+  <!-- Linker Button -->
+  <a class="btn btn-outline-primary btn-sm price-code-btn" href="{% url 'store:crm_preiscode_create' %}">
+    Preiscode erfassen
+  </a>
 
-            <div style="flex: 0 0 15%">
-              <button type="submit" style="border: none;" class="btn btn-outline-primary btn-sm suche-btn mr-2">
-                <span class="fas fa-search"></span> Suche
-              </button>
-            </div>
-            <div style="flex: 0 0 15%">
-              <a href="{% url 'store:crm_preiscode' %}" style="border: none;" class="btn btn-light btn-sm reset-btn"><span class="fas fa-times"></span> zurücksetzen</a>
-            </div>
-          </div>
-        </form>
+  <!-- Rechtes Suchformular -->
+  <form class="form-inline d-flex align-items-center" action="{% url 'store:crm_preiscode' %}" method="get" style="margin-left: auto;">
+    {% csrf_token %}
+    <div style="display: flex; align-items: center;">
+      <div class="search-box" style="margin-right: 10px;">
+        <input id="textsuche" class="form-control" type="text" placeholder="Suche" aria-label="Search" name="search">
       </div>
+      <button type="submit" class="btn btn-outline-primary btn-sm suche-btn mr-2" style="border: none;">
+        <span class="fas fa-search"></span> Suche
+      </button>
+      <a href="{% url 'store:crm_preiscode' %}" class="btn btn-light btn-sm reset-btn" style="border: none;">
+        <span class="fas fa-times"></span> zurücksetzen
+      </a>
+    </div>
+  </form>
+
+</div>
+
 
     <table class="table table-striped">
         <thead>
