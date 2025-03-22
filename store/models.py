@@ -109,7 +109,7 @@ class Elemente_Bestellungen(models.Model):
     kunden_nr = models.CharField(max_length=255, null=True, blank=True)
     montage = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="offen", verbose_name="Status")
-    
+    comment = models.CharField(max_length=255, null=True, blank=True)
   
     class Meta:
         ordering = ['id']
