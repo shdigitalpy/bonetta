@@ -9,11 +9,11 @@
 
     <span style="font-size:1rem">
     {% for address in kunde_data.kunde_address.all %}
-                            {{ address.crm_strasse|default:"" }} {{ address.crm_nr|default:"" }},
-                            {{ address.crm_plz|default:"" }} {{ address.crm_ort|default:"" }}
+        {{ address.crm_strasse|default:"" }} {{ address.crm_nr|default:"" }},
+        {{ address.crm_plz|default:"" }} {{ address.crm_ort|default:"" }}
                             
-                        {% empty %}
-                        {% endfor %}
+    {% empty %}
+    {% endfor %}
 </span>
 
 </div>
