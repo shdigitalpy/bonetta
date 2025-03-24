@@ -122,7 +122,7 @@ class Elemente_Bestellungen(models.Model):
 
 class ElementeCartItem(models.Model):
     order = models.ForeignKey(Elemente_Bestellungen, on_delete=models.CASCADE, related_name="elementeitems_bestellung")
-    element_nr = models.IntegerField(blank=True, null=True, verbose_name="Element-Nr.")
+    element_nr = models.ForeignKey("Elemente", on_delete=models.CASCADE, related_name="elemente_cart_items")  # ForeignKey to Elemente model
     artikel = models.ForeignKey("Artikel", on_delete=models.CASCADE, related_name="elementebestellung_artikel", null=True, blank=True)
     anzahl = models.PositiveIntegerField(verbose_name="Anzahl")
 
