@@ -42,6 +42,8 @@
       border-radius: 10px;
       transition: .3s all;
     }
+
+    
     .suche-btn:hover {
       background-color: transparent;
        color: #29384f;
@@ -70,30 +72,30 @@
     </div>
   </div>
   
-  <div class="flexbox flexbox-header">
+  <div class="flexbox flexbox-header d-flex justify-content-between align-items-center">
   
-    <a class="btn btn-outline-primary btn-sm price-code-btn" href="{% url 'store:crm_artikel_create' %}">Artikel erfassen</a>
-  
-    <!-- Search form -->
-    <form class="form-inline d-flex justify-content-center md-form form-sm" action="{% url 'store:crm_artikel' %}">
-      {% csrf_token %}
-      <div style="display: flex">
+  <a class="btn btn-sm price-code-btn" href="{% url 'store:crm_artikel_create' %}">Artikel erfassen</a>
 
-        <div style="flex: 0 0 20%" class="search-box">
-            <input id="textsuche" class="form-control" type="text" placeholder="Suche" aria-label="Search" name="search">
-        </div>
+  <!-- Search form -->
+  <form class="d-flex align-items-center" action="{% url 'store:crm_artikel' %}">
+    {% csrf_token %}
+    <div class="d-flex align-items-center">
 
-        <div style="flex: 0 0 15%">
-          <button type="submit" style="border: none;" class="btn btn-outline-primary btn-sm suche-btn mr-2">
-            <span class="fas fa-search"></span> Suche
-          </button>
-        </div>
-        <div style="flex: 0 0 15%">
-          <a href="{% url 'store:crm_artikel' %}" style="border: none;" class="btn btn-light btn-sm reset-btn"><span class="fas fa-times"></span> zurücksetzen</a>
-        </div>
+      <div class="search-box" style="margin-right: 10px;">
+        <input id="textsuche" class="form-control" type="text" placeholder="Suche" aria-label="Search" name="search">
       </div>
-    </form>
-  </div>
+
+      <button type="submit" class="btn btn-sm suche-btn mr-2" style="border: none;">
+        <span class="fas fa-search"></span> Suche
+      </button>
+
+      <a href="{% url 'store:crm_artikel' %}" class="btn btn-sm reset-btn" style="border: none;">
+        <span class="fas fa-times"></span> zurücksetzen
+      </a>
+    </div>
+  </form>
+</div>
+
 
 <table class="table table-striped">
     <thead>

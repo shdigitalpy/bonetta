@@ -134,10 +134,19 @@ def elemente_bestellung_detail(request, pk, betrieb):
     # Fetch all Lieferanten (suppliers)
     lieferanten = Lieferanten.objects.all()
 
-    # ✅ Hilfsfunktion zum Abrufen des Dichtungstyps (bemerkung) aus `Elemente`
-    def get_dichtungstyp(element_nr):
-        element = Elemente.objects.filter(elementnr=element_nr).first()
+    
+    def get_dichtungstyp(element_input):
+        if isinstance(element_input, Elemente):
+            element = element_input
+        else:
+            try:
+                element_nr = int(element_input)
+                element = Elemente.objects.filter(elementnr=element_nr).first()
+            except (ValueError, TypeError):
+                return "Unbekannt"
+        
         return element.bemerkung if element and element.bemerkung else "Unbekannt"
+
 
     # Create list of elements with additional details from `ElementeCartItem` model
     elemente_list = []

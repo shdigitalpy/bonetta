@@ -3,12 +3,41 @@
 {% load custom_filters %}
 {% block title %}Bestellungsdetails{% endblock %}
 
+
+<style>
+   .flexbox-header{
+       padding: 40px 20px;
+       background-color: #e4e3e8;
+    }
+    .suche-btn, .reset-btn{
+      background-color: #29384f;
+      border: 2px solid #29384f !important;
+      padding: 8px;
+      font-weight: 600;
+      color: #fff;
+      border-radius: 10px;
+      transition: .3s all;
+    }
+
+    
+    .suche-btn:hover {
+      background-color: transparent;
+       color: #29384f;
+    }
+    .reset-btn:hover{
+      background-color: transparent;
+        color: #29384f;
+    }
+   
+  </style>
+
 {% block content %}
-    <div class="flexbox" style="align-items:start">
-        <div class="h2">Auftrags-Nr. {{ bestellung.id }}<br> {{ betrieb }} 
-        </div>
-        <a href="{% url 'store:elemente_bestellungen' %}" class="btn btn-secondary">Zurück zur Übersicht</a>
-    </div>
+    <div class="flexbox flexbox-header d-flex justify-content-between align-items-start">
+  <div class="h2">
+    Auftrags-Nr. {{ bestellung.id }}<br> {{ betrieb }}
+  </div>
+  <a href="{% url 'store:elemente_bestellungen' %}" class="btn btn-sm price-code-btn">Zurück zur Übersicht</a>
+</div>
 
   <table class="table table-striped">
     <thead>
@@ -70,7 +99,7 @@
             </td>
             <td>{{ item.masse }}</td>
             <td>
-                <a href="{% url 'store:elemente_bestellung_edit' item.element_nr bestellung.id %}" class="btn btn-sm btn-outline-warning">
+                <a href="{% url 'store:elemente_bestellung_edit' item.element_nr bestellung.id %}" class="btn btn-sm btn-outline-primary">
                     <i class="fas fa-edit"></i>
                 </a>
                 <a href="{% url 'store:elemente_bestellung_delete' item.element_nr bestellung.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Möchten Sie dieses Element wirklich löschen?');">

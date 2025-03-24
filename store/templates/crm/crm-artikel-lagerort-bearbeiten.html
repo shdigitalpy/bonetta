@@ -1,17 +1,67 @@
 {% extends 'base-cms.html' %}
 {% block title %}Lagerort Bearbeiten{% endblock %}
 {% block content %}
+
+<style>
+    .form-group {
+        padding: 5px;
+        margin-left: 2%;
+    }
+
+    form {
+        background-color: #e4e3e8;
+        padding: 30px 10px;
+        border-radius: 10px;
+    }
+
+    .suche-btn {
+        cursor: pointer;
+        margin-left: 1.5rem;
+        background-color: #29384f;
+        border: 2px solid #29384f !important;
+        padding: 8px;
+        font-weight: 600;
+        color: #fff;
+        border-radius: 10px;
+        transition: .3s all;
+    }
+
+    .reset-btn {
+        border: 2px solid #29384f !important;
+        padding: 8px;
+        font-weight: 600;
+        color: black;
+        border-radius: 10px;
+        transition: .3s all;
+    }
+
+    .suche-btn:hover {
+        background-color: transparent;
+        color: #29384f;
+    }
+
+    .reset-btn:hover {
+        background-color: #f0f0f0;
+        color: #29384f;
+    }
+</style>
+
 <div class="container">
     <h2>Lagerort Bearbeiten</h2>
-
-    <div class="form-group">
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary ml-4">Speichern</button>
-        <a href="{% url 'store:crm_artikel' %}" class="btn btn-secondary">Abbrechen</a>
+        {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                    <div class="text-danger">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn suche-btn">Speichern</button>
+        <a href="{% url 'store:crm_artikel' %}" class="btn reset-btn">Abbrechen</a>
     </form>
-
-    </div>
 </div>
+
 {% endblock %}
