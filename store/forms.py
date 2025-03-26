@@ -129,7 +129,7 @@ class ArtikelForm(forms.ModelForm):
         model = Artikel
         fields = [
             'artikelnr', 'name', 
-            'aussenbreite', 'aussenhöhe', 'lieferant', 'lieferantenartikel', 
+            'aussenbreite', 'aussenhöhe', 'lieferant', 
             'lieferanten_artikelnummern',
             'dichtungstypen',
             'nettopreis', 'preiscode', 
@@ -141,7 +141,7 @@ class ArtikelForm(forms.ModelForm):
             'artikelnr': "Artikelnummer",
             'name': "Dichtungstyp",
             'lieferant': "Lieferant",
-            'lieferantenartikel': "Lieferantenartikel",
+            
             'aussenbreite': "Aussenbreite (mm)",
             'aussenhöhe': "Aussenhöhe (mm)",
             'nettopreis': "Einkaufspreis (CHF)",
@@ -152,15 +152,15 @@ class ArtikelForm(forms.ModelForm):
             'preiscode': "Preiscode",
             'bestpreis': "Bestpreis (CHF)",
             'bestpreis_lieferant': "Bestpreis Lieferant",
-            'lieferanten_artikelnummern': "Lieferant-Dichtungstyp",
-            'dichtungstypen': "Lieferant-Artikel-Nr",
+            'lieferanten_artikelnummern': "Lieferant-Artikel-Nr",
+            'dichtungstypen': "Lieferant-Dichtungstyp",
         }
         
         widgets = {
             'artikelnr': forms.TextInput(attrs={'class': 'form-control col-6'}),
             'name': forms.TextInput(attrs={'class': 'form-control col-6'}),
             'lieferant': forms.Select(attrs={'class': 'form-control col-6'}),
-            'lieferantenartikel': forms.TextInput(attrs={'class': 'form-control col-6'}),
+            
             'lagerort': forms.TextInput(attrs={'class': 'form-control col-6'}),
             'aussenbreite': forms.NumberInput(attrs={'class': 'form-control col-6'}),
             'aussenhöhe': forms.NumberInput(attrs={'class': 'form-control col-6'}),

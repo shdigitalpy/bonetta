@@ -174,38 +174,44 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if artikel.lieferant %}
-                            <a href="#" data-toggle="modal" data-target="#lieferantenartikelModal{{ artikel.pk }}">
-                                {{ artikel.lieferant.name }}
-                            </a>
+    {% if artikel.lieferant %}
+        <a href="#" data-toggle="modal" data-target="#lieferantenartikelModal{{ artikel.pk }}">
+            {{ artikel.lieferant.name }}
+        </a>
 
-                            <!-- Modal -->
-                            <div class="modal fade" id="lieferantenartikelModal{{ artikel.pk }}" tabindex="-1" role="dialog" aria-labelledby="lieferantenartikelModalLabel{{ artikel.pk }}" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="lieferantenartikelModalLabel{{ artikel.pk }}">Lieferantenartikel</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            {% if artikel.lieferantenartikel %}
-                                                {{ artikel.lieferantenartikel }}
-                                            {% else %}
-                                                Keine Daten vorhanden.
-                                            {% endif %}
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+        <!-- Modal -->
+        <div class="modal fade" id="lieferantenartikelModal{{ artikel.pk }}" tabindex="-1" role="dialog" aria-labelledby="lieferantenartikelModalLabel{{ artikel.pk }}" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="lieferantenartikelModalLabel{{ artikel.pk }}">Lieferantenartikel</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% if artikel.lieferanten_artikelnummern or artikel.dichtungstypen %}
+                            {% if artikel.lieferanten_artikelnummern %}
+                                <p><strong>Lieferant-Artikel-Nr:</strong> {{ artikel.lieferanten_artikelnummern }}</p>
+                            {% endif %}
+                            {% if artikel.dichtungstypen %}
+                                <p><strong>Lieferant-Dichtungstyp:</strong> {{ artikel.dichtungstypen }}</p>
+                            {% endif %}
                         {% else %}
-                            Kein Lieferant zugeordnet
+                            Keine Daten vorhanden.
                         {% endif %}
-                    </td>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Schliessen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        Kein Lieferant zugeordnet
+    {% endif %}
+</td>
+
                     <td>
                         <!-- Edit Nettopreis -->
                         <a href="{% url 'store:crm_artikel_nettopreis_edit' artikel.pk %}" class="btn-sm btn-outline-primary" title="Nettopreis bearbeiten">
