@@ -145,7 +145,14 @@
         {% endif %}
           {% endif %}
        </td>
-      <td><img class="img-thumbnail" src="{{MEDIA_URL}}{{ order_item.item.titelbild.url }}" alt="image" style="width: 5em;"></td>
+      <td>
+        {% if order_item.item.titelbild %}
+
+        <img class="img-thumbnail" src="{{MEDIA_URL}}{{ order_item.item.titelbild.url }}" alt="image" style="width: 5em;">
+
+        {% endif %}
+
+      </td>
         <td>{{ order_item.quantity }}  
         </td>
         <td>

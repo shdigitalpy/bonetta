@@ -2131,7 +2131,7 @@ class OrderSummaryView(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
-            total = order.get_total()
+            total = order.get_total
 
             # Fetch shipping costs based on the total
             shipping1 = ShippingCost.objects.filter(price_from__lte=total, price_to__gt=total)
@@ -2162,8 +2162,6 @@ class OrderSummaryView(LoginRequiredMixin, View):
         except ObjectDoesNotExist:
             messages.info(self.request, "Es gibt keine Bestellung.")
             return redirect("store:home")
-
-
 
 #Bestellung abschliessen
 class FinalSummaryView(View):

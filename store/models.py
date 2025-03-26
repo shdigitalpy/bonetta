@@ -361,7 +361,7 @@ class ShippingCost(models.Model):
 
 class Order(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-	items = models.ManyToManyField(OrderItem)
+	items = models.ManyToManyField('OrderItem')
 	start_date = models.DateTimeField(auto_now_add=True)
 	ordered_date = models.DateTimeField()
 	ordered = models.BooleanField(default=False)
@@ -371,7 +371,7 @@ class Order(models.Model):
 		'ShippingAddress', related_name='shipping_address', on_delete=models.SET_NULL, blank=True, null=True)
 	payment = models.BooleanField(default=False)
 	payment_method = models.CharField(max_length=255, choices=PAYMENT_CHOICES, default="R")
-	shippingcost = models.FloatField(null=True, blank=True,default=0)
+	shippingcost = models.FloatField(null=True, blank=True, default=0)
 	discount = models.FloatField(null=True, blank=True)
 	discount_pct = models.FloatField(null=True, blank=True)
 	skonto = models.FloatField(null=True, blank=True)
@@ -390,61 +390,60 @@ class Order(models.Model):
 	def get_payment_method(self):
 		return [i[1] for i in Order._meta.get_field('payment_method').choices if i[0] == self.payment_method][0]
 
+	@property
 	def get_total(self):
 		total = 0
 		for order_item in self.items.all():
 			total += order_item.get_final_price()
 		return total
 
+	@property
 	def get_shipping(self):
-		get_shipping = self.shippingcost
-		return get_shipping
+		return self.shippingcost or 0
 
+	@property
 	def get_total_product_and_shipping(self):
-		get_total_product_and_shipping = self.get_total()+ self.get_shipping()
-		return get_total_product_and_shipping
-	
+		return self.get_total + self.get_shipping
+
+	@property
+	def get_rabatt(self):
+		rabatt_prozent = self.user.profile.rabatt
+		return self.get_total * (rabatt_prozent / 100)
+
+	@property
+	def rabatt(self):
+		return self.user.profile.rabatt / 100
+
+	@property
 	def get_total_pre_mwst_withoutskonto(self):
-		get_total_pre_mwst_withoutskonto = self.get_total_product_and_shipping() - self.get_rabatt()
-		return get_total_pre_mwst_withoutskonto
+		return self.get_total_product_and_shipping - self.get_rabatt
 
-	def get_total_mwst_warenkorb(self):
-		get_total_mwst_warenkorb = self.get_total_pre_mwst_withoutskonto() * 1.081
-		return get_total_mwst_warenkorb
-
-	def get_pre_mwst_warenkorb(self):
-		get_pre_mwst_warenkorb = self.get_total_mwst_warenkorb() - self.get_total_pre_mwst_withoutskonto()
-		return get_pre_mwst_warenkorb
-
+	@property
 	def get_skonto(self):
 		if self.payment_method == 'V':
-			skonto = 0.02
-			get_skonto = skonto * self.get_total_pre_mwst_withoutskonto()
-			return get_skonto
-		else: 
-			get_skonto = 0
-			return get_skonto
+			return 0.02 * self.get_total_pre_mwst_withoutskonto
+		return 0
 
-	def rabatt(self):
-		rabatt = self.user.profile.rabatt / 100
-		return rabatt 
-
-	def get_rabatt(self):
-		rabatt = self.user.profile.rabatt
-		get_rabatt = self.get_total() * self.rabatt()
-		return get_rabatt
-
+	@property
 	def get_total_pre_mwst(self):
-		get_total_pre_mwst = self.get_total_product_and_shipping() - self.get_rabatt() - self.get_skonto()
-		return get_total_pre_mwst
+		return self.get_total_product_and_shipping - self.get_rabatt - self.get_skonto
 
-	def mwst(self):
-		mwst = self.grandtotal() - self.get_total_pre_mwst()
-		return mwst
-
+	@property
 	def grandtotal(self):
-		grandtotal = self.get_total_pre_mwst() * 1.081
-		return grandtotal
+		return self.get_total_pre_mwst * 1.081
+
+	@property
+	def mwst(self):
+		return self.grandtotal - self.get_total_pre_mwst
+
+	@property
+	def get_total_mwst_warenkorb(self):
+		return self.get_total_pre_mwst_withoutskonto * 1.081
+
+	@property
+	def get_pre_mwst_warenkorb(self):
+		return self.get_total_mwst_warenkorb - self.get_total_pre_mwst_withoutskonto
+
 
 class Address(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name ='address', on_delete=models.CASCADE)
