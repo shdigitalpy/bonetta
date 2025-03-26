@@ -55,13 +55,12 @@
         <tr>
             <th scope="col">Kühlposition</th>
             <th scope="col">Element-Nr.</th>
-            <th scope="col">Kühlunterbau</th>
-            <th scope="col">Details</th>
-            <th scope="col">Dichtungstyp</th>
-            <th scope="col">Aussenmass Breite / Höhe</th>
-            <th scope="col">Lieferant</th>
+            <th scope="col">Bezeichnung</th>
+            
+            <th scope="col">Artikel</th>
             <th scope="col">Einkaufspreis</th>
             <th scope="col">Verkaufspreis</th>
+            <th scope="col">Details</th>
             <th scope="col">Duplizieren</th>
             <th scope="col">Notiz</th>
    
@@ -74,14 +73,7 @@
             <td>{{ data.kuehlposition }}</td>
             <td>{{ data.elementnr }}</td>
             <td>{{ data.bezeichnung }}</td>
-            <td>
-                {% for obj in data.elemente_objekte.all %}
-                {{ obj.name }}<br>
-                {% endfor %}
-                <a class="btn btn-sm btn-outline-primary" href="{% url 'store:cms_elemente_objekte' data.pk kunde_id %}" title="Details bearbeiten">
-                    <i class="fas fa-edit"></i>
-                </a>
-            </td>
+            
             <td>
                 <!-- Prioritize Artikel name or Element product -->
                 {% if data.artikel %}
@@ -92,19 +84,7 @@
                     {{ data.dichtungen.titel }}
                 {% endif %}
             </td>
-            <td>
-                <!-- Prioritize Artikel dimensions or Element dimensions -->
-                {% if data.artikel.aussenbreite %}
-                    {{ data.artikel.aussenbreite }}mm / {{ data.artikel.aussenhöhe }}mm
-                {% else %}
-                    
-                {% endif %}
-            </td>
-            <td>
-                {% if data.artikel.lieferant %}
-                    {{ data.artikel.lieferant }}
-                {% endif %}
-            </td>
+            
             <td>
                 <!-- Prioritize Nettopreis from Artikel or Element -->
                 {% if data.artikel.nettopreis %}
@@ -118,6 +98,14 @@
                 {% if data.artikel and data.artikel.vp %}
                     CHF {{ data.artikel.vp|floatformat:2 }}
                 {% endif %}
+            </td>
+            <td>
+                {% for obj in data.elemente_objekte.all %}
+                {{ obj.name }}<br>
+                {% endfor %}
+                <a class="btn btn-sm btn-outline-primary" href="{% url 'store:cms_elemente_objekte' data.pk kunde_id %}" title="Details bearbeiten">
+                    <i class="fas fa-edit"></i>
+                </a>
             </td>
             <td>
                 <a href="{% url 'store:cms_elemente_duplicate' kunde_id data.pk %}" class="btn btn-sm btn-outline-info" title="Duplizieren">
