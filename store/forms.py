@@ -82,27 +82,17 @@ class ElementeCartItemForm(forms.Form):
     )
 
 
+# update for Bezeichnung
+
+class BezeichnungForm(forms.ModelForm):
+    class Meta:
+        model = Bezeichnung
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control col-6', 'placeholder': 'Bezeichnung name'}),
+        }
 
 class ElementeCreateForm(forms.ModelForm):
-    KUEHLPOSITION_CHOICES = [
-        ('Schublade', 'Schublade'),
-        ('Kühlunterbautür', 'Kühlunterbautür'),
-        ('Kühlschrank', 'Kühlschrank'),
-        ('Kühlraumtür', 'Kühlraumtür'),
-        ('Ofen / Steamer', 'Ofen / Steamer'),
-        ('Glacéschublade', 'Glacéschublade'),
-        ('Glacédeckel', 'Glacédeckel'),
-        ('Eismaschine ', 'Eismaschine '),
-    ]
-
-    bezeichnung = forms.ChoiceField(
-        choices=KUEHLPOSITION_CHOICES,
-        widget=forms.Select(attrs={
-            'class': 'form-control',
-        }),
-        label="Bezeichnung"
-    )
-
     class Meta:
         model = Elemente
         fields = ('artikel', 'kuehlposition', 'elementnr', 'bezeichnung', 'bemerkung')
@@ -112,6 +102,15 @@ class ElementeCreateForm(forms.ModelForm):
             'elementnr': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Element-Nr.'}),
             'bemerkung': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Bemerkung'}),
         }
+
+    bezeichnung = forms.ModelChoiceField(
+        queryset=Bezeichnung.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label="Bezeichnung"
+    )
+
+
+
 
 class NettopreisArtikelForm(forms.ModelForm):
     class Meta:
@@ -141,7 +140,6 @@ class ArtikelForm(forms.ModelForm):
             'artikelnr': "Artikelnummer",
             'name': "Dichtungstyp",
             'lieferant': "Lieferant",
-            
             'aussenbreite': "Aussenbreite (mm)",
             'aussenhöhe': "Aussenhöhe (mm)",
             'nettopreis': "Einkaufspreis (CHF)",
@@ -385,16 +383,16 @@ class CRMLastService(forms.ModelForm):
 class CRMKundeForm(forms.ModelForm):
     class Meta:
         model = Kunde
-        fields = ['interne_nummer','firmenname', 'zusatz']
+        fields = ['interne_nummer','done','firmenname', 'zusatz']
         labels = {
             'interne_nummer': "Interne Nummer",
             'firmenname': "Betrieb/Firma",
             'vorname': "Vorname",
             'nachname': "Nachname",
             'email': "E-Mail",
-            
             'phone': "Telefon/Handy",
             'zusatz': "Zusatz",
+            'done': 'Done',
         }
         widgets = {
             'interne_nummer': forms.TextInput(attrs={'class': 'form-control col-6'}),
@@ -404,8 +402,27 @@ class CRMKundeForm(forms.ModelForm):
             'firmenname': forms.TextInput(attrs={'class': 'form-control col-6'}),
             'phone': forms.TextInput(attrs={'class': 'form-control col-6'}),
             'zusatz': forms.TextInput(attrs={'class': 'form-control col-6'}),
+            'done': forms.CheckboxInput(attrs={'class': 'form-check-input', 'style': 'margin-left: 10px; margin-top: 7px;'}),
         }
+# updated form for part-3
+class CRMKundenForm(forms.ModelForm):
 
+    class Meta:
+        model = CRMAddress
+        fields = (
+            'crm_kanton',
+        )
+        labels = {
+            'crm_kanton': "",
+        }
+        widgets = {
+		'crm_kanton': forms.Select(attrs={
+			'class': 'form-control col-15',
+			'style': 'border-radius: 10px; padding: 10px; margin-top: 10px;'  # Add border-radius via inline CSS
+		}),
+}
+
+# end of part-3
 
 
 class CRMAddressForm(forms.ModelForm):
@@ -443,25 +460,7 @@ class CRMAddressForm(forms.ModelForm):
             }),
         }
 
-# updated form for part-3
-class CRMKundenForm(forms.ModelForm):
 
-    class Meta:
-        model = CRMAddress
-        fields = (
-            'crm_kanton',
-        )
-        labels = {
-            'crm_kanton': "",
-        }
-        widgets = {
-		'crm_kanton': forms.Select(attrs={
-			'class': 'form-control col-15',
-			'style': 'border-radius: 10px; padding: 10px; margin-top: 10px;'  # Add border-radius via inline CSS
-		}),
-}
-
-# end of part-3
 
 class CRMKundeRestForm(forms.ModelForm):
     class Meta:
@@ -1532,3 +1531,21 @@ class MarkeChangeForm(forms.ModelForm):
 				'class': 'form-control col-3',
 				'placeholder':''}),
 		}
+          
+
+
+# Bezeichnung	
+
+class BezeichnungForm(forms.ModelForm):
+    class Meta:
+        model = Bezeichnung
+        fields = ['name']
+        labels = {
+            'name': "Bezeichnung Name"
+        }
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder': 'Enter Bezeichnung Name'
+            })
+        }

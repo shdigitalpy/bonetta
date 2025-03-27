@@ -1502,6 +1502,49 @@ def cms_elemente_statistik(request):
 
 
 
+# for Bezeichnung section
+def bezeichnung_list(request):
+    search_query = request.GET.get('search', '')
+    if search_query:
+        bezeichnungen = Bezeichnung.objects.filter(
+            Q(name__icontains=search_query)
+        ).order_by('-id')
+    else:
+        bezeichnungen = Bezeichnung.objects.all().order_by('name')
+    return render(request, 'crm/bezeichnungen.html', {'bezeichnungen': bezeichnungen})
+
+
+def bezeichnung_create(request):
+    if request.method == 'POST':
+        form = BezeichnungForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('store:bezeichnung_list')  # Redirect to the list of Bezeichnung objects after creation
+    else:
+        form = BezeichnungForm()
+
+    return render(request, 'crm/bezeichnung-create.html', {'form': form})
+
+def bezeichnung_edit(request, pk):
+    bezeichnung = get_object_or_404(Bezeichnung, pk=pk)
+    if request.method == 'POST':
+        form = BezeichnungForm(request.POST, instance=bezeichnung)
+        if form.is_valid():
+            form.save()
+            return redirect('store:bezeichnung_list')
+    else:
+        form = BezeichnungForm(instance=bezeichnung)
+    return render(request, 'crm/bezeichnung-edit.html', {'form': form})
+
+def bezeichnung_delete(request, pk):
+    bezeichnung = get_object_or_404(Bezeichnung, pk=pk)
+    bezeichnung.delete()
+    messages.info(request, "Die Bezeichnung wurde gelöscht.")
+    return redirect('store:bezeichnung_list')
+
+
+
+
 @staff_member_required
 def cms_elemente_objekte_löschen(request, pk, epk, cpk):
     eintrag = get_object_or_404(Objekte, pk=pk)

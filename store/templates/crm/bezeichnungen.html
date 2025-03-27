@@ -1,0 +1,125 @@
+{% extends 'base-cms.html' %}
+{% block title %}Bezeichnungen{% endblock %}
+
+{% block content %}
+
+<style>
+    .flexbox{
+      align-items: center;
+      border-radius: 40px;
+    }
+    .price-code-btn{
+      background-color: #29384f;
+      border-color: #29384f;
+      border-width: 2px;
+      font-weight: 600 !important;
+      padding: .375rem .75rem;
+      font-size: 18px;
+      color: #fff;
+      transition: .3s all;
+      border-radius: 10px;
+    }
+    .form-control {
+        padding: .5rem .75rem;
+        font-size: 1rem;
+    }
+    .price-code-btn:hover{
+      background-color: #fff;
+      border-color: #29384f;
+      color: #29384f;
+    }
+    #textsuche {
+      border-radius: 10px;
+    }
+    .suche-btn, .reset-btn{
+      background-color: #29384f;
+      border: 2px solid #29384f !important;
+      padding: 8px;
+      font-weight: 600;
+      color: #fff;
+      border-radius: 10px;
+      transition: .3s all;
+    }
+    .suche-btn:hover {
+      background-color: transparent;
+       color: #29384f;
+    }
+    .reset-btn:hover{
+      background-color: transparent;
+        color: #29384f;
+    }
+    .flexbox-header{
+       padding: 40px 20px;
+       background-color: #e4e3e8;
+    }
+    .flexbox .h2{
+      color: #29384f;
+      font-weight: 800;
+    }
+    .search-box{
+      margin-right: 210px;
+    }
+  </style>
+
+<div class="flexbox">
+    <div class="h2">
+        Bezeichnungen
+    </div>
+</div>
+
+<div class="flexbox flexbox-header" style="display: flex; justify-content: space-between; align-items: center;">
+
+    <!-- Linker Button -->
+    <a class="btn btn-sm price-code-btn" href="{% url 'store:bezeichnung_create' %}">
+        Bezeichnung erfassen
+    </a>
+
+    <form class="form-inline d-flex align-items-center" action="{% url 'store:bezeichnung_list' %}" method="get" style="margin-left: auto;">
+        {% csrf_token %}
+        <div style="display: flex; align-items: center;">
+        <div class="search-box" style="margin-right: 10px;">
+            <input id="textsuche" class="form-control" type="text" placeholder="Suche" aria-label="Search" name="search">
+        </div>
+        <button type="submit" class="btn btn-sm suche-btn mr-2" style="border: none;">
+            <span class="fas fa-search"></span> Suche
+        </button>
+        <a href="{% url 'store:bezeichnung_list' %}" class="btn btn-light btn-sm reset-btn" style="border: none;">
+            <span class="fas fa-times"></span> zurücksetzen
+        </a>
+        </div>
+    </form>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Aktionen</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if bezeichnungen %}
+            {% for bezeichnung in bezeichnungen %}
+                <tr>
+                    <td>{{ bezeichnung.name }}</td>
+                    <td>
+                        <a href="{% url 'store:bezeichnung_edit' bezeichnung.pk %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form action="{% url 'store:bezeichnung_delete' bezeichnung.pk %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" onclick="return confirm('Sind Sie sicher?');" class="btn btn-sm btn-outline-danger">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="2">Keine Bezeichnungen gefunden.</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
+{% endblock %}

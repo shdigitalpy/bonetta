@@ -6,94 +6,105 @@
 {% block content %}
 
 <style>
-    .flexbox{
-      align-items: center;
-      border-radius: 40px;
+    .flexbox {
+        align-items: center;
+        border-radius: 40px;
     }
-    .price-code-btn{
-      background-color: #29384f;
-      border-color: #29384f;
-      border-width: 2px;
-      font-weight: 600 !important;
-      padding: .375rem .75rem;
-      font-size: 18px;
-      color: #fff;
-      transition: .3s all;
-      border-radius: 10px;
+
+    .price-code-btn {
+        background-color: #29384f;
+        border-color: #29384f;
+        border-width: 2px;
+        font-weight: 600 !important;
+        padding: .375rem .75rem;
+        font-size: 18px;
+        color: #fff;
+        transition: .3s all;
+        border-radius: 10px;
     }
+
     .form-control {
         padding: .5rem .75rem;
         font-size: 1rem;
     }
-    .price-code-btn:hover{
-      background-color: #fff;
-      border-color: #29384f;
-      color: #29384f;
-    }
-    #textsuche {
-      border-radius: 10px;
-    }
-    .suche-btn, .reset-btn{
-      background-color: #29384f;
-      border: 2px solid #29384f !important;
-      padding: 8px;
-      font-weight: 600;
-      color: #fff;
-      border-radius: 10px;
-      transition: .3s all;
-    }
 
-    
-    .suche-btn:hover {
-      background-color: transparent;
-       color: #29384f;
-    }
-    .reset-btn:hover{
-      background-color: transparent;
+    .price-code-btn:hover {
+        background-color: #fff;
+        border-color: #29384f;
         color: #29384f;
     }
-    .flexbox-header{
-       padding: 40px 20px;
-       background-color: #e4e3e8;
+
+    #textsuche {
+        border-radius: 10px;
     }
-    .flexbox .h2{
-      color: #29384f;
-      font-weight: 800;
+
+    .suche-btn,
+    .reset-btn {
+        background-color: #29384f;
+        border: 2px solid #29384f !important;
+        padding: 8px;
+        font-weight: 600;
+        color: #fff;
+        border-radius: 10px;
+        transition: .3s all;
     }
-    .search-box{
-      margin-right: 250px;
+
+
+    .suche-btn:hover {
+        background-color: transparent;
+        color: #29384f;
     }
-  </style>
-  
-  
-  <div class="flexbox">
+
+    .reset-btn:hover {
+        background-color: transparent;
+        color: #29384f;
+    }
+
+    .flexbox-header {
+        padding: 40px 20px;
+        background-color: #e4e3e8;
+    }
+
+    .flexbox .h2 {
+        color: #29384f;
+        font-weight: 800;
+    }
+
+    .search-box {
+        margin-right: 250px;
+    }
+</style>
+
+
+<div class="flexbox">
     <div class="h2">
-      Artikel
+        Artikel
     </div>
-  </div>
-  
-  <div class="flexbox flexbox-header d-flex justify-content-between align-items-center">
-  
-  <a class="btn btn-sm price-code-btn" href="{% url 'store:crm_artikel_create' %}">Artikel erfassen</a>
+</div>
 
-  <!-- Search form -->
-  <form class="d-flex align-items-center" action="{% url 'store:crm_artikel' %}">
-    {% csrf_token %}
-    <div class="d-flex align-items-center">
+<div class="flexbox flexbox-header d-flex justify-content-between align-items-center">
 
-      <div class="search-box" style="margin-right: 10px;">
-        <input id="textsuche" class="form-control" type="text" placeholder="Suche" aria-label="Search" name="search">
-      </div>
+    <a class="btn btn-sm price-code-btn" href="{% url 'store:crm_artikel_create' %}">Artikel erfassen</a>
 
-      <button type="submit" class="btn btn-sm suche-btn mr-2" style="border: none;">
-        <span class="fas fa-search"></span> Suche
-      </button>
+    <!-- Search form -->
+    <form class="d-flex align-items-center" action="{% url 'store:crm_artikel' %}">
+        {% csrf_token %}
+        <div class="d-flex align-items-center">
 
-      <a href="{% url 'store:crm_artikel' %}" class="btn btn-sm reset-btn" style="border: none;">
-        <span class="fas fa-times"></span> zurücksetzen
-      </a>
-    </div>
-  </form>
+            <div class="search-box" style="margin-right: 10px;">
+                <input id="textsuche" class="form-control" type="text" placeholder="Suche" aria-label="Search"
+                    name="search">
+            </div>
+
+            <button type="submit" class="btn btn-sm suche-btn mr-2" style="border: none;">
+                <span class="fas fa-search"></span> Suche
+            </button>
+
+            <a href="{% url 'store:crm_artikel' %}" class="btn btn-sm reset-btn" style="border: none;">
+                <span class="fas fa-times"></span> zurücksetzen
+            </a>
+        </div>
+    </form>
 </div>
 
 
@@ -115,270 +126,275 @@
     </thead>
     <tbody>
         {% if artikel %}
-            {% for artikel in artikel %}
-                <tr>
-                    <td>
-                        <a href="#" 
-                           
-                           title="Artikel Details anzeigen" 
-                           data-toggle="modal" 
-                           data-target="#artikelDetailsModal{{ artikel.pk }}">
-                            {{ artikel.artikelnr }}
-                        </a>
+        {% for artikel in artikel %}
+        <tr>
+            <td>
+                <a href="#" title="Artikel Details anzeigen" data-toggle="modal"
+                    data-target="#artikelDetailsModal{{ artikel.pk }}">
+                    {{ artikel.artikelnr }}
+                </a>
 
-                        <!-- Modal -->
-                        <div class="modal fade" id="artikelDetailsModal{{ artikel.pk }}" tabindex="-1" role="dialog" aria-labelledby="artikelDetailsModalLabel{{ artikel.pk }}" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="artikelDetailsModalLabel{{ artikel.pk }}">Artikel Details</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p><strong>Artikelnummer:</strong> {{ artikel.artikelnr }}</p>
-                                        <p><strong>Dichtungstyp::</strong> {{ artikel.name }}</p>
-                                        <p><strong>Aussenbreite:</strong> {{ artikel.aussenbreite }}</p>
-                                        <p><strong>Aussenhöhe:</strong> {{ artikel.aussenhöhe }}</p>
-                                        <p><strong>Lieferant:</strong> {{ artikel.lieferant }}</p>
-                                        <p><strong>Lieferantenartikel:</strong> {{ artikel.lieferantenartikel }}</p>
-                                        <p><strong>Einkaufspreis:</strong> {{ artikel.nettopreis|floatformat:2 }}</p>
-                                        <p><strong>Verkaufspreis:</strong> {{ artikel.vp|floatformat:2 }}</p>
-                                        <p><strong>Preiscode:</strong> {{ artikel.preiscode }}</p>
-                                        <p><strong>Zubehörartikel-Nr.:</strong> {{ artikel.zubehoerartikelnr }}</p>
-                                        <p><strong>Bestpreis:</strong> {{ artikel.bestpreis|floatformat:2 }}</p>
-                                        <p><strong>Bestpreis Lieferant:</strong> {{ artikel.bestpreis_lieferant }}</p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
-                                    </div>
-                                </div>
+                <!-- Modal -->
+                <div class="modal fade" id="artikelDetailsModal{{ artikel.pk }}" tabindex="-1" role="dialog"
+                    aria-labelledby="artikelDetailsModalLabel{{ artikel.pk }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="artikelDetailsModalLabel{{ artikel.pk }}">Artikel Details
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Artikelnummer:</strong> {{ artikel.artikelnr }}</p>
+                                <p><strong>Dichtungstyp::</strong> {{ artikel.name }}</p>
+                                <p><strong>Aussenbreite:</strong> {{ artikel.aussenbreite }}</p>
+                                <p><strong>Aussenhöhe:</strong> {{ artikel.aussenhöhe }}</p>
+                                <p><strong>Lieferant:</strong> {{ artikel.lieferant }}</p>
+                                <p><strong>Lieferantenartikel:</strong> {{ artikel.lieferantenartikel }}</p>
+                                <p><strong>Einkaufspreis:</strong> {{ artikel.nettopreis|floatformat:2 }}</p>
+                                <p><strong>Verkaufspreis:</strong> {{ artikel.vp|floatformat:2 }}</p>
+                                <p><strong>Preiscode:</strong> {{ artikel.preiscode }}</p>
+                                <p><strong>Zubehörartikel-Nr.:</strong> {{ artikel.zubehoerartikelnr }}</p>
+                                <p><strong>Bestpreis:</strong> {{ artikel.bestpreis|floatformat:2 }}</p>
+                                <p><strong>Bestpreis Lieferant:</strong> {{ artikel.bestpreis_lieferant }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
                             </div>
                         </div>
-                    </td>
-
-                    <td>
-                        <a href="{% url 'store:crm_artikel_preiscode_edit' artikel.pk %}" class="btn-sm btn-outline-primary">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        {% if artikel.preiscode.preiscode %}{{ artikel.preiscode.preiscode }}{% endif %}
-
-                    </td>
-                    <td>{% if artikel.name %}{{ artikel.name }}{% endif %}</td>
-                    <td>
-                        {% if artikel.aussenbreite and artikel.aussenhöhe %}
-                            {{ artikel.aussenbreite }}mm / {{ artikel.aussenhöhe }}mm
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    <td>
-    {% if artikel.lieferant %}
-        <a style="text-decoration:underline" href="#" data-toggle="modal" data-target="#lieferantenartikelModal{{ artikel.pk }}">
-            {{ artikel.lieferant.name }}
-        </a>
-
-        <!-- Modal -->
-        <div class="modal fade" id="lieferantenartikelModal{{ artikel.pk }}" tabindex="-1" role="dialog" aria-labelledby="lieferantenartikelModalLabel{{ artikel.pk }}" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="lieferantenartikelModalLabel{{ artikel.pk }}">Lieferantenartikel</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        {% if artikel.lieferanten_artikelnummern or artikel.dichtungstypen %}
-                            {% if artikel.lieferanten_artikelnummern %}
-                                <p><strong>Lieferant-Artikel-Nr:</strong> {{ artikel.lieferanten_artikelnummern }}</p>
-                            {% endif %}
-                            {% if artikel.dichtungstypen %}
-                                <p><strong>Lieferant-Dichtungstyp:</strong> {{ artikel.dichtungstypen }}</p>
-                            {% endif %}
-                        {% else %}
-                            Keine Daten vorhanden.
-                        {% endif %}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Schliessen</button>
                     </div>
                 </div>
-            </div>
-        </div>
-    {% else %}
-        Kein Lieferant zugeordnet
-    {% endif %}
-</td>
+            </td>
 
-                    <td>
-                        <!-- Edit Nettopreis -->
-                        <a href="{% url 'store:crm_artikel_nettopreis_edit' artikel.pk %}" class="btn-sm btn-outline-primary" title="Nettopreis bearbeiten">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        
-                        <!-- Display Nettopreis -->
-                        {% if artikel.nettopreis %}
-                            CHF {{ artikel.nettopreis|floatformat:2 }}
-                        {% else %}
-                            -
-                        {% endif %}
+            <td>
+                <a href="{% url 'store:crm_artikel_preiscode_edit' artikel.pk %}" class="btn-sm btn-outline-primary">
+                    <i class="fas fa-edit"></i>
+                </a>
+                {% if artikel.preiscode.preiscode %}{{ artikel.preiscode.preiscode }}{% endif %}
 
-                        <!-- Bestpreis Icon -->
-                        {% if artikel.bestpreis %}
-                            <a href="#" 
-                               class="btn-sm btn-outline-success" 
-                               title="Bestpreis anzeigen" 
-                               data-toggle="modal" 
-                               data-target="#bestpreisModal{{ artikel.pk }}">
-                                <i class="fas fa-tag"></i>
-                            </a>
+            </td>
+            <td>{% if artikel.name %}{{ artikel.name }}{% endif %}</td>
+            <td>
+                {% if artikel.aussenbreite and artikel.aussenhöhe %}
+                {{ artikel.aussenbreite }}mm / {{ artikel.aussenhöhe }}mm
+                {% else %}
+                -
+                {% endif %}
+            </td>
+            <td>
+                {% if artikel.lieferant %}
+                <a style="text-decoration:underline" href="#" data-toggle="modal"
+                    data-target="#lieferantenartikelModal{{ artikel.pk }}">
+                    {{ artikel.lieferant.name }}
+                </a>
 
-                            <!-- Bestpreis Modal -->
-                            <div class="modal fade" id="bestpreisModal{{ artikel.pk }}" tabindex="-1" role="dialog" aria-labelledby="bestpreisModalLabel{{ artikel.pk }}" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="bestpreisModalLabel{{ artikel.pk }}">Bestpreis Details</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p><strong>Bestpreis:</strong> CHF {{ artikel.bestpreis|floatformat:2 }}</p>
-                                            <p><strong>Lieferant:</strong> {{ artikel.bestpreis_lieferant }}</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
-                                        </div>
-                                    </div>
-                                </div>
+                <!-- Modal -->
+                <div class="modal fade" id="lieferantenartikelModal{{ artikel.pk }}" tabindex="-1" role="dialog"
+                    aria-labelledby="lieferantenartikelModalLabel{{ artikel.pk }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="lieferantenartikelModalLabel{{ artikel.pk }}">
+                                    Lieferantenartikel</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                             </div>
-                        {% endif %}
-                    </td>
-
-                    <td>
-                    {% if artikel.vp %}
-                                CHF {{ artikel.vp|floatformat:2 }}
-                                 {% else %}
-                                    -
+                            <div class="modal-body">
+                                {% if artikel.lieferanten_artikelnummern or artikel.dichtungstypen %}
+                                {% if artikel.lieferanten_artikelnummern %}
+                                <p><strong>Lieferant-Artikel-Nr:</strong> {{ artikel.lieferanten_artikelnummern }}</p>
                                 {% endif %}
-
-                       </td>
-                    <td>
-                        <a href="{% url 'store:crm_artikel_lagerbestand_edit' artikel.pk %}" class="btn-sm btn-outline-primary">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        {% if artikel.lagerbestand %}
-                                {{ artikel.lagerbestand }}
-                                 {% else %}
-                                    -
+                                {% if artikel.dichtungstypen %}
+                                <p><strong>Lieferant-Dichtungstyp:</strong> {{ artikel.dichtungstypen }}</p>
                                 {% endif %}
-                    </td>
-                    <td>
-                        <a href="{% url 'store:crm_artikel_lagerort_edit' artikel.pk %}" class="btn-sm btn-outline-primary">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        {% if artikel.lagerort %}
-                                {{ artikel.lagerort }}
-                                 {% else %}
-                                    -
+                                {% else %}
+                                Keine Daten vorhanden.
                                 {% endif %}
-                        
-                    </td>
-                    <td>
-                        <a href="{% url 'store:crm_artikel_edit' artikel.pk %}" class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <form action="{% url 'store:crm_artikel_delete' artikel.pk %}" method="post" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit" onclick="return confirmSend();" class="btn btn-sm btn-outline-danger">
-                                <i class="far fa-trash-alt"></i>
-                            </button>
-                        </form>
-                    </td>
-
-
-
-                   <td>
-                    <!-- Button to Open Modal -->
-                    <a href="#" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#orderModal{{ artikel.pk }}">
-                        <i class="fas fa-shopping-cart"></i>
-                    </a>
-
-                    <!-- Modal -->
-                    <div class="modal fade" id="orderModal{{ artikel.pk }}" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel{{ artikel.pk }}" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="orderModalLabel{{ artikel.pk }}">Bestellung an Lieferant</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    {% if artikel.lieferant %}
-                                        <!-- Display Artikel Details -->
-                                        <p><strong>Artikel:</strong> {{ artikel.artikelnr }}, {{ artikel.name }}</p>
-                                        <p><strong>Maße:</strong> {{ artikel.aussenbreite }} x {{ artikel.aussenhöhe }} mm</p>
-                                        
-                                        {% if artikel.zubehoerartikelnr %}
-                                        <p><strong>Zubehörartikel:</strong> {{ artikel.zubehoerartikelnr }}</p>
-                                        <hr>
-                                        {% endif %}
-
-                                        <!-- Form for Sending Email -->
-                                        <form method="POST" action="{% url 'store:lieferant_send_order_email' artikel.pk %}" onsubmit="return confirmSendOrder();">
-                                            {% csrf_token %}
-                                            <!-- Dropdown to Temporarily Choose Lieferant -->
-                                            <div class="form-group">
-                                                <label for="lieferant{{ artikel.pk }}">Lieferant auswählen</label>
-                                                <select 
-                                                    id="lieferant{{ artikel.pk }}" 
-                                                    name="lieferant" 
-                                                    class="form-control" 
-                                                    data-base-url="{% url 'store:get_lieferant_email' 0 %}" 
-                                                    onchange="updateEmail('{{ artikel.pk }}', this.value, this.dataset.baseUrl)">
-                                                    {% for lieferant in lieferanten %}
-                                                        <option value="{{ lieferant.pk }}" {% if lieferant.pk == artikel.lieferant.pk %}selected{% endif %}>
-                                                            {{ lieferant.name }}
-                                                        </option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-
-                                            <!-- Display Email of Selected Lieferant -->
-                                            <p><strong>E-Mail:</strong> <span id="emailDisplay{{ artikel.pk }}">{{ artikel.lieferant.email }}</span></p>
-
-                                            <!-- Input for Anzahl -->
-                                            <div class="form-group">
-                                                <label for="anzahl{{ artikel.pk }}">Anzahl</label>
-                                                <input type="number" id="anzahl{{ artikel.pk }}" name="anzahl" class="form-control" min="1" value="1">
-                                            </div>
-                                            <button type="submit" class="btn btn-primary mt-3">Bestellung senden</button>
-                                        </form>
-                                    {% else %}
-                                        <p>Kein Lieferant verfügbar.</p>
-                                    {% endif %}
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Schliessen</button>
-                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Schliessen</button>
                             </div>
                         </div>
                     </div>
-                </td>
+                </div>
+                {% else %}
+                Kein Lieferant zugeordnet
+                {% endif %}
+            </td>
+
+            <td>
+                <!-- Edit Nettopreis -->
+                <a href="{% url 'store:crm_artikel_nettopreis_edit' artikel.pk %}" class="btn-sm btn-outline-primary"
+                    title="Nettopreis bearbeiten">
+                    <i class="fas fa-edit"></i>
+                </a>
+
+                <!-- Display Nettopreis -->
+                {% if artikel.nettopreis %}
+                CHF {{ artikel.nettopreis|floatformat:2 }}
+                {% else %}
+                -
+                {% endif %}
+
+                <!-- Bestpreis Icon -->
+                {% if artikel.bestpreis %}
+                <a href="#" class="btn-sm btn-outline-success" title="Bestpreis anzeigen" data-toggle="modal"
+                    data-target="#bestpreisModal{{ artikel.pk }}">
+                    <i class="fas fa-tag"></i>
+                </a>
+
+                <!-- Bestpreis Modal -->
+                <div class="modal fade" id="bestpreisModal{{ artikel.pk }}" tabindex="-1" role="dialog"
+                    aria-labelledby="bestpreisModalLabel{{ artikel.pk }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="bestpreisModalLabel{{ artikel.pk }}">Bestpreis Details</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Bestpreis:</strong> CHF {{ artikel.bestpreis|floatformat:2 }}</p>
+                                <p><strong>Lieferant:</strong> {{ artikel.bestpreis_lieferant }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </td>
+
+            <td>
+                {% if artikel.vp %}
+                CHF {{ artikel.vp|floatformat:2 }}
+                {% else %}
+                -
+                {% endif %}
+
+            </td>
+            <td>
+                <a href="{% url 'store:crm_artikel_lagerbestand_edit' artikel.pk %}" class="btn-sm btn-outline-primary">
+                    <i class="fas fa-edit"></i>
+                </a>
+                {% if artikel.lagerbestand %}
+                {{ artikel.lagerbestand }}
+                {% else %}
+                -
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'store:crm_artikel_lagerort_edit' artikel.pk %}" class="btn-sm btn-outline-primary">
+                    <i class="fas fa-edit"></i>
+                </a>
+                {% if artikel.lagerort %}
+                {{ artikel.lagerort }}
+                {% else %}
+                -
+                {% endif %}
+
+            </td>
+            <td>
+                <a href="{% url 'store:crm_artikel_edit' artikel.pk %}" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <form action="{% url 'store:crm_artikel_delete' artikel.pk %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" onclick="return confirmSend();" class="btn btn-sm btn-outline-danger">
+                        <i class="far fa-trash-alt"></i>
+                    </button>
+                </form>
+            </td>
+
+
+
+            <td>
+                <!-- Button to Open Modal -->
+                <a href="#" class="btn btn-sm btn-outline-primary" data-toggle="modal"
+                    data-target="#orderModal{{ artikel.pk }}">
+                    <i class="fas fa-shopping-cart"></i>
+                </a>
+
+                <!-- Modal -->
+                <div class="modal fade" id="orderModal{{ artikel.pk }}" tabindex="-1" role="dialog"
+                    aria-labelledby="orderModalLabel{{ artikel.pk }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="orderModalLabel{{ artikel.pk }}">Bestellung an Lieferant
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                {% if artikel.lieferant %}
+                                <!-- Display Artikel Details -->
+                                <p><strong>Artikel:</strong> {{ artikel.artikelnr }}, {{ artikel.name }}</p>
+                                <p><strong>Maße:</strong> {{ artikel.aussenbreite }} x {{ artikel.aussenhöhe }} mm</p>
+
+                                {% if artikel.zubehoerartikelnr %}
+                                <p><strong>Zubehörartikel:</strong> {{ artikel.zubehoerartikelnr }}</p>
+                                <hr>
+                                {% endif %}
+
+                                <!-- Form for Sending Email -->
+                                <form method="POST" action="{% url 'store:lieferant_send_order_email' artikel.pk %}"
+                                    onsubmit="return confirmSendOrder();">
+                                    {% csrf_token %}
+                                    <!-- Dropdown to Temporarily Choose Lieferant -->
+                                    <div class="form-group">
+                                        <label for="lieferant{{ artikel.pk }}">Lieferant auswählen</label>
+                                        <select id="lieferant{{ artikel.pk }}" name="lieferant" class="form-control"
+                                            data-base-url="{% url 'store:get_lieferant_email' 0 %}"
+                                            onchange="updateEmail('{{ artikel.pk }}', this.value, this.dataset.baseUrl)">
+                                            {% for lieferant in lieferanten %}
+                                            <option value="{{ lieferant.pk }}" {% if lieferant.pk==artikel.lieferant.pk
+                                                %}selected{% endif %}>
+                                                {{ lieferant.name }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <!-- Display Email of Selected Lieferant -->
+                                    <p><strong>E-Mail:</strong> <span id="emailDisplay{{ artikel.pk }}">{{
+                                            artikel.lieferant.email }}</span></p>
+
+                                    <!-- Input for Anzahl -->
+                                    <div class="form-group">
+                                        <label for="anzahl{{ artikel.pk }}">Anzahl</label>
+                                        <input type="number" id="anzahl{{ artikel.pk }}" name="anzahl"
+                                            class="form-control" min="1" value="1">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mt-3">Bestellung senden</button>
+                                </form>
+                                {% else %}
+                                <p>Kein Lieferant verfügbar.</p>
+                                {% endif %}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Schliessen</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
 
 
 
 
-                </tr>
-            {% endfor %}
+        </tr>
+        {% endfor %}
         {% else %}
-            <tr>
-                <td colspan="11">Keine Artikel gefunden.</td>
-            </tr>
+        <tr>
+            <td colspan="11">Keine Artikel gefunden.</td>
+        </tr>
         {% endif %}
     </tbody>
 </table>
