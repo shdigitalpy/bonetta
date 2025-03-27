@@ -496,6 +496,8 @@ class Kunde(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 	last_service = models.DateTimeField(null=True, blank=True)
 	zusatz = models.CharField(max_length=255, null=True, blank=True)
+	done = models.BooleanField(default=False)
+
 
 	class Meta:
 		ordering = ['id']
@@ -648,6 +650,14 @@ class Artikel(models.Model):
         if self.nettopreis is not None and self.preiscode and self.preiscode.faktor is not None:
             return round(self.nettopreis * self.preiscode.faktor, 2)
         return None
+	
+# new model -> Bezeichnung creating and connect to Elemente model
+class Bezeichnung(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.name
+
 
 class Elemente(models.Model):
 	dichtungen = models.ForeignKey(
@@ -664,7 +674,7 @@ class Elemente(models.Model):
 	nettopreis = models.CharField(max_length=255, blank=True, null=True)
 	lieferant = models.ForeignKey(Lieferanten, related_name ='elemente_lieferanten', on_delete=models.SET_NULL, null=True, blank=True)
 	artikel = models.ForeignKey(Artikel, related_name='artikel_elemente', on_delete=models.SET_NULL, null=True, blank=True)
-	bezeichnung = models.CharField(max_length=255, blank=True, null=True)
+	bezeichnung = models.ForeignKey(Bezeichnung, related_name='elemente_bezeichnung', on_delete=models.SET_NULL, null=True, blank=True)
 
 	def elemente_laufmeter(self):
 	    # Use the dimensions from `Elemente` if available

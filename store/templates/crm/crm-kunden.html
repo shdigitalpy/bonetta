@@ -63,6 +63,31 @@
       margin-top: -7px;
       margin-right: 7px;
     }
+
+
+    .done-checkbox-input {
+      display: none;
+    }
+
+    .done-checkbox-label {
+      width: 40px;
+      height: 25px;
+      border-radius: 10px;
+      border: 2px solid #ddd;
+      display: inline-block;
+      position: relative;
+      cursor: not-allowed;
+    }
+
+    .done-checkbox-input:checked + .done-checkbox-label {
+      background-color: rgb(10, 181, 10);
+    }
+
+    .done-checkbox-input:not(:checked) + .done-checkbox-label {
+      background-color: #dc3545;
+    }
+
+
   </style>
   
   
@@ -106,6 +131,7 @@
     <thead>
         <tr>
             <th scope="col">Interne Nr.</th>
+            <th scope="col">Done</th>
             <th scope="col">Betrieb/Firma</th>
             <th scope="col">Ansprechpartner</th>
             <th scope="col">Kundendaten<br> bearbeiten</th>
@@ -122,6 +148,14 @@
             {% if not kunde.user %}
                 <tr>
                     <td>{{ kunde.interne_nummer|default:"" }}</td>
+                    <td>
+                      <input type="checkbox" id="checkbox-{{ kunde.pk }}" 
+                             disabled 
+                             {% if kunde.done %} checked {% endif %}
+                             class="done-checkbox-input">
+                      <label for="checkbox-{{ kunde.pk }}" class="done-checkbox-label"></label>
+                    </td>                    
+                                   
                     <td>
                         {{ kunde.firmenname|default:"" }}<br>
                         {% for address in kunde.kunde_address.all %}
