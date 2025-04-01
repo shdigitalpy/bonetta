@@ -33,17 +33,17 @@
       <a href="{% url 'store:cms_produkte' first_cat %}">Produkte</a>
       </li>
       
-      <li>
+    <li>
       <a href="{% url 'store:cms_bestellungen' %}">Bestellungen</a>
-      </li>     
+    </li>     
 
-      <li>
+    <li>
         <a href="{% url 'store:cms_versandkosten' %}">Versandkosten</a>
-      </li>
+    </li>
 
       
 
-      <li>
+    <li>
       <a href="{% url 'store:cms_marken' %}">Marken</a>
     </li>
 
@@ -52,14 +52,14 @@
 
     <li>
       <a href="{% url 'store:crm_artikel' %}">Artikel</a>
-      </li> 
+    </li> 
 
     <li>
       <a href="{% url 'store:crm_new_kunden' %}">Kunde</a>
-      </li> 
+    </li> 
 
      
-      <li>
+    <li>
       <a href="{% url 'store:lieferanten' %}">Lieferant</a>
     </li>
     <li>
@@ -69,13 +69,18 @@
       <a href="{% url 'store:lieferanten_bestellungen' %}">Bestellung Lieferant</a>
     </li>    
 
-      <li>
+    <li>
       <a href="{% url 'store:crm_preiscode' %}">Preiscode</a>
-      </li> 
+    </li> 
 
-      <li>
+    <li>
       <a href="{% url 'store:cms_elemente_statistik' %}">Statistik</a>
     </li>
+    <!-- Settings added -->
+    <li>
+        <a href="{% url 'store:bezeichnung_list' %}">Bezeichnung erfassen</a>
+    </li>
+    
         <p style="color:  var(--white);background-color: var(--red);text-transform:uppercase;margin: 1rem 0;">Weiteres</p>
       <li>
           <a href="{% url 'store:cms_benutzerdaten' %}">Benutzerdaten</a>

@@ -539,9 +539,6 @@ class Kunde(models.Model):
 		return self.kunden_elemente.count()
 
 
-
-
-
 class CRMLager(models.Model):
 	titel = models.CharField(max_length=255, null=True, blank=True)
 	aussenbreite = models.IntegerField(null=True, blank=True)
@@ -672,7 +669,7 @@ class Elemente(models.Model):
 	lieferant = models.ForeignKey(Lieferanten, related_name ='elemente_lieferanten', on_delete=models.SET_NULL, null=True, blank=True)
 	artikel = models.ForeignKey(Artikel, related_name='artikel_elemente', on_delete=models.SET_NULL, null=True, blank=True)
 	bezeichnung = models.CharField(max_length=255, blank=True, null=True)
-	bezeichnung_new = models.ForeignKey(Bezeichnung, related_name='elemente_bezeichnung', on_delete=models.SET_NULL, null=True, blank=True)
+	bezeichnung_new = models.ForeignKey(Bezeichnung, related_name='elementebezeichnung', on_delete=models.SET_NULL, null=True, blank=True)
 
 	def elemente_laufmeter(self):
 	    # Use the dimensions from `Elemente` if available
@@ -719,6 +716,3 @@ class Objekte(models.Model):
 
 	def __str__(self):
 		return str(self.serie) + ' ' + self.modell + ' ' + self.typ
-
-
-

@@ -20,6 +20,12 @@ urlpatterns = [
     path('cms/crm/elemente-bestellungen/edit/<int:element_nr>/<int:bestellung_id>', views.elemente_bestellung_edit, name='elemente_bestellung_edit'),
     path('cms/crm/elemente-bestellungen/delete/<int:element_nr>/<int:bestellung_id>', views.elemente_bestellung_delete, name='elemente_bestellung_delete'),
     path('cms/crm/lieferant_update_status/<int:pk>', views.update_lieferanten_status,name="update_lieferanten_status"),
+    
+	# Bezeichnung
+	path('bezeichnung/', views.bezeichnung_list, name='bezeichnung_list'),
+    path('bezeichnung/create/', views.bezeichnung_create, name='bezeichnung_create'),
+    path('bezeichnung/edit/<int:pk>/', views.bezeichnung_edit, name='bezeichnung_edit'),
+    path('bezeichnung/loeschen/<int:pk>/', views.bezeichnung_delete, name='bezeichnung_delete'),
 	
 	#pages
 	path('kontakt', views.kontakt, name='kontakt'),
@@ -151,4 +157,3 @@ urlpatterns = [
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-

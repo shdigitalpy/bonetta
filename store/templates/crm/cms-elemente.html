@@ -4,18 +4,123 @@
 
 {% block content %}
 
+<style>
+    .flexbox{
+        
+        justify-content:space-between !important;
+      border-radius: 40px;
+    }
+    .flexbox-header{
+       
+       background-color: #e4e3e8;
+    }
+    .flexbox .h2{
+      color: #29384f;
+      font-weight: 800;
+      
+    }
+    .second-header{
+        display: flex;
+       
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        gap: 1rem;
+        
+    }
+    .price-code-btn{
+      background-color: #29384f;
+      border-color: #29384f;
+      border-width: 2px;
+      font-weight: 600 !important;
+      padding: .375rem .75rem;
+      font-size: 18px;
+      color: #fff;
+      transition: .3s all;
+      border-radius: 10px;
+    }
+    .form-control {
+        padding: .5rem .75rem;
+        font-size: 1rem;
+    }
+    .price-code-btn:hover{
+      background-color: #fff;
+      border-color: #29384f;
+      color: #29384f;
+    }
+    #textsuche {
+      border-radius: 10px;
+      margin-right: 5px;
+    }
+    .suche-btn, .reset-btn{
+      background-color: #29384f;
+      border: 2px solid #29384f !important;
+      padding: 8px;
+      font-weight: 600;
+      color: #fff;
+      border-radius: 10px;
+      transition: .3s all;
+    }
+    .suche-btn:hover {
+      background-color: transparent;
+       color: #29384f;
+    }
+    .reset-btn:hover{
+      background-color: transparent;
+        color: #29384f;
+    }
+    
+    .search-box{
+      margin-top: -7px;
+      margin-right: 7px;
+    }
+
+
+    .done-checkbox-input {
+      display: none;
+    }
+
+    .done-checkbox-label {
+      width: 40px;
+      height: 25px;
+      border-radius: 10px;
+      border: 2px solid #ddd;
+      display: inline-block;
+      position: relative;
+      cursor: not-allowed;
+    }
+
+    .done-checkbox-input:checked + .done-checkbox-label {
+      background-color: rgb(10, 181, 10);
+    }
+
+    .done-checkbox-input:not(:checked) + .done-checkbox-label {
+      background-color: #dc3545;
+    }
+
+
+  </style>
+
 <div class="flexbox">
-    <div class="h2">Elemente<br><br> {{ kunde_data.firmenname }}<br>
+    <div class="h2">Elemente  {{ kunde_data.firmenname }} - {{kunde_data.interne_nummer}}<br>
+        <span style="font-size:2rem">
+        {% for address in kunde_data.kunde_address.all %}
+            {{ address.crm_strasse|default:"" }} {{ address.crm_nr|default:"" }},
+            {{ address.crm_plz|default:"" }} {{ address.crm_ort|default:"" }}               
+            {% empty %}
+        {% endfor %}
+    </span> 
+</div>
 
-    <span style="font-size:1rem">
-    {% for address in kunde_data.kunde_address.all %}
-                            {{ address.crm_strasse|default:"" }} {{ address.crm_nr|default:"" }},
-                            {{ address.crm_plz|default:"" }} {{ address.crm_ort|default:"" }}
-                            
-                        {% empty %}
-                        {% endfor %}
-</span>
+<div class="flexbox flexbox-header">
 
+       <div class="second-header">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <a class="btn btn-sm price-code-btn" href="{% url 'store:cms_elemente_create' kunde_id %}">Erfassen</a>
+    </form>
+    <a  href="{% url 'store:crm_new_kunden' %}" style="border: none;" class="btn btn-light btn-sm reset-btn">Zurück zur Kundenliste</a>
+    <a  href="{% url 'store:cms_elemente_statistik' %}" style="border: none;" class="btn btn-light btn-sm reset-btn">Statistik Elemente</a>
 </div>
     <!-- Search form -->
     <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="">
@@ -26,44 +131,32 @@
                 <input id="textsuche" class="form-control" type="text" placeholder="Text" aria-label="Search" name="search">
             </div>
             <div style="flex: 0 0 15%">
-                <button type="submit" style="border: none;" class="btn btn-outline-primary">
-                    <i class="fas fa-search"></i> Suche
+                <button type="submit" style="border: none;" class="btn btn-sm suche-btn mr-2">
+                    <span class="fas fa-search"></span> Suche
                 </button>
             </div>
             <div style="flex: 0 0 20%">
-                <a href="{% url 'store:cms_elemente' kunde_id %}" style="border: none;" class="btn btn-light">
-                    <i class="fas fa-times"></i> zurücksetzen
-                </a>
+                <a href="{% url 'store:cms_elemente' kunde_id %}" style="border: none;" class="btn btn-light btn-sm reset-btn"><span class="fas fa-times"></span> zurücksetzen</a>
             </div>
         </div>
     </form>
 </div>
 
-<div class="flexbox">
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <a type="submit" href="{% url 'store:cms_elemente_create' kunde_id %}">
-            <span class="btn btn-outline-primary btn-sm">Erfassen</span>
-        </a>
-    </form>
-    <a class="btn btn-light btn-sm" href="{% url 'store:crm_new_kunden' %}">Zurück zur Kundenliste</a>
-    <a class="btn btn-outline-primary btn-sm" href="{% url 'store:cms_elemente_statistik' %}">Statistik Elemente</a>
-</div>
+
 
 <table class="table table-striped">
     <thead>
         <tr>
             <th scope="col">Kühlposition</th>
             <th scope="col">Element-Nr.</th>
-            <th scope="col">Bezeichnung</th>
-            
+            <th scope="col">Bezeichnung (neu)</th>
+            <th scope="col">Bezeichnung (bisher)</th>
             <th scope="col">Artikel</th>
             <th scope="col">Einkaufspreis</th>
             <th scope="col">Verkaufspreis</th>
-            <th scope="col">Details</th>
-            <th scope="col">Duplizieren</th>
             <th scope="col">Notiz</th>
-   
+            <th scope="col">Objekte</th>
+            <th scope="col">Duplizieren</th>
             <th scope="col">Aktionen</th>
         </tr>
     </thead>
@@ -72,12 +165,66 @@
         <tr>
             <td>{{ data.kuehlposition }}</td>
             <td>{{ data.elementnr }}</td>
-            <td>{{ data.bezeichnung }}</td>
+            <td>
+                {% if data.bezeichnung_new %}
+            {{ data.bezeichnung_new }}
+            {% endif %}
+        </td>
+            <td>
+            {% if data.bezeichnung %}
+            {{ data.bezeichnung }}
+            {% endif %}
+        </td>
             
             <td>
                 <!-- Prioritize Artikel name or Element product -->
                 {% if data.artikel %}
-                    {{ data.artikel.name }}
+                    <a style="text-decoration:underline" href="#" data-toggle="modal" data-target="#artikelModal{{ data.artikel.pk }}">
+                        {{ data.artikel.artikelnr }}
+                    </a>
+            
+                    <!-- Modal for Artikel name -->
+                    <div class="modal fade" id="artikelModal{{ data.artikel.pk }}" tabindex="-1" role="dialog"
+                        aria-labelledby="artikelModalLabel{{ data.artikel.pk }}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="artikelModalLabel{{ data.artikel.pk }}">Artikel Details</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Display Artikel details with null checks -->
+                                    {% if data.artikel.aussenbreite %}
+                                        <p><strong>Aussenbreite:</strong> {{ data.artikel.aussenbreite }}</p>
+                                    {% endif %}
+                                    {% if data.artikel.aussenhöhe %}
+                                        <p><strong>Aussenhöhe:</strong> {{ data.artikel.aussenhöhe }}</p>
+                                    {% endif %}
+                                    {% if data.artikel.nettopreis %}
+                                        <p><strong>Nettopreis:</strong> CHF {{ data.artikel.nettopreis|floatformat:2 }}</p>
+                                    {% endif %}
+                                    {% if data.artikel.lagerbestand %}
+                                        <p><strong>Lagerbestand:</strong> {{ data.artikel.lagerbestand }}</p>
+                                    {% endif %}
+                                    {% if data.artikel.lagerort %}
+                                        <p><strong>Lagerort:</strong> {{ data.artikel.lagerort }}</p>
+                                    {% endif %}
+                                    {% if data.artikel.bestpreis %}
+                                        <p><strong>Bestpreis:</strong> CHF {{ data.artikel.bestpreis|floatformat:2 }}</p>
+                                    {% endif %}
+                                    {% if data.artikel.bestpreis_lieferant %}
+                                        <p><strong>Bestpreis Lieferant:</strong> {{ data.artikel.bestpreis_lieferant.name }}</p>
+                                    {% endif %}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Schliessen</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            
                 {% elif data.produkt %}
                     {{ data.produkt }}
                 {% elif data.dichtungen %}
@@ -93,29 +240,18 @@
                     
                 {% endif %}
             </td>
+
             <td>
                 <!-- Show Verkaufspreis from Artikel -->
                 {% if data.artikel and data.artikel.vp %}
                     CHF {{ data.artikel.vp|floatformat:2 }}
                 {% endif %}
             </td>
-            <td>
-                {% for obj in data.elemente_objekte.all %}
-                {{ obj.name }}<br>
-                {% endfor %}
-                <a class="btn btn-sm btn-outline-primary" href="{% url 'store:cms_elemente_objekte' data.pk kunde_id %}" title="Details bearbeiten">
-                    <i class="fas fa-edit"></i>
-                </a>
-            </td>
-            <td>
-                <a href="{% url 'store:cms_elemente_duplicate' kunde_id data.pk %}" class="btn btn-sm btn-outline-info" title="Duplizieren">
-                    <i class="fas fa-copy"></i> 
-                </a>
-            </td>
+
             <td>
                 {% if data.bemerkung %}
                     <a href="#" 
-                       class="btn btn-sm btn-outline-info" 
+                       class="btn btn-sm btn-outline-info suche-btn" 
                        title="Notiz anzeigen" 
                        data-toggle="modal" 
                        data-target="#notizModal{{ data.pk }}">
@@ -145,16 +281,31 @@
                     <span class="text-muted">Keine</span>
                 {% endif %}
             </td>
-                           
-              
-
 
             <td>
+                {% for obj in data.elemente_objekte.all %}
+                {{ obj.name }}<br>
+                {% endfor %}
+                <a class="btn btn-sm btn-outline-primary suche-btn" href="{% url 'store:cms_elemente_objekte' data.pk kunde_id %}" title="Details bearbeiten">
+                    <i class="fas fa-edit"></i>
+                </a>
+            </td>
+
+            <td>
+                <a href="{% url 'store:cms_elemente_duplicate' kunde_id data.pk %}" class="btn btn-sm btn-outline-info suche-btn" title="Duplizieren">
+                    <i class="fas fa-copy"></i> 
+                </a>
+            </td>
+                           
+            <td>
                 <div class="btn-group" role="group">
-                    <a href="{% url 'store:cms_elemente_edit' data.pk kunde_id %}" class="btn btn-sm btn-outline-primary" title="Bearbeiten">
+                    <a href="{% url 'store:cms_elemente_edit' data.pk kunde_id %}" class="btn btn-sm btn-outline-primary suche-btn mr-1" title="Bearbeiten">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <a href="{% url 'store:cms_elemente_löschen' data.pk kunde_id %}" class="btn btn-sm btn-outline-danger" onclick="return confirmSend();" title="Löschen">
+
+                    
+
+                    <a href="{% url 'store:cms_elemente_löschen' data.pk kunde_id %}" class="btn btn-sm btn-outline-danger suche-btn" onclick="return confirmSend();" title="Löschen">
                         <i class="fas fa-trash-alt"></i>
                     </a>
                 </div>
