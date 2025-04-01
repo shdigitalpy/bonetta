@@ -480,7 +480,12 @@ class ShippingAddress(models.Model):
 	def __str__(self):
 		return self.user.username + ' ' + str(self.lieferung_strasse) + ' '+ str(self.lieferung_nr) + ', ' + str(self.lieferung_plz) + ' '+ str(self.lieferung_ort)
 
+# new model -> Bezeichnung creating and connect to Elemente model
+class Bezeichnung(models.Model):
+    name = models.CharField(max_length=255, unique=True)
 
+    def __str__(self):
+        return self.name
 
 class Kunde(models.Model):
 	user = models.OneToOneField(User, unique=True, related_name ='profile', on_delete=models.CASCADE,null=True, blank=True)
