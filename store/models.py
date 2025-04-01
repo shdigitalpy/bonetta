@@ -672,6 +672,7 @@ class Elemente(models.Model):
 	lieferant = models.ForeignKey(Lieferanten, related_name ='elemente_lieferanten', on_delete=models.SET_NULL, null=True, blank=True)
 	artikel = models.ForeignKey(Artikel, related_name='artikel_elemente', on_delete=models.SET_NULL, null=True, blank=True)
 	bezeichnung = models.CharField(max_length=255, blank=True, null=True)
+	bezeichnung_new = models.ForeignKey(Bezeichnung, related_name='elemente_bezeichnung', on_delete=models.SET_NULL, null=True, blank=True)
 
 	def elemente_laufmeter(self):
 	    # Use the dimensions from `Elemente` if available
