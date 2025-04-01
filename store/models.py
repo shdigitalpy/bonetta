@@ -481,6 +481,7 @@ class ShippingAddress(models.Model):
 		return self.user.username + ' ' + str(self.lieferung_strasse) + ' '+ str(self.lieferung_nr) + ', ' + str(self.lieferung_plz) + ' '+ str(self.lieferung_ort)
 
 
+
 class Kunde(models.Model):
 	user = models.OneToOneField(User, unique=True, related_name ='profile', on_delete=models.CASCADE,null=True, blank=True)
 	firmenname = models.CharField(max_length=255, null=True, blank=True)
