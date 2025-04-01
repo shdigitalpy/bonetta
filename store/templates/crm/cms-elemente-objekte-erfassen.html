@@ -4,23 +4,64 @@
 
 {% block content %}
 
-		
-			<div class="container">
-			
-			<h2>Objekte</h2>
+<style>
+    .form-group {
+        padding: 5px;
+        margin-left: 2%;
+    }
+    form {
+        background-color: #e4e3e8;
+        padding: 30px 10px;
+        border-radius: 10px;
+    }
 
-			<div class="form-group">
-		    
-		    <form method="POST" enctype="multipart/form-data">
-		     {% csrf_token %}
-		      {{ form.as_p }}
-		      <button class="btn btn-primary btn-md ml-4">Speichern</button>
-		      <button class="btn btn-secondary"><a href="{% url 'store:cms_elemente_objekte' pk cpk %}">Abbrechen</a></button>
-  			</div>
-			<br/>
-			   </form>
-			   </div>
+    .suche-btn{
+    cursor:pointer;
+    margin-left:1.5rem;
+      background-color: #29384f;
+      border: 2px solid #29384f !important;
+      padding: 8px;
+      font-weight: 600;
+      color: #fff;
+      border-radius: 10px;
+      transition: .3s all;
+    }
 
-			</div>
+    .reset-btn{
+      
+      border: 2px solid #29384f !important;
+      padding: 8px;
+      font-weight: 600;
+      color: black;
+      border-radius: 10px;
+      transition: .3s all;
+    }
 
- {% endblock %}
+    .suche-btn:hover {
+      background-color: transparent;
+       color: #29384f;
+    }
+
+
+</style>
+
+<div class="container">
+
+	<h2>Objekte</h2>
+
+	<div class="form-group">
+
+		<form method="POST" enctype="multipart/form-data">
+			{% csrf_token %}
+			{{ form.as_p }}
+			<button class="btn btn-primary btn-md ml-4">Speichern</button>
+			<button class="btn btn-secondary">
+				<a href="{% url 'store:cms_elemente_objekte' pk cpk %}">Abbrechen</a></button>
+				<br />
+		</form>
+	</div>
+</div>
+
+</div>
+
+{% endblock %}

@@ -2,12 +2,53 @@
 {% load static %}
 {% load custom_filters %}
 {% block title %}Bestellungsdetails{% endblock %}
-
+{% block content %}
 
 <style>
-   .flexbox-header{
+    .flexbox{
+      border-radius: 40px;
+      margin-left: 0px;
+      width: 100%;
+    }
+    .flexbox-header{
        padding: 40px 20px;
        background-color: #e4e3e8;
+    }
+    .h2{
+      color: #29384f;
+      font-weight: 800;
+    }
+    .second-header{
+        display: flex;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        margin-left: 0;
+        padding: 1rem;
+        gap: 1rem;
+    }
+    .price-code-btn{
+      background-color: #29384f;
+      border-color: #29384f;
+      border-width: 2px;
+      font-weight: 600 !important;
+      padding: .375rem .75rem;
+      font-size: 18px;
+      color: #fff;
+      transition: .3s all;
+      border-radius: 10px;
+    }
+    .form-control {
+        padding: .5rem .75rem;
+        font-size: 1rem;
+    }
+    .price-code-btn:hover{
+      background-color: #fff;
+      border-color: #29384f;
+      color: #29384f;
+    }
+    #textsuche {
+      border-radius: 10px;
+      margin-right: 5px;
     }
     .suche-btn, .reset-btn{
       background-color: #29384f;
@@ -18,8 +59,6 @@
       border-radius: 10px;
       transition: .3s all;
     }
-
-    
     .suche-btn:hover {
       background-color: transparent;
        color: #29384f;
@@ -28,18 +67,46 @@
       background-color: transparent;
         color: #29384f;
     }
-   
+    
+    .search-box{
+      margin-top: -7px;
+      margin-right: 7px;
+    }
+
+
+    .done-checkbox-input {
+      display: none;
+    }
+
+    .done-checkbox-label {
+      width: 40px;
+      height: 25px;
+      border-radius: 10px;
+      border: 2px solid #ddd;
+      display: inline-block;
+      position: relative;
+      cursor: not-allowed;
+    }
+
+    .done-checkbox-input:checked + .done-checkbox-label {
+      background-color: rgb(10, 181, 10);
+    }
+
+    .done-checkbox-input:not(:checked) + .done-checkbox-label {
+      background-color: #dc3545;
+    }
+
+
   </style>
 
-{% block content %}
-    <div class="flexbox flexbox-header d-flex justify-content-between align-items-start">
-  <div class="h2">
+<div class="h2">
     Auftrags-Nr. {{ bestellung.id }}<br> {{ betrieb }}
-  </div>
-  <a href="{% url 'store:elemente_bestellungen' %}" class="btn btn-sm price-code-btn">Zurück zur Übersicht</a>
+</div>
+<div class="flexbox flexbox-header">
+    <a href="{% url 'store:elemente_bestellungen' %}" class="btn btn-sm price-code-btn">Zurück zur Übersicht</a>
 </div>
 
-  <table class="table table-striped">
+<table class="table table-striped">
     <thead>
         <tr>
             <th>Element-Nr.</th>
@@ -56,53 +123,57 @@
             <td>{{ item.stk_zahl }}</td>
             <td>
                 {% if item.artikel and item.artikel.artikelnr %}
-                    <a href="#" 
-                       title="Artikel Details anzeigen" 
-                       data-toggle="modal" 
-                       data-target="#artikelDetailsModal{{ item.artikel.pk }}">
-                        {{ item.artikel.artikelnr }}
-                    </a>
+                <a href="#" title="Artikel Details anzeigen" data-toggle="modal"
+                    data-target="#artikelDetailsModal{{ item.artikel.pk }}">
+                    {{ item.artikel.artikelnr }}
+                </a>
 
-                    <!-- Modal for Artikel Details -->
-                    <div class="modal fade" id="artikelDetailsModal{{ item.artikel.pk }}" tabindex="-1" role="dialog" aria-labelledby="artikelDetailsModalLabel{{ item.artikel.pk }}" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="artikelDetailsModalLabel{{ item.artikel.pk }}">Artikel Details</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <p><strong>Artikelnummer:</strong> {{ item.artikel.artikelnr }}</p>
-                                    <p><strong>Dichtungstyp:</strong> {{ item.artikel.name }}</p>  {# Dichtungstyp is shown inside the modal #}
-                                    <p><strong>Aussenbreite:</strong> {{ item.artikel.aussenbreite }}</p>
-                                    <p><strong>Aussenhöhe:</strong> {{ item.artikel.aussenhöhe }}</p>
-                                    <p><strong>Lieferant:</strong> {{ item.artikel.lieferant }}</p>
-                                    <p><strong>Lieferantenartikel:</strong> {{ item.artikel.lieferantenartikel }}</p>
-                                    <p><strong>Einkaufspreis:</strong> {{ item.artikel.nettopreis|floatformat:2 }}</p>
-                                    <p><strong>Verkaufspreis:</strong> {{ item.artikel.vp|floatformat:2 }}</p>
-                                    <p><strong>Preiscode:</strong> {{ item.artikel.preiscode }}</p>
-                                    <p><strong>Zubehörartikel-Nr.:</strong> {{ item.artikel.zubehoerartikelnr }}</p>
-                                    <p><strong>Bestpreis:</strong> {{ item.artikel.bestpreis|floatformat:2 }}</p>
-                                    <p><strong>Bestpreis Lieferant:</strong> {{ item.artikel.bestpreis_lieferant }}</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
-                                </div>
+                <!-- Modal for Artikel Details -->
+                <div class="modal fade" id="artikelDetailsModal{{ item.artikel.pk }}" tabindex="-1" role="dialog"
+                    aria-labelledby="artikelDetailsModalLabel{{ item.artikel.pk }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="artikelDetailsModalLabel{{ item.artikel.pk }}">Artikel
+                                    Details</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Artikelnummer:</strong> {{ item.artikel.artikelnr }}</p>
+                                <p><strong>Dichtungstyp:</strong> {{ item.artikel.name }}</p> {# Dichtungstyp is shown
+                                inside the modal #}
+                                <p><strong>Aussenbreite:</strong> {{ item.artikel.aussenbreite }}</p>
+                                <p><strong>Aussenhöhe:</strong> {{ item.artikel.aussenhöhe }}</p>
+                                <p><strong>Lieferant:</strong> {{ item.artikel.lieferant }}</p>
+                                <p><strong>Lieferantenartikel:</strong> {{ item.artikel.lieferantenartikel }}</p>
+                                <p><strong>Einkaufspreis:</strong> {{ item.artikel.nettopreis|floatformat:2 }}</p>
+                                <p><strong>Verkaufspreis:</strong> {{ item.artikel.vp|floatformat:2 }}</p>
+                                <p><strong>Preiscode:</strong> {{ item.artikel.preiscode }}</p>
+                                <p><strong>Zubehörartikel-Nr.:</strong> {{ item.artikel.zubehoerartikelnr }}</p>
+                                <p><strong>Bestpreis:</strong> {{ item.artikel.bestpreis|floatformat:2 }}</p>
+                                <p><strong>Bestpreis Lieferant:</strong> {{ item.artikel.bestpreis_lieferant }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
                             </div>
                         </div>
                     </div>
+                </div>
                 {% else %}
-                    <span class="text-muted">Unbekannt</span>
+                <span class="text-muted">Unbekannt</span>
                 {% endif %}
             </td>
             <td>{{ item.masse }}</td>
             <td>
-                <a href="{% url 'store:elemente_bestellung_edit' item.element_nr bestellung.id %}" class="btn btn-sm btn-outline-primary">
+                <a href="{% url 'store:elemente_bestellung_edit' item.element_nr bestellung.id %}"
+                    class="btn btn-sm btn-outline-primary">
                     <i class="fas fa-edit"></i>
                 </a>
-                <a href="{% url 'store:elemente_bestellung_delete' item.element_nr bestellung.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Möchten Sie dieses Element wirklich löschen?');">
+                <a href="{% url 'store:elemente_bestellung_delete' item.element_nr bestellung.id %}"
+                    class="btn btn-sm btn-outline-danger"
+                    onclick="return confirm('Möchten Sie dieses Element wirklich löschen?');">
                     <i class="fas fa-trash-alt"></i>
                 </a>
             </td>
@@ -117,75 +188,78 @@
 
 
 
-    <!-- Bestellung an Lieferant & Position hinzufügen (Buttons nebeneinander) -->
-    <div class="mt-4 d-flex gap-2">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmOrderModal">
-            <i class="fas fa-shopping-cart"></i> Bestellung senden
-        </button>
-        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addPositionModal">
-            Position hinzufügen
-        </button>
-    </div>
+<!-- Bestellung an Lieferant & Position hinzufügen (Buttons nebeneinander) -->
+<div class="mt-4 d-flex gap-2">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmOrderModal">
+        <i class="fas fa-shopping-cart"></i> Bestellung senden
+    </button>
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addPositionModal">
+        Position hinzufügen
+    </button>
+</div>
 
-    <!-- Bestellung senden Bestätigung Modal -->
-    <div class="modal fade" id="confirmOrderModal" tabindex="-1" role="dialog" aria-labelledby="confirmOrderModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmOrderModalLabel">Bestellung bestätigen</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Möchten Sie die Bestellung wirklich senden?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
-                    <form method="POST" action="{% url 'store:elemente_bestellung_detail' bestellung.id betrieb %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="send_order" value="true">
-                        <input type="hidden" name="artikel_ids" value="{% for item in elemente %}{{ item.artikel.id }},{% endfor %}">
-                        <button type="submit" class="btn btn-primary">Ja, Bestellung senden</button>
-                    </form>
-                </div>
+<!-- Bestellung senden Bestätigung Modal -->
+<div class="modal fade" id="confirmOrderModal" tabindex="-1" role="dialog" aria-labelledby="confirmOrderModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmOrderModalLabel">Bestellung bestätigen</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-        </div>
-    </div>
-
-    <!-- Position hinzufügen Modal -->
-    <div class="modal fade show" id="addPositionModal" tabindex="-1" role="dialog" aria-labelledby="addPositionModalLabel" aria-hidden="false" style="display: {% if error_message %}block{% else %}none{% endif %};">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addPositionModalLabel">Neue Position hinzufügen</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
+            <div class="modal-body">
+                Möchten Sie die Bestellung wirklich senden?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
                 <form method="POST" action="{% url 'store:elemente_bestellung_detail' bestellung.id betrieb %}">
                     {% csrf_token %}
-                    <div class="modal-body">
-                        {% if error_message %}
-                        <div class="alert alert-danger" role="alert">
-                            {{ error_message }}
-                        </div>
-                        {% endif %}
-                        <div class="form-group">
-                            <label>Element-Nr.</label>
-                            <input type="text" name="element_nr" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Anzahl</label>
-                            <input type="number" name="anzahl" class="form-control" min="1" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
-                        <button type="submit" class="btn btn-success">Position hinzufügen</button>
-                    </div>
+                    <input type="hidden" name="send_order" value="true">
+                    <input type="hidden" name="artikel_ids"
+                        value="{% for item in elemente %}{{ item.artikel.id }},{% endfor %}">
+                    <button type="submit" class="btn btn-primary">Ja, Bestellung senden</button>
                 </form>
             </div>
         </div>
     </div>
+</div>
+
+<!-- Position hinzufügen Modal -->
+<div class="modal fade show" id="addPositionModal" tabindex="-1" role="dialog" aria-labelledby="addPositionModalLabel"
+    aria-hidden="false" style="display: {% if error_message %}block{% else %}none{% endif %};">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPositionModalLabel">Neue Position hinzufügen</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST" action="{% url 'store:elemente_bestellung_detail' bestellung.id betrieb %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    {% if error_message %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error_message }}
+                    </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <label>Element-Nr.</label>
+                        <input type="text" name="element_nr" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Anzahl</label>
+                        <input type="number" name="anzahl" class="form-control" min="1" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+                    <button type="submit" class="btn btn-success">Position hinzufügen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

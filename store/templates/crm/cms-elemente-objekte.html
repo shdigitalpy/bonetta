@@ -4,73 +4,160 @@
 
 {% block content %}
 
+<style>
+    .flexbox{
+      border-radius: 40px;
+    }
+    .flexbox-header{
+       padding: 40px 20px;
+       background-color: #e4e3e8;
+    }
+    .h2{
+      color: #29384f;
+      font-weight: 800;
+    }
+    .second-header{
+        display: flex;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        margin-left: 0;
+        padding: 1rem;
+        gap: 1rem;
+    }
+    .price-code-btn{
+      background-color: #29384f;
+      border-color: #29384f;
+      border-width: 2px;
+      font-weight: 600 !important;
+      padding: .375rem .75rem;
+      font-size: 18px;
+      color: #fff;
+      transition: .3s all;
+      border-radius: 10px;
+    }
+    .form-control {
+        padding: .5rem .75rem;
+        font-size: 1rem;
+    }
+    .price-code-btn:hover{
+      background-color: #fff;
+      border-color: #29384f;
+      color: #29384f;
+    }
+    #textsuche {
+      border-radius: 10px;
+      margin-right: 5px;
+    }
+    .suche-btn, .reset-btn{
+      background-color: #29384f;
+      border: 2px solid #29384f !important;
+      padding: 8px;
+      font-weight: 600;
+      color: #fff;
+      border-radius: 10px;
+      transition: .3s all;
+    }
+    .suche-btn:hover {
+      background-color: transparent;
+       color: #29384f;
+    }
+    .reset-btn:hover{
+      background-color: transparent;
+        color: #29384f;
+    }
+    
+    .search-box{
+      margin-top: -7px;
+      margin-right: 7px;
+    }
+
+
+    .done-checkbox-input {
+      display: none;
+    }
+
+    .done-checkbox-label {
+      width: 40px;
+      height: 25px;
+      border-radius: 10px;
+      border: 2px solid #ddd;
+      display: inline-block;
+      position: relative;
+      cursor: not-allowed;
+    }
+
+    .done-checkbox-input:checked + .done-checkbox-label {
+      background-color: rgb(10, 181, 10);
+    }
+
+    .done-checkbox-input:not(:checked) + .done-checkbox-label {
+      background-color: #dc3545;
+    }
+
+
+  </style>
 		
-			<div class="flexbox" style="align-items:start;">
-				<div class="h2">Objekte<br><br> {{ kunde }}
-
-					<br><br>
-					 <a class="btn btn-outline-primary btn-sm" href="{% url 'store:cms_elemente_objekte_erfassen' pk cpk %}">Erfassen</a>
-					<a class="btn btn-light btn-sm" href="{% url 'store:cms_elemente' cpk %}">Zurück zur Elementeliste</a>
-
-				
-				</div>
-				
-				
-
+	<div class="">
+		<div class="h2">Objekte<br><br> {{ kunde }}<br><br>
+			<div class="flexbox flexbox-header">
+				<a class="btn btn-outline-primary btn-sm price-code-btn" href="{% url 'store:cms_elemente_objekte_erfassen' pk cpk %}">Erfassen</a>
+				<a class="btn btn-light btn-sm price-code-btn" href="{% url 'store:cms_elemente' cpk %}">Zurück zur Elementeliste</a>
 			</div>
+		</div>
+	</div>
+	
+
+	
+
+	<table class="table table-striped">
+		<thead>
+		<tr>
+			<th scope="col">Marke</th>
+			<th scope="col">Typ:</th>
+			<th scope="col">Modell/Code</th>
+			<th scope="col">Serien-Nr.</th>
+			<th scope="col">Lieferant</th>
+			<th scope="col">Aktionen</th>
 			
-
 			
+			
+		</tr>
+		</thead>
+		{% for data in objekte.all %}
+		<tbody>
+		<tr>
+			<td>
+			{{ data.name }}
+			</td>
+			
+			<td>
+			{{ data.serie }}
+			</td>
+			
+			<td>{{ data.modell }}</td>
+			<td>{{ data.typ }}</td>
+			<td>{% if data.lieferant %}{{ data.lieferant }}{% endif %}</td>
 
-			<table class="table table-striped">
-			  <thead>
-			    <tr>
-			    	<th scope="col">Marke</th>
-			      <th scope="col">Typ:</th>
-			      <th scope="col">Modell/Code</th>
-			      <th scope="col">Serien-Nr.</th>
-			      <th scope="col">Lieferant</th>
-			       <th scope="col">Aktionen</th>
-			      
-			     
-			     
-			    </tr>
-			  </thead>
-			 {% for data in objekte.all %}
-			  <tbody>
-			    <tr>
-			    	<td>
-			      	{{ data.name }}
-			  		</td>
-			      
-			      <td>
-			      	{{ data.serie }}
-			  		</td>
-			  		
-			      <td>{{ data.modell }}</td>
-			      <td>{{ data.typ }}</td>
-			      <td>{% if data.lieferant %}{{ data.lieferant }}{% endif %}</td>
+			<td>
 
-			      <td>
+		<div class="btn-group" role="group">
+			<a href="{% url 'store:cms_elemente_objekte_bearbeiten' data.id pk cpk  %}" class="btn btn-sm btn-outline-primary" title="Bearbeiten">
+				<i class="fas fa-edit"></i>
+			</a>
+			<a href="{% url 'store:cms_elemente_objekte_löschen' data.id pk cpk %}" class="btn btn-sm btn-outline-danger" onclick="return confirmSend();" title="Löschen">
+				<i class="fas fa-trash-alt"></i>
+			</a>
+		</div>
+		</td>
+	</td>
+			{% endfor %}
 
-                <div class="btn-group" role="group">
-                    <a href="{% url 'store:cms_elemente_objekte_bearbeiten' data.id pk cpk  %}" class="btn btn-sm btn-outline-primary" title="Bearbeiten">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                    <a href="{% url 'store:cms_elemente_objekte_löschen' data.id pk cpk %}" class="btn btn-sm btn-outline-danger" onclick="return confirmSend();" title="Löschen">
-                        <i class="fas fa-trash-alt"></i>
-                    </a>
-                </div>
-                </td>
-            </td>
-			      {% endfor %}
+		</tr>
 
-			    </tr>
+		
+		</tbody>
+		
 
-			    
-			  </tbody>
-			 
-
-			</table>
+	</table>
 
  {% endblock %}

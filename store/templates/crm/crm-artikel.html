@@ -354,10 +354,11 @@
                                             data-base-url="{% url 'store:get_lieferant_email' 0 %}"
                                             onchange="updateEmail('{{ artikel.pk }}', this.value, this.dataset.baseUrl)">
                                             {% for lieferant in lieferanten %}
-                                            <option value="{{ lieferant.pk }}" {% if lieferant.pk==artikel.lieferant.pk
-                                                %}selected{% endif %}>
+                                            <option value="{{ lieferant.pk }}" 
+                                                {% if artikel.lieferant and lieferant.pk == artikel.lieferant.pk %}selected{% endif %}>
                                                 {{ lieferant.name }}
                                             </option>
+
                                             {% endfor %}
                                         </select>
                                     </div>

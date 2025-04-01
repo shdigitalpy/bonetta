@@ -6,9 +6,9 @@
 
 <style>
     .flexbox{
-      margin: 0 auto;
-      align-items: center;
       border-radius: 40px;
+      margin-left: 0px;
+      width: 100%;
     }
     .flexbox-header{
        padding: 40px 20px;
@@ -17,18 +17,14 @@
     .flexbox .h2{
       color: #29384f;
       font-weight: 800;
-      margin: 0 auto;
     }
     .second-header{
         display: flex;
-        margin: 0 auto;
         margin-top: 1rem;
         margin-bottom: 1rem;
+        margin-left: 0;
         padding: 1rem;
         gap: 1rem;
-        background-color: rgb(239, 230, 230);
-        border: .2rem solid #29384f;
-        border-radius: 1rem;
     }
     .price-code-btn{
       background-color: #29384f;
@@ -104,18 +100,27 @@
   </style>
 
 <div class="flexbox">
-    <div class="h2">Elemente  [{{ kunde_data.firmenname }} - {{kunde_data.interne_nummer}}]<br><br>
+    <div class="h2">Elemente  {{ kunde_data.firmenname }}  {{kunde_data.interne_nummer}} <br>
+        <span style="font-size:2rem">
+            {% for address in kunde_data.kunde_address.all %}
+                {{ address.crm_strasse|default:"" }} {{ address.crm_nr|default:"" }},
+                {{ address.crm_plz|default:"" }} {{ address.crm_ort|default:"" }}               
+                {% empty %}
+            {% endfor %}
+        </span> 
 </div>
 
 <div class="flexbox flexbox-header">
+   
+    <div class="second-header">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <a class="btn btn-sm price-code-btn" href="{% url 'store:cms_elemente_create' kunde_id %}">Erfassen</a>
+        </form>
+        <a  href="{% url 'store:crm_new_kunden' %}" style="border: none;" class="btn btn-light btn-sm reset-btn">Zurück zur Kundenliste</a>
+        <a  href="{% url 'store:cms_elemente_statistik' %}" style="border: none;" class="btn btn-light btn-sm reset-btn">Statistik Elemente</a>
+    </div>
 
-    <span style="font-size:2rem">
-        {% for address in kunde_data.kunde_address.all %}
-            {{ address.crm_strasse|default:"" }} {{ address.crm_nr|default:"" }},
-            {{ address.crm_plz|default:"" }} {{ address.crm_ort|default:"" }}               
-            {% empty %}
-        {% endfor %}
-    </span>    
     <!-- Search form -->
     <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="">
         {% csrf_token %}
@@ -134,15 +139,6 @@
             </div>
         </div>
     </form>
-</div>
-
-<div class="second-header">
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <a class="btn btn-sm price-code-btn" href="{% url 'store:cms_elemente_create' kunde_id %}">Erfassen</a>
-    </form>
-    <a  href="{% url 'store:crm_new_kunden' %}" style="border: none;" class="btn btn-light btn-sm reset-btn">Zurück zur Kundenliste</a>
-    <a  href="{% url 'store:cms_elemente_statistik' %}" style="border: none;" class="btn btn-light btn-sm reset-btn">Statistik Elemente</a>
 </div>
 
 <table class="table table-striped">

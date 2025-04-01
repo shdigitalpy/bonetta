@@ -57,7 +57,7 @@ class ElementeCartItemEditForm(forms.Form):
         label="Anzahl",
         min_value=1,
         widget=forms.NumberInput(attrs={
-            "class": "form-control",
+            "class": "form-control col-6",
             "placeholder": "Anzahl eingeben"
         })
     )
@@ -270,27 +270,27 @@ class LieferantenForm(forms.ModelForm):
 
         widgets = {
             'number': forms.TextInput(attrs={
-                'class': 'form-control col-12',
+                'class': 'form-control col-6',
                 'placeholder': ''
             }),
             'name': forms.TextInput(attrs={
-                'class': 'form-control col-12',
+                'class': 'form-control col-6',
                 'placeholder': ''
             }),
             'adresse': forms.TextInput(attrs={
-                'class': 'form-control col-12',
+                'class': 'form-control col-6',
                 'placeholder': ''
             }),
             'plz': forms.TextInput(attrs={
-                'class': 'form-control col-12',
+                'class': 'form-control col-6',
                 'placeholder': ''
             }),
             'ort': forms.TextInput(attrs={
-                'class': 'form-control col-12',
+                'class': 'form-control col-6',
                 'placeholder': ''
             }),
             'email': forms.TextInput(attrs={
-                'class': 'form-control col-12',
+                'class': 'form-control col-6',
                 'placeholder': ''
             }),
         }
