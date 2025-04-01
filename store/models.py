@@ -496,6 +496,7 @@ class Kunde(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 	last_service = models.DateTimeField(null=True, blank=True)
 	zusatz = models.CharField(max_length=255, null=True, blank=True)
+	done = models.BooleanField(default=False)
 
 	class Meta:
 		ordering = ['id']
