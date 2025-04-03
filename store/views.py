@@ -885,27 +885,6 @@ def crm_lager_löschen(request, pk):
 
 # CRM Kunden ---------------------------------------------------------------
 
-# def crm_new_kunden(request):
-#     search_query = request.GET.get('search', '')
-#     if search_query:
-             
-#         kunden = Kunde.objects.filter(
-#             Q(firmenname__icontains=search_query) | 
-#             Q(interne_nummer__icontains=search_query) |
-#             Q(kunde_address__crm_ort__icontains=search_query) |
-#             Q(kunde_address__crm_strasse__icontains=search_query) |
-#             Q(kunde_address__crm_kanton__icontains=search_query)
-#         ).order_by('-id')
-#     else:
-#         kunden = Kunde.objects.all().order_by('-interne_nummer')
-    
-#     context = {
-
-#         'kunden': kunden,
-#     }
-    
-#     return render(request, 'crm/crm-kunden.html', context)
-
 def crm_new_kunden(request):
     search_query = request.GET.get('search', '')
     crm_kanton = request.GET.get('crm_kanton', '')
@@ -917,7 +896,7 @@ def crm_new_kunden(request):
 
     if search_query:
         kunden = kunden.filter(
-            Q(firmenname__icontains=search_query) | 
+            Q(firmenname__icontains=search_query) |
             Q(interne_nummer__icontains=search_query) |
             Q(kunde_address__crm_ort__icontains=search_query) |
             Q(kunde_address__crm_strasse__icontains=search_query) |
@@ -928,14 +907,15 @@ def crm_new_kunden(request):
         kunden = kunden.filter(
             kunde_address__crm_kanton__icontains=crm_kanton
         )
-    else:
-        kunden = Kunde.objects.all().order_by('-interne_nummer')
-    
+
+    # Verhindert doppelte Kundeneinträge bei mehreren passenden Adressen
+    kunden = kunden.distinct().order_by('-id')
+
     context = {
         'kunden': kunden,
-        'address_form': address_form,  # Pass the form to the template
+        'address_form': address_form,
     }
-    
+
     return render(request, 'crm/crm-kunden.html', context)
 
 

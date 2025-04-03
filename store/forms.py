@@ -259,10 +259,11 @@ class LagerortForm(forms.ModelForm):
 class LieferantenForm(forms.ModelForm):
     class Meta:
         model = Lieferanten
-        fields = ['number', 'name', 'adresse', 'plz', 'ort','email']
+        fields = ['number','our_kundennumber','name', 'adresse', 'plz', 'ort','email']
 
         labels = {
-            'number': "Lieferanten-Nr.",
+            'number': "Lieferanten-Nr.:",
+            'our_kundennumber' : "Unsere Kundennummer",
             'name': "Name",
             'adresse': "Adresse",
             'plz': "PLZ",
@@ -272,6 +273,10 @@ class LieferantenForm(forms.ModelForm):
 
         widgets = {
             'number': forms.TextInput(attrs={
+                'class': 'form-control col-12',
+                'placeholder': ''
+            }),
+            'our_kundennumber': forms.TextInput(attrs={
                 'class': 'form-control col-12',
                 'placeholder': ''
             }),

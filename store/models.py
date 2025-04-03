@@ -32,6 +32,7 @@ ANONYM_CHOICES = (
 	)
 
 KANTON_CHOICES = (
+	("", "Kanton wählen"),
     ('Aargau', 'Aargau'),
     ('Appenzell Innerrhoden', 'Appenzell Innerrhoden'),
     ('Appenzell Ausserrhoden', 'Appenzell Ausserrhoden'),
@@ -563,7 +564,7 @@ class CRMAddress(models.Model):
 	crm_ort = models.CharField(max_length=255, null=True, blank=True)
 	crm_land = CountryField(multiple=False)
 	crm_plz = models.CharField(max_length=255, null=True, blank=True)
-	crm_kanton = models.CharField(max_length=255, null=True, blank=True, choices=KANTON_CHOICES, default="Zürich")
+	crm_kanton = models.CharField(max_length=255, null=True, blank=True, choices=KANTON_CHOICES, default="")
 	address_type = models.CharField(max_length=500, null=True, blank=True, choices=ADDRESS_CHOICES)
 
 	class Meta:
@@ -576,6 +577,7 @@ class CRMAddress(models.Model):
 
 class Lieferanten(models.Model):
 	number = models.IntegerField(null=True, blank=True)
+	our_kundennumber = models.IntegerField(null=True, blank=True)
 	name = models.CharField(max_length=255, null=True, blank=True) 
 	adresse = models.CharField(max_length=255, null=True, blank=True) 
 	plz = models.CharField(max_length=255, null=True, blank=True) 
