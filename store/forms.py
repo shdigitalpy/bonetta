@@ -264,7 +264,7 @@ class LieferantenForm(forms.ModelForm):
         labels = {
             'number': "Lieferanten-Nr.:",
             'our_kundennumber' : "Unsere Kundennummer",
-            'name': "Name",
+            'name': "Lieferant",
             'adresse': "Adresse",
             'plz': "PLZ",
             'ort': "Ort",
