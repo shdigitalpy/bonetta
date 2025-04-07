@@ -6,43 +6,15 @@
 
 {% block content %}
 
-{% if item.subkategorie.sub_name|lower == 'duschdichtungen' %}
-<div class="container">
-  <div class="dichtflex-container">
-    <div class="dichtflex-element">
-      <p class="preis">CHF {{ item.preis|floatformat:2 }} <small>exklusive MwSt</small>
-        <br>
-        <small class="muted">(1 Laufmeter = CHF {{ item.preis|floatformat:2 }})</small>
-      </p>
-      <div class="ptitel"><h2>{{ item.subkategorie.sub_name }} Nr. {{ item.artikelnr }}</h2></div>
-      <div class="table-responsive artikeluebersicht">
-        <table class="table table-sm table-borderless mb-0">
-          <tbody>
-            <tr><th class="pl-0 w-25"><strong>Artikel-Nr.</strong></th><td>DD{{ item.artikelnr }}TR</td></tr>
-            <tr><th class="pl-0 w-25"><strong>Typ</strong></th><td>{{ item.kategorie }}</td></tr>
-            <tr><th class="pl-0 w-25"><strong>Länge</strong></th><td>2010mm</td></tr>
-            {% if item.glasdicke %}<tr><th class="pl-0 w-25"><strong>Glasdicke</strong></th><td>{{ item.glasdicke }}</td></tr>{% endif %}
-            <tr><th class="pl-0 w-25"><strong>Lieferung</strong></th><td><i class="fas fa-check-circle"></i> ca. 5 - 7 Tage</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="dichtflex-element">
-      {% if item.titelbild %}<img src="{{ item.titelbild.url }}">{% endif %}
-      <p>Hier <a href="{% url 'account_login' %}">anmelden oder registrieren</a> um zu bestellen.</p>
-      <p>Wenn Sie nicht sicher sind, ob dies das passende Produkt für Sie ist, rufen Sie uns an unter <a href="phoneto:+41 435089060">043 508 90 60</a> oder senden Sie uns eine</p>
-      <a class="btn btn-primary btn-sm" href="/kontakt">Anfrage</a>
-    </div>
-  </div>
-</div>
-{% else %}
 <div class="container">
   <div class="dichtflex-container pt-5">
     <div class="dichtflex-element">
-      <p class="top">{{ item.subkategorie }}<br>{{ item.titel }}</p>
+      <p class="top">{{ item.subkategorie }}<br><strong>{{ item.titel }}</strong></p>
       {% if item.titelbild %}<img src="{{ item.titelbild.url }}">{% endif %}
+      <h4 class="mt-4">Bemerkung</h4>
+      <p>{{ item.beschreibung }}</p>
     </div>
+
     <div class="dichtflex-element">
       <p class="preis">CHF {{ item.preis|floatformat:2 }} <small>exklusive MwSt</small><br><small class="muted">(1 Laufmeter = CHF {{ item.preis|floatformat:2 }})</small></p>
       <div class="table-responsive artikeluebersicht">
@@ -63,20 +35,63 @@
           </tbody>
         </table>
       </div>
-    </div>
-  </div>
 
-  <div class="dichtflex-container">
-    <div class="dichtflex-element">
-      <h4>Bemerkung</h4>
-      <p>{{ item.beschreibung }}</p>
-    </div>
-    <div class="dichtflex-element">
-      <p>Hier <a href="{% url 'account_login' %}">anmelden oder registrieren</a> um zu bestellen.</p>
-      <p>Wenn Sie nicht sicher sind, ob dies das passende Produkt für Sie ist, rufen Sie uns an unter <a href="phoneto:+41 435089060">043 508 90 60</a> oder senden Sie uns eine</p>
-      <a class="btn btn-primary btn-sm" href="/kontakt">Anfrage</a>
+      <details class="form-card mt-4">
+        <summary><strong>Produktanfrage</strong></summary>
+        <form method="POST" action="">
+          {% csrf_token %}
+
+          {% if item.kategorie|lower == 'gummidichtung' or item.kategorie|lower == 'epdm-moosgummi' %}
+          <div class="form-group">
+            <label for="laufmeter">Laufmeter (Meterware):</label>
+            <input type="text" class="form-control" name="laufmeter" placeholder="" required>
+          </div>
+          {% elif item.kategorie|lower == 'pvc mit magnet' or item.kategorie|lower == 'pvc ohne magnet' %}
+          <div class="aussenmass-flex">
+            <div class="form-group aussenmass-flex-item">
+              <label for="aussenbreite">Aussenbreite:</label>
+              <input type="text" class="form-control" name="aussenbreite" placeholder="z.B. 800mm" required>
+            </div>
+            <div class="form-group aussenmass-flex-item">
+              <label for="aussenhöhe">Aussenhöhe:</label>
+              <input type="text" class="form-control" name="aussenhöhe" placeholder="z.B. 500mm" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Anzahl:</label>
+            <input type="number" class="form-control" name="anzahl" value="1" required>
+          </div>
+          <div class="text-center">
+            <img id="aussenmass-bild" src="{% static 'images/aussenmass-beispiel.png' %}" alt="Maß-Skizze">
+          </div>
+          {% endif %}
+
+          <div class="form-group">
+            <label for="name">Ihr Name:</label>
+            <input type="text" class="form-control" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Ihre E-Mail:</label>
+            <input type="email" class="form-control" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="telefon">Telefon:</label>
+            <input type="text" class="form-control" name="telefon">
+          </div>
+          <div class="form-group">
+            <label for="nachricht">Nachricht:</label>
+            <textarea class="form-control" name="nachricht" rows="3"></textarea>
+          </div>
+
+          <input type="hidden" name="produkt" value="{{ item.titel }}">
+          <input type="hidden" name="artikelnr" value="{{ item.artikelnr }}">
+          <input type="hidden" name="produktlink" value="{{ request.build_absolute_uri }}">
+
+          <button type="submit" class="btn btn-warning mt-3">Anfrage senden</button>
+        </form>
+      </details>
     </div>
   </div>
 </div>
-{% endif %}
+
 {% endblock content %}
