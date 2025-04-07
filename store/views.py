@@ -1820,6 +1820,7 @@ def product_detail(request, slug):
 
         # Template-Daten vorbereiten
         template_data = {
+            'produkt_kategorie': item.kategorie,
             'produkt': produkt,
             'artikelnr': artikelnr,
             'produktlink': produktlink,
@@ -1885,6 +1886,7 @@ def weitere_product_detail(request, slug):
 
         # Template-Daten
         template_data = {
+        'produkt_kategorie': item.kategorie,
             'produkt': produkt,
             'artikelnr': artikelnr,
             'produktlink': produktlink,
