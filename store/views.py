@@ -1886,19 +1886,21 @@ def weitere_product_detail(request, slug):
 
         # Template-Daten
         template_data = {
-        'produkt_kategorie': item.kategorie,
-            'produkt': produkt,
-            'artikelnr': artikelnr,
-            'produktlink': produktlink,
-            'aussenbreite': aussenbreite,
-            'aussenhöhe': aussenhöhe,
-            'laufmeter': laufmeter,
-            'anzahl': anzahl,
-            'name': name,
-            'email': email,
-            'telefon': telefon,
-            'nachricht': nachricht,
-        }
+    'produkt_kategorie': item.kategorie,
+    'produkt_subkategorie': getattr(item, 'subkategorie', None),
+    'produkt': produkt,
+    'artikelnr': artikelnr,
+    'produktlink': produktlink,
+    'aussenbreite': aussenbreite,
+    'aussenhöhe': aussenhöhe,
+    'laufmeter': laufmeter,
+    'anzahl': anzahl,
+    'name': name,
+    'email': email,
+    'telefon': telefon,
+    'nachricht': nachricht,
+}
+
 
         # E-Mail versenden
         template = render_to_string('emails/produktanfrage-email.html', template_data)

@@ -89,7 +89,13 @@
 
     <div class="section">
       <h2>Produktdetails</h2>
-      <div class="row"><span class="label">Produkt:</span>{{ produkt_kategorie }}</div>
+      <div class="row"><span class="label">Produkt:</span>{{ produkt_kategorie }} 
+
+      {% if produkt_subkategorie %}
+      {{ produkt_subkategorie }}
+      {% endif %}
+
+    </div>
       <div class="row"><span class="label">Artikel-Nr.:</span>{{ artikelnr }}</div>
       <div class="row"><span class="label">Produktlink:</span><a href="{{ produktlink }}">{{ produktlink }}</a></div>
       {% if aussenbreite %}<div class="row"><span class="label">Aussenbreite:</span>{{ aussenbreite }}</div>{% endif %}
