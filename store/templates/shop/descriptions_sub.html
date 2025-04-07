@@ -6,258 +6,77 @@
 
 {% block content %}
 
-
 {% if item.subkategorie.sub_name|lower == 'duschdichtungen' %}
-
 <div class="container">
-<div class="dichtflex-container">
-
-  <!-- Produktbeschrieb rechts -->
+  <div class="dichtflex-container">
     <div class="dichtflex-element">
-
       <p class="preis">CHF {{ item.preis|floatformat:2 }} <small>exklusive MwSt</small>
         <br>
-        <small class="muted">(1 Laufmeter = CHF {{ item.preis|floatformat:2 }} )</small>
+        <small class="muted">(1 Laufmeter = CHF {{ item.preis|floatformat:2 }})</small>
       </p>
-      
-     <div class="ptitel"><h2>{{ item.subkategorie.sub_name }} Nr. {{ item.artikelnr }}</h2></div>
-        <div class="table-responsive artikeluebersicht">
+      <div class="ptitel"><h2>{{ item.subkategorie.sub_name }} Nr. {{ item.artikelnr }}</h2></div>
+      <div class="table-responsive artikeluebersicht">
         <table class="table table-sm table-borderless mb-0">
           <tbody>
-            <tr>
-              <th class="pl-0 w-25" scope="row"><strong>Artikel-Nr.</strong></th>
-              <td>DD{{ item.artikelnr }}TR</td>
-            </tr>
-            <tr>
-              <th class="pl-0 w-25" scope="row"><strong>Typ</strong></th>
-              <td>{{ item.kategorie }}</td>
-            </tr>
-            <tr>
-              <th class="pl-0 w-25" scope="row"><strong>Länge</strong></th>
-              <td>2010mm</td>
-            </tr>
-
-            <tr>
-              {% if item.glasdicke %}
-              <th class="pl-0 w-25" scope="row"><strong>Glasdicke</strong></th>
-              <td>{{ item.glasdicke }}</td>
-              {% endif %}
-            </tr>
-            <tr>
-              <th class="pl-0 w-25" scope="row"><strong>Montage</strong></th>
-              <td><a href="{% url 'store:kontakt' %}">Auf Anfrage</a></td>
-            </tr>
-            <tr>
-              <th class="pl-0 w-25" scope="row"><strong>Lieferung</strong></th>
-              <td><i class="fas fa-check-circle"></i> ca. 5 - 7 Tage </td>
-            </tr>
+            <tr><th class="pl-0 w-25"><strong>Artikel-Nr.</strong></th><td>DD{{ item.artikelnr }}TR</td></tr>
+            <tr><th class="pl-0 w-25"><strong>Typ</strong></th><td>{{ item.kategorie }}</td></tr>
+            <tr><th class="pl-0 w-25"><strong>Länge</strong></th><td>2010mm</td></tr>
+            {% if item.glasdicke %}<tr><th class="pl-0 w-25"><strong>Glasdicke</strong></th><td>{{ item.glasdicke }}</td></tr>{% endif %}
+            <tr><th class="pl-0 w-25"><strong>Lieferung</strong></th><td><i class="fas fa-check-circle"></i> ca. 5 - 7 Tage</td></tr>
           </tbody>
         </table>
-      </div><!-- end table responsive-->
-    </div><!-- end dichtflex element-->
-  
-    <!-- Produktbild links -->
-    <div class="dichtflex-element">
-      {% if item.titelbild %}
-      <img src="{{ item.titelbild.url }}">
-      {% else %}
-      {% endif %}
-      
-     {% if user.is_authenticated %}
-     <form method="POST" action="{{ orderitem.get_add_to_cart_url }}" enctype="multipart/form-data">
-      {% csrf_token %}
-      <table class="table table-sm table-borderless">
-        <tbody>  
-          <div class="form-group gummi">
-          <input type="text" class="form-control" placeholder="z.B. 800mm" name="aussenbreite" value='250'>
-          <input type="text" class="form-control" placeholder="z.B. 500mm" name="aussenhöhe" value='250'>
-          </div>
-          </tbody>
-    </table>
-        <p class="anzahl">Anzahl Stück:</p>
-        <input type="text" class="form-control" placeholder="1" name="anzahl" value="1">
-        <br>
-        <button type="submit" class="btn btn-primary btn-md">In den Warenkorb</button>
-        
-        {% else %}
-        <p>Hier <a href="{% url 'account_login' %}">anmelden oder registrieren</a> um zu bestellen.</p>
-        
-         <br>
-          <p>Wenn Sie nicht sicher sind, ob dies das passende Produkte für Sie ist, rufen Sie uns an unter <a href="phoneto:+41 435089060">043 508 90 60</a> oder senden Sie uns eine</p><br>
-        <a class="btn btn-primary btn-sm" href="/kontakt">Anfrage</a>
-        <br><br>
-      </form>
-      
-      {% endif %}
-  
-    </div>
-
-    
-    </div><!-- end dichtflex container-->
-
-    <div class="dichtflex-container">
-    <div class="dichtflex-element">
-      
-      
-    </div>
-    <!-- End first flex --->
-
-    
-    </div>
-    <!-- End flexcontainer --->          
-          
       </div>
-      <!-- End container --->
+    </div>
 
-<!-- END DUSCHDICHTUNGEN END DUSCHDICHTUNGENEND DUSCHDICHTUNGENEND DUSCHDICHTUNGEN -->
-
+    <div class="dichtflex-element">
+      {% if item.titelbild %}<img src="{{ item.titelbild.url }}">{% endif %}
+      <p>Hier <a href="{% url 'account_login' %}">anmelden oder registrieren</a> um zu bestellen.</p>
+      <p>Wenn Sie nicht sicher sind, ob dies das passende Produkt für Sie ist, rufen Sie uns an unter <a href="phoneto:+41 435089060">043 508 90 60</a> oder senden Sie uns eine</p>
+      <a class="btn btn-primary btn-sm" href="/kontakt">Anfrage</a>
+    </div>
+  </div>
+</div>
 {% else %}
 <div class="container">
-<div class="dichtflex-container pt-5">
-    
-    <!-- Produktbild links -->
+  <div class="dichtflex-container pt-5">
     <div class="dichtflex-element">
-     <p class="top">{{ item.subkategorie }}<br>
-      {{ item.titel }}</p>
-     {% if item.titelbild %}
-      <img src="{{ item.titelbild.url }}">
-      {% else %}
-      {% endif %}
-  
+      <p class="top">{{ item.subkategorie }}<br>{{ item.titel }}</p>
+      {% if item.titelbild %}<img src="{{ item.titelbild.url }}">{% endif %}
     </div>
-
-    <!-- Produktbeschrieb rechts -->
     <div class="dichtflex-element">
-      
-      <p class="preis">CHF {{ item.preis|floatformat:2 }} <small>exklusive MwSt</small>
-        <br>
-        <small class="muted">(1 Laufmeter = CHF {{ item.preis|floatformat:2 }} )</small>
-      </p>
-        
-        <div class="table-responsive artikeluebersicht">
+      <p class="preis">CHF {{ item.preis|floatformat:2 }} <small>exklusive MwSt</small><br><small class="muted">(1 Laufmeter = CHF {{ item.preis|floatformat:2 }})</small></p>
+      <div class="table-responsive artikeluebersicht">
         <table class="table table-sm table-borderless mb-0">
-
           <tbody>
-            <tr>
-              <th class="pl-0 w-25" scope="row"><strong>Artikel-Nr.</strong></th>
-              <td>{{ item.artikelnr }}</td>
-            </tr>
-             <tr>
-              {% if item.subkategorie.sub_name|lower == 'ofendichtungen' %}
-              {% if item.hersteller %}
-              <th class="pl-0 w-25" scope="row"><strong>Hersteller</strong></th>
-              <td>{{ item.hersteller }}</td>
-              {% endif %}
-              {% else %}
-              {% if item.material %}
-              <th class="pl-0 w-25" scope="row"><strong>Material</strong></th>
-              <td>{{ item.material }}</td>
-              {% else %}
-              <th class="pl-0 w-25" scope="row"><strong>Material</strong></th>
-              <td>{{ item.subkategorie }}</td>
-              {% endif %}
-              {% endif %}
-            </tr>
-            <tr>
-              {% if item.farbe %}
-              <th class="pl-0 w-25" scope="row"><strong>Farbe</strong></th>
-              <td>{{ item.farbe }}</td>
-              {% endif %}
-            </tr>
-            <tr>
-              {% if item.montage %}
-              <th class="pl-0 w-25" scope="row"><strong>Typ</strong></th>
-              <td>{{ item.montage }}</td>
-              {% endif %}
-            </tr>
-            
-            
-            <tr>
-              {% if item.nut %}
-              <th class="pl-0 w-25" scope="row"><strong>Nut</strong></th>
-              <td>{{ item.nut }}</td>
-              {% endif %}
-            </tr>
-            <tr>
-              {% if item.falzluft %}
-              <th class="pl-0 w-25" scope="row"><strong>Falzluft</strong></th>
-              <td>{{ item.falzluft }}</td>
-              {% endif %}
-            </tr>
-            <tr>
-              {% if item.fuge %}
-              <th class="pl-0 w-25" scope="row"><strong>Fuge</strong></th>
-              <td>{{ item.fuge }}</td>
-              {% endif %}
-            </tr>
-            <tr>
-              <th class="pl-0 w-25" scope="row"><strong>Lieferung</strong></th>
-              <td><i class="fas fa-check-circle"></i>
-                {% if item.lieferung == None %}
-                bitte anfragen
-                {% else %}
-               {{ item.lieferung }}
-                {% endif %}</td>
-            </tr>
-
-            <tr>
-              <th class="pl-0 w-25" scope="row"><strong>Montage</strong></th>
-              <td><a href="{% url 'store:kontakt' %}">Auf Anfrage</a></td>
-            </tr>
-            
+            <tr><th class="pl-0 w-25"><strong>Artikel-Nr.</strong></th><td>{{ item.artikelnr }}</td></tr>
+            {% if item.subkategorie.sub_name|lower == 'ofendichtungen' %}
+              {% if item.hersteller %}<tr><th class="pl-0 w-25"><strong>Hersteller</strong></th><td>{{ item.hersteller }}</td></tr>{% endif %}
+            {% else %}
+              {% if item.material %}<tr><th class="pl-0 w-25"><strong>Material</strong></th><td>{{ item.material }}</td></tr>{% else %}<tr><th class="pl-0 w-25"><strong>Material</strong></th><td>{{ item.subkategorie }}</td></tr>{% endif %}
+            {% endif %}
+            {% if item.farbe %}<tr><th class="pl-0 w-25"><strong>Farbe</strong></th><td>{{ item.farbe }}</td></tr>{% endif %}
+            {% if item.montage %}<tr><th class="pl-0 w-25"><strong>Typ</strong></th><td>{{ item.montage }}</td></tr>{% endif %}
+            {% if item.nut %}<tr><th class="pl-0 w-25"><strong>Nut</strong></th><td>{{ item.nut }}</td></tr>{% endif %}
+            {% if item.falzluft %}<tr><th class="pl-0 w-25"><strong>Falzluft</strong></th><td>{{ item.falzluft }}</td></tr>{% endif %}
+            {% if item.fuge %}<tr><th class="pl-0 w-25"><strong>Fuge</strong></th><td>{{ item.fuge }}</td></tr>{% endif %}
+            <tr><th class="pl-0 w-25"><strong>Lieferung</strong></th><td><i class="fas fa-check-circle"></i> {% if item.lieferung %}{{ item.lieferung }}{% else %}bitte anfragen{% endif %}</td></tr>
           </tbody>
-
-          <tbody>
-       
         </table>
-      </div><!-- end table responsive-->
-      
-    </div><!-- end dichtflex element-->
-    </div><!-- end dichtflex container-->
+      </div>
+    </div>
+  </div>
 
-    <div class="dichtflex-container">
+  <div class="dichtflex-container">
     <div class="dichtflex-element">
       <h4>Bemerkung</h4>
       <p>{{ item.beschreibung }}</p>
     </div>
-    <!-- End first flex --->
-
     <div class="dichtflex-element">
-      {% if user.is_authenticated %}
-     <form method="POST" action="{{ orderitem.get_add_to_cart_url }}" enctype="multipart/form-data">
-      {% csrf_token %}
-      <table class="table table-sm table-borderless">
-        <tbody>  
-          <div class="form-group gummi">
-          <input type="text" class="form-control" placeholder="z.B. 800mm" name="aussenbreite" value='250'>
-          <input type="text" class="form-control" placeholder="z.B. 500mm" name="aussenhöhe" value='250'>
-          </div>
-          </tbody>
-    </table>
-        <p class="anzahl">Anzahl Laufmeter (Meterware):</p>
-        <input type="text" class="form-control" placeholder="1" name="anzahl" value="1">
-        <br>
-        <button type="submit" class="btn btn-primary btn-md">In den Warenkorb</button>
-        
-        {% else %}
-        <p>Hier <a href="{% url 'account_login' %}">anmelden oder registrieren</a> um zu bestellen.</p><br>
-        <br>
-          <p>Wenn Sie nicht sicher sind, ob dies das passende Produkte für Sie ist, rufen Sie uns an unter <a href="phoneto:+41 435089060">043 508 90 60</a> oder senden Sie uns eine</p><br>
-        <a class="btn btn-primary btn-sm" href="/kontakt">Anfrage</a>
-        <br><br>
-      
-      </form>
-      
-      {% endif %}
+      <p>Hier <a href="{% url 'account_login' %}">anmelden oder registrieren</a> um zu bestellen.</p>
+      <p>Wenn Sie nicht sicher sind, ob dies das passende Produkt für Sie ist, rufen Sie uns an unter <a href="phoneto:+41 435089060">043 508 90 60</a> oder senden Sie uns eine</p>
+      <a class="btn btn-primary btn-sm" href="/kontakt">Anfrage</a>
     </div>
-    <!-- End second flex --->
-    
-    </div>
-    <!-- End flexcontainer --->          
-          
-      </div>
-      <!-- End container --->
+  </div>
+</div>
 {% endif %}
-
-
 {% endblock content %}

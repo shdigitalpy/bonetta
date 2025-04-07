@@ -1816,7 +1816,7 @@ def product_detail(request, slug):
         nachricht = request.POST.get('nachricht', '')
 
         # E-Mail-Betreff
-        subject = f"Produktanfrage zu {item.kategorie} {produkt} {artikelnr}"
+        subject = f"Produktanfrage zu {item.kategorie} {artikelnr}"
 
         # Template-Daten vorbereiten
         template_data = {
