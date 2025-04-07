@@ -1722,7 +1722,7 @@ def kontakt(request):
             subject,
             template,
             email,
-            ['bestellungen@gastrodichtung.ch', 'livio.bonetta@geboshop.ch'],
+            email_master,
         )
 
         email.fail_silently=False
@@ -1795,36 +1795,69 @@ def HomeSubProduktView(request, subcats, cats):
     return render(request, 'shop/store-subcat.html', context)
 
 
-#Produktbeschreibungen
 def product_detail(request, slug):
     item = get_object_or_404(Item, slug=slug)
-    if request.user.is_authenticated:
-        orderitem, created = OrderItem.objects.get_or_create(
-                    item=item,
-                    user=request.user,
-                    ordered=False,
-                    aussenbreite=250, 
-                    aussenhöhe=250,
-                )
-        form = AussenmassForm(request.POST or None)
-            
-        context = { 
-                'item': item,
-                'orderitem': orderitem,
-                'form': form,
-            }
-        return render(request, 'shop/descriptions.html', context)
-    else:
-        orderitem = ' '
-        form = AussenmassForm(request.POST or None)
-            
-        context = { 
-                'item': item,
-                'orderitem': orderitem,
-                'form': form,
-            }
-        return render(request, 'shop/descriptions.html', context)
+    form = AussenmassForm(request.POST or None)
 
+    if request.method == "POST" and "email" in request.POST:
+        # Allgemeine Produktinfos
+        produkt = item.titel
+        artikelnr = item.artikelnr
+        produktlink = request.build_absolute_uri()
+
+        # Felder aus dem Formular
+        laufmeter = request.POST.get('laufmeter')
+        aussenbreite = request.POST.get('aussenbreite')
+        aussenhöhe = request.POST.get('aussenhöhe')
+        anzahl = request.POST.get('anzahl')
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        telefon = request.POST.get('telefon', '')
+        nachricht = request.POST.get('nachricht', '')
+
+        # E-Mail-Betreff
+        subject = f"Produktanfrage zu {item.kategorie} {produkt} {artikelnr}"
+
+        # Template-Daten vorbereiten
+        template_data = {
+            'produkt': produkt,
+            'artikelnr': artikelnr,
+            'produktlink': produktlink,
+            'aussenbreite': aussenbreite,
+            'aussenhöhe': aussenhöhe,
+            'laufmeter': laufmeter,
+            'anzahl': anzahl,
+            'name': name,
+            'email': email,
+            'telefon': telefon,
+            'nachricht': nachricht,
+        }
+
+        # HTML-E-Mail rendern
+        template = render_to_string('emails/produktanfrage-email.html', template_data)
+
+        email_message = EmailMessage(
+            subject,
+            template,
+            email,
+            ['sandro@sh-digital.ch'],
+        )
+        email_message.fail_silently = False
+        email_message.content_subtype = "html"
+        email_message.send()
+
+        return redirect('store:anfrage_danke')  # oder was auch immer dein URL-Name ist
+
+
+    # Normale GET-Anzeige
+    context = {
+        'item': item,
+        'form': form,
+    }
+    return render(request, 'shop/descriptions.html', context)
+
+def anfrage_danke_view(request):
+    return render(request, 'shop/anfrage-danke.html')
 
 #Produktbeschreibungen
 def weitere_product_detail(request, slug):

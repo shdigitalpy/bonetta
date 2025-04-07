@@ -37,7 +37,9 @@ urlpatterns = [
 	path('qr-code/download/', views.download_qr_code, name='download_qr_code'),
 
 	#shop
+	path('anfrage-danke/', views.anfrage_danke_view, name='anfrage_danke'),
 	path('bestätigung/<int:pk>', views.email, name='email'),
+	path('searchbar', views.searchbar, name='searchbar'),
 	path('searchbar', views.searchbar, name='searchbar'),
 	path('checkout/', CheckoutView.as_view(), name='checkout'), 
 	path('payment/', PaymentView.as_view(), name='payment'), 

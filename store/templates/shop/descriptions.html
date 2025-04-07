@@ -5,269 +5,106 @@
 {% block meta_description %}Produktbeschrieb <strong>{{ item.titel }}</strong> | gastrodichtung.ch {% endblock %}
 
 {% block content %}
-
-
-<!-- ZUBEHOR ZUBEHORZUBEHORZUBEHORZUBEHORZUBEHORZUBEHORZUBEHORZUBEHORZUBEHOR-->
-{% if item.kategorie|lower == 'zubehör' %}<!-- Start Zubehör --->
-
 <div class="container">
-<div class="dichtflex-container pt-5">
-
-  <!-- Produktbeschrieb rechts -->
+  <div class="dichtflex-container pt-5">
+    <!-- Linke Spalte: Bild, Titel, Beschreibung -->
     <div class="dichtflex-element">
-      
-     <div class="ptitel"><h2>{{ item.montage }} Nr. {{ item.artikelnr }}</h2></div>
-        <div class="table-responsive artikeluebersicht">
-        <table class="table table-sm table-borderless mb-0">
-          <tbody>
-            <tr>
-              <th class="pl-0 w-25" scope="row"><strong>Artikel-Nr.</strong></th>
-              <td>{{ item.artikelnr }}</td>
-            </tr>
-            <tr>
-              <th class="pl-0 w-25" scope="row"><strong>Typ</strong></th>
-              <td>{{ item.montage }}</td>
-            </tr>
-            <tr>
-              <th class="pl-0 w-25" scope="row"><strong>Montage</strong></th>
-              <td><a href="{% url 'store:kontakt' %}">Auf Anfrage</a></td>
-            </tr>
-            <tr>
-              <th class="pl-0 w-25" scope="row"><strong>Lieferung</strong></th>
-              <td><i class="fas fa-check-circle"></i>
-                {% if item.lieferung == None %}
-                bitte anfragen
-                {% else %}
-               {{ item.lieferung }}
-                {% endif %}
-            </td>
-            </tr>
-          </tbody>
-        </table>
-      </div><!-- end table responsive-->
-    </div><!-- end dichtflex element-->
-  
-    
-    <div class="dichtflex-element">
-
-      {% if item.kategorie.name  == "Zubehör"%}
-       <p class="preis">CHF {{ item.preis|floatformat:2 }} <small>exklusive MwSt</small>
-        
-      </p>
-      {% endif %}
-      
-     {% if user.is_authenticated %}
-     <form method="POST" action="{{ orderitem.get_add_to_cart_url }}" enctype="multipart/form-data">
-      {% csrf_token %}
-      <table class="table table-sm table-borderless">
-        <tbody>  
-          <div class="form-group gummi">
-          <input type="text" class="form-control" placeholder="z.B. 800mm" name="aussenbreite" minlength="3" value='250'>
-          <input type="text" class="form-control" placeholder="z.B. 500mm" name="aussenhöhe" minlength="3" value='250'>
-          </div>
-          </tbody>
-      </table>
-        <p class="anzahl">Anzahl Stück:</p>
-        <input type="text" class="form-control" placeholder="1" name="anzahl" value="1">
+      <div class="info-card">
+        <p class="top">{{ item.kategorie }}<br><strong>{{ item.titel }}</strong></p>
+        {% if item.titelbild %}
+        <img src="{{ item.titelbild.url }}" alt="Produktbild">
+        {% endif %}
         <br>
-        <button type="submit" class="btn btn-primary btn-md">In den Warenkorb</button>
-        
-        {% else %}
-        <p>Hier <a href="{% url 'account_login' %}">anmelden oder registrieren</a> um zu bestellen.</p>
-
-          <br>
-          <p>Wenn Sie nicht sicher sind, ob dies das passende Produkte für Sie ist, rufen Sie uns an unter <a href="phoneto:+41 435089060">043 508 90 60</a> oder senden Sie uns eine</p><br>
-        <a class="btn btn-primary btn-sm" href="/kontakt">Anfrage</a>
-        <br><br>
-      
-      </form>
-      
-      {% endif %}
-  
-    </div>
-
-    
-    </div><!-- end dichtflex container-->
-
-    <!-- Produktbild unten -->
-    <div class="dichtflex-container">
-    <div class="dichtflex-element">
-      {% if item.titelbild %}
-      <img src="{{ item.titelbild.url }}">
-      {% endif %}
-      
-    </div>
-    <!-- End first flex --->
-
-    
-    </div>
-    <!-- End flexcontainer --->          
-          
+        <h5><strong>Bemerkung</strong></h5>
+        <p>{{ item.beschreibung|default:"Anwendbar für:" }}</p>
       </div>
-      <!-- End container --->
-
-<!-- ZUBEHOR ZUBEHORZUBEHORZUBEHORZUBEHORZUBEHORZUBEHORZUBEHORZUBEHORZUBEHOR-->
-{% else %}<!-- else Zubehör --->
-
-
-<div class="container">
-<div class="dichtflex-container">
-    
-    <!-- Produktbild links -->
-    <div class="dichtflex-element">
-      <p class="top">{{ item.kategorie }}<br>
-      {{ item.titel }}</p>
-      {% if item.titelbild %}
-      <img src="{{ item.titelbild.url }}">
-      {% endif %}<br><br>
-  
     </div>
-    <!-- PVC MIT OHNE MAGNET PVC MIT OHNE MAGNETPVC MIT OHNE MAGNETPVC MIT OHNE MAGNETPVC MIT OHNE MAGNET -->
-    <!-- Produktbeschrieb rechts -->
+
+    <!-- Rechte Spalte: Tabelle + Formular -->
     <div class="dichtflex-element">
-      {% if item.kategorie|lower == 'pvc mit magnet' or item.kategorie|lower == 'pvc ohne magnet'  %}
-
-      {% else %}
-      <p class="preis">CHF {{ item.preis|floatformat:2 }} <small>exklusive MwSt</small>
-        <br>
-        <small class="muted">(1 Laufmeter = CHF {{ item.preis|floatformat:2 }} )</small>
-      </p>
-        
-      {% endif %}
-
-        <div class="table-responsive artikeluebersicht">
+      <div class="product-info-card">
         <table class="table table-sm table-borderless mb-0">
           <tbody>
             <tr>
-              <th class="pl-0 w-25" scope="row"><strong>Artikel-Nr.</strong></th>
+              <th class="pl-0 w-25"><strong>Artikel-Nr.</strong></th>
               <td>{{ item.artikelnr }}</td>
             </tr>
-             <tr>
-              {% if item.material %}
-              <th class="pl-0 w-25" scope="row"><strong>Material</strong></th>
-              <td>{{ item.material }}</td>
-              {% else %}
-              <th class="pl-0 w-25" scope="row"><strong>Material</strong></th>
-              <td>{{ item.kategorie }}</td>
-              {% endif %}
-             
+            <tr>
+              <th class="pl-0 w-25"><strong>Material</strong></th>
+              <td>{{ item.material|default:item.kategorie }}</td>
             </tr>
             <tr>
-              {% if item.montage %}
-              <th class="pl-0 w-25" scope="row"><strong>Typ</strong></th>
+              <th class="pl-0 w-25"><strong>Typ</strong></th>
               <td>{{ item.montage }}</td>
-              {% endif %}
             </tr>
-            
             <tr>
-              <th class="pl-0 w-25" scope="row"><strong>Lieferung</strong></th>
-              <td><i class="fas fa-check-circle"></i>{{ item.lieferung }}</td>
+              <th class="pl-0 w-25"><strong>Lieferung</strong></th>
+              <td><i class="fas fa-check-circle"></i> {{ item.lieferung|default:"bitte anfragen" }}</td>
             </tr>
-
             <tr>
-              <th class="pl-0 w-25" scope="row"><strong>Montage</strong></th>
-              <td><a href="{% url 'store:kontakt' %}">Auf Anfrage</a></td>
+              <th class="pl-0 w-25"><strong>Montage</strong></th>
+              <td>Auf Anfrage</td>
             </tr>
           </tbody>
         </table>
-      </div><!-- end table responsive-->
-    </div><!-- end dichtflex element-->
-    </div><!-- end dichtflex container-->
+      </div>
 
-    <div class="dichtflex-container padding-no">
-    <div class="dichtflex-element">
-      
-      <h4>Bemerkung</h4>
-      <p>{{ item.beschreibung }}</p>
-    </div>
-    <!-- End first flex --->
-  <!-- GUMMIDICHTUNG GUMMIDICHTUNGGUMMIDICHTUNGGUMMIDICHTUNGGUMMIDICHTUNGGUMMIDICHTUNGGUMMIDICHTUNG -->
-    {% if item.kategorie|lower == 'gummidichtung' or item.kategorie|lower == 'epdm-moosgummi'  %}
-    
-    <div class="dichtflex-element konfig">
-     {% if user.is_authenticated %}
-     <form method="POST" action="{{ orderitem.get_add_to_cart_url }}" enctype="multipart/form-data">
-      {% csrf_token %}
-      <table class="table table-sm table-borderless">
-        <tbody>  
-          <div class="form-group gummi">
-          <input type="text" class="form-control" placeholder="z.B. 800mm" minlength="3" name="aussenbreite" value='250'>
-          <input type="text" class="form-control" placeholder="z.B. 500mm" minlength="3" name="aussenhöhe" value='250'>
+      <!-- KLAPPBARES Formular -->
+      <details class="form-card mt-4">
+        <summary><strong>Produktanfrage</strong></summary>
+        <form method="POST" action="">
+          {% csrf_token %}
+
+          {% if item.kategorie|lower == 'gummidichtung' or item.kategorie|lower == 'epdm-moosgummi' %}
+          <div class="form-group">
+            <label for="laufmeter">Laufmeter (Meterware):</label>
+            <input type="text" class="form-control" name="laufmeter" placeholder="" required>
           </div>
-          </tbody>
-    </table>
-        <p class="anzahl">Anzahl Laufmeter (Meterware):</p>
-        <input type="text" class="form-control" placeholder="1" name="anzahl" value="1">
-        <br>
-        <button type="submit" class="btn btn-primary btn-md">In den Warenkorb</button>
-        
-        {% else %}
-        <p>Hier <a href="{% url 'account_login' %}">anmelden oder registrieren</a> um zu bestellen.</p>
+          {% elif item.kategorie|lower == 'pvc mit magnet' or item.kategorie|lower == 'pvc ohne magnet' %}
+          <div class="aussenmass-flex">
+            <div class="form-group aussenmass-flex-item">
+              <label for="aussenbreite">Aussenbreite:</label>
+              <input type="text" class="form-control" name="aussenbreite" placeholder="z.B. 800mm" required>
+            </div>
+            <div class="form-group aussenmass-flex-item">
+              <label for="aussenhöhe">Aussenhöhe:</label>
+              <input type="text" class="form-control" name="aussenhöhe" placeholder="z.B. 500mm" required>
+            </div>
+          </div>
+          <div class="text-center">
+            <img id="aussenmass-bild" src="{% static 'images/aussenmass-beispiel.png' %}" alt="Maß-Skizze">
+          </div>
+          <div class="form-group">
+            <label>Anzahl:</label>
+            <input type="number" class="form-control" name="anzahl" value="1" required>
+          </div>
+          {% endif %}
 
-         <br>
-          <p>Wenn Sie nicht sicher sind, ob dies das passende Produkte für Sie ist, rufen Sie uns an unter <a href="phoneto:+41 435089060">043 508 90 60</a> oder senden Sie uns eine</p><br>
-        <a class="btn btn-primary btn-sm" href="/kontakt">Anfrage</a>
-        <br><br>
-      
-      </form>
-      
-      {% endif %}
+          <div class="form-group">
+            <label for="name">Ihr Name:</label>
+            <input type="text" class="form-control" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Ihre E-Mail:</label>
+            <input type="email" class="form-control" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="telefon">Telefon:</label>
+            <input type="text" class="form-control" name="telefon">
+          </div>
+          <div class="form-group">
+            <label for="nachricht">Nachricht:</label>
+            <textarea class="form-control" name="nachricht" rows="3"></textarea>
+          </div>
+
+          <input type="hidden" name="produkt" value="{{ item.titel }}">
+          <input type="hidden" name="artikelnr" value="{{ item.artikelnr }}">
+          <input type="hidden" name="produktlink" value="{{ request.build_absolute_uri }}">
+
+          <button type="submit" class="btn btn-warning mt-3">Anfrage senden</button>
+        </form>
+      </details>
     </div>
-
-    {% else %}
-    <div class="dichtflex-element konfig">
-      <h4>Konfigurieren Sie die Dichtung</h4>
-  <div class="table-responsive mb-2">
-  <form method="POST" action="{{ orderitem.get_add_to_cart_url }}" enctype="multipart/form-data">
-  {% csrf_token %}
-  <table class="table table-sm table-borderless">
-  <tbody>  
-    <div class="aussenmass-flex">
-    <div class="form-group aussenmass-flex-item">
-    <br>
-    <label>Aussenbreite:</label>
-    <input type="text" class="form-control" placeholder="z.B. 800mm" minlength="3" name="aussenbreite" required>
-    </div><!-- end flex item -->
-    <div class="form-group warenkorb-flex-item">
-    <br>
-    <label>Aussenhöhe:</label>
-    <input type="text" class="form-control" placeholder="z.B. 500mm" minlength="3" name="aussenhöhe" required>
-    </div><!-- end flex item -->
-    </div><!-- end aussenmass-flex-->
-    <img id="aussenmass-bild" src="{% static 'images/aussenmass-beispiel.png'%}">
-    <br>
-    <br>
-    <p class="anzahl">Anzahl:</p>
-    <input type="number" class="form-control" value="1" name="anzahl" required>
-    
-    </tbody>
-    </table>
-    {% if user.is_authenticated %}
-  <button type="submit" class="btn btn-primary btn-lg">In den Warenkorb</button>
-  {% else %}
-  <p>Hier <a href="{% url 'account_login' %}">anmelden oder registrieren</a> um zu bestellen.</p>
-  {% endif %}
-  <br> <br>
-  <p class="anzahl" style="font-size: 0.8rem !important;">Für dreiseitige Dichtungen U-Form bitte <a href="{% url 'store:kontakt' %}">anfragen</a>.</p>
-
-   <br>
-          <p>Wenn Sie nicht sicher sind, ob dies das passende Produkte für Sie ist, rufen Sie uns an unter <a href="phoneto:+41 435089060">043 508 90 60</a> oder senden Sie uns eine</p><br>
-        <a class="btn btn-primary btn-sm" href="/kontakt">Anfrage</a>
-        <br><br>
-  </form>
   </div>
-  
-    <!--  -->
-    {% endif %}
-    </div>
-       <!-- End second flex --->
-    </div>
-    <!-- End flexcontainer --->          
-          
-      </div>
-      <!-- End container --->
-
-<!-- ZUBEHOR ZUBEHORZUBEHORZUBEHORZUBEHORZUBEHORZUBEHORZUBEHORZUBEHORZUBEHOR-->
-{% endif %} <!-- End Zubehör --->
-
+</div>
 {% endblock content %}
