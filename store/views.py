@@ -1840,7 +1840,7 @@ def product_detail(request, slug):
             subject,
             template,
             email,
-            ['sandro@sh-digital.ch'],
+            email_master,
         )
         email_message.fail_silently = False
         email_message.content_subtype = "html"
@@ -1904,7 +1904,7 @@ def weitere_product_detail(request, slug):
             subject,
             template,
             email,
-            ['sandro@sh-digital.ch'],
+            email_master,
         )
         email_message.fail_silently = False
         email_message.content_subtype = "html"
