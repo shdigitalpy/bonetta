@@ -4,6 +4,18 @@
 {% block meta_description %}Vielen Dank für die Anfrage.{% endblock %}
 {% block keywords %}{% endblock %}
 
+
+{% block head_extra %}
+<script>
+  gtag('event', 'conversion_event_page_view', {
+    // <event_parameters>
+  });
+</script>
+{% endblock %}
+
+
+
+
 {% block content %}
 
 
@@ -16,7 +28,7 @@
           <div class="contact-information">
             <h1>Vielen Dank für die Anfrage</h1>
 
-            <h2>Wir melden uns schnellstmöglich bei Ihnen zurück.</h2>
+            <h2>Wir prüfen Ihre Anfrage und melden uns zeitnah bei Ihnen zurück.</h2>
            
           </div>
         </div>
