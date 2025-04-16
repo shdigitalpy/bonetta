@@ -96,7 +96,7 @@ class Migration(migrations.Migration):
                 ('start_date', models.DateTimeField(auto_now_add=True, null=True)),
                 ('kunden_nr', models.CharField(blank=True, max_length=255, null=True)),
                 ('montage', models.CharField(blank=True, max_length=255, null=True)),
-                ('status', models.CharField(choices=[('offen', 'offen'), ('bestellt', 'bestellt'), ('bei Lieferant', 'bei Lieferant'), ('erledigt', 'erledigt')], default='offen', max_length=20, verbose_name='Status')),
+                ('status', models.CharField(choices=[('offen', 'offen'), ('teilweise', 'teilweise'), ('bei Lieferant', 'bei Lieferant'), ('erledigt', 'erledigt')], default='offen', max_length=20, verbose_name='Status')),
             ],
             options={
                 'verbose_name': 'Elemente Bestellung',
