@@ -100,7 +100,7 @@ class LieferantenBestellungenArtikel(models.Model):
 
 STATUS_CHOICES = [
         ("offen", "offen"),
-        ("bestellt", "bestellt"),
+        ("teilweise", "teilweise"),
         ("bei Lieferant", "bei Lieferant"),
         ("erledigt", "erledigt"),
     ]
