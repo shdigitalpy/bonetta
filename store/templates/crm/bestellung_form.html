@@ -1,5 +1,7 @@
 {% extends 'base-cms.html' %}
-{% block title %}Elemente in Bestellung bearbeiten{% endblock %}
+{% load static %}
+{% block title %}Auftrag Erfassen{% endblock %}
+
 {% block content %}
 
 <style>
@@ -40,16 +42,25 @@
        color: #29384f;
     }
 
-
 </style>
 
+
 <div class="container">
-    <h2>Elemente in Bestellung bearbeiten</h2>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary ml-4">Speichern</button>
-        <a href="{% url 'store:elemente_bestellung_detail' bestellung.id betrieb %}" class="btn btn-secondary">Abbrechen</a>
-    </form>
+    <h2>Auftrag Erfassen</h2>
+    
+    <div class="form-group">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ bestellung_form.as_p }}
+
+            <div class="row mt-3">
+                <div class="col">
+                    <button type="submit" class="btn suche-btn">Speichern</button>
+                    <a href="{% url 'store:elemente_bestellungen' %}" class="btn reset-btn">Abbrechen</a>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
+
 {% endblock %}

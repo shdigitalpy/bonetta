@@ -265,6 +265,13 @@ def elemente_bestellung_detail(request, pk, betrieb):
                     messages.success(request, "Position erfolgreich hinzugefügt.")
 
                 return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
+            
+        elif "update_notizfeld" in request.POST:
+            notiz = request.POST.get("notizfeld", "")
+            bestellung.notizfeld = notiz
+            bestellung.save()
+            messages.success(request, "Notizfeld wurde aktualisiert.")
+            return redirect("store:elemente_bestellung_detail", bestellung.id, betrieb)
 
     # ✅ Context for the template
     context = {
@@ -274,6 +281,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
             "status": bestellung.status,
             "start_date": bestellung.start_date,
             "montage": bestellung.montage,
+            "notizfeld": bestellung.notizfeld,
         },
         "elemente": elemente_list,
         "lieferanten": lieferanten,
@@ -349,7 +357,8 @@ def elemente_bestellungen(request):
             "status": bestellung.status,
             "start_date": bestellung.start_date,
             "montage": bestellung.montage,  # ✅ Ensure montage is included
-            "betrieb_person": kunde.firmenname if kunde and kunde.firmenname else f"{kunde.vorname} {kunde.nachname}" if kunde else "Unbekannt"
+            "betrieb_person": kunde.firmenname if kunde and kunde.firmenname else f"{kunde.vorname} {kunde.nachname}" if kunde else "Unbekannt",
+            "interne_nummer": kunde.interne_nummer if kunde else "1",  # ✅ Added interne_nummer
         })
 
     context = {
@@ -470,9 +479,9 @@ def bestellformular_cart(request):
                 messages.warning(request, "Bestellung konnte nicht abgeschlossen werden. Bitte fügen Sie Artikel hinzu.")
                 return redirect("store:bestellformular_cart")
 
-            # ✅ Update `montage` and set status to "bestellt"
+            # ✅ Update `montage` and set status to "teilweise"
             order.montage = montage
-            order.status = "bestellt"
+            order.status = "teilweise"
             order.save(update_fields=["montage", "status"])  # ✅ Ensure fields are stored in the database
 
             # ✅ Fetch customer details
@@ -1849,6 +1858,16 @@ def product_detail(request, slug):
 
         return redirect('store:anfrage_danke')  # oder was auch immer dein URL-Name ist
 
+    # Normale GET-Anzeige
+    context = {
+        'item': item,
+        'form': form,
+    }
+    return render(request, 'shop/descriptions.html', context)
+
+
+def anfrage_danke_view(request):
+    return render(request, 'shop/anfrage-danke.html')
 
     # Normale GET-Anzeige
     context = {
@@ -3228,4 +3247,30 @@ def logout_user(request):
 
 
 
-# code for requirement no-3
+# code for requirement no-4
+
+def bestellung_erfassen_view(request):
+    if request.method == 'POST':
+        form = BestellungForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('store:elemente_bestellungen')  # or redirect back
+    else:
+        form = BestellungForm()
+    
+    return render(request, 'crm/bestellung_form.html', {
+        'bestellung_form': form,
+    })
+
+
+def elemente_bestellung_delete(request, pk, betrieb):
+    bestellung = get_object_or_404(Elemente_Bestellungen, id=pk)
+
+    if request.method == "POST":
+        bestellung.delete()
+        messages.success(request, f"Auftrag #{pk} wurde erfolgreich gelöscht.")
+        return redirect("store:elemente_bestellungen")
+
+    messages.error(request, "Ungültige Anfrage.")
+    return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
+

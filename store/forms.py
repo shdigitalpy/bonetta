@@ -57,7 +57,7 @@ class ElementeCartItemEditForm(forms.Form):
         label="Anzahl",
         min_value=1,
         widget=forms.NumberInput(attrs={
-            "class": "form-control",
+            "class": "form-control col-6",
             "placeholder": "Anzahl eingeben"
         })
     )
@@ -67,7 +67,7 @@ class ElementeCartItemForm(forms.Form):
         label="Element-Nr.",
         min_value=1,  # Prevents negative or zero values
         widget=forms.NumberInput(attrs={
-            "class": "form-control",
+            "class": "form-control col-6",
             "placeholder": "Element-Nr. eingeben"
         })
     )
@@ -273,7 +273,11 @@ class LieferantenForm(forms.ModelForm):
 
         widgets = {
             'number': forms.TextInput(attrs={
-                'class': 'form-control col-12',
+                'class': 'form-control col-6',
+                'placeholder': ''
+            }),
+            'our_kundennumber': forms.TextInput(attrs={
+                'class': 'form-control col-6',
                 'placeholder': ''
             }),
             'our_kundennumber': forms.TextInput(attrs={
@@ -281,23 +285,23 @@ class LieferantenForm(forms.ModelForm):
                 'placeholder': ''
             }),
             'name': forms.TextInput(attrs={
-                'class': 'form-control col-12',
+                'class': 'form-control col-6',
                 'placeholder': ''
             }),
             'adresse': forms.TextInput(attrs={
-                'class': 'form-control col-12',
+                'class': 'form-control col-6',
                 'placeholder': ''
             }),
             'plz': forms.TextInput(attrs={
-                'class': 'form-control col-12',
+                'class': 'form-control col-6',
                 'placeholder': ''
             }),
             'ort': forms.TextInput(attrs={
-                'class': 'form-control col-12',
+                'class': 'form-control col-6',
                 'placeholder': ''
             }),
             'email': forms.TextInput(attrs={
-                'class': 'form-control col-12',
+                'class': 'form-control col-6',
                 'placeholder': ''
             }),
         }
@@ -380,7 +384,7 @@ class CRMLastService(forms.ModelForm):
         }
         widgets = {
             'last_service': forms.DateInput(attrs={
-                'class': 'form-control',
+                'class': 'form-control col-6',
                 'type': 'date',  # This will generate an HTML5 date picker
                 'placeholder': 'Wählen Sie ein Datum',
             }),
@@ -410,6 +414,7 @@ class CRMKundeForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={'class': 'form-control col-6'}),
             'zusatz': forms.TextInput(attrs={'class': 'form-control col-6'}),
             'done': forms.CheckboxInput(attrs={'class': 'form-check-input', 'style': 'margin-left: 10px; margin-top: 7px;'}),
+
         }
 # updated form for part-3
 class CRMKundenForm(forms.ModelForm):
@@ -1556,3 +1561,14 @@ class BezeichnungForm(forms.ModelForm):
                 'placeholder': 'Bezeichnung eingeben'
             })
         }
+
+
+class BestellungForm(forms.ModelForm):
+    class Meta:
+        model = Elemente_Bestellungen
+        fields = ['kunden_nr', 'montage', 'status']  # start_date will be auto
+    def __init__(self, *args, **kwargs):
+        super(BestellungForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control col-6'})
+
