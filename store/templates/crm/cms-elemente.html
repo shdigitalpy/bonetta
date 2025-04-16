@@ -110,6 +110,34 @@
             {% empty %}
         {% endfor %}
     </span> 
+
+    .done-checkbox-input:not(:checked) + .done-checkbox-label {
+      background-color: #dc3545;
+    }
+
+
+  </style>
+
+<div class="flexbox">
+    <div class="h2">Elemente  {{ kunde_data.firmenname }} - {{kunde_data.interne_nummer}}<br>
+        <span style="font-size:2rem">
+        {% for address in kunde_data.kunde_address.all %}
+            {{ address.crm_strasse|default:"" }} {{ address.crm_nr|default:"" }},
+            {{ address.crm_plz|default:"" }} {{ address.crm_ort|default:"" }}               
+            {% empty %}
+        {% endfor %}
+    </span> 
+</div>
+
+<div class="flexbox flexbox-header">
+
+       <div class="second-header">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <a class="btn btn-sm price-code-btn" href="{% url 'store:cms_elemente_create' kunde_id %}">Erfassen</a>
+    </form>
+    <a  href="{% url 'store:crm_new_kunden' %}" style="border: none;" class="btn btn-light btn-sm reset-btn">Zurück zur Kundenliste</a>
+    <a  href="{% url 'store:cms_elemente_statistik' %}" style="border: none;" class="btn btn-light btn-sm reset-btn">Statistik Elemente</a>
 </div>
 
 <div class="flexbox flexbox-header">

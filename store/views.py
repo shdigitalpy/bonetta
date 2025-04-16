@@ -1858,6 +1858,16 @@ def product_detail(request, slug):
 
         return redirect('store:anfrage_danke')  # oder was auch immer dein URL-Name ist
 
+    # Normale GET-Anzeige
+    context = {
+        'item': item,
+        'form': form,
+    }
+    return render(request, 'shop/descriptions.html', context)
+
+
+def anfrage_danke_view(request):
+    return render(request, 'shop/anfrage-danke.html')
 
     # Normale GET-Anzeige
     context = {
@@ -3263,3 +3273,4 @@ def elemente_bestellung_delete(request, pk, betrieb):
 
     messages.error(request, "Ungültige Anfrage.")
     return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
+

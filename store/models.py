@@ -118,7 +118,7 @@ class Elemente_Bestellungen(models.Model):
         verbose_name = 'Elemente Bestellung'
         verbose_name_plural = 'Elemente Bestellungen'
 
-    def __str__(self):
+    def _str_(self):
         return f"{self.kunden_nr}"
 
 

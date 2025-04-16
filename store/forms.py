@@ -280,6 +280,10 @@ class LieferantenForm(forms.ModelForm):
                 'class': 'form-control col-6',
                 'placeholder': ''
             }),
+            'our_kundennumber': forms.TextInput(attrs={
+                'class': 'form-control col-12',
+                'placeholder': ''
+            }),
             'name': forms.TextInput(attrs={
                 'class': 'form-control col-6',
                 'placeholder': ''
@@ -410,6 +414,7 @@ class CRMKundeForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={'class': 'form-control col-6'}),
             'zusatz': forms.TextInput(attrs={'class': 'form-control col-6'}),
             'done': forms.CheckboxInput(attrs={'class': 'form-check-input', 'style': 'margin-left: 10px; margin-top: 7px;'}),
+
         }
 # updated form for part-3
 class CRMKundenForm(forms.ModelForm):
@@ -1566,3 +1571,4 @@ class BestellungForm(forms.ModelForm):
         super(BestellungForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control col-6'})
+
