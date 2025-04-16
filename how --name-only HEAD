@@ -1,0 +1,311 @@
+[33m1ce1d41[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdatabase_migration[m[33m, [m[1;32mmaster[m[33m)[m migrations folder only for pull request
+[33m13ce36e[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m info feld 2
+[33m28d9a6e[m info feld
+[33mec39117[m kommentar mit telefon und anfrage
+[33m4538b4e[m change in order process
+[33m2fdcc83[m some changes link underline
+[33m2cdb09c[m lieferanten artikel korrektur
+[33m820ed35[m hauptseite linkfehler
+[33m6098aba[m layout änderungen
+[33m911dea0[m migrations
+[33m36780f1[m database error
+[33m6ed93dd[m model change
+[33mf085578[m clean migrations
+[33m4ecf479[m change model
+[33m07639ef[m comment
+[33m35ce04b[m error fix
+[33mccca88f[m elemente foreign key
+[33m5d3b160[m redo migration
+[33m4cb8dec[m UI-Redesign: einheitliche Optik, neue Felder und erweiterte Suche
+[33m21fd8f6[m Merge pull request #3 from tasnifrahman/testStage
+[33m89e2b2a[m background of artikel/create form style updated
+[33m0ae37c1[m search functionality updated after feedback and artikel/create form style updated
+[33m91c3e51[m Merge pull request #2 from tasnifrahman/testStage
+[33m8235906[m virtualE/pyvenv.cfg file updated for your project
+[33mebc1510[m 1.all CRM sections button and heading updated to same structure. 2.Two field adde to Artikel model named lieferanten_artikelnummern and dichtungstypen. 3.Select field added to header section in cms/crm/kunden url.
+[33mf1e5386[m menu sort
+[33m6fa7274[m warenkorb exclude already ordered items
+[33m462774d[m bestellformular
+[33me0c91e9[m change field name
+[33mb10a063[m Merge pull request #1 from tasnifrahman/two_column_show
+[33md762492[m[33m ([m[1;31morigin/two_column_show[m[33m, [m[1;32mtwo_column_show[m[33m)[m In card two column data showed updated
+[33me4d8c4b[m berechtigung bestellformular
+[33m247d210[m kleine änderungen
+[33m5d11808[m logik elemente bestellung geändert
+[33m3fe57f5[m artikel-nr update in details
+[33m30c5d8d[m montage / stueckzahl
+[33m0167aa8[m artikel logik - email und dichtungstyp error
+[33m208884c[m logic artikel etc
+[33m1c44007[m new logic for artikel not show
+[33mbef4631[m new logic artikel in details
+[33mfcf1cc4[m teplate logik
+[33mcb1b96a[m sichere ueberprüfung
+[33m0867703[m new logic bestellung detail
+[33m359b87e[m handling error
+[33md02c353[m article id
+[33mea3aa5e[m kunde name
+[33m60434bb[m django admin elemente
+[33m3e8203c[m betrieb in details
+[33mf1c8714[m sort bestellungen
+[33mbe76491[m fix articel order element lieferant
+[33med5fcdc[m multiple articles in order lieferant
+[33m13d6112[m logo 75px
+[33mfc30b94[m logo smaller
+[33m8d1a708[m lieferantenartikel
+[33m7b04e3a[m changes 10.02.2025
+[33m9e2bd0d[m email master
+[33m3e306dd[m auftragsbearbeitung
+[33md564f8a[m dropliste
+[33md13f589[m bezeichnung adjusted
+[33mf3e98f1[m order_email
+[33m7b67369[m Elemente Warenkorb
+[33mc7121ea[m none fix
+[33m264c6c4[m lieferantenartikel
+[33m2b4a0f8[m bestellformular neu
+[33m3129b6f[m anaonymize
+[33mdea42bb[m email vom 26.01
+[33m775c2d7[m elemente bestellungen
+[33mfe14f1e[m bestellformular neu
+[33mf88b481[m bestellformular neu
+[33m5617427[m duplikat
+[33m8d2ee98[m artikel erfassen
+[33mc458cc3[m artikel manager fix
+[33m1821afe[m testing send live
+[33m00bd000[m webshop profile
+[33m1a80fe5[m some changes
+[33m0fe82d2[m registration form
+[33m6f144d9[m numeric change
+[33ma6672b6[m webshop adresse
+[33md6d3704[m max width image
+[33m4bfd407[m registrations email2
+[33m6cd469a[m registrations email
+[33me3ee00d[m artikel warenkorb
+[33m75ce76b[m artikel details und sortierung
+[33ma5c7fd3[m bestpreis
+[33ma43aef8[m elemente bug fixes
+[33me54503c[m kunde form
+[33m1a85b09[m bug fixes
+[33md39d695[m total issue
+[33mcc514b0[m some fixes warenkorb
+[33mbb4c23d[m elemente fehlermeldung
+[33m995e90f[m elemente search
+[33m105425b[m artikel elemente
+[33m6a36b8e[m kunde form
+[33m5f41402[m send function and fixes
+[33m04e9ccd[m unique artikel
+[33m15d1b82[m new work 11.12.2024
+[33mcced3e1[m new version
+[33mb2d30c7[m setnull
+[33mceaae9c[m string error
+[33m3eb6b7b[m str artikel
+[33ma728d73[m remove error
+[33mcfc35c8[m Removed pywin32 from requirements.txt
+[33m8bfcf50[m Removed unnecessary packages from requirements.txt
+[33mcf1f3dd[m remove comtypes
+[33m2174d86[m new changes lieferschein
+[33mb2103ff[m new model
+[33m38bdd62[m design und artikel
+[33m30fcdd5[m elemente fix
+[33m6bafeff[m print remove
+[33m7019722[m crm kunde
+[33mc6fbf78[m lieferanten
+[33m927e875[m kunde bearbeiten layout
+[33m96803c2[m address webshop update
+[33me9faf22[m remove bg
+[33m0498e79[m remove marke none
+[33m58b97d1[m some changes
+[33m8b555d9[m crm daten bearbeiten
+[33m5b70e82[m changes hauptseite3
+[33m3445ad7[m paddding reuce
+[33m0853ca4[m changes hauptseite3
+[33m1dcc4a8[m changes hauptseite2
+[33mda65046[m changes hauptseite
+[33mf5f050d[m changes hauptseite
+[33m02127ba[m fix layout issues
+[33m761d50c[m background image
+[33m6f9be09[m lagerbestand
+[33mfa63abb[m floatformat
+[33m390192a[m laufmeter
+[33m5668813[m change email
+[33md2dfc8f[m qr code
+[33m8eb06bb[m statistik sort
+[33m42af1d2[m webshop elemente beziehung löschen
+[33ma02f03c[m elemente webshop
+[33maebbe27[m dichtungen search
+[33me4a0f74[m elemente statistik
+[33ma12d904[m bestellformular
+[33m5ef1e52[m elemente objekte bearbeiten
+[33mafb92a1[m staticfiles
+[33m1cc2363[m crm update
+[33m9dad7cf[m grösse überschrift mobile
+[33mefccafb[m staticfiles
+[33m379806a[m mobile menu
+[33m057af91[m layout marke
+[33mebd3424[m marke error fix3
+[33m7cb9af9[m marke error fix2
+[33m3f6919e[m marke error fix1
+[33mff9d84e[m marke error fix
+[33m05e3c9e[m heroku update
+[33m89fcc40[m leerschlag
+[33mc34f43f[m remove details in statistik
+[33mec256c3[m 2 neue felder
+[33m4c18c16[m error handling und neue bezeichnung objekte
+[33m48ef798[m elemente objekte
+[33m886a89a[m suchfunktion
+[33mc8eda91[m objekte und interner kunde form
+[33me2ed563[m die lieferadresse
+[33mca26a31[m text accounts signup
+[33m2b083c2[m staticfiles error
+[33m14fd750[m sort function by client
+[33m8044d3d[m filter elemente
+[33m4dcd5fe[m filter elemente
+[33m4abec34[m elemente search
+[33mf5b6345[m statistik elemente button
+[33m68c596f[m some optimization and elemente statistik
+[33m6d903dc[m count elemente
+[33m77e3e31[m elemente übersicht
+[33m92f4399[m change kunde erfassen
+[33mc7bf7db[m mwst
+[33madbaedc[m moosgummi change
+[33m61433b0[m moosgummi error
+[33mfdab199[m error fix delete product
+[33m38d3079[m error fix prod edit
+[33mf20f19e[m product add and sort functions
+[33mcefeb18[m kuehlschrank bild
+[33m641de47[m kontaktformular
+[33mbcd566c[m marktplatz weg
+[33me161591[m gastrozubehör
+[33m7efc7eb[m adresse ändern
+[33m6981c08[m telefon nr
+[33mc60ebb4[m update impressum
+[33m846fb23[m gastrobutton
+[33mf83354a[m gastroplatz button
+[33m97759f3[m gastroplatz button
+[33m42d65d0[m gastroplatz button
+[33md3e072d[m marktplatz header weg
+[33mb9c5b3e[m titel angepasst
+[33m088b334[m gebo shop kontakt
+[33m0464132[m inserat bild error grösse
+[33ma342343[m inserat bild error grösse
+[33md78835f[m inserat bild error grösse
+[33m2715fd8[m inserat bild error
+[33mce7f956[m staticfiles
+[33mf4d242f[m logo and myinserate change
+[33m45fd7cf[m update seo zubehör
+[33mf07c4fd[m change descr
+[33m66effbf[m remove break
+[33m8ad93f8[m zubehoer layout
+[33m7bb5ade[m zubehoer
+[33m2529e1e[m zubehoer
+[33maa9ac46[m changes to zubehör
+[33m61bb947[m show price zubehör
+[33mf9707c2[m error format
+[33m903b16b[m error endif
+[33m0cc5f47[m name bei Zubehör
+[33mb3e5b73[m alter jobdescription
+[33mf3d1b95[m change textlenght jobmarketplace
+[33m726d650[m kategorie
+[33m36cae7b[m kategorie
+[33m79f5153[m marktplatz kältebranche
+[33mea8dbe9[m jobs marketplace
+[33m5efb6c3[m layout
+[33m124d95c[m job marketplatz
+[33m70afe9c[m korrektur
+[33mcb6cddb[m anleitung und video
+[33m3c9fe04[m anleitungsvideo
+[33mccab9ac[m marktplatz übersicht
+[33madf5ab5[m marktplatz overview
+[33mbfc7e4f[m ab nicht öffentlich 1
+[33mf9af9b1[m ab nicht öffentlich
+[33mec50210[m mp text
+[33mf1097c5[m layout
+[33m95e91b2[m abstand
+[33mf1a19db[m gastro marketplace error
+[33m9d303a1[m layout error
+[33m320bf72[m layout inserat details
+[33m44f2f81[m layout
+[33m2cd00a7[m changes form and inserat details
+[33mc117400[m migrate new fields
+[33ma26ac7d[m remove fields
+[33me936e0d[m remove fields
+[33m3ed8a6b[m migrtations
+[33m1c310b7[m user authenciate
+[33m55e1b4e[m remove fields
+[33md344928[m new marketplace fields
+[33mc8c29b9[m min lenght
+[33m02fa06d[m box size
+[33mffc9773[m change benutzer
+[33ma95f921[m box smaller redo
+[33m14d560b[m box smaller
+[33ma7e5d8a[m responsive
+[33m44e2e3f[m images
+[33mf463699[m images
+[33m0a43735[m static
+[33m3aa3590[m margin top
+[33m91c1b64[m image
+[33m2436b26[m image layout
+[33m06929a9[m image 2 & 1
+[33m28d66d6[m image 2 & 1
+[33m5dbf66f[m image 2 & 1
+[33m0129aaa[m image correction
+[33m8c7c201[m staticfiles
+[33mf51e43d[m marktplatz image
+[33m8003c8d[m marktplatz
+[33me42e289[m error
+[33m8f6cc82[m layout marktplatz error
+[33m2ed3658[m layout marktplatz error
+[33m7f505a8[m layout marktplatz rot
+[33md9b7e84[m flex marktplatz
+[33m4dffc72[m flex marktplatz
+[33mc1fd3a6[m marke changes
+[33m91fa86f[m sortierung bestellungen
+[33md811642[m bestellungen
+[33m3523c36[m bonetta mail
+[33mcf64b3c[m bug fix image
+[33m98a48a7[m bug fix image
+[33m23abd93[m inserate checkout
+[33m466b43d[m livio in mailverteiler
+[33m339b710[m cms inserate löschen
+[33m9464bf6[m cms inserate löschen
+[33m897adbd[m image error fix
+[33m45462e5[m image error fix
+[33mbadeac7[m image error fix
+[33mbb5cd36[m image error fix
+[33md18cd46[m image error fix
+[33mb4eb310[m file upload error fix
+[33m4f01dee[m marktplace email, cms edit, more images
+[33mc6dc7f0[m login required inserat erfassen
+[33m31c906b[m minor change inserate details
+[33m7644643[m staticfiles
+[33mae57557[m inserate
+[33m423a66e[m inserat details
+[33m64735c5[m gebraucht & neu
+[33ma0d9a78[m layout and cms deaktiveiren email
+[33m510380d[m gastro cms und marktplatz erfassen
+[33mab2c79e[m marketplace
+[33mcc5521b[m change url montage
+[33ma7e52e0[m montage bild
+[33m7a86dfe[m gastro kontakt
+[33m0ca7abb[m layout franke
+[33m5e1d673[m seo marke
+[33mf0482c3[m markepic error
+[33m14a3957[m marke cms
+[33m9b037b4[m marke logic
+[33mb32ff57[m button header
+[33m3b207e9[m registration email
+[33m3c4ca59[m registrieren button
+[33m7c86bc3[m interne nummer
+[33ma84344f[m error fix
+[33mc272927[m kunden optimiert
+[33m2358be5[m kunden optimierung
+[33mb42e834[m firmenname suche
+[33md3786bb[m gtag
+[33m3f58eee[m boto
+[33m1ea1e7a[m gunicorn
+[33mc7b2a84[m wsgi
+[33mcf9d97e[m database
+[33m43e8e4d[m https
+[33m85c0899[m runtime
+[33mef33e2a[m requirements
+[33m1d3b632[m google tag manager
+[33m9364d61[m new git

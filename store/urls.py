@@ -16,10 +16,17 @@ urlpatterns = [
     path("bestellformular/", views.bestellformular_cart, name="bestellformular_cart"),
     path('cms/crm/elemente-bestellungen', views.elemente_bestellungen, name='elemente_bestellungen'),
     path('cms/crm/elemente-bestellungen/detail/<int:pk>/<str:betrieb>', views.elemente_bestellung_detail, name='elemente_bestellung_detail'),
+    path('cms/crm/elemente-bestellungen/delete/<int:pk>/<str:betrieb>/', views.elemente_bestellung_delete, name='elemente_bestellung_delete'),
     path('cms/crm/lieferanten_bestellungen', views.lieferanten_bestellungen,name="lieferanten_bestellungen"),
     path('cms/crm/elemente-bestellungen/edit/<int:element_nr>/<int:bestellung_id>', views.elemente_bestellung_edit, name='elemente_bestellung_edit'),
     path('cms/crm/elemente-bestellungen/delete/<int:element_nr>/<int:bestellung_id>', views.elemente_bestellung_delete, name='elemente_bestellung_delete'),
     path('cms/crm/lieferant_update_status/<int:pk>', views.update_lieferanten_status,name="update_lieferanten_status"),
+    
+	# Bezeichnung
+	path('bezeichnung/', views.bezeichnung_list, name='bezeichnung_list'),
+    path('bezeichnung/create/', views.bezeichnung_create, name='bezeichnung_create'),
+    path('bezeichnung/edit/<int:pk>/', views.bezeichnung_edit, name='bezeichnung_edit'),
+    path('bezeichnung/loeschen/<int:pk>/', views.bezeichnung_delete, name='bezeichnung_delete'),
 	
 	#pages
 	path('kontakt', views.kontakt, name='kontakt'),
@@ -31,7 +38,9 @@ urlpatterns = [
 	path('qr-code/download/', views.download_qr_code, name='download_qr_code'),
 
 	#shop
+	path('anfrage-danke/', views.anfrage_danke_view, name='anfrage_danke'),
 	path('bestätigung/<int:pk>', views.email, name='email'),
+	path('searchbar', views.searchbar, name='searchbar'),
 	path('searchbar', views.searchbar, name='searchbar'),
 	path('checkout/', CheckoutView.as_view(), name='checkout'), 
 	path('payment/', PaymentView.as_view(), name='payment'), 
@@ -145,10 +154,9 @@ urlpatterns = [
 	path('cms/elemente/objekte-loeschen/<int:pk>/<int:epk>/<int:cpk>', views.cms_elemente_objekte_löschen, name='cms_elemente_objekte_löschen'),
 
 	re_path(r'^robots.txt$', TemplateView.as_view(template_name="robots.txt", content_type="text/plain"), name="robots_file"),
-	
+	path('auftrag-erfassen/', views.bestellung_erfassen_view, name="auftrag_erfassen"),
     #path('pdf_view/', views.ViewPDF.as_view(), name="pdf_view"),
     #path('pdf_download/', views.DownloadPDF.as_view(), name="pdf_download"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-

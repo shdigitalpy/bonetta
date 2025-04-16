@@ -74,27 +74,27 @@
       
       <div class="flexbox flexbox-header" style="display: flex; justify-content: space-between; align-items: center;">
   
-  <!-- Linker Button -->
-  <a class="btn btn-sm price-code-btn" href="">
-    Auftrag erfassen (in Bearbeitung)
-  </a>
+        <!-- Linker Button -->
+        <a class="btn btn-sm price-code-btn" href="{% url 'store:auftrag_erfassen' %}">
+          Auftrag erfassen (in Bearbeitung)
+        </a>
 
-  <!-- Rechter Suchbereich -->
-  <form class="form-inline d-flex align-items-center" action="{% url 'store:elemente_bestellungen' %}" method="get">
-    {% csrf_token %}
-    <div style="display: flex; align-items: center;">
-      <div class="search-box" style="margin-right: 10px;">
-        <input id="textsuche" class="form-control" type="text" placeholder="Suche" aria-label="Search" name="search">
-      </div>
-      <button type="submit" class="btn btn-sm suche-btn mr-2">
-        <span class="fas fa-search"></span> Suche
-      </button>
-      <a href="{% url 'store:elemente_bestellungen' %}" class="btn btn-light btn-sm reset-btn">
-        <span class="fas fa-times"></span> zurücksetzen
-      </a>
-    </div>
-  </form>
-</div>
+        <!-- Rechter Suchbereich -->
+        <form class="form-inline d-flex align-items-center" action="{% url 'store:elemente_bestellungen' %}" method="get">
+          {% csrf_token %}
+          <div style="display: flex; align-items: center;">
+            <div class="search-box" style="margin-right: 10px;">
+              <input id="textsuche" class="form-control" type="text" placeholder="Suche" aria-label="Search" name="search">
+            </div>
+            <button type="submit" class="btn btn-sm suche-btn mr-2">
+              <span class="fas fa-search"></span> Suche
+            </button>
+            <a href="{% url 'store:elemente_bestellungen' %}" class="btn btn-light btn-sm reset-btn">
+              <span class="fas fa-times"></span> zurücksetzen
+            </a>
+          </div>
+        </form>
+        </div>
 
     <!-- Table Display -->
     <table class="table table-striped">
@@ -106,39 +106,58 @@
                 <th>Betrieb</th>
                 <th>Montage</th>
                 <th>Status</th> 
-                
             </tr>
         </thead>
         <tbody>
             {% for bestellung in bestellungen %}
             <tr>
+
                <td>{{ bestellung.start_date|date:"d.m.Y" }}</td>
-
-               
-
                <td >
-                       <a href="{% url 'store:elemente_bestellung_detail' bestellung.id bestellung.betrieb_person %}" style="text-decoration: underline !important;">
-                            {{ bestellung.id }}
-                        </a>
+                  <a href="{% url 'store:elemente_bestellung_detail' bestellung.interne_nummer bestellung.betrieb_person %}" style="text-decoration: underline !important;">
+                      {{ bestellung.id }}
+                  </a>
+              </td>
+              <td>
+                <a href="#"
+                  style="text-decoration: underline !important;"
+                  class="kunde-info-link"
+                  data-toggle="modal"
+                  data-target="#kundeModal"
+                  data-kunde='{
+                    "firmenname": "{{ bestellung.betrieb_person|escapejs }}",
+                    "vorname": "{{ kunde.vorname|default:''|escapejs }}",
+                    "nachname": "{{ kunde.nachname|default:''|escapejs }}",
+                    "phone": "{{ kunde.phone|default:''|escapejs }}",
+                    "mobile": "{{ kunde.mobile|default:''|escapejs }}",
+                    "email": "{{ kunde.email|default:''|escapejs }}",
+                    "addresses": [{% for address in kunde.user.address.all %}
+                      {
+                        "strasse": "{{ address.rechnung_strasse|default:''|escapejs }}",
+                        "nr": "{{ address.rechnung_nr|default:''|escapejs }}",
+                        "plz": "{{ address.rechnung_plz|default:''|escapejs }}",
+                        "ort": "{{ address.rechnung_ort|default:''|escapejs }}",
+                        "land": "{{ address.rechnung_land|default:''|escapejs }}"
+                      }{% if not forloop.last %},{% endif %}{% endfor %}
+                    ]
+                }'
+                >
+                  {{ bestellung.kunden_nr }}
+                </a>
 
-                    </td>
+              </td>
 
-
-                <td>{{ bestellung.kunden_nr }}</td>
-
-                <td>{{ bestellung.betrieb_person }}</td>
-
-                <td>
-                {{ bestellung.montage }}
-                </td>
-
-                <td style="
-                    {% if bestellung.status == 'offen' %}color: red;
-                    {% elif bestellung.status == 'bestellt' %}color: orange;
-                    {% elif bestellung.status == 'erledigt' %}color: green;
-                    {% endif %}">
-                    {{ bestellung.status }}
-                </td>
+              <td>{{ bestellung.betrieb_person }}</td>
+              <td>
+                {{ bestellung.montage|yesno:"Yes,No" }}
+              </td>              
+              <td style="
+                  {% if bestellung.status == 'offen' %}color: red;
+                  {% elif bestellung.status == 'teilweise' %}color: orange;
+                  {% elif bestellung.status == 'erledigt' %}color: green;
+                  {% endif %}">
+                  {{ bestellung.status }}
+              </td>
 
             </tr>
             {% empty %}
@@ -148,4 +167,99 @@
             {% endfor %}
         </tbody>
     </table>
+    <div class="modal fade" id="kundeModal" tabindex="-1" role="dialog" aria-labelledby="kundeModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="kundeModalLabel">Kunden information</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Schließen">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="kundeDetails"></div>  <!-- This is where the data will be inserted -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const links = document.querySelectorAll('.kunde-info-link');
+        const modalBody = document.getElementById('kundeDetails');
+    
+        links.forEach(link => {
+          link.addEventListener('click', function (e) {
+            e.preventDefault();
+    
+            // Get the data from the 'data-kunde' attribute
+            const dataString = this.getAttribute('data-kunde');
+            
+            // Debug log to see the data in the console
+            // console.log('Data:', dataString);
+    
+            if (!dataString) return;
+    
+            let data;
+            try {
+              // Parsing JSON string to an object
+              data = JSON.parse(dataString);
+            } catch (err) {
+              console.error('Invalid JSON in data-kunde:', err);
+              return;
+            }
+    
+            // Check the parsed data in the console
+            // console.log('Parsed data:', data);
+    
+            // let html = `<strong>${data.firmenname || ''}</strong><br>
+            //             ${data.vorname || ''} ${data.nachname || ''}<br>
+            //             Tel: ${data.phone || ''} ${data.mobile || ''}<br>
+            //             ${data.email || ''}<br><br>`;
+    
+            // // Loop through addresses and format them properly
+            // if (Array.isArray(data.addresses)) {
+            //   data.addresses.forEach(addr => {
+            //     html += `${addr.strasse || ''} ${addr.nr || ''}, ${addr.plz || ''} ${addr.ort || ''}, ${addr.land || ''}<br><br>`;
+            //   });
+            // }
+
+            let html = '<ul>';
+            for (const [key, value] of Object.entries(data)) {
+                if (key === 'addresses' && Array.isArray(value) && value.length > 0) {
+                    html += `<li><strong>Adressen:</strong><ul>`;
+                    value.forEach(addr => {
+                        html += `<li>
+                                    Straße: ${addr.strasse || ''}<br>
+                                    Nr: ${addr.nr || ''}<br>
+                                    PLZ: ${addr.plz || ''}<br>
+                                    Ort: ${addr.ort || ''}<br>
+                                    Land: ${addr.land || ''}
+                                </li>`;
+                    });
+                    html += `</ul></li>`;
+                } else {
+                    html += `<li><strong>${key}:</strong> ${value || ''}</li>`;
+                }
+            }
+            html += '</ul>';
+
+    
+            // Set the modal body content
+            modalBody.innerHTML = html;
+          });
+        });
+      });
+    </script>
+    
+    <!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    
 {% endblock %}

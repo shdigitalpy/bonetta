@@ -10,16 +10,16 @@ from django.template.loader import render_to_string, get_template
 
 
 PAYMENT_CHOICES = (
-	('R', 'Rechnung*'),
-	('V', 'Vorkasse (2% Skonto)'),
-	)
+    ('R', 'Rechnung*'),
+    ('V', 'Vorkasse (2% Skonto)'),
+    )
 
 COUNTRY_CHOICES = [
-	('S', 'Schweiz'),
-	('D', 'Deutschland'),
-	('A', 'Österreich'),
+    ('S', 'Schweiz'),
+    ('D', 'Deutschland'),
+    ('A', 'Österreich'),
 
-	]
+    ]
 
 STATUS_CHOICES = [
     ("In Bearbeitung", "In Bearbeitung"),
@@ -57,7 +57,7 @@ class ElementeCartItemEditForm(forms.Form):
         label="Anzahl",
         min_value=1,
         widget=forms.NumberInput(attrs={
-            "class": "form-control",
+            "class": "form-control col-6",
             "placeholder": "Anzahl eingeben"
         })
     )
@@ -67,7 +67,7 @@ class ElementeCartItemForm(forms.Form):
         label="Element-Nr.",
         min_value=1,  # Prevents negative or zero values
         widget=forms.NumberInput(attrs={
-            "class": "form-control",
+            "class": "form-control col-6",
             "placeholder": "Element-Nr. eingeben"
         })
     )
@@ -82,36 +82,37 @@ class ElementeCartItemForm(forms.Form):
     )
 
 
+# update for Bezeichnung
+
+class BezeichnungForm(forms.ModelForm):
+    class Meta:
+        model = Bezeichnung
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control col-6', 'placeholder': 'Bezeichnung'}),
+        }
+
 
 class ElementeCreateForm(forms.ModelForm):
-    KUEHLPOSITION_CHOICES = [
-        ('Schublade', 'Schublade'),
-        ('Kühlunterbautür', 'Kühlunterbautür'),
-        ('Kühlschrank', 'Kühlschrank'),
-        ('Kühlraumtür', 'Kühlraumtür'),
-        ('Ofen / Steamer', 'Ofen / Steamer'),
-        ('Glacéschublade', 'Glacéschublade'),
-        ('Glacédeckel', 'Glacédeckel'),
-        ('Eismaschine ', 'Eismaschine '),
-    ]
-
-    bezeichnung = forms.ChoiceField(
-        choices=KUEHLPOSITION_CHOICES,
-        widget=forms.Select(attrs={
-            'class': 'form-control',
-        }),
-        label="Bezeichnung"
-    )
-
     class Meta:
         model = Elemente
-        fields = ('artikel', 'kuehlposition', 'elementnr', 'bezeichnung', 'bemerkung')
+        fields = ('artikel', 'kuehlposition', 'elementnr', 'bezeichnung_new', 'bemerkung')
 
         widgets = {
             'kuehlposition': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Kühlposition'}),
             'elementnr': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Element-Nr.'}),
+            'bezeichnung_new': forms.Select(attrs={'class': 'form-control'}),
             'bemerkung': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Bemerkung'}),
         }
+
+        labels = {
+            'bezeichnung_new': 'Bezeichnung',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Setze explizit das Queryset, falls du z. B. filtern willst
+        self.fields['bezeichnung_new'].queryset = Bezeichnung.objects.all()
 
 class NettopreisArtikelForm(forms.ModelForm):
     class Meta:
@@ -141,7 +142,6 @@ class ArtikelForm(forms.ModelForm):
             'artikelnr': "Artikelnummer",
             'name': "Dichtungstyp",
             'lieferant': "Lieferant",
-            
             'aussenbreite': "Aussenbreite (mm)",
             'aussenhöhe': "Aussenhöhe (mm)",
             'nettopreis': "Einkaufspreis (CHF)",
@@ -259,11 +259,12 @@ class LagerortForm(forms.ModelForm):
 class LieferantenForm(forms.ModelForm):
     class Meta:
         model = Lieferanten
-        fields = ['number', 'name', 'adresse', 'plz', 'ort','email']
+        fields = ['number','our_kundennumber','name', 'adresse', 'plz', 'ort','email']
 
         labels = {
-            'number': "Lieferanten-Nr.",
-            'name': "Name",
+            'number': "Lieferanten-Nr.:",
+            'our_kundennumber' : "Unsere Kundennummer",
+            'name': "Lieferant",
             'adresse': "Adresse",
             'plz': "PLZ",
             'ort': "Ort",
@@ -272,27 +273,31 @@ class LieferantenForm(forms.ModelForm):
 
         widgets = {
             'number': forms.TextInput(attrs={
-                'class': 'form-control col-12',
+                'class': 'form-control col-6',
+                'placeholder': ''
+            }),
+            'our_kundennumber': forms.TextInput(attrs={
+                'class': 'form-control col-6',
                 'placeholder': ''
             }),
             'name': forms.TextInput(attrs={
-                'class': 'form-control col-12',
+                'class': 'form-control col-6',
                 'placeholder': ''
             }),
             'adresse': forms.TextInput(attrs={
-                'class': 'form-control col-12',
+                'class': 'form-control col-6',
                 'placeholder': ''
             }),
             'plz': forms.TextInput(attrs={
-                'class': 'form-control col-12',
+                'class': 'form-control col-6',
                 'placeholder': ''
             }),
             'ort': forms.TextInput(attrs={
-                'class': 'form-control col-12',
+                'class': 'form-control col-6',
                 'placeholder': ''
             }),
             'email': forms.TextInput(attrs={
-                'class': 'form-control col-12',
+                'class': 'form-control col-6',
                 'placeholder': ''
             }),
         }
@@ -375,7 +380,7 @@ class CRMLastService(forms.ModelForm):
         }
         widgets = {
             'last_service': forms.DateInput(attrs={
-                'class': 'form-control',
+                'class': 'form-control col-6',
                 'type': 'date',  # This will generate an HTML5 date picker
                 'placeholder': 'Wählen Sie ein Datum',
             }),
@@ -392,9 +397,9 @@ class CRMKundeForm(forms.ModelForm):
             'vorname': "Vorname",
             'nachname': "Nachname",
             'email': "E-Mail",
-            
             'phone': "Telefon/Handy",
             'zusatz': "Zusatz",
+            'done': 'Inventarisiert',
         }
         widgets = {
             'interne_nummer': forms.TextInput(attrs={'class': 'form-control col-6'}),
@@ -404,8 +409,27 @@ class CRMKundeForm(forms.ModelForm):
             'firmenname': forms.TextInput(attrs={'class': 'form-control col-6'}),
             'phone': forms.TextInput(attrs={'class': 'form-control col-6'}),
             'zusatz': forms.TextInput(attrs={'class': 'form-control col-6'}),
+            'done': forms.CheckboxInput(attrs={'class': 'form-check-input', 'style': 'margin-left: 10px; margin-top: 7px;'}),
         }
+# updated form for part-3
+class CRMKundenForm(forms.ModelForm):
 
+    class Meta:
+        model = CRMAddress
+        fields = (
+            'crm_kanton',
+        )
+        labels = {
+            'crm_kanton': "",
+        }
+        widgets = {
+        'crm_kanton': forms.Select(attrs={
+            'class': 'form-control col-15',
+            'style': 'border-radius: 10px; padding: 10px; margin-top: 10px;'  # Add border-radius via inline CSS
+        }),
+}
+
+# end of part-3
 
 
 class CRMAddressForm(forms.ModelForm):
@@ -443,25 +467,7 @@ class CRMAddressForm(forms.ModelForm):
             }),
         }
 
-# updated form for part-3
-class CRMKundenForm(forms.ModelForm):
 
-    class Meta:
-        model = CRMAddress
-        fields = (
-            'crm_kanton',
-        )
-        labels = {
-            'crm_kanton': "",
-        }
-        widgets = {
-		'crm_kanton': forms.Select(attrs={
-			'class': 'form-control col-15',
-			'style': 'border-radius: 10px; padding: 10px; margin-top: 10px;'  # Add border-radius via inline CSS
-		}),
-}
-
-# end of part-3
 
 class CRMKundeRestForm(forms.ModelForm):
     class Meta:
@@ -489,37 +495,37 @@ class CRMKundeRestForm(forms.ModelForm):
 
 
 class ElementeObjekteCreateForm(forms.ModelForm):
-	class Meta:
-		model = Objekte
-		fields = ('name', 'serie', 'modell', 'typ','lieferant')
-		labels = {
-			'name': "Marke",
-			'serie' : "Typ",
-			'modell' : "Modell/Code",
-			'typ' : "Serien-Nr.",
-			'lieferant' : "Lieferant",
-			
-		}
-		widgets = {
-			
-			'name': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':''}),
-			'serie': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':''}),
-			'modell': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':''}),
-			'typ': forms.TextInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':''}),
-			'lieferant': forms.Select(attrs={
+    class Meta:
+        model = Objekte
+        fields = ('name', 'serie', 'modell', 'typ','lieferant')
+        labels = {
+            'name': "Marke",
+            'serie' : "Typ",
+            'modell' : "Modell/Code",
+            'typ' : "Serien-Nr.",
+            'lieferant' : "Lieferant",
+            
+        }
+        widgets = {
+            
+            'name': forms.TextInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder':''}),
+            'serie': forms.TextInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder':''}),
+            'modell': forms.TextInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder':''}),
+            'typ': forms.TextInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder':''}),
+            'lieferant': forms.Select(attrs={
                 'class': 'form-control col-6',  # Dropdown for Kanton
                 
             }),
-			
-		}
+            
+        }
 
 
 
@@ -529,81 +535,81 @@ class ProductMarkeLinkForm(forms.Form):
 
 
 class CheckoutForm(forms.Form):
-	rechnung_firmenname = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': '',
-		}))
+    rechnung_firmenname = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': '',
+        }))
 
-	rechnung_vorname = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': '',
-		}))
+    rechnung_vorname = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': '',
+        }))
 
-	rechnung_nachname = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': '',
-		}))
-	rechnung_strasse = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': ''
-		}))
-	rechnung_nr = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': ''
-		}))
-	rechnung_ort = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': ''
-		}))
-	rechnung_land = CountryField(blank_label='(Land auswählen)').formfield(
+    rechnung_nachname = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': '',
+        }))
+    rechnung_strasse = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': ''
+        }))
+    rechnung_nr = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': ''
+        }))
+    rechnung_ort = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': ''
+        }))
+    rechnung_land = CountryField(blank_label='(Land auswählen)').formfield(
         required=False,
         widget=CountrySelectWidget(attrs={
             'class': 'custom-select d-block w-100',
         }))
-	rechnung_plz = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': ''
-		}))
-	lieferung_strasse = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': ''
-		}))
-	lieferung_nr = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': ''
-		}))
-	lieferung_ort = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': ''
-		}))
-	lieferung_land = CountryField(blank_label='(Land auswählen)').formfield(
+    rechnung_plz = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': ''
+        }))
+    lieferung_strasse = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': ''
+        }))
+    lieferung_nr = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': ''
+        }))
+    lieferung_ort = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': ''
+        }))
+    lieferung_land = CountryField(blank_label='(Land auswählen)').formfield(
         required=False,
         widget=CountrySelectWidget(attrs={
             'class': 'custom-select d-block w-100',
         }))
-	lieferung_plz = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': ''
-		}))
+    lieferung_plz = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': ''
+        }))
 
-	firmenname = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': '',
-		}))
+    firmenname = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': '',
+        }))
 
-	vorname = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': '',
-		}))
+    vorname = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': '',
+        }))
 
-	nachname = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': '',
-		}))
+    nachname = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': '',
+        }))
 
-	different_shipping_address = forms.BooleanField(required=False)
-	use_other_billing = forms.BooleanField(required=False)
-	use_default_shipping = forms.BooleanField(required=False)
+    different_shipping_address = forms.BooleanField(required=False)
+    use_other_billing = forms.BooleanField(required=False)
+    use_default_shipping = forms.BooleanField(required=False)
 
 
 
@@ -636,92 +642,92 @@ class KundeCreateForm(forms.ModelForm):
 
 
 class CheckoutForm(forms.Form):
-	rechnung_firmenname = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': '',
-		}))
+    rechnung_firmenname = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': '',
+        }))
 
-	rechnung_vorname = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': '',
-		}))
+    rechnung_vorname = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': '',
+        }))
 
-	rechnung_nachname = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': '',
-		}))
-	rechnung_strasse = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': ''
-		}))
-	rechnung_nr = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': ''
-		}))
-	rechnung_ort = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': ''
-		}))
-	rechnung_land = CountryField(blank_label='(Land auswählen)').formfield(
+    rechnung_nachname = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': '',
+        }))
+    rechnung_strasse = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': ''
+        }))
+    rechnung_nr = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': ''
+        }))
+    rechnung_ort = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': ''
+        }))
+    rechnung_land = CountryField(blank_label='(Land auswählen)').formfield(
         required=False,
         widget=CountrySelectWidget(attrs={
             'class': 'custom-select d-block w-100',
         }))
-	rechnung_plz = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': ''
-		}))
-	lieferung_strasse = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': ''
-		}))
-	lieferung_nr = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': ''
-		}))
-	lieferung_ort = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': ''
-		}))
-	lieferung_land = CountryField(blank_label='(Land auswählen)').formfield(
+    rechnung_plz = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': ''
+        }))
+    lieferung_strasse = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': ''
+        }))
+    lieferung_nr = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': ''
+        }))
+    lieferung_ort = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': ''
+        }))
+    lieferung_land = CountryField(blank_label='(Land auswählen)').formfield(
         required=False,
         widget=CountrySelectWidget(attrs={
             'class': 'custom-select d-block w-100',
         }))
-	lieferung_plz = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': ''
-		}))
+    lieferung_plz = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': ''
+        }))
 
-	firmenname = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': '',
-		}))
+    firmenname = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': '',
+        }))
 
-	vorname = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': '',
-		}))
+    vorname = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': '',
+        }))
 
-	nachname = forms.CharField(required=False, widget=forms.TextInput(attrs={
-		'class': 'form-control',
-		'placeholder': '',
-		}))
+    nachname = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': '',
+        }))
 
-	different_shipping_address = forms.BooleanField(required=False)
-	use_other_billing = forms.BooleanField(required=False)
-	use_default_shipping = forms.BooleanField(required=False)
+    different_shipping_address = forms.BooleanField(required=False)
+    use_other_billing = forms.BooleanField(required=False)
+    use_default_shipping = forms.BooleanField(required=False)
 
 
 class PaymentForm(forms.Form):
-	payment_option = forms.ChoiceField(
-				label='',
-		        required=True,
-		        widget=forms.RadioSelect(attrs={
-						'class': 'list-inline',
+    payment_option = forms.ChoiceField(
+                label='',
+                required=True,
+                widget=forms.RadioSelect(attrs={
+                        'class': 'list-inline',
 
-						}),
-		        choices=PAYMENT_CHOICES,
+                        }),
+                choices=PAYMENT_CHOICES,
     )
 
 
@@ -946,589 +952,617 @@ class RegistrationForm(SignupForm):
 
 
 class AddressForm(forms.ModelForm):
-	class Meta:
-		model = Address  # Your model
-		fields = (
-			'rechnung_strasse',
-			'rechnung_nr',
-			'rechnung_plz',
-			'rechnung_ort',
-			'rechnung_land',
-			'address_type'
-			
-			 )
-		labels = {
-			'rechnung_strasse' : "Strasse:",
-			'rechnung_nr' : "Nr.",
-			'rechnung_ort' : "Ort",
-			'rechnung_land' : "Land",
-			'rechnung_plz' : "PLZ",
-			'address_type' : "Adresse-Typ:"
+    class Meta:
+        model = Address  # Your model
+        fields = (
+            'rechnung_strasse',
+            'rechnung_nr',
+            'rechnung_plz',
+            'rechnung_ort',
+            'rechnung_land',
+            'address_type'
+            
+             )
+        labels = {
+            'rechnung_strasse' : "Strasse:",
+            'rechnung_nr' : "Nr.",
+            'rechnung_ort' : "Ort",
+            'rechnung_land' : "Land",
+            'rechnung_plz' : "PLZ",
+            'address_type' : "Adresse-Typ:"
 
-		}
-		widgets = {
-			'rechnung_strasse': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':'Strasse'}),
-			'rechnung_nr': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':'Nr.'}),
-			'rechnung_ort': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':'Ort'}),
-			'rechnung_land': forms.Select(attrs={
-				'class': 'form-control',
-				}),
-			'rechnung_plz': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':'PLZ'}),
-			'address_type': forms.Select(attrs={
-				'class': 'form-control',
-				}),
-		}
+        }
+        widgets = {
+            'rechnung_strasse': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':'Strasse'}),
+            'rechnung_nr': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':'Nr.'}),
+            'rechnung_ort': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':'Ort'}),
+            'rechnung_land': forms.Select(attrs={
+                'class': 'form-control',
+                }),
+            'rechnung_plz': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':'PLZ'}),
+            'address_type': forms.Select(attrs={
+                'class': 'form-control',
+                }),
+        }
 
 
 class ShippingAddressForm(forms.ModelForm):
-	class Meta:
-		model = ShippingAddress  # Your model
-		fields = (
-			'lieferung_strasse',
-			'lieferung_nr',
-			'lieferung_plz',
-			'lieferung_ort',
-			'lieferung_land',
-			
-			 )
-		labels = {
-			'lieferung_strasse' : "Strasse:",
-			'lieferung_nr' : "Nr.",
-			'lieferung_ort' : "Ort",
-			'lieferung_land' : "Land",
-			'lieferung_plz' : "PLZ",
+    class Meta:
+        model = ShippingAddress  # Your model
+        fields = (
+            'lieferung_strasse',
+            'lieferung_nr',
+            'lieferung_plz',
+            'lieferung_ort',
+            'lieferung_land',
+            
+             )
+        labels = {
+            'lieferung_strasse' : "Strasse:",
+            'lieferung_nr' : "Nr.",
+            'lieferung_ort' : "Ort",
+            'lieferung_land' : "Land",
+            'lieferung_plz' : "PLZ",
 
-		}
-		widgets = {
-			'lieferung_strasse': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':'Strasse'}),
-			'lieferung_nr': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':'Nr.'}),
-			'lieferung_ort': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':'Ort'}),
-			'lieferung_land': forms.Select(attrs={
-				'class': 'form-control',
-				}),
-			'lieferung_plz': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':'PLZ'}),
-		}
+        }
+        widgets = {
+            'lieferung_strasse': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':'Strasse'}),
+            'lieferung_nr': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':'Nr.'}),
+            'lieferung_ort': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':'Ort'}),
+            'lieferung_land': forms.Select(attrs={
+                'class': 'form-control',
+                }),
+            'lieferung_plz': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':'PLZ'}),
+        }
 
 
 
 class KundeEditForm(forms.ModelForm):
-	class Meta:
-		model = User
-		fields = (
-			'username',
-			'first_name',
-			'last_name',
-			'email',
-			'date_joined',
-			'is_active'
-			)
-		widgets = {
-			
-			'username': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'first_name': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'last_name': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'email': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'password': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'date_joined': forms.TextInput(attrs={
-				'class': 'form-control',
-				'readonly':'readonly'}),
-		}
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+            'date_joined',
+            'is_active'
+            )
+        widgets = {
+            
+            'username': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'first_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'last_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'email': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'password': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'date_joined': forms.TextInput(attrs={
+                'class': 'form-control',
+                'readonly':'readonly'}),
+        }
 
 class KundeEditAdvancedForm(forms.ModelForm):
-	class Meta:
-		model = Kunde
-		fields = (
-			'interne_nummer',
-			'firmenname',
-			'rabatt',
-			'newsletter',
-			'phone',
-			'mobile',
-			'birthday'
+    class Meta:
+        model = Kunde
+        fields = (
+            'interne_nummer',
+            'firmenname',
+            'rabatt',
+            'newsletter',
+            'phone',
+            'mobile',
+            'birthday'
 
-			)
-		labels = {
-			'phone': "Telefon",
-			
-		}
-		widgets = {
-			
-			'firmenname': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'interne_nummer': forms.NumberInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'rabatt': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'newsletter': forms.Select(attrs={
-				'class': 'form-control',}),
-			'phone': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'mobile': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'birthday': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-		}
-	
+            )
+        labels = {
+            'phone': "Telefon",
+            
+        }
+        widgets = {
+            
+            'firmenname': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'interne_nummer': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'rabatt': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'newsletter': forms.Select(attrs={
+                'class': 'form-control',}),
+            'phone': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'mobile': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'birthday': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+        }
+    
 class CRMKundeEditModelForm(forms.ModelForm):
-	class Meta:
-		model = Kunde
-		fields = (
-			'vorname',
-			'nachname',
-			'email',
-			'interne_nummer',
-			'firmenname',
-			'rabatt',
-			'phone',
-			'mobile',
-			'birthday'
+    class Meta:
+        model = Kunde
+        fields = (
+            'vorname',
+            'nachname',
+            'email',
+            'interne_nummer',
+            'firmenname',
+            'rabatt',
+            'phone',
+            'mobile',
+            'birthday'
 
-			)
-		labels = {
-			'vorname': "Vorname",
-			'nachname': "Nachname",
-			'email': "E-Mail",
-			'interne_nummer': "Nr.",
-			'firmenname': "Firmenname",
-			'rabatt': "Rabatt %",
-			'phone': "Telefon",
-			'mobile': "Mobile-Nr",
-			'birthday': "Geburtsdatum"
+            )
+        labels = {
+            'vorname': "Vorname",
+            'nachname': "Nachname",
+            'email': "E-Mail",
+            'interne_nummer': "Nr.",
+            'firmenname': "Firmenname",
+            'rabatt': "Rabatt %",
+            'phone': "Telefon",
+            'mobile': "Mobile-Nr",
+            'birthday': "Geburtsdatum"
 
-			}
-		widgets = {
-		'vorname': forms.TextInput(attrs={
-				'class': 'form-control col-3',
-				'placeholder':''}),
-		'nachname': forms.TextInput(attrs={
-				'class': 'form-control col-3',
-				'placeholder':''}),
-		'email': forms.TextInput(attrs={
-				'class': 'form-control col-3',
-				'placeholder':''}),
-			
-			'firmenname': forms.TextInput(attrs={
-				'class': 'form-control col-3',
-				'placeholder':''}),
-			'interne_nummer': forms.NumberInput(attrs={
-				'class': 'form-control col-3',
-				'placeholder':''}),
-			'rabatt': forms.TextInput(attrs={
-				'class': 'form-control col-3',
-				'placeholder':''}),
-			'newsletter': forms.Select(attrs={
-				'class': 'form-control col-3',}),
-			'phone': forms.TextInput(attrs={
-				'class': 'form-control col-3',
-				'placeholder':''}),
-			'mobile': forms.TextInput(attrs={
-				'class': 'form-control col-3',
-				'placeholder':''}),
-			'birthday': forms.TextInput(attrs={
-				'class': 'form-control col-3',
-				'placeholder':''}),
-		}
+            }
+        widgets = {
+        'vorname': forms.TextInput(attrs={
+                'class': 'form-control col-3',
+                'placeholder':''}),
+        'nachname': forms.TextInput(attrs={
+                'class': 'form-control col-3',
+                'placeholder':''}),
+        'email': forms.TextInput(attrs={
+                'class': 'form-control col-3',
+                'placeholder':''}),
+            
+            'firmenname': forms.TextInput(attrs={
+                'class': 'form-control col-3',
+                'placeholder':''}),
+            'interne_nummer': forms.NumberInput(attrs={
+                'class': 'form-control col-3',
+                'placeholder':''}),
+            'rabatt': forms.TextInput(attrs={
+                'class': 'form-control col-3',
+                'placeholder':''}),
+            'newsletter': forms.Select(attrs={
+                'class': 'form-control col-3',}),
+            'phone': forms.TextInput(attrs={
+                'class': 'form-control col-3',
+                'placeholder':''}),
+            'mobile': forms.TextInput(attrs={
+                'class': 'form-control col-3',
+                'placeholder':''}),
+            'birthday': forms.TextInput(attrs={
+                'class': 'form-control col-3',
+                'placeholder':''}),
+        }
 
 
 
 
 class ProduktCreateForm(forms.ModelForm):
-	class Meta:
-		model = Item
-		fields = (
-			'sortierung',
-			'subkategorie',
-			'titel',
-			'artikelnr',
-			'montage',
-			'lieferung',
-			'farbe',
-			'preis', 
-			'preis2', 
-			'preis3', 
-			'preis4',
-			'preis5',
-			'preis6',
-			'preis7',
-			'beschreibung',
-			'titelbild', 
-			'slug',
-			'material', 
-			'nut', 
-			'falz',
-			'falzluft',
-			'fuge',
-			'glasdicke',
-			'hersteller',
+    class Meta:
+        model = Item
+        fields = (
+            'sortierung',
+            'subkategorie',
+            'titel',
+            'artikelnr',
+            'montage',
+            'lieferung',
+            'farbe',
+            'preis', 
+            'preis2', 
+            'preis3', 
+            'preis4',
+            'preis5',
+            'preis6',
+            'preis7',
+            'beschreibung',
+            'titelbild', 
+            'slug',
+            'material', 
+            'nut', 
+            'falz',
+            'falzluft',
+            'fuge',
+            'glasdicke',
+            'hersteller',
 
-			
-			
-			)
+            
+            
+            )
 
-		labels = {
-			
-			'sortierung': "Sortierung",
-			'titel' : "Bezeichnung",
-			'artikelnr' : "Artikel-Nr",
-			'lieferung' : "Lieferung",
-			'montage' : "Typ",
-			'farbe' : "Farbe",
-			'preis': "Preis 1 (PVC bis 2m / Gummi & Stahlzargen usw. bis 25m / Dusch bis 5 Stück / Zubehör)", 
-			'preis2': "Preis 2 (PVC ab 2m / Gummi & Stahlzargen usw. ab 25m / Dusch ab 5 Stück)", 
-			'preis3': "Preis 3 (PVC ab 4m / Gummi & Stahlzargen usw. ab 50m / Dusch ab 10 Stück)", 
-			'preis4': "Preis 4 (Gummi & Stahlzargen usw. ab 100m / Dusch ab 25 Stück)",
-			'preis5': "Preis 5 (Gummi & Stahlzargen usw. ab 200m / Dusch ab 50 Stück)",
-			'preis6': "Preis 6 (Gummi & Stahlzargen usw. ab 500m)",
-			'preis7': "Preis 7 (nur Stahlzargen usw. ab 1000m)",
-			'beschreibung' : "Bemerkung",
-			'slug': "URL",
-			'nut': "Nut:",
-			'falzluft': "Falzluft:",
-			'falz': "Falz:",
-			'fuge': "Fuge:",
-			'glasdicke': "Glasdicke:",
-			'material': "Material:",
-			'hersteller': "Hersteller:",
-		}
+        labels = {
+            
+            'sortierung': "Sortierung",
+            'titel' : "Bezeichnung",
+            'artikelnr' : "Artikel-Nr",
+            'lieferung' : "Lieferung",
+            'montage' : "Typ",
+            'farbe' : "Farbe",
+            'preis': "Preis 1 (PVC bis 2m / Gummi & Stahlzargen usw. bis 25m / Dusch bis 5 Stück / Zubehör)", 
+            'preis2': "Preis 2 (PVC ab 2m / Gummi & Stahlzargen usw. ab 25m / Dusch ab 5 Stück)", 
+            'preis3': "Preis 3 (PVC ab 4m / Gummi & Stahlzargen usw. ab 50m / Dusch ab 10 Stück)", 
+            'preis4': "Preis 4 (Gummi & Stahlzargen usw. ab 100m / Dusch ab 25 Stück)",
+            'preis5': "Preis 5 (Gummi & Stahlzargen usw. ab 200m / Dusch ab 50 Stück)",
+            'preis6': "Preis 6 (Gummi & Stahlzargen usw. ab 500m)",
+            'preis7': "Preis 7 (nur Stahlzargen usw. ab 1000m)",
+            'beschreibung' : "Bemerkung",
+            'slug': "URL",
+            'nut': "Nut:",
+            'falzluft': "Falzluft:",
+            'falz': "Falz:",
+            'fuge': "Fuge:",
+            'glasdicke': "Glasdicke:",
+            'material': "Material:",
+            'hersteller': "Hersteller:",
+        }
 
-		widgets = {
-			'sortierung': forms.TextInput(attrs={
-				'class': 'form-control',
-				}),
-			'artikelnr': forms.TextInput(attrs={
-				'class': 'form-control',
-				}),
-			'kategorie': forms.Select(attrs={
-				'class': 'form-control',
-				}),
-			'subkategorie': forms.Select(attrs={
-				'class': 'form-control',
-				}),
-			'titel': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'artikelnr': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'lieferung': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'montage': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'farbe': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'preis': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'preis2': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'preis3': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'preis4': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'preis5': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'preis6': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'preis7': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			
-			'beschreibung': forms.Textarea(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
+        widgets = {
+            'sortierung': forms.TextInput(attrs={
+                'class': 'form-control',
+                }),
+            'artikelnr': forms.TextInput(attrs={
+                'class': 'form-control',
+                }),
+            'kategorie': forms.Select(attrs={
+                'class': 'form-control',
+                }),
+            'subkategorie': forms.Select(attrs={
+                'class': 'form-control',
+                }),
+            'titel': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'artikelnr': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'lieferung': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'montage': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'farbe': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'preis': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'preis2': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'preis3': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'preis4': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'preis5': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'preis6': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'preis7': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            
+            'beschreibung': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
 
-			'titelbild' : forms.FileInput(attrs={
-				'class': 'form-control',
-				}),
-			
-			'slug': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder': ''}),
+            'titelbild' : forms.FileInput(attrs={
+                'class': 'form-control',
+                }),
+            
+            'slug': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': ''}),
 
-			'nut': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
+            'nut': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
 
-			'falz': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
+            'falz': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
 
-			'falzluft': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
+            'falzluft': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
 
-			'fuge': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
+            'fuge': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
 
-			'glasdicke': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
+            'glasdicke': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
 
-			'material': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			
-			'hersteller': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-		}
-		
+            'material': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            
+            'hersteller': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+        }
+        
 
 class ProduktEditForm(forms.ModelForm):
-	class Meta:
-		model = Item
-		fields = (
-			'sortierung',
-			'kategorie',
-			'subkategorie',
-			'titel',
-			'artikelnr',
-			'montage',
-			'lieferung',
-			'farbe',
-			'preis', 
-			'preis2', 
-			'preis3', 
-			'preis4',
-			'preis5',
-			'preis6',
-			'preis7',
-			'beschreibung',
-			'titelbild', 
-			'slug',
-			'material', 
-			'nut', 
-			'falz',
-			'falzluft',
-			'fuge',
-			'glasdicke',
-			'hersteller',
+    class Meta:
+        model = Item
+        fields = (
+            'sortierung',
+            'kategorie',
+            'subkategorie',
+            'titel',
+            'artikelnr',
+            'montage',
+            'lieferung',
+            'farbe',
+            'preis', 
+            'preis2', 
+            'preis3', 
+            'preis4',
+            'preis5',
+            'preis6',
+            'preis7',
+            'beschreibung',
+            'titelbild', 
+            'slug',
+            'material', 
+            'nut', 
+            'falz',
+            'falzluft',
+            'fuge',
+            'glasdicke',
+            'hersteller',
 
-			
-			
-			)
+            
+            
+            )
 
-		labels = {
-			
-			'sortierung': "Sortierung",
-			'titel' : "Bezeichnung",
-			'artikelnr' : "Artikel-Nr",
-			'lieferung' : "Lieferung",
-			'montage' : "Typ",
-			'farbe' : "Farbe",
-			'preis': "Preis 1 (PVC bis 2m / Gummi & Stahlzargen usw. bis 25m / Dusch bis 5 Stück / Zubehör)", 
-			'preis2': "Preis 2 (PVC ab 2m / Gummi & Stahlzargen usw. ab 25m / Dusch ab 5 Stück)", 
-			'preis3': "Preis 3 (PVC ab 4m / Gummi & Stahlzargen usw. ab 50m / Dusch ab 10 Stück)", 
-			'preis4': "Preis 4 (Gummi & Stahlzargen usw. ab 100m / Dusch ab 25 Stück)",
-			'preis5': "Preis 5 (Gummi & Stahlzargen usw. ab 200m / Dusch ab 50 Stück)",
-			'preis6': "Preis 6 (Gummi & Stahlzargen usw. ab 500m)",
-			'preis7': "Preis 7 (nur Stahlzargen usw. ab 1000m)",
-			'beschreibung' : "Bemerkung",
-			'slug': "URL",
-			'nut': "Nut:",
-			'falzluft': "Falzluft:",
-			'falz': "Falz:",
-			'fuge': "Fuge:",
-			'glasdicke': "Glasdicke:",
-			'material': "Material:",
-			'hersteller': "Hersteller:",
-		}
+        labels = {
+            
+            'sortierung': "Sortierung",
+            'titel' : "Bezeichnung",
+            'artikelnr' : "Artikel-Nr",
+            'lieferung' : "Lieferung",
+            'montage' : "Typ",
+            'farbe' : "Farbe",
+            'preis': "Preis 1 (PVC bis 2m / Gummi & Stahlzargen usw. bis 25m / Dusch bis 5 Stück / Zubehör)", 
+            'preis2': "Preis 2 (PVC ab 2m / Gummi & Stahlzargen usw. ab 25m / Dusch ab 5 Stück)", 
+            'preis3': "Preis 3 (PVC ab 4m / Gummi & Stahlzargen usw. ab 50m / Dusch ab 10 Stück)", 
+            'preis4': "Preis 4 (Gummi & Stahlzargen usw. ab 100m / Dusch ab 25 Stück)",
+            'preis5': "Preis 5 (Gummi & Stahlzargen usw. ab 200m / Dusch ab 50 Stück)",
+            'preis6': "Preis 6 (Gummi & Stahlzargen usw. ab 500m)",
+            'preis7': "Preis 7 (nur Stahlzargen usw. ab 1000m)",
+            'beschreibung' : "Bemerkung",
+            'slug': "URL",
+            'nut': "Nut:",
+            'falzluft': "Falzluft:",
+            'falz': "Falz:",
+            'fuge': "Fuge:",
+            'glasdicke': "Glasdicke:",
+            'material': "Material:",
+            'hersteller': "Hersteller:",
+        }
 
-		widgets = {
-			'sortierung': forms.TextInput(attrs={
-				'class': 'form-control',
-				}),
-			'artikelnr': forms.TextInput(attrs={
-				'class': 'form-control',
-				}),
-			'kategorie': forms.Select(attrs={
-				'class': 'form-control',
-				}),
-			'subkategorie': forms.Select(attrs={
-				'class': 'form-control',
-				}),
-			'titel': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'artikelnr': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'lieferung': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'montage': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'farbe': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'preis': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'preis2': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'preis3': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'preis4': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'preis5': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'preis6': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			'preis7': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			
-			'beschreibung': forms.Textarea(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
+        widgets = {
+            'sortierung': forms.TextInput(attrs={
+                'class': 'form-control',
+                }),
+            'artikelnr': forms.TextInput(attrs={
+                'class': 'form-control',
+                }),
+            'kategorie': forms.Select(attrs={
+                'class': 'form-control',
+                }),
+            'subkategorie': forms.Select(attrs={
+                'class': 'form-control',
+                }),
+            'titel': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'artikelnr': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'lieferung': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'montage': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'farbe': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'preis': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'preis2': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'preis3': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'preis4': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'preis5': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'preis6': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'preis7': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            
+            'beschreibung': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
 
-			'titelbild' : forms.FileInput(attrs={
-				'class': 'form-control',
-				}),
-			
-			'slug': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder': ''}),
+            'titelbild' : forms.FileInput(attrs={
+                'class': 'form-control',
+                }),
+            
+            'slug': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': ''}),
 
-			'nut': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
+            'nut': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
 
-			'falz': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
+            'falz': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
 
-			'falzluft': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
+            'falzluft': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
 
-			'fuge': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
+            'fuge': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
 
-			'glasdicke': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
+            'glasdicke': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
 
-			'material': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-			
-			'hersteller': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':''}),
-		}
-		
+            'material': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            
+            'hersteller': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+        }
+        
 
 
 
 class VersandkostenCreateForm(forms.ModelForm):
-	class Meta:
-		model = ShippingCost
-		fields = ('__all__')
-		labels = {
-			'price_from' : "Warenkorb von",
-			'price_to' : "Warenkorb bis",
-			'shipping_price' : "CHF Versandkosten",
-		}
-		widgets = {
-			
-			'price_from': forms.NumberInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'Betrag von'}),
-			'price_to': forms.NumberInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'Betrag bis',
-				}),
-			'shipping_price': forms.NumberInput(attrs={
-				'class': 'form-control col-6',
-				'placeholder':'z.B. 18',
-				}),
-		}
+    class Meta:
+        model = ShippingCost
+        fields = ('__all__')
+        labels = {
+            'price_from' : "Warenkorb von",
+            'price_to' : "Warenkorb bis",
+            'shipping_price' : "CHF Versandkosten",
+        }
+        widgets = {
+            
+            'price_from': forms.NumberInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder':'Betrag von'}),
+            'price_to': forms.NumberInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder':'Betrag bis',
+                }),
+            'shipping_price': forms.NumberInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder':'z.B. 18',
+                }),
+        }
 
 class AussenmassForm(forms.ModelForm):
-	class Meta:
-		model = OrderItem  # Your model
-		fields = ('aussenbreite', 'aussenhöhe')
-		widgets = {
-			'aussenbreite': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':'z.B. 800mm'}),
-			'aussenhöhe': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder':'z.B. 500mm'})
-		}
+    class Meta:
+        model = OrderItem  # Your model
+        fields = ('aussenbreite', 'aussenhöhe')
+        widgets = {
+            'aussenbreite': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':'z.B. 800mm'}),
+            'aussenhöhe': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':'z.B. 500mm'})
+        }
 
 
 class MarkeChangeForm(forms.ModelForm):
-	class Meta:
-		model = Marke
-		fields = (
-			'name',
-			'slug',
-			'markepic',
-			'marketext',
-			)
-		widgets = {
-			
-			'name': forms.TextInput(attrs={
-				'class': 'form-control col-3',
-				'placeholder':''}),
-			'markepic' : forms.FileInput(attrs={
-				'class': 'form-control',
-				}),
-			
-			'slug': forms.TextInput(attrs={
-				'class': 'form-control',
-				'placeholder': ''}),
-			'marketext': forms.Textarea(attrs={
-				'class': 'form-control col-3',
-				'placeholder':''}),
-		}
+    class Meta:
+        model = Marke
+        fields = (
+            'name',
+            'slug',
+            'markepic',
+            'marketext',
+            )
+        widgets = {
+            
+            'name': forms.TextInput(attrs={
+                'class': 'form-control col-3',
+                'placeholder':''}),
+            'markepic' : forms.FileInput(attrs={
+                'class': 'form-control',
+                }),
+            
+            'slug': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': ''}),
+            'marketext': forms.Textarea(attrs={
+                'class': 'form-control col-3',
+                'placeholder':''}),
+        }
+          
+
+
+# Bezeichnung   
+
+class BezeichnungForm(forms.ModelForm):
+    class Meta:
+        model = Bezeichnung
+        fields = ['name']
+        labels = {
+            'name': "Bezeichnung"
+        }
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control col-6',
+                'placeholder': 'Bezeichnung eingeben'
+            })
+        }
+
+
+class BestellungForm(forms.ModelForm):
+    class Meta:
+        model = Elemente_Bestellungen
+        fields = ['kunden_nr', 'montage', 'status']  # start_date will be auto
+    def __init__(self, *args, **kwargs):
+        super(BestellungForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control col-6'})

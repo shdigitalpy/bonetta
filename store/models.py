@@ -32,6 +32,7 @@ ANONYM_CHOICES = (
 	)
 
 KANTON_CHOICES = (
+	("", "Kanton wählen"),
     ('Aargau', 'Aargau'),
     ('Appenzell Innerrhoden', 'Appenzell Innerrhoden'),
     ('Appenzell Ausserrhoden', 'Appenzell Ausserrhoden'),
@@ -99,7 +100,7 @@ class LieferantenBestellungenArtikel(models.Model):
 
 STATUS_CHOICES = [
         ("offen", "offen"),
-        ("bestellt", "bestellt"),
+        ("teilweise", "teilweise"),
         ("bei Lieferant", "bei Lieferant"),
         ("erledigt", "erledigt"),
     ]
@@ -109,6 +110,7 @@ class Elemente_Bestellungen(models.Model):
     kunden_nr = models.CharField(max_length=255, null=True, blank=True)
     montage = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="offen", verbose_name="Status")
+    notizfeld = models.CharField(max_length=500, null=True, blank=True, verbose_name="Notizfeld")
 
   
     class Meta:
@@ -480,6 +482,12 @@ class ShippingAddress(models.Model):
 	def __str__(self):
 		return self.user.username + ' ' + str(self.lieferung_strasse) + ' '+ str(self.lieferung_nr) + ', ' + str(self.lieferung_plz) + ' '+ str(self.lieferung_ort)
 
+# new model -> Bezeichnung creating and connect to Elemente model
+class Bezeichnung(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.name
 
 class Kunde(models.Model):
 	user = models.OneToOneField(User, unique=True, related_name ='profile', on_delete=models.CASCADE,null=True, blank=True)
@@ -496,6 +504,7 @@ class Kunde(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 	last_service = models.DateTimeField(null=True, blank=True)
 	zusatz = models.CharField(max_length=255, null=True, blank=True)
+	done = models.BooleanField(default=False)
 
 	class Meta:
 		ordering = ['id']
@@ -532,9 +541,6 @@ class Kunde(models.Model):
 		return self.kunden_elemente.count()
 
 
-
-
-
 class CRMLager(models.Model):
 	titel = models.CharField(max_length=255, null=True, blank=True)
 	aussenbreite = models.IntegerField(null=True, blank=True)
@@ -559,7 +565,7 @@ class CRMAddress(models.Model):
 	crm_ort = models.CharField(max_length=255, null=True, blank=True)
 	crm_land = CountryField(multiple=False)
 	crm_plz = models.CharField(max_length=255, null=True, blank=True)
-	crm_kanton = models.CharField(max_length=255, null=True, blank=True, choices=KANTON_CHOICES, default="Zürich")
+	crm_kanton = models.CharField(max_length=255, null=True, blank=True, choices=KANTON_CHOICES, default="")
 	address_type = models.CharField(max_length=500, null=True, blank=True, choices=ADDRESS_CHOICES)
 
 	class Meta:
@@ -572,6 +578,7 @@ class CRMAddress(models.Model):
 
 class Lieferanten(models.Model):
 	number = models.IntegerField(null=True, blank=True)
+	our_kundennumber = models.IntegerField(null=True, blank=True)
 	name = models.CharField(max_length=255, null=True, blank=True) 
 	adresse = models.CharField(max_length=255, null=True, blank=True) 
 	plz = models.CharField(max_length=255, null=True, blank=True) 
@@ -665,6 +672,7 @@ class Elemente(models.Model):
 	lieferant = models.ForeignKey(Lieferanten, related_name ='elemente_lieferanten', on_delete=models.SET_NULL, null=True, blank=True)
 	artikel = models.ForeignKey(Artikel, related_name='artikel_elemente', on_delete=models.SET_NULL, null=True, blank=True)
 	bezeichnung = models.CharField(max_length=255, blank=True, null=True)
+	bezeichnung_new = models.ForeignKey(Bezeichnung, related_name='elementebezeichnung', on_delete=models.SET_NULL, null=True, blank=True)
 
 	def elemente_laufmeter(self):
 	    # Use the dimensions from `Elemente` if available
@@ -711,6 +719,3 @@ class Objekte(models.Model):
 
 	def __str__(self):
 		return str(self.serie) + ' ' + self.modell + ' ' + self.typ
-
-
-

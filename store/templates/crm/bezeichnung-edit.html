@@ -1,5 +1,6 @@
 {% extends 'base-cms.html' %}
-{% block title %}Elemente in Bestellung bearbeiten{% endblock %}
+{% block title %}Bezeichnung anpassen{% endblock %}
+
 {% block content %}
 
 <style>
@@ -42,14 +43,18 @@
 
 
 </style>
-
 <div class="container">
-    <h2>Elemente in Bestellung bearbeiten</h2>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary ml-4">Speichern</button>
-        <a href="{% url 'store:elemente_bestellung_detail' bestellung.id betrieb %}" class="btn btn-secondary">Abbrechen</a>
-    </form>
+    <h2>Bezeichnung anpassen</h2>
+    <div class="form-group">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            
+            
+                <button type="submit" class="btn suche-btn">Speichern</button>
+                <a href="{% url 'store:bezeichnung_list' %}" class="btn reset-btn">Abbrechen</a>
+          
+        </form>
+    </div>
 </div>
 {% endblock %}

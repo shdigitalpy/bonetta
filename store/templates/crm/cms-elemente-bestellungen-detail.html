@@ -4,34 +4,80 @@
 {% block title %}Bestellungsdetails{% endblock %}
 
 
-<style>
-   .flexbox-header{
-       padding: 40px 20px;
-       background-color: #e4e3e8;
-    }
-    .suche-btn, .reset-btn{
-      background-color: #29384f;
-      border: 2px solid #29384f !important;
-      padding: 8px;
-      font-weight: 600;
-      color: #fff;
-      border-radius: 10px;
-      transition: .3s all;
-    }
 
-    
-    .suche-btn:hover {
-      background-color: transparent;
-       color: #29384f;
-    }
-    .reset-btn:hover{
-      background-color: transparent;
-        color: #29384f;
-    }
-   
-  </style>
 
 {% block content %}
+
+<style>
+    .flexbox {
+        align-items: center;
+        border-radius: 40px;
+    }
+
+    .price-code-btn {
+        background-color: #29384f;
+        border-color: #29384f;
+        border-width: 2px;
+        font-weight: 600 !important;
+        padding: .375rem .75rem;
+        font-size: 18px;
+        color: #fff;
+        transition: .3s all;
+        border-radius: 10px;
+    }
+
+    .form-control {
+        padding: .5rem .75rem;
+        font-size: 1rem;
+    }
+
+    .price-code-btn:hover {
+        background-color: #fff;
+        border-color: #29384f;
+        color: #29384f;
+    }
+
+    #textsuche {
+        border-radius: 10px;
+    }
+
+    .suche-btn,
+    .reset-btn {
+        background-color: #29384f;
+        border: 2px solid #29384f !important;
+        padding: 8px;
+        font-weight: 600;
+        color: #fff;
+        border-radius: 10px;
+        transition: .3s all;
+    }
+
+
+    .suche-btn:hover {
+        background-color: transparent;
+        color: #29384f;
+    }
+
+    .reset-btn:hover {
+        background-color: transparent;
+        color: #29384f;
+    }
+
+    .flexbox-header {
+        padding: 40px 20px;
+        background-color: #e4e3e8;
+    }
+
+    .flexbox .h2 {
+        color: #29384f;
+        font-weight: 800;
+    }
+
+    .search-box {
+        margin-right: 250px;
+    }
+</style>
+
     <div class="flexbox flexbox-header d-flex justify-content-between align-items-start">
   <div class="h2">
     Auftrags-Nr. {{ bestellung.id }}<br> {{ betrieb }}
@@ -47,6 +93,7 @@
             <th>Artikel</th>
             <th>Masse</th>
             <th>Aktion</th>
+            <th>Notiz</th>
         </tr>
     </thead>
     <tbody>
@@ -106,6 +153,7 @@
                     <i class="fas fa-trash-alt"></i>
                 </a>
             </td>
+            <td>{{ bestellung.notizfeld }}</td>
         </tr>
         {% empty %}
         <tr>
@@ -118,14 +166,35 @@
 
 
     <!-- Bestellung an Lieferant & Position hinzufügen (Buttons nebeneinander) -->
-    <div class="mt-4 d-flex gap-2">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmOrderModal">
-            <i class="fas fa-shopping-cart"></i> Bestellung senden
-        </button>
-        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addPositionModal">
-            Position hinzufügen
-        </button>
+    <div class="mt-4 d-flex flex-wrap">
+        <div class="mr-2 mb-2">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addPositionModal">
+                Position hinzufügen
+            </button>
+        </div>
+    
+        <div class="mr-2 mb-2">
+            <form method="post" action="{% url 'store:elemente_bestellung_delete' bestellung.id betrieb %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Bist du sicher, dass du diesen Auftrag löschen möchtest?');">
+                    <i class="fas fa-trash-alt"></i> Auftrag löschen
+                </button>
+            </form>
+        </div>
+    
+        <div class="mr-2 mb-2">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#notizfeldModal">
+                <i class="fas fa-sticky-note"></i> Notizfeld bearbeiten
+            </button>
+        </div>
+    
+        <div class="mr-2 mb-2">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmOrderModal">
+                <i class="fas fa-shopping-cart"></i> Bestellung senden
+            </button>
+        </div>
     </div>
+    
 
     <!-- Bestellung senden Bestätigung Modal -->
     <div class="modal fade" id="confirmOrderModal" tabindex="-1" role="dialog" aria-labelledby="confirmOrderModalLabel" aria-hidden="true">
@@ -188,4 +257,33 @@
             </div>
         </div>
     </div>
+
+    <!-- Notizfeld Modal -->
+<div class="modal fade" id="notizfeldModal" tabindex="-1" role="dialog" aria-labelledby="notizfeldModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <form method="POST" action="{% url 'store:elemente_bestellung_detail' bestellung.id betrieb %}">
+        {% csrf_token %}
+        <input type="hidden" name="update_notizfeld" value="true">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="notizfeldModalLabel">Notizfeld bearbeiten</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Schließen">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="notizfeldTextarea">Notiz</label>
+              <textarea class="form-control" id="notizfeldTextarea" name="notizfeld" rows="4">{{ bestellung.notizfeld }}</textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+            <button type="submit" class="btn btn-primary">Speichern</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  
 {% endblock %}
