@@ -134,7 +134,6 @@ def elemente_bestellung_detail(request, pk, betrieb):
     # Fetch all Lieferanten (suppliers)
     lieferanten = Lieferanten.objects.all()
 
-    
     def get_dichtungstyp(element_input):
         if isinstance(element_input, Elemente):
             element = element_input
@@ -146,7 +145,6 @@ def elemente_bestellung_detail(request, pk, betrieb):
                 return "Unbekannt"
         
         return element.bemerkung if element and element.bemerkung else "Unbekannt"
-
 
     # Create list of elements with additional details from `ElementeCartItem` model
     elemente_list = []
@@ -297,7 +295,6 @@ def elemente_bestellung_detail(request, pk, betrieb):
     }
 
     return render(request, "crm/cms-elemente-bestellungen-detail.html", context)
-
 
 
 
