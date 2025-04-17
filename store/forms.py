@@ -280,6 +280,10 @@ class LieferantenForm(forms.ModelForm):
                 'class': 'form-control col-6',
                 'placeholder': ''
             }),
+            'our_kundennumber': forms.TextInput(attrs={
+                'class': 'form-control col-12',
+                'placeholder': ''
+            }),
             'name': forms.TextInput(attrs={
                 'class': 'form-control col-6',
                 'placeholder': ''
@@ -410,6 +414,7 @@ class CRMKundeForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={'class': 'form-control col-6'}),
             'zusatz': forms.TextInput(attrs={'class': 'form-control col-6'}),
             'done': forms.CheckboxInput(attrs={'class': 'form-check-input', 'style': 'margin-left: 10px; margin-top: 7px;'}),
+
         }
 # updated form for part-3
 class CRMKundenForm(forms.ModelForm):
@@ -1582,6 +1587,7 @@ class BestellungForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(BestellungForm, self).__init__(*args, **kwargs)
+
         
         # Dynamically load kunden_nr choices from Kunde.interne_nummer
         kunden_choices = Kunde.objects.exclude(interne_nummer__isnull=True).values_list('interne_nummer', 'interne_nummer')
@@ -1598,5 +1604,9 @@ class BestellungForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
+
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control col-6'})
 
 
