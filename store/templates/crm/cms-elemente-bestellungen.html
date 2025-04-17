@@ -116,9 +116,40 @@
 
                <td>{{ bestellung.start_date|date:"d.m.Y" }}</td>
                <td >
-                  {% if bestellung.id and bestellung.betrieb_person %}
-                <a href="{% url 'store:elemente_bestellung_detail' bestellung.id bestellung.betrieb_person %}" style="text-decoration: underline !important;">
+                {% if bestellung.interne_nummer %}
+                  <a href="{% url 'store:elemente_bestellung_detail' bestellung.interne_nummer bestellung.betrieb_person %}">
                     {{ bestellung.id }}
+                  </a>
+                  {% else %}
+                    {{ bestellung.id }}
+                {% endif %}
+              
+              </td>
+              <td>
+                <a href="#"
+                  style="text-decoration: underline !important;"
+                  class="kunde-info-link"
+                  data-toggle="modal"
+                  data-target="#kundeModal"
+                  data-kunde='{
+                    "firmenname": "{{ bestellung.betrieb_person|escapejs }}",
+                    "vorname": "{{ kunde.vorname|default:''|escapejs }}",
+                    "nachname": "{{ kunde.nachname|default:''|escapejs }}",
+                    "phone": "{{ kunde.phone|default:''|escapejs }}",
+                    "mobile": "{{ kunde.mobile|default:''|escapejs }}",
+                    "email": "{{ kunde.email|default:''|escapejs }}",
+                    "addresses": [{% for address in kunde.user.address.all %}
+                      {
+                        "strasse": "{{ address.rechnung_strasse|default:''|escapejs }}",
+                        "nr": "{{ address.rechnung_nr|default:''|escapejs }}",
+                        "plz": "{{ address.rechnung_plz|default:''|escapejs }}",
+                        "ort": "{{ address.rechnung_ort|default:''|escapejs }}",
+                        "land": "{{ address.rechnung_land|default:''|escapejs }}"
+                      }{% if not forloop.last %},{% endif %}{% endfor %}
+                    ]
+                }'
+                >
+                  {{ bestellung.interne_nummer }}
                 </a>
             {% else %}
                 {{ bestellung.id }}
