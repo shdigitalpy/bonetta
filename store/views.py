@@ -299,6 +299,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
 
 
 
+
 @staff_member_required
 def elemente_bestellung_delete(request, pk, betrieb):
     bestellung = get_object_or_404(Elemente_Bestellungen, id=pk)
