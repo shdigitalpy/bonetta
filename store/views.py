@@ -3270,19 +3270,31 @@ def bestellung_erfassen_view(request):
         form = BestellungForm(request.POST)
         kunden_nr = request.POST.get('kunden_nr')
 
-        if not Kunde.objects.filter(interne_nummer=kunden_nr).exists():
+        # Check if Kunde exists
+        kunde = Kunde.objects.filter(interne_nummer=kunden_nr).first()
+        
+        if not kunde:
             messages.error(request, f"Kunde mit Nummer '{kunden_nr}' wurde nicht gefunden.")
+        elif not Kunde.objects.filter(interne_nummer=kunden_nr).exists():
+            messages.error(request, f"Kunde mit Nummer '{kunden_nr}' wurde nicht gefunden.")
+        
+        # Check if the Kunde has at least one related 'Elemente' record
+        elif not kunde.kunden_elemente.exists():
+            messages.error(request, "Dieser Kunde hat noch keine Elemente. Eine Bestellung kann nur erfasst werden, wenn mindestens ein Element vorhanden ist.")
+        
+        # If form is valid, proceed with saving the Bestellung
         elif form.is_valid():
             bestellung = form.save(commit=False)
             bestellung.kunden_nr = kunden_nr  # Kunden-Nr. manuell setzen
-            bestellung.save()  # Nur hier wird gespeichert
+            bestellung.save()  # Speichern der Bestellung
             messages.success(request, "Die Bestellung wurde erfolgreich erfasst.")
-            return redirect('store:elemente_bestellungen')
+            return redirect('store:elemente_bestellungen')  # Redirect after success
         else:
             messages.error(request, "Bitte überprüfen Sie Ihre Eingaben.")
     else:
         form = BestellungForm()
 
+    # Fetch list of customers excluding customers with no 'interne_nummer'
     kunden_liste = Kunde.objects.exclude(interne_nummer__isnull=True)
 
     return render(request, 'crm/bestellung_form.html', {

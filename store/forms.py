@@ -1582,17 +1582,13 @@ class BestellungForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Standardwert für wer setzen, falls leer
-        self.fields['wer'].initial = 'lager'
+        self.fields['wer'].initial = 'lager'  # Set default choice
 
-    def save(self, commit=True):
+    def save(self, commit=False):
         instance = super().save(commit=False)
-        if not self.instance.pk:
+        if not instance.pk:
             instance.status = 'offen'
-        if commit:
-            instance.save()
         return instance
-
 
 
 
