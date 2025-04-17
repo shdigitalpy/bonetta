@@ -126,16 +126,7 @@ def lieferant_send_order_email(request, pk):
 
 @staff_member_required
 def elemente_bestellung_detail(request, pk, betrieb):
-    # bestellung = get_object_or_404(Elemente_Bestellungen, id=pk)
-    # bestellung = Elemente_Bestellungen.objects.all()
-    kunde = get_object_or_404(Kunde, interne_nummer=pk)
-
-    if not kunde.user or kunde.user.username.lower() != betrieb.lower():
-        messages.error(request, "Betrieb stimmt nicht überein.")
-        return redirect("store:elemente_bestellungen")
-
-    bestellungen = Elemente_Bestellungen.objects.filter(kunde=kunde).order_by('-start_date')
-    bestellung = bestellungen.first()
+    bestellung = get_object_or_404(Elemente_Bestellungen, id=pk)
 
     # Get all cart items for the order
     cart_items = ElementeCartItem.objects.filter(order=bestellung).select_related("artikel")
@@ -213,6 +204,10 @@ def elemente_bestellung_detail(request, pk, betrieb):
                     status = LieferantenStatus.objects.create(order=lieferanten_bestellung, name="Versendet")
                     lieferanten_bestellung.status.set([status])
 
+                    if bestellung.wer == "lager":
+                        bestellung.wer = "lieferant"
+                        bestellung.save()
+
                     for bestell_artikel in bestellung_artikel_list:
                         LieferantenBestellungenArtikel.objects.create(
                             order=lieferanten_bestellung,
@@ -270,11 +265,13 @@ def elemente_bestellung_detail(request, pk, betrieb):
                     existing_item.save()
                     messages.success(request, "Menge erfolgreich aktualisiert.")
                 else:
-                    ElementeCartItem.objects.create(order=bestellung, element_nr=element_nr, artikel=artikel, anzahl=anzahl)
+                    element = Elemente.objects.filter(id=element_nr).first()
+                    
+                    ElementeCartItem.objects.create(order=bestellung, element_nr=element, artikel=artikel, anzahl=anzahl)
                     messages.success(request, "Position erfolgreich hinzugefügt.")
 
                 return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
-            
+
         elif "update_notizfeld" in request.POST:
             notiz = request.POST.get("notizfeld", "")
             bestellung.notizfeld = notiz
@@ -290,11 +287,11 @@ def elemente_bestellung_detail(request, pk, betrieb):
             "status": bestellung.status,
             "start_date": bestellung.start_date,
             "montage": bestellung.montage,
-            "notizfeld": bestellung.notizfeld,
+            "notizfeld": bestellung.notizfeld
         },
-        "elemente": bestellung.elemente_set.all() if hasattr(bestellung, "elemente_set") else [],
-        "lieferanten": bestellung.lieferanten_set.all() if hasattr(bestellung, "lieferanten_set") else [],
-        "betrieb": kunde.user.username if kunde.user else "Unbekannt",
+        "elemente": elemente_list,
+        "lieferanten": lieferanten,
+        "betrieb": betrieb,
         "show_lieferantenartikel": show_lieferantenartikel,
         "error_message": error_message,
     }
@@ -304,20 +301,21 @@ def elemente_bestellung_detail(request, pk, betrieb):
 
 
 
+
 @staff_member_required
-def elemente_bestellung_delete(request, element_nr, bestellung_id):
-    bestellung = get_object_or_404(Elemente_Bestellungen, id=bestellung_id)
+def elemente_bestellung_delete(request, pk, betrieb):
+    bestellung = get_object_or_404(Elemente_Bestellungen, id=pk)
     kunde = get_object_or_404(Kunde, interne_nummer=bestellung.kunden_nr)
-    betrieb = kunde.firmenname
-    eintraege = ElementeCartItem.objects.filter(order=bestellung, element_nr=element_nr)
-    
+
+    eintraege = ElementeCartItem.objects.filter(order=bestellung)
     if not eintraege.exists():
-        messages.error(request, "Das Element wurde nicht gefunden.")
-        return redirect("store:elemente_bestellung_detail", pk=bestellung.id, betrieb=betrieb)
-    
+        messages.error(request, "Keine Positionen vorhanden.")
+        return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
+
     eintraege.delete()
-    messages.info(request, "Das Element wurde gelöscht.")
-    return redirect("store:elemente_bestellung_detail", pk=bestellung.id, betrieb=betrieb)
+    messages.info(request, "Alle Positionen wurden gelöscht.")
+    return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
+
 
 @staff_member_required
 def elemente_bestellung_edit(request, element_nr, bestellung_id):
@@ -342,7 +340,12 @@ def elemente_bestellung_edit(request, element_nr, bestellung_id):
     return render(request, "crm/crm-elemente-bestellung-edit.html", context)
 
 
-
+@staff_member_required
+def delete_elemente_bestellungen(request, pk):
+    bestellung = get_object_or_404(Elemente_Bestellungen, pk=pk)
+    bestellung.delete()
+    messages.success(request, f"Bestellung #{pk} wurde gelöscht.")
+    return redirect('store:elemente_bestellungen')
 
 
 @staff_member_required
@@ -360,7 +363,7 @@ def elemente_bestellungen(request):
     bestellungen_list = []
     for bestellung in bestellungen:
         kunde = Kunde.objects.filter(interne_nummer=bestellung.kunden_nr).first()
-        if not kunde or not kunde.user:
+        if not kunde:
             continue
         bestellungen_list.append({
             "id": bestellung.id,
@@ -368,15 +371,18 @@ def elemente_bestellungen(request):
             "status": bestellung.status,
             "start_date": bestellung.start_date,
             "montage": bestellung.montage,
-            "betrieb_person": kunde.user.username,
-            "interne_nummer": kunde.interne_nummer,
+            "betrieb_person": kunde.firmenname,
+            "kunde": kunde,  # ➕ Das ist wichtig für das Modal
+            "wer": bestellung.wer,
+            "wer_display": bestellung.get_wer_display(),  # <--- das hier
         })
 
     context = {
-        "bestellungen": bestellungen_list,  # ✅ Pass the updated list to the template
+        "bestellungen": bestellungen_list,
     }
 
     return render(request, "crm/cms-elemente-bestellungen.html", context)
+
 
 
 def bestellformular_cart(request):
@@ -445,7 +451,7 @@ def bestellformular_cart(request):
 
                     # ✅ Ensure an order exists
                     order, created = Elemente_Bestellungen.objects.get_or_create(
-                        kunden_nr=str(kunden_nr), status="offen"
+                        kunden_nr=str(kunden_nr), status="offen", wer="lager"
                     )
 
                     if created:
@@ -1869,6 +1875,16 @@ def product_detail(request, slug):
 
         return redirect('store:anfrage_danke')  # oder was auch immer dein URL-Name ist
 
+    # Normale GET-Anzeige
+    context = {
+        'item': item,
+        'form': form,
+    }
+    return render(request, 'shop/descriptions.html', context)
+
+
+def anfrage_danke_view(request):
+    return render(request, 'shop/anfrage-danke.html')
 
     # Normale GET-Anzeige
     context = {
@@ -3248,29 +3264,40 @@ def logout_user(request):
 
 
 
-# code for requirement no-4
-
+@staff_member_required
 def bestellung_erfassen_view(request):
     if request.method == 'POST':
         form = BestellungForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('store:elemente_bestellungen')  # or redirect back
+        kunden_nr = request.POST.get('kunden_nr')
+
+        # Check if Kunde exists
+        kunde = Kunde.objects.filter(interne_nummer=kunden_nr).first()
+        
+        if not kunde:
+            messages.error(request, f"Kunde mit Nummer '{kunden_nr}' wurde nicht gefunden.")
+        elif not Kunde.objects.filter(interne_nummer=kunden_nr).exists():
+            messages.error(request, f"Kunde mit Nummer '{kunden_nr}' wurde nicht gefunden.")
+        
+        # Check if the Kunde has at least one related 'Elemente' record
+        elif not kunde.kunden_elemente.exists():
+            messages.error(request, "Dieser Kunde hat noch keine Elemente. Eine Bestellung kann nur erfasst werden, wenn mindestens ein Element vorhanden ist.")
+        
+        # If form is valid, proceed with saving the Bestellung
+        elif form.is_valid():
+            bestellung = form.save(commit=False)
+            bestellung.kunden_nr = kunden_nr  # Kunden-Nr. manuell setzen
+            bestellung.save()  # Speichern der Bestellung
+            messages.success(request, "Die Bestellung wurde erfolgreich erfasst.")
+            return redirect('store:elemente_bestellungen')  # Redirect after success
+        else:
+            messages.error(request, "Bitte überprüfen Sie Ihre Eingaben.")
     else:
         form = BestellungForm()
-    
+
+    # Fetch list of customers excluding customers with no 'interne_nummer'
+    kunden_liste = Kunde.objects.exclude(interne_nummer__isnull=True)
+
     return render(request, 'crm/bestellung_form.html', {
         'bestellung_form': form,
+        'kunden_liste': kunden_liste,
     })
-
-
-def elemente_bestellung_delete(request, pk, betrieb):
-    bestellung = get_object_or_404(Elemente_Bestellungen, id=pk)
-
-    if request.method == "POST":
-        bestellung.delete()
-        messages.success(request, f"Auftrag #{pk} wurde erfolgreich gelöscht.")
-        return redirect("store:elemente_bestellungen")
-
-    messages.error(request, "Ungültige Anfrage.")
-    return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)

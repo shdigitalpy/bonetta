@@ -110,14 +110,14 @@
 
 <div class="flexbox flexbox-header">
 
-    <div class="second-header">
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <a class="btn btn-sm price-code-btn" href="{% url 'store:cms_elemente_create' kunde_id %}">Erfassen</a>
-        </form>
-        <a  href="{% url 'store:crm_new_kunden' %}" style="border: none;" class="btn btn-light btn-sm reset-btn">Zurück zur Kundenliste</a>
-        <a  href="{% url 'store:cms_elemente_statistik' %}" style="border: none;" class="btn btn-light btn-sm reset-btn">Statistik Elemente</a>
-    </div>
+       <div class="second-header">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <a class="btn btn-sm price-code-btn" href="{% url 'store:cms_elemente_create' kunde_id %}">Erfassen</a>
+    </form>
+    <a  href="{% url 'store:crm_new_kunden' %}" style="border: none;" class="btn btn-light btn-sm reset-btn">Zurück zur Kundenliste</a>
+    <a  href="{% url 'store:cms_elemente_statistik' %}" style="border: none;" class="btn btn-light btn-sm reset-btn">Statistik Elemente</a>
+</div>
     <!-- Search form -->
     <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="">
         {% csrf_token %}

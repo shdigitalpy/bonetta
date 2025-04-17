@@ -280,6 +280,10 @@ class LieferantenForm(forms.ModelForm):
                 'class': 'form-control col-6',
                 'placeholder': ''
             }),
+            'our_kundennumber': forms.TextInput(attrs={
+                'class': 'form-control col-12',
+                'placeholder': ''
+            }),
             'name': forms.TextInput(attrs={
                 'class': 'form-control col-6',
                 'placeholder': ''
@@ -410,6 +414,7 @@ class CRMKundeForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={'class': 'form-control col-6'}),
             'zusatz': forms.TextInput(attrs={'class': 'form-control col-6'}),
             'done': forms.CheckboxInput(attrs={'class': 'form-check-input', 'style': 'margin-left: 10px; margin-top: 7px;'}),
+
         }
 # updated form for part-3
 class CRMKundenForm(forms.ModelForm):
@@ -1558,45 +1563,34 @@ class BezeichnungForm(forms.ModelForm):
         }
 
 
+
 class BestellungForm(forms.ModelForm):
     YES_NO_CHOICES = [
-        (True, 'Yes'),
-        (False, 'No'),
+        (True, 'Ja'),
+        (False, 'Nein'),
     ]
 
     montage = forms.ChoiceField(
         choices=YES_NO_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-control col-6'}),
+        widget=forms.Select(attrs={'class': 'form-control'}),
         label='Montage'
-    )
-
-    kunden_nr = forms.ChoiceField(
-        choices=[],
-        widget=forms.Select(attrs={'class': 'form-control col-6'}),
-        label='Kundennummer'
     )
 
     class Meta:
         model = Elemente_Bestellungen
-        fields = ['kunden_nr', 'montage']
+        fields = ['montage', 'wer']
 
     def __init__(self, *args, **kwargs):
-        super(BestellungForm, self).__init__(*args, **kwargs)
-        
-        # Dynamically load kunden_nr choices from Kunde.interne_nummer
-        kunden_choices = Kunde.objects.exclude(interne_nummer__isnull=True).values_list('interne_nummer', 'interne_nummer')
-        self.fields['kunden_nr'].choices = [(str(k[0]), str(k[1])) for k in kunden_choices]
+        super().__init__(*args, **kwargs)
+        self.fields['wer'].initial = 'lager'  # Set default choice
 
-        for name, field in self.fields.items():
-            if name not in ['montage', 'kunden_nr']:  # already styled above
-                field.widget.attrs.update({'class': 'form-control col-6'})
-
-    def save(self, commit=True):
+    def save(self, commit=False):
         instance = super().save(commit=False)
-        if not self.instance.pk:
+        if not instance.pk:
             instance.status = 'offen'
-        if commit:
-            instance.save()
         return instance
+
+
+
 
 
