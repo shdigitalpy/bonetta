@@ -3264,19 +3264,18 @@ def logout_user(request):
 
 
 
+@staff_member_required
 def bestellung_erfassen_view(request):
     if request.method == 'POST':
         form = BestellungForm(request.POST)
         kunden_nr = request.POST.get('kunden_nr')
 
-        # Optional: prüfen ob Kunden-Nr. existiert
         if not Kunde.objects.filter(interne_nummer=kunden_nr).exists():
             messages.error(request, f"Kunde mit Nummer '{kunden_nr}' wurde nicht gefunden.")
         elif form.is_valid():
             bestellung = form.save(commit=False)
-            bestellung.kunden_nr = kunden_nr  # <- direkt als Text speichern
-            bestellung.wer = "lager"
-            bestellung.save()
+            bestellung.kunden_nr = kunden_nr  # Kunden-Nr. manuell setzen
+            bestellung.save()  # Nur hier wird gespeichert
             messages.success(request, "Die Bestellung wurde erfolgreich erfasst.")
             return redirect('store:elemente_bestellungen')
         else:
