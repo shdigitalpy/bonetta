@@ -100,10 +100,16 @@ class LieferantenBestellungenArtikel(models.Model):
 
 STATUS_CHOICES = [
         ("offen", "offen"),
-        ("teilweise", "teilweise"),
+        ("bestellt", "bestellt"),
         ("bei Lieferant", "bei Lieferant"),
         ("erledigt", "erledigt"),
     ]
+
+WER_CHOICES = [
+    ('lager', 'Lager'),
+    ('lieferant', 'Lieferant'),
+    ('produktion', 'Produktion'),
+]
 
 class Elemente_Bestellungen(models.Model):
     start_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
@@ -111,15 +117,14 @@ class Elemente_Bestellungen(models.Model):
     montage = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="offen", verbose_name="Status")
     notizfeld = models.CharField(max_length=500, null=True, blank=True, verbose_name="Notizfeld")
-    kunde = models.ForeignKey('Kunde', on_delete=models.SET_NULL, null=True, blank=True)
-
+    wer = models.CharField(max_length=50, choices=WER_CHOICES, null=True, blank=True,default="lager", verbose_name="Zuständigkeit")
   
     class Meta:
         ordering = ['id']
         verbose_name = 'Elemente Bestellung'
         verbose_name_plural = 'Elemente Bestellungen'
 
-    def _str_(self):
+    def __str__(self):
         return f"{self.kunden_nr}"
 
 

@@ -1,66 +1,82 @@
 {% extends 'base-cms.html' %}
 {% load static %}
-{% block title %}Auftrag Erfassen{% endblock %}
+{% block title %}Bestellung Erfassen{% endblock %}
 
 {% block content %}
-
-<style>
-    .form-group {
-        padding: 5px;
-        margin-left: 2%;
-    }
-    form {
-        background-color: #e4e3e8;
-        padding: 30px 10px;
-        border-radius: 10px;
-    }
-
-    .suche-btn{
-    cursor:pointer;
-    margin-left:1.5rem;
-      background-color: #29384f;
-      border: 2px solid #29384f !important;
-      padding: 8px;
-      font-weight: 600;
-      color: #fff;
-      border-radius: 10px;
-      transition: .3s all;
-    }
-
-    .reset-btn{
-      
-      border: 2px solid #29384f !important;
-      padding: 8px;
-      font-weight: 600;
-      color: black;
-      border-radius: 10px;
-      transition: .3s all;
-    }
-
-    .suche-btn:hover {
-      background-color: transparent;
-       color: #29384f;
-    }
-
-</style>
-
-
 <div class="container">
-    <h2>Auftrag Erfassen</h2>
+    <h2>Bestellung erfassen</h2>
     
-    <div class="form-group">
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ bestellung_form.as_p }}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
 
-            <div class="row mt-3">
-                <div class="col">
-                    <button type="submit" class="btn suche-btn">Speichern</button>
-                    <a href="{% url 'store:elemente_bestellungen' %}" class="btn reset-btn">Abbrechen</a>
-                </div>
-            </div>
-        </form>
-    </div>
+        <!-- Kundensuche -->
+        <div class="form-group">
+            <label for="kunde_search">Kunde suchen (Firmenname oder Nummer)</label>
+            <input 
+                type="text" 
+                id="kunde_search" 
+                class="form-control" 
+                placeholder="Kunde suchen..." 
+                onkeyup="fetchKunden()" 
+                autocomplete="off">
+            
+            <!-- Hidden Input -->
+            <input type="hidden" id="selected_kunde" name="kunden_nr">
+            <ul id="kunden_list" class="list-group mt-2"></ul>
+        </div>
+
+        <!-- Montage -->
+        <div class="form-group">
+            <label for="id_montage">Montage</label>
+            {{ bestellung_form.montage }}
+            {% if bestellung_form.montage.errors %}
+                <div class="text-danger">{{ bestellung_form.montage.errors|striptags }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Buttons -->
+        <div class="form-group mt-3">
+            <button type="submit" class="btn btn-primary btn-md">
+                Speichern <span class="fas fa-check-circle"></span>
+            </button>
+            <a href="{% url 'store:elemente_bestellungen' %}" class="btn btn-secondary btn-md ml-2">
+                Abbrechen <span class="fas fa-times"></span>
+            </a>
+        </div>
+    </form>
 </div>
 
+<!-- JS für Kundensuche -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    const kunden = [
+        {% for k in kunden_liste %}
+            { name: "{{ k.firmenname|escapejs }}", nummer: "{{ k.interne_nummer }}" },
+        {% endfor %}
+    ];
+
+    function fetchKunden() {
+        const input = document.getElementById("kunde_search").value.toLowerCase();
+        const list = document.getElementById("kunden_list");
+        list.innerHTML = "";
+
+        if (!input) return;
+
+        const filtered = kunden.filter(k => 
+            k.name.toLowerCase().includes(input) || k.nummer.includes(input)
+        );
+
+        filtered.slice(0, 8).forEach(k => {
+            const li = document.createElement("li");
+            li.classList.add("list-group-item", "list-group-item-action");
+            li.innerText = `${k.name} (${k.nummer})`;
+            li.onclick = function() {
+                document.getElementById("kunde_search").value = `${k.name} (${k.nummer})`;
+                document.getElementById("selected_kunde").value = k.nummer;
+                list.innerHTML = "";
+            };
+            list.appendChild(li);
+        });
+    }
+</script>
 {% endblock %}

@@ -76,7 +76,7 @@
   
         <!-- Linker Button -->
         <a class="btn btn-sm price-code-btn" href="{% url 'store:auftrag_erfassen' %}">
-          Auftrag erfassen (in Bearbeitung)
+          Auftrag erfassen
         </a>
 
         <!-- Rechter Suchbereich -->
@@ -105,7 +105,9 @@
                 <th>Kunden-Nr.</th>
                 <th>Betrieb</th>
                 <th>Montage</th>
+                <th>Zuständigkeit</th>
                 <th>Status</th> 
+                <th>Löschen</th> 
             </tr>
         </thead>
         <tbody>
@@ -114,43 +116,74 @@
 
                <td>{{ bestellung.start_date|date:"d.m.Y" }}</td>
                <td >
-                  <a href="{% url 'store:elemente_bestellung_detail' bestellung.interne_nummer bestellung.betrieb_person %}" style="text-decoration: underline !important;">
-                      {{ bestellung.id }}
-                  </a>
-              </td>
-              <td>
-                <a href="#"
-                  style="text-decoration: underline !important;"
-                  class="kunde-info-link"
-                  data-toggle="modal"
-                  data-target="#kundeModal"
-                  data-kunde='{
-                    "firmenname": "{{ bestellung.betrieb_person|escapejs }}",
-                    "vorname": "{{ kunde.vorname|default:''|escapejs }}",
-                    "nachname": "{{ kunde.nachname|default:''|escapejs }}",
-                    "phone": "{{ kunde.phone|default:''|escapejs }}",
-                    "mobile": "{{ kunde.mobile|default:''|escapejs }}",
-                    "email": "{{ kunde.email|default:''|escapejs }}",
-                    "addresses": [{% for address in kunde.user.address.all %}
-                      {
-                        "strasse": "{{ address.rechnung_strasse|default:''|escapejs }}",
-                        "nr": "{{ address.rechnung_nr|default:''|escapejs }}",
-                        "plz": "{{ address.rechnung_plz|default:''|escapejs }}",
-                        "ort": "{{ address.rechnung_ort|default:''|escapejs }}",
-                        "land": "{{ address.rechnung_land|default:''|escapejs }}"
-                      }{% if not forloop.last %},{% endif %}{% endfor %}
-                    ]
-                }'
-                >
-                  {{ bestellung.kunden_nr }}
+                  {% if bestellung.id and bestellung.betrieb_person %}
+                <a href="{% url 'store:elemente_bestellung_detail' bestellung.id bestellung.betrieb_person %}" style="text-decoration: underline !important;">
+                    {{ bestellung.id }}
                 </a>
+            {% else %}
+                {{ bestellung.id }}
+            {% endif %}
 
               </td>
+              <td>
+  <a href="#" data-toggle="modal" style="text-decoration:underline" data-target="#kundeModal_{{ bestellung.id }}">
+    {{ bestellung.kunden_nr }}
+  </a>
+
+  <!-- Dynamisches Modal für diesen Kunden -->
+  <div class="modal fade" id="kundeModal_{{ bestellung.id }}" tabindex="-1" role="dialog" aria-labelledby="kundeModalLabel_{{ bestellung.id }}" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="kundeModalLabel_{{ bestellung.id }}">Kundeninformation</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Schließen">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <strong>{{ bestellung.kunde.firmenname }}</strong><br><br>
+
+          {% for address in bestellung.kunde.kunde_address.all %}
+              {{ address.crm_strasse|default:"" }} {{ address.crm_nr|default:"" }}<br>
+              {{ address.crm_plz|default:"" }} {{ address.crm_ort|default:"" }}<br>
+              {{ address.crm_kanton|default:"" }}<br><br>
+          {% empty %}
+              <span class="text-muted">Keine Adresse hinterlegt.</span>
+          {% endfor %}
+
+          <hr>
+          <strong>Kontakt:</strong><br>
+          {{ bestellung.kunde.vorname }} {{ bestellung.kunde.nachname }}<br>
+          Tel: {{ bestellung.kunde.phone|default:"–" }} / {{ bestellung.kunde.mobile|default:"–" }}<br>
+          {{ bestellung.kunde.email|default:"–" }}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</td>
+
 
               <td>{{ bestellung.betrieb_person }}</td>
               <td>
-                {{ bestellung.montage|yesno:"Yes,No" }}
-              </td>              
+            {% if bestellung.montage == True or bestellung.montage == "Ja" %}
+              Ja
+            {% else %}
+              Nein
+            {% endif %}
+          </td>
+{% if bestellung.wer_display %}
+  <td>{{ bestellung.wer_display }}</td>
+{% else %}
+  <td class="text-muted">–</td>
+{% endif %}
+
+
+
+
+            
               <td style="
                   {% if bestellung.status == 'offen' %}color: red;
                   {% elif bestellung.status == 'teilweise' %}color: orange;
@@ -158,6 +191,16 @@
                   {% endif %}">
                   {{ bestellung.status }}
               </td>
+
+              <td>
+  <form method="post" action="{% url 'store:delete_elemente_bestellungen' bestellung.id %}" onsubmit="return confirm('Möchten Sie diese Bestellung wirklich löschen?');">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-sm btn-outline-danger" title="Bestellung löschen">
+      <i class="fas fa-trash-alt"></i>
+    </button>
+  </form>
+</td>
+
 
             </tr>
             {% empty %}

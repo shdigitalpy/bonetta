@@ -80,7 +80,7 @@
 
     <div class="flexbox flexbox-header d-flex justify-content-between align-items-start">
   <div class="h2">
-    Auftrags-Nr. {{ bestellung.id }}<br> {{ betrieb }}
+    Auftrags-Nr. {{ bestellung.id }}<br> {{ betrieb }} Kunden-Nr. {{ bestellung.kunden_nr }}
   </div>
   <a href="{% url 'store:elemente_bestellungen' %}" class="btn btn-sm price-code-btn">Zurück zur Übersicht</a>
 </div>
@@ -93,7 +93,7 @@
             <th>Artikel</th>
             <th>Masse</th>
             <th>Aktion</th>
-            <th>Notiz</th>
+            
         </tr>
     </thead>
     <tbody>
@@ -153,7 +153,7 @@
                     <i class="fas fa-trash-alt"></i>
                 </a>
             </td>
-            <td>{{ bestellung.notizfeld }}</td>
+           
         </tr>
         {% empty %}
         <tr>
@@ -163,7 +163,12 @@
     </tbody>
 </table>
 
-
+{% if bestellung.notizfeld %}
+<div class="mt-3 mb-4 p-3 border rounded" style="background-color: #f9f9f9;">
+    <h5><i class="fas fa-sticky-note"></i> Notiz</h5>
+    <p>{{ bestellung.notizfeld|linebreaksbr }}</p>
+</div>
+{% endif %}
 
     <!-- Bestellung an Lieferant & Position hinzufügen (Buttons nebeneinander) -->
     <div class="mt-4 d-flex flex-wrap">

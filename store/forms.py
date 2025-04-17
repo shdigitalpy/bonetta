@@ -1563,12 +1563,38 @@ class BezeichnungForm(forms.ModelForm):
         }
 
 
+
 class BestellungForm(forms.ModelForm):
+    YES_NO_CHOICES = [
+        (True, 'Ja'),
+        (False, 'Nein'),
+    ]
+
+    montage = forms.ChoiceField(
+        choices=YES_NO_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label='Montage'
+    )
+
     class Meta:
         model = Elemente_Bestellungen
-        fields = ['kunden_nr', 'montage', 'status']  # start_date will be auto
+        fields = ['montage', 'wer']
+
     def __init__(self, *args, **kwargs):
-        super(BestellungForm, self).__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.widget.attrs.update({'class': 'form-control col-6'})
+        super().__init__(*args, **kwargs)
+        # Standardwert für wer setzen, falls leer
+        self.fields['wer'].initial = 'lager'
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if not self.instance.pk:
+            instance.status = 'offen'
+        if commit:
+            instance.save()
+        return instance
+
+
+
+
+
 
