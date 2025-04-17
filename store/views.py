@@ -256,7 +256,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
                 error_message = "Das eingegebene Element existiert nicht."
             else:
                 artikel = element.artikel
-                existing_item = ElementeCartItem.objects.filter(order=bestellung, element_nr=element_nr).first()
+                existing_item = ElementeCartItem.objects.filter(order=bestellung, element_nr=element).first()
 
                 if existing_item:
                     existing_item.anzahl += anzahl
