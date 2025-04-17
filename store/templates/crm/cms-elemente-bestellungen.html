@@ -117,7 +117,7 @@
                <td>{{ bestellung.start_date|date:"d.m.Y" }}</td>
                <td >
                   {% if bestellung.id and bestellung.betrieb_person %}
-                <a href="{% url 'store:elemente_bestellung_detail' bestellung.id bestellung.betrieb_person %}" style="text-decoration: underline !important;">
+                <a style="text-decoration:underline;" href="{% url 'store:elemente_bestellung_detail' bestellung.id bestellung.betrieb_person %}" style="text-decoration: underline !important;">
                     {{ bestellung.id }}
                 </a>
             {% else %}
