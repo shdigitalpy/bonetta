@@ -126,7 +126,16 @@ def lieferant_send_order_email(request, pk):
 
 @staff_member_required
 def elemente_bestellung_detail(request, pk, betrieb):
-    bestellung = get_object_or_404(Elemente_Bestellungen, id=pk)
+    # bestellung = get_object_or_404(Elemente_Bestellungen, id=pk)
+    # bestellung = Elemente_Bestellungen.objects.all()
+    kunde = get_object_or_404(Kunde, interne_nummer=pk)
+
+    if not kunde.user or kunde.user.username.lower() != betrieb.lower():
+        messages.error(request, "Betrieb stimmt nicht überein.")
+        return redirect("store:elemente_bestellungen")
+
+    bestellungen = Elemente_Bestellungen.objects.filter(kunde=kunde).order_by('-start_date')
+    bestellung = bestellungen.first()
 
     # Get all cart items for the order
     cart_items = ElementeCartItem.objects.filter(order=bestellung).select_related("artikel")
@@ -283,9 +292,9 @@ def elemente_bestellung_detail(request, pk, betrieb):
             "montage": bestellung.montage,
             "notizfeld": bestellung.notizfeld,
         },
-        "elemente": elemente_list,
-        "lieferanten": lieferanten,
-        "betrieb": betrieb,
+        "elemente": bestellung.elemente_set.all() if hasattr(bestellung, "elemente_set") else [],
+        "lieferanten": bestellung.lieferanten_set.all() if hasattr(bestellung, "lieferanten_set") else [],
+        "betrieb": kunde.user.username if kunde.user else "Unbekannt",
         "show_lieferantenartikel": show_lieferantenartikel,
         "error_message": error_message,
     }
@@ -351,14 +360,16 @@ def elemente_bestellungen(request):
     bestellungen_list = []
     for bestellung in bestellungen:
         kunde = Kunde.objects.filter(interne_nummer=bestellung.kunden_nr).first()
+        if not kunde or not kunde.user:
+            continue
         bestellungen_list.append({
             "id": bestellung.id,
             "kunden_nr": bestellung.kunden_nr,
             "status": bestellung.status,
             "start_date": bestellung.start_date,
-            "montage": bestellung.montage,  # ✅ Ensure montage is included
-            "betrieb_person": kunde.firmenname if kunde and kunde.firmenname else f"{kunde.vorname} {kunde.nachname}" if kunde else "Unbekannt",
-            "interne_nummer": kunde.interne_nummer if kunde else "1",  # ✅ Added interne_nummer
+            "montage": bestellung.montage,
+            "betrieb_person": kunde.user.username,
+            "interne_nummer": kunde.interne_nummer,
         })
 
     context = {

@@ -15,7 +15,7 @@ urlpatterns = [
 	#aktuell elemente warenkorb
     path("bestellformular/", views.bestellformular_cart, name="bestellformular_cart"),
     path('cms/crm/elemente-bestellungen', views.elemente_bestellungen, name='elemente_bestellungen'),
-    path('cms/crm/elemente-bestellungen/detail/<int:pk>/<str:betrieb>', views.elemente_bestellung_detail, name='elemente_bestellung_detail'),
+    path('cms/crm/elemente-bestellungen/detail/<int:pk>/<slug:betrieb>', views.elemente_bestellung_detail, name='elemente_bestellung_detail'),
     path('cms/crm/elemente-bestellungen/delete/<int:pk>/<str:betrieb>/', views.elemente_bestellung_delete, name='elemente_bestellung_delete'),
     path('cms/crm/lieferanten_bestellungen', views.lieferanten_bestellungen,name="lieferanten_bestellungen"),
     path('cms/crm/elemente-bestellungen/edit/<int:element_nr>/<int:bestellung_id>', views.elemente_bestellung_edit, name='elemente_bestellung_edit'),
