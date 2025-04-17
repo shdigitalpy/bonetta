@@ -80,7 +80,7 @@
 
     <div class="flexbox flexbox-header d-flex justify-content-between align-items-start">
   <div class="h2">
-    Auftrags-Nr. {{ bestellung.id }}<br> {{ betrieb }}
+    {{ betrieb }} {{ bestellung.kunden_nr }}
   </div>
   <a href="{% url 'store:elemente_bestellungen' %}" class="btn btn-sm price-code-btn">Zurück zur Übersicht</a>
 </div>
@@ -93,7 +93,6 @@
             <th>Artikel</th>
             <th>Masse</th>
             <th>Aktion</th>
-            <th>Notiz</th>
         </tr>
     </thead>
     <tbody>
@@ -153,7 +152,6 @@
                     <i class="fas fa-trash-alt"></i>
                 </a>
             </td>
-            <td>{{ bestellung.notizfeld }}</td>
         </tr>
         {% empty %}
         <tr>

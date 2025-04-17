@@ -114,9 +114,14 @@
 
                <td>{{ bestellung.start_date|date:"d.m.Y" }}</td>
                <td >
-                  <a href="{% url 'store:elemente_bestellung_detail' bestellung.interne_nummer bestellung.betrieb_person %}" style="text-decoration: underline !important;">
-                      {{ bestellung.id }}
+                {% if bestellung.interne_nummer %}
+                  <a href="{% url 'store:elemente_bestellung_detail' bestellung.interne_nummer bestellung.betrieb_person %}">
+                    {{ bestellung.id }}
                   </a>
+                  {% else %}
+                    {{ bestellung.id }}
+                {% endif %}
+              
               </td>
               <td>
                 <a href="#"
@@ -142,7 +147,7 @@
                     ]
                 }'
                 >
-                  {{ bestellung.kunden_nr }}
+                  {{ bestellung.interne_nummer }}
                 </a>
 
               </td>
