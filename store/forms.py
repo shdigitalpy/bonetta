@@ -1564,11 +1564,49 @@ class BezeichnungForm(forms.ModelForm):
 
 
 class BestellungForm(forms.ModelForm):
+    YES_NO_CHOICES = [
+        (True, 'Yes'),
+        (False, 'No'),
+    ]
+
+    montage = forms.ChoiceField(
+        choices=YES_NO_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control col-6'}),
+        label='Montage'
+    )
+
+    kunden_nr = forms.ChoiceField(
+        choices=[],
+        widget=forms.Select(attrs={'class': 'form-control col-6'}),
+        label='Kundennummer'
+    )
+
     class Meta:
         model = Elemente_Bestellungen
-        fields = ['kunden_nr', 'montage', 'status']  # start_date will be auto
+        fields = ['kunden_nr', 'montage']
+
     def __init__(self, *args, **kwargs):
         super(BestellungForm, self).__init__(*args, **kwargs)
+
+        
+        # Dynamically load kunden_nr choices from Kunde.interne_nummer
+        kunden_choices = Kunde.objects.exclude(interne_nummer__isnull=True).values_list('interne_nummer', 'interne_nummer')
+        self.fields['kunden_nr'].choices = [(str(k[0]), str(k[1])) for k in kunden_choices]
+
+        for name, field in self.fields.items():
+            if name not in ['montage', 'kunden_nr']:  # already styled above
+                field.widget.attrs.update({'class': 'form-control col-6'})
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if not self.instance.pk:
+            instance.status = 'offen'
+        if commit:
+            instance.save()
+        return instance
+
+
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control col-6'})
+
 
