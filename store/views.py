@@ -152,7 +152,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
 
     for item in cart_items:
         artikel = item.artikel
-        dichtungstyp = get_dichtungstyp(item.element_nr)
+        dichtungstyp = get_dichtungstyp(item.element_nr_id)
 
         artikel_data = {
             "id": artikel.id if artikel else None,
@@ -295,9 +295,6 @@ def elemente_bestellung_detail(request, pk, betrieb):
     }
 
     return render(request, "crm/cms-elemente-bestellungen-detail.html", context)
-
-
-
 
 
 @staff_member_required
