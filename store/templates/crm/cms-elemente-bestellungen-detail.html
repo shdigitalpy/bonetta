@@ -146,12 +146,16 @@
             </td>
             <td>{{ item.masse }}</td>
             <td>
-                <a href="{% url 'store:elemente_bestellung_edit' item.element_nr bestellung.id %}" class="btn btn-sm btn-outline-primary">
-                    <i class="fas fa-edit"></i>
-                </a>
-                <a href="{% url 'store:elemente_bestellung_delete' item.element_nr bestellung.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Möchten Sie dieses Element wirklich löschen?');">
-                    <i class="fas fa-trash-alt"></i>
-                </a>
+               {% if item.element_nr %}
+                    <a href="{% url 'store:elemente_bestellung_edit' item.element_nr.id bestellung.id %}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="{% url 'store:elemente_bestellung_delete' item.element_nr.id bestellung.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Möchten Sie dieses Element wirklich löschen?');">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                {% else %}
+                    <span class="text-muted">Kein Element verknüpft</span>
+                {% endif %}
             </td>
            
         </tr>
