@@ -1861,7 +1861,7 @@ def product_detail(request, slug):
         email_message = EmailMessage(
             subject,
             template,
-            email,
+            settings.EMAIL_HOST_USER,
             email_master,
         )
         email_message.fail_silently = False
@@ -1938,7 +1938,7 @@ def weitere_product_detail(request, slug):
         email_message = EmailMessage(
             subject,
             template,
-            email,
+            settings.EMAIL_HOST_USER,
             email_master,
         )
         email_message.fail_silently = False
