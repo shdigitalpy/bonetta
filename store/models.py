@@ -136,13 +136,13 @@ class ElementeCartItem(models.Model):
 
     def get_artikel(self):
         """ Fetch the related Artikel object through Elemente """
-        element = Elemente.objects.filter(elementnr=self.element_nr).select_related("artikel").first()
+        element = Elemente.objects.filter(elementnr=self.element_nr_id).select_related("artikel").first()
         return element.artikel if element and element.artikel else None
 
     def __str__(self):
         artikel = self.get_artikel()
         artikelnr = artikel.artikelnr if artikel else "Kein Artikel"
-        return f"Item {self.id} - Element-Nr.: {self.element_nr}, Bezeichnung: {self.bezeichnung}, Artikel-Nr.: {artikelnr}, Anzahl: {self.anzahl}"
+        return f"Item {self.id} - Element-Nr.: {self.element_nr_id}, Bezeichnung: {self.bezeichnung}, Artikel-Nr.: {artikelnr}, Anzahl: {self.anzahl}"
 
 
 class Subcategory(models.Model):

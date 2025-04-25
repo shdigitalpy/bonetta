@@ -142,7 +142,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
         else:
             try:
                 element_nr = int(element_input)
-                element = element = Elemente.objects.get(elementnr=element_nr, kunde=kunde)
+                element = Elemente.objects.get(elementnr=element_nr, kunde=kunde)
             except (ValueError, TypeError):
                 return "Unbekannt"
         
@@ -316,14 +316,16 @@ def elemente_bestellung_detail(request, pk, betrieb):
 
 @staff_member_required
 def bestellung_elemente_detail_delete(request, pk, bestellung_id):
-    bestellung = get_object_or_404(Elemente_Bestellungen, id=pk)
-    eintraege = ElementeCartItem.objects.filter(id=pk,order=bestellung)
+    bestellung = get_object_or_404(Elemente_Bestellungen, id=bestellung_id)
+    kunde = get_object_or_404(Kunde, interne_nummer=bestellung.kunden_nr)
+    betrieb = kunde.firmenname
+    eintraege = ElementeCartItem.objects.filter(id=pk,order=bestellung,)
     if not eintraege.exists():
         messages.error(request, "Keine Positionen vorhanden.")
         return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
 
     eintraege.delete()
-    messages.info(request, "Alle Positionen wurden gelöscht.")
+    messages.info(request, "Die Position wurde gelöscht.")
     return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
 
 
