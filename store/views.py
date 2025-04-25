@@ -170,9 +170,11 @@ def elemente_bestellung_detail(request, pk, betrieb):
         if artikel and artikel.lieferantenartikel:
             show_lieferantenartikel = True
 
+        cart_items_nr = cart_items.get(order=bestellung,element_nr=item.element_nr_id)
+
         elemente_list.append({
             'id': item.id,
-            "element_nr": item.element_nr,
+            "element_nr": cart_items_nr.element_nr,
             "dichtungstyp": dichtungstyp,
             "artikel": artikel_data,
             "masse": f"{artikel.aussenbreite}mm x {artikel.aussenhöhe}mm" if artikel else "Unbekannt",
@@ -309,6 +311,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
         "betrieb": betrieb,
         "show_lieferantenartikel": show_lieferantenartikel,
         "error_message": error_message,
+        "cart_items":cart_items,
     }
 
     return render(request, "crm/cms-elemente-bestellungen-detail.html", context)
