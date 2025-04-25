@@ -12,19 +12,19 @@ urlpatterns = [
 
 	path('', views.home, name='home'),
 
-	#aktuell elemente warenkorb
+	# elemente bestellung
     path("bestellformular/", views.bestellformular_cart, name="bestellformular_cart"),
     path('cms/crm/elemente-bestellungen', views.elemente_bestellungen, name='elemente_bestellungen'),
     path('cms/crm/elemente-bestellungen/detail/<int:pk>/<str:betrieb>', views.elemente_bestellung_detail, name='elemente_bestellung_detail'),
-    path('cms/crm/elemente-bestellungen/delete/<int:pk>/<str:betrieb>/', views.elemente_bestellung_delete, name='elemente_bestellung_delete'),
-    path(
-    'cms/crm/elemente-bestellungen-full/delete/<int:pk>/',
-    views.delete_elemente_bestellungen,
-    name='delete_elemente_bestellungen'
-	),
+    path('cms/crm/elemente-bestellungen/delete/<int:pk>/', views.elemente_bestellung_delete, name='elemente_bestellung_delete'),
+
+    #elemente items warenkorb
+    path('cms/crm/elemente-bestellungen/edit/<int:pk>/<int:bestellung_id>', views.elemente_bestellung_detail_edit, name='elemente_bestellung_detail_edit'),
+    path('cms/crm/elemente-bestellungen/delete/<int:pk>/<int:bestellung_id>', views.bestellung_elemente_detail_delete, name='bestellung_elemente_detail_delete'),
+
+
+    #elemente lieferant
     path('cms/crm/lieferanten_bestellungen', views.lieferanten_bestellungen,name="lieferanten_bestellungen"),
-    path('cms/crm/elemente-bestellungen/edit/<int:element_nr>/<int:bestellung_id>', views.elemente_bestellung_edit, name='elemente_bestellung_edit'),
-    path('cms/crm/elemente-bestellungen/delete/<int:element_nr>/<int:bestellung_id>', views.elemente_bestellung_delete, name='elemente_bestellung_delete'),
     path('cms/crm/lieferant_update_status/<int:pk>', views.update_lieferanten_status,name="update_lieferanten_status"),
     
 	# Bezeichnung

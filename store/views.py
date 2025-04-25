@@ -169,6 +169,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
             show_lieferantenartikel = True
 
         elemente_list.append({
+            'id': item.id,
             "element_nr": item.element_nr_id,
             "dichtungstyp": dichtungstyp,
             "artikel": artikel_data,
@@ -213,6 +214,10 @@ def elemente_bestellung_detail(request, pk, betrieb):
                             anzahl=bestell_artikel["anzahl"]
                         )
 
+                    bestellung.status = "Versendet"
+                    bestellung.wer = "Lieferant"
+                    bestellung.save()
+
                     # ✅ Send Email
                     if lieferant.email:
                         subject = f"Bestellung für {bestellung.kunden_nr} - Auftrag #{bestellung.id}"
@@ -236,7 +241,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
                     else:
                         messages.error(request, "Keine gültige E-Mail-Adresse für diesen Lieferanten verfügbar.")
 
-                    return redirect("store:lieferanten_bestellungen")
+                    return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
 
                 except Exception as e:
                     messages.error(request, f"Fehler beim Speichern der Bestellung: {str(e)}")
@@ -250,13 +255,23 @@ def elemente_bestellung_detail(request, pk, betrieb):
             element_nr = request.POST["element_nr"]
             anzahl = int(request.POST["anzahl"])
 
+            kunde = Kunde.objects.get(firmenname=betrieb)
+
             # Check if element exists in `Elemente` model
-            element = Elemente.objects.filter(elementnr=element_nr).first()
+            try:
+                element = Elemente.objects.get(elementnr=element_nr, kunde=kunde)
+            except Elemente.DoesNotExist:
+                messages.error(request, "Dieses Element existiert nicht für den Kunden.")
+                return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
+            except Elemente.MultipleObjectsReturned:
+                messages.error(request, "Mehrere Elemente mit derselben Nummer gefunden – bitte prüfen Sie die Daten.")
+                return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
+
             if not element:
                 error_message = "Das eingegebene Element existiert nicht."
             else:
                 artikel = element.artikel
-                existing_item = ElementeCartItem.objects.filter(order=bestellung, element_nr=element).first()
+                existing_item = ElementeCartItem.objects.filter(order=bestellung, element_nr=element.id).first()
 
                 if existing_item:
                     existing_item.anzahl += anzahl
@@ -298,11 +313,9 @@ def elemente_bestellung_detail(request, pk, betrieb):
 
 
 @staff_member_required
-def elemente_bestellung_delete(request, pk, betrieb):
+def bestellung_elemente_detail_delete(request, pk, bestellung_id):
     bestellung = get_object_or_404(Elemente_Bestellungen, id=pk)
-    kunde = get_object_or_404(Kunde, interne_nummer=bestellung.kunden_nr)
-
-    eintraege = ElementeCartItem.objects.filter(order=bestellung)
+    eintraege = ElementeCartItem.objects.filter(id=pk,order=bestellung)
     if not eintraege.exists():
         messages.error(request, "Keine Positionen vorhanden.")
         return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
@@ -313,11 +326,11 @@ def elemente_bestellung_delete(request, pk, betrieb):
 
 
 @staff_member_required
-def elemente_bestellung_edit(request, element_nr, bestellung_id):
+def elemente_bestellung_detail_edit(request, pk, bestellung_id):
     bestellung = get_object_or_404(Elemente_Bestellungen, id=bestellung_id)
     kunde = get_object_or_404(Kunde, interne_nummer=bestellung.kunden_nr)
     betrieb = kunde.firmenname
-    item = get_object_or_404(ElementeCartItem, order=bestellung, element_nr=element_nr)
+    item = get_object_or_404(ElementeCartItem, order=bestellung, id=pk)
 
     if request.method == "POST":
         form = ElementeCartItemEditForm(request.POST)
@@ -336,7 +349,7 @@ def elemente_bestellung_edit(request, element_nr, bestellung_id):
 
 
 @staff_member_required
-def delete_elemente_bestellungen(request, pk):
+def elemente_bestellung_delete(request, pk):
     bestellung = get_object_or_404(Elemente_Bestellungen, pk=pk)
     bestellung.delete()
     messages.success(request, f"Bestellung #{pk} wurde gelöscht.")

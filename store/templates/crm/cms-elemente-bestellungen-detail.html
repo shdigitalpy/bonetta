@@ -98,7 +98,8 @@
     </thead>
     <tbody>
         {% for item in elemente %}
-        <tr>
+        <tr>   
+            {{item.id}}
             <td>{{ item.element_nr }}</td>
             <td>{{ item.stk_zahl }}</td>
             <td>
@@ -135,7 +136,7 @@
                                     <p><strong>Bestpreis Lieferant:</strong> {{ item.artikel.bestpreis_lieferant }}</p>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Schliessen</button>
                                 </div>
                             </div>
                         </div>
@@ -147,10 +148,10 @@
             <td>{{ item.masse }}</td>
             <td>
                {% if item.element_nr %}
-                    <a href="{% url 'store:elemente_bestellung_edit' item.element_nr.id bestellung.id %}" class="btn btn-sm btn-outline-primary">
+                    <a href="{% url 'store:elemente_bestellung_detail_edit' item.id bestellung.id %}" class="btn btn-sm btn-outline-primary">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <a href="{% url 'store:elemente_bestellung_delete' item.element_nr.id bestellung.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Möchten Sie dieses Element wirklich löschen?');">
+                    <a href="{% url 'store:bestellung_elemente_detail_delete' item.id bestellung.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Möchten Sie dieses Element wirklich löschen?');">
                         <i class="fas fa-trash-alt"></i>
                     </a>
                 {% else %}
@@ -182,28 +183,21 @@
             </button>
         </div>
     
-        <div class="mr-2 mb-2">
-            <form method="post" action="{% url 'store:elemente_bestellung_delete' bestellung.id betrieb %}" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger" onclick="return confirm('Bist du sicher, dass du diesen Auftrag löschen möchtest?');">
-                    <i class="fas fa-trash-alt"></i> Auftrag löschen
-                </button>
-            </form>
-        </div>
+       
     
         <div class="mr-2 mb-2">
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#notizfeldModal">
                 <i class="fas fa-sticky-note"></i> Notizfeld bearbeiten
             </button>
         </div>
-    
+        {% if bestellung.status == "offen" %}
         <div class="mr-2 mb-2">
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmOrderModal">
                 <i class="fas fa-shopping-cart"></i> Bestellung senden
             </button>
         </div>
-    </div>
-    
+        {% endif %}
+    </div>    
 
     <!-- Bestellung senden Bestätigung Modal -->
     <div class="modal fade" id="confirmOrderModal" tabindex="-1" role="dialog" aria-labelledby="confirmOrderModalLabel" aria-hidden="true">
@@ -283,7 +277,15 @@
           <div class="modal-body">
             <div class="form-group">
               <label for="notizfeldTextarea">Notiz</label>
-              <textarea class="form-control" id="notizfeldTextarea" name="notizfeld" rows="4">{{ bestellung.notizfeld }}</textarea>
+              <textarea class="form-control" id="notizfeldTextarea" name="notizfeld" rows="4">
+
+                {% if bestellung.notizfeld %}
+
+              {{ bestellung.notizfeld }}
+
+              {% endif %}
+
+          </textarea>
             </div>
           </div>
           <div class="modal-footer">
