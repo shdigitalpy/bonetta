@@ -172,7 +172,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
 
         elemente_list.append({
             'id': item.id,
-            "element_nr": item.element_nr_id,
+            "element_nr": item.element_nr,
             "dichtungstyp": dichtungstyp,
             "artikel": artikel_data,
             "masse": f"{artikel.aussenbreite}mm x {artikel.aussenhöhe}mm" if artikel else "Unbekannt",

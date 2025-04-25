@@ -100,7 +100,11 @@
         {% for item in elemente %}
         <tr>   
           
-            <td>{{ item.element_nr }}</td>
+            <td>
+                {{ item.element_nr.elementnr }}
+
+
+            </td>
             <td>{{ item.stk_zahl }}</td>
             <td>
                 {% if item.artikel and item.artikel.artikelnr %}

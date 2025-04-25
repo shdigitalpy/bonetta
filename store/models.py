@@ -142,7 +142,7 @@ class ElementeCartItem(models.Model):
     def __str__(self):
         artikel = self.get_artikel()
         artikelnr = artikel.artikelnr if artikel else "Kein Artikel"
-        return f"Item {self.id} - Element-Nr.: {self.element_nr_id}, Bezeichnung: {self.bezeichnung}, Artikel-Nr.: {artikelnr}, Anzahl: {self.anzahl}"
+        return f"Item {self.id} - Element-Nr.: {self.element_nr.elementnr}, Bezeichnung: {self.element_nr.bezeichnung}, Artikel-Nr.: {artikelnr}, Anzahl: {self.anzahl}"
 
 
 class Subcategory(models.Model):
