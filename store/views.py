@@ -134,13 +134,15 @@ def elemente_bestellung_detail(request, pk, betrieb):
     # Fetch all Lieferanten (suppliers)
     lieferanten = Lieferanten.objects.all()
 
+    kunde = Kunde.objects.get(firmenname=betrieb)
+
     def get_dichtungstyp(element_input):
         if isinstance(element_input, Elemente):
             element = element_input
         else:
             try:
                 element_nr = int(element_input)
-                element = Elemente.objects.filter(elementnr=element_nr).first()
+                element = element = Elemente.objects.get(elementnr=element_nr, kunde=kunde)
             except (ValueError, TypeError):
                 return "Unbekannt"
         
@@ -255,7 +257,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
             element_nr = request.POST["element_nr"]
             anzahl = int(request.POST["anzahl"])
 
-            kunde = Kunde.objects.get(firmenname=betrieb)
+           
 
             # Check if element exists in `Elemente` model
             try:
