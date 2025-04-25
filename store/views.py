@@ -136,16 +136,19 @@ def elemente_bestellung_detail(request, pk, betrieb):
 
     kunde = Kunde.objects.get(firmenname=betrieb)
 
-    def get_dichtungstyp(element_input):
+    def get_dichtungstyp(element_input, kunde=None):
         if isinstance(element_input, Elemente):
             element = element_input
         else:
             try:
                 element_nr = int(element_input)
-                element = Elemente.objects.get(elementnr=element_nr, kunde=kunde)
+                queryset = Elemente.objects.filter(elementnr=element_nr)
+                if kunde:
+                    queryset = queryset.filter(kunde=kunde)
+                element = queryset.first()
             except (ValueError, TypeError):
                 return "Unbekannt"
-        
+
         return element.bemerkung if element and element.bemerkung else "Unbekannt"
 
     # Create list of elements with additional details from `ElementeCartItem` model
@@ -281,9 +284,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
                     existing_item.anzahl += anzahl
                     existing_item.save()
                     messages.success(request, "Menge erfolgreich aktualisiert.")
-                else:
-                    element = Elemente.objects.filter(id=element_nr).first()
-                    
+                else:    
                     ElementeCartItem.objects.create(order=bestellung, element_nr=element, artikel=artikel, anzahl=anzahl)
                     messages.success(request, "Position erfolgreich hinzugefügt.")
 
@@ -319,17 +320,22 @@ def elemente_bestellung_detail(request, pk, betrieb):
 
 @staff_member_required
 def bestellung_elemente_detail_delete(request, pk, bestellung_id):
+    # ✅ Bestellung & Kunde laden
     bestellung = get_object_or_404(Elemente_Bestellungen, id=bestellung_id)
     kunde = get_object_or_404(Kunde, interne_nummer=bestellung.kunden_nr)
     betrieb = kunde.firmenname
-    eintraege = ElementeCartItem.objects.filter(id=pk,order=bestellung,)
-    if not eintraege.exists():
-        messages.error(request, "Keine Positionen vorhanden.")
-        return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
 
-    eintraege.delete()
+    # ✅ Zu löschendes Item holen
+    item = ElementeCartItem.objects.filter(id=pk, order=bestellung).first()
+
+    if not item:
+        messages.error(request, "Diese Position existiert nicht oder gehört nicht zur Bestellung.")
+        return redirect("store:elemente_bestellung_detail", pk=bestellung.id, betrieb=betrieb)
+
+    # ✅ Löschen
+    item.delete()
     messages.info(request, "Die Position wurde gelöscht.")
-    return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
+    return redirect("store:elemente_bestellung_detail", pk=bestellung.id, betrieb=betrieb)
 
 
 @staff_member_required
