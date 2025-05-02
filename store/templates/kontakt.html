@@ -1,93 +1,91 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Kontakt & Beratung | gastrodichtung.ch {% endblock %}
-{% block meta_description %}Kontaktieren Sie uns für Fragen zu Dichtungen oder die Vereinbarung eines Montagetermins. Das gastrodichtung.ch Team beratet Sie gerne.{% endblock %}
-{% block keywords %}{% endblock %}
+{% block meta_description %}Kontaktieren Sie uns für Fragen zu Dichtungen oder die Vereinbarung eines Montagetermins. Das gastrodichtung.ch Team berät Sie gerne.{% endblock %}
 
 {% block content %}
+<style>
+ .price-code-btn{
+      background-color: #29384f;
+      border-color: #29384f;
+      border-width: 2px;
+      font-weight: 600 !important;
+      padding: .375rem .75rem;
+      font-size: 18px;
+      color: #fff;
+      transition: .3s all;
+      border-radius: 10px;
+    }
+.price-code-btn:hover {
+  background-color: #1f2c3f;
+  border-color: #1f2c3f;
+  color: #fff;
+  text-decoration: none;
+}
 
+</style>
+{% if message_kontakt %}
+<div id="home"><div class="landing-text" style="font-size: 2.5rem"><p>Die Nachricht wurde gesendet! Zurück zur <a href="{% url 'store:home' %}">Webseite</a>.</p></div></div>
+{% else %}
 
-    <!--SENDMAIL Start--> {% if message_kontakt %}
-            <div id="home"><div class="landing-text" style="font-size: 2.5rem"><p>Die Nachricht wurde gesendet! Zurück zur <a href="{% url 'store:home' %}">Webseite</a>.</p></div></div>
-            {% else %}
-    <!--SENDMAIL End-->
-    <br>    <br>    <br>    <br>    <br>
-<div class="container">
-  <div class="row">
-     <div class="col-lg-5">
-      <div class="">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2694.3606358036977!2d8.517427515627578!3d47.521841479179116!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4790742151fbb555%3A0x9fc8bf90a3b6d09e!2sLangmattstrasse%2010%2C%208182%20Hochfelden!5e0!3m2!1sde!2sch!4v1607985454882!5m2!1sde!2sch" width="100%" height="80%" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
-        </div>
-     </div>
+<section class="py-5">
+  <div class="container">
+    <div class="row mb-5">
+      <!-- Map -->
+      <div class="col-md-6 mb-4">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2694.3606358036977!2d8.517427515627578!3d47.521841479179116!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4790742151fbb555%3A0x9fc8bf90a3b6d09e!2sLangmattstrasse%2010%2C%208182%20Hochfelden!5e0!3m2!1sde!2sch!4v1607985454882!5m2!1sde!2sch" width="100%" height="300" frameborder="0" style="border:0;" allowfullscreen></iframe>
+      </div>
+      <!-- Info -->
+      <div class="col-md-6">
+        <h5 class="font-weight-bold">Gebo Shop Bonetta – Gastrodichtungen</h5>
+        <p>Langmattstrasse 10<br>8182 Hochfelden</p>
+        <h6 class="font-weight-bold mt-3">Telefon</h6>
+        <p><a href="tel:+41435089060">043 508 90 60</a></p>
+        <h6 class="font-weight-bold mt-3">E-Mail</h6>
+        <p><a href="mailto:livio.bonetta@geboshop.ch">livio.bonetta@geboshop.ch</a></p>
+      </div>
+    </div>
 
-     <div class="col-lg-7 pl-5">
-          <div class="contact-information">
-            <h5>Gebo Shop Bonetta - Gastrodichtungen</h5>
-            <p>Langmattstrasse 10<br>
-            8182 Hochfelden</p>
-            <h5>Telefon</h5>
-            <a href="tel:+41435089060">043 508 90 60</a>
-            <h5>E-Mail</h5>
-            <p class="mb-0">livio.bonetta@geboshop.ch</p>
-          </div>
-        </div>
-
-        <!-- Contact Form -->
-        <div class="col-10">
-          <div class="contact-form">
-            <!-- Section Heading -->
-            <div class="section-heading">
-              <br><br>
-              <h2>Kontakt</h2>
-              <div class="line"></div>
+    <!-- Kontaktformular -->
+    <div class="row">
+      <div class="col-12">
+        <h2 class="mb-4 font-weight-bold">Kontakt</h2>
+        <form action="{% url 'store:kontakt' %}" method="POST">
+          {% csrf_token %}
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <input type="text" name="message-anrede" class="form-control" placeholder="Anrede">
             </div>
-            <!-- Form -->
-            <form action="{% url 'store:kontakt' %}" method="POST">
-              {% csrf_token %}
-              
-              <div class="row">
-                <div class="col-lg-6">
-                  <input type="text" name="message-anrede" class="form-control mb-30" placeholder="Anrede">
-                </div>
-                </div>
-                <div class="row">
-                <div class="col-lg-6">
-                  <input type="text" name="message-company" class="form-control mb-30" placeholder="Firma">
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-lg-6">
-                  <input type="text" name="message-surname" class="form-control mb-30" placeholder="Vorname">
-                </div>
-                 <div class="col-lg-6">
-                  <input type="text" name="message-name" class="form-control mb-30" placeholder="Nachname">
-                </div>
-                 <div class="col-lg-6">
-                  <input type="text" name="message-phone" class="form-control mb-30" placeholder="Telefon">
-                </div>
-                <div class="col-lg-6">
-                  <input type="email" name="message-email" class="form-control mb-30" placeholder="E-Mail">
-                </div>
-                <div class="col-12 textarea-contact">
-                  <textarea name="message" class="form-control"  placeholder="Nachricht"></textarea>
-                </div>
-                <div class="col-12">
-                  <button type="submit" class="btn btn-warning">Abschicken</button>
-                </div>
-              </div>
-            </form>
-
+            <div class="form-group col-md-6">
+              <input type="text" name="message-company" class="form-control" placeholder="Firma">
+            </div>
           </div>
-        </div>
-      </div><!--end row-->
-    </div><!--container row-->
-    <br>    <br>    <br>    <br>    <br>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <input type="text" name="message-surname" class="form-control" placeholder="Vorname">
+            </div>
+            <div class="form-group col-md-6">
+              <input type="text" name="message-name" class="form-control" placeholder="Nachname">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <input type="text" name="message-phone" class="form-control" placeholder="Telefon">
+            </div>
+            <div class="form-group col-md-6">
+              <input type="email" name="message-email" class="form-control" placeholder="E-Mail">
+            </div>
+          </div>
+          <div class="form-group">
+            <textarea name="message" rows="4" class="form-control" placeholder="Nachricht"></textarea>
+          </div>
+          <button type="submit" class="btn price-code-btn">Abschicken</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="my-5"></div>
 
-    {% endif %}
-
-
-
-
+{% endif %}
 {% endblock %}
-
-    
