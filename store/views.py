@@ -33,7 +33,8 @@ import boto3
 from django.http import JsonResponse
 import json
 from django.utils.html import escape
-
+from django.core.serializers.json import DjangoJSONEncoder
+import json
 
 email_master = settings.EMAIL_MASTER
 
@@ -62,10 +63,32 @@ def update_lieferanten_status(request, pk):
 
 @staff_member_required
 def lieferanten_bestellungen(request):
-    lieferanten_bestellungen = LieferantenBestellungen.objects.all().order_by('-start_date')
-    
-    return render(request, 'crm/lieferanten-bestellungen.html', {'lieferanten_bestellungen': lieferanten_bestellungen})
+    bestellungen = LieferantenBestellungen.objects.select_related('auftrag').prefetch_related(
+        'artikel_bestellungen',
+        'auftrag__elementeitems_bestellung__element_nr',
+        'auftrag__elementeitems_bestellung__artikel',
+    ).order_by('-start_date')
 
+    # Dictionary: bestellungs_id → Liste der Cart-Items
+    elemente_data = {}
+
+    for bestellung in bestellungen:
+        if bestellung.auftrag:
+            elemente_items = bestellung.auftrag.elementeitems_bestellung.all()
+            elemente_data[bestellung.id] = [
+                {
+                    "element_nr": item.element_nr.elementnr if item.element_nr else "–",
+                    "anzahl": item.anzahl,
+                    "artikel": item.artikel.artikelnr if item.artikel else "–",
+                    "masse": f"{item.element_nr.aussenbreite}mm x {item.element_nr.aussenhöhe}mm" if item.element_nr else "–"
+                }
+                for item in elemente_items
+            ]
+
+    return render(request, 'crm/lieferanten-bestellungen.html', {
+        'lieferanten_bestellungen': bestellungen,
+        'elemente_data_json': json.dumps(elemente_data, cls=DjangoJSONEncoder)
+    })
 
 
 @staff_member_required
@@ -206,7 +229,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
 
             if lieferant and bestellung_artikel_list:
                 try:
-                    lieferanten_bestellung = LieferantenBestellungen.objects.create(lieferant=lieferant)
+                    lieferanten_bestellung = LieferantenBestellungen.objects.create(lieferant=lieferant, auftrag=bestellung)
                     status = LieferantenStatus.objects.create(order=lieferanten_bestellung, name="Versendet")
                     lieferanten_bestellung.status.set([status])
 
@@ -519,7 +542,7 @@ def bestellformular_cart(request):
 
             # ✅ Update `montage` and set status to "teilweise"
             order.montage = montage
-            order.status = "teilweise"
+            order.status = "offen"
             order.save(update_fields=["montage", "status"])  # ✅ Ensure fields are stored in the database
 
             # ✅ Fetch customer details

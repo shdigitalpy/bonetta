@@ -24,8 +24,8 @@ urlpatterns = [
 
 
     #elemente lieferant
-    path('cms/crm/lieferanten_bestellungen', views.lieferanten_bestellungen,name="lieferanten_bestellungen"),
-    path('cms/crm/lieferant_update_status/<int:pk>', views.update_lieferanten_status,name="update_lieferanten_status"),
+    path('cms/crm/lieferanten-bestellungen', views.lieferanten_bestellungen,name="lieferanten_bestellungen"),
+    path('cms/crm/lieferant-update-status/<int:pk>', views.update_lieferanten_status,name="update_lieferanten_status"),
     
 	# Bezeichnung
 	path('bezeichnung/', views.bezeichnung_list, name='bezeichnung_list'),

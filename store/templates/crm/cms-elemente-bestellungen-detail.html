@@ -179,12 +179,13 @@
 
     <!-- Bestellung an Lieferant & Position hinzufügen (Buttons nebeneinander) -->
     <div class="mt-4 d-flex flex-wrap">
+        {% if bestellung.status == "offen" %}
         <div class="mr-2 mb-2">
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addPositionModal">
                 Position hinzufügen
             </button>
         </div>
-    
+    {% endif %}
        
     
         <div class="mr-2 mb-2">
@@ -197,8 +198,8 @@
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmOrderModal">
                 <i class="fas fa-shopping-cart"></i> Bestellung senden
             </button>
-        </div>
-        {% endif %}
+        </div>{% endif %}
+        
     </div>    
 
     <!-- Bestellung senden Bestätigung Modal -->

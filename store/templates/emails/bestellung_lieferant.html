@@ -15,20 +15,12 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <img style="max-width:75px" src="https://www.gastrodichtung.ch/static/images/bonetta-icon.png" class="d-inline-block align-top" alt="Gastrodichtungen.ch Logo">
-            <h1>Bestellung Gebo Shop Bonetta</h1>
-        </div>
+        <p>Unsere Kunden-Nr.: {{ lieferant.our_kundennumber }}</p>
 
         <p>Sehr geehrte Damen und Herren,</p>
-        <p>Wir möchten die folgende Bestellung aufgeben:</p>
+        <p>Folgende Bestellung geben wir auf:</p>
 
-        <table class="table">
-            <tr>
-                <th>Bestellung für:</th>
-                <td>{{ lieferant.name }}, {{ lieferant.adresse }}, {{ lieferant.plz }} {{ lieferant.ort }}</td>
-            </tr>
-        </table>
+       
 
         <table class="table">
             <thead>
@@ -48,7 +40,7 @@
                     {% if show_lieferantenartikel %}
                         <td>{{ item.artikel.lieferantenartikel|default:"-" }}</td>
                     {% endif %}
-                    <td>{{ item.artikel.name|default:"-" }}</td>
+                    <td>{{ item.artikel.dichtungstypen|default:"-" }}</td>
                     <td>{{ item.artikel.aussenbreite|default:"-" }} x {{ item.artikel.aussenhöhe|default:"-" }} mm</td>
                 </tr>
                 {% empty %}
@@ -77,13 +69,19 @@
             <li>Beim Rahmenmass verwenden wir das Aussenmass.</li>
             <li>Die Farbe ist die Standardfarbe blaugrau/grau.</li>
         </ul>
-        <p>Versand der Rechnung per E-Mail an livio.bonetta@geboshop.ch</p>
-        <p>Vielen Dank im Voraus.</p>
-        <p>Freundliche Grüsse</p>
+        <p>Senden Sie die Auftragsbestätigung und Rechnung per E-Mail an:<br> livio.bonetta@geboshop.ch</p>
+       
+        <p>Unsere Kontaktdaten:</p>
         <p style="font-weight:bold">Gebo Shop Bonetta</p>
         <p>Neumühlestrasse 19<br>8406 Winterthur</p>
         <p>Telefon: +41 (0)79 333 61 57</p>
         <p>E-Mail: livio.bonetta@geboshop.ch</p>
+
+        <br>
+        <p>Freundliche Grüsse</p>
+
+        <p>Gebo Shop Bonetta</p>
+
 
         <div class="footer">
             <p>© 2025 Gebo Shop Bonetta. Alle Rechte vorbehalten.</p>

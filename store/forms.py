@@ -281,7 +281,7 @@ class LieferantenForm(forms.ModelForm):
                 'placeholder': ''
             }),
             'our_kundennumber': forms.TextInput(attrs={
-                'class': 'form-control col-12',
+                'class': 'form-control col-6',
                 'placeholder': ''
             }),
             'name': forms.TextInput(attrs={

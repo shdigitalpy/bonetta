@@ -79,7 +79,8 @@ class LieferantenBestellungen(models.Model):
     kunden_nr = models.CharField(max_length=255, null=True, blank=True)
     status = models.ManyToManyField(LieferantenStatus, related_name='bestellungen_status', blank=True)
     lieferant = models.ForeignKey("Lieferanten", on_delete=models.CASCADE, null=True, blank=True, related_name="lieferanten_id")
-    
+    auftrag = models.ForeignKey("Elemente_Bestellungen", on_delete=models.CASCADE, null=True, blank=True, related_name="auftrag")
+
     class Meta:
         ordering = ['id']
         verbose_name = 'Lieferanten-Bestellung'
@@ -98,12 +99,7 @@ class LieferantenBestellungenArtikel(models.Model):
         return f"Artikel {self.artikel.id} - Anzahl: {self.anzahl}"
 
 
-STATUS_CHOICES = [
-        ("offen", "offen"),
-        ("bestellt", "bestellt"),
-        ("bei Lieferant", "bei Lieferant"),
-        ("erledigt", "erledigt"),
-    ]
+
 
 WER_CHOICES = [
     ('lager', 'Lager'),
@@ -115,7 +111,7 @@ class Elemente_Bestellungen(models.Model):
     start_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     kunden_nr = models.CharField(max_length=255, null=True, blank=True)
     montage = models.CharField(max_length=255, null=True, blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="offen", verbose_name="Status")
+    status = models.CharField(max_length=20, default="offen", verbose_name="Status")
     notizfeld = models.CharField(max_length=500, null=True, blank=True, verbose_name="Notizfeld")
     wer = models.CharField(max_length=50, choices=WER_CHOICES, null=True, blank=True,default="lager", verbose_name="Zuständigkeit")
   
