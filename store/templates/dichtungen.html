@@ -136,32 +136,34 @@ Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig –
 
 
 
-<!-- Markenübersicht -->
 <div class="container py-5">
   <h1 class="text-center mb-4">Dichtungen nach Marke</h1>
   <p class="text-center mb-5">Wählen Sie eine Marke und entdecken Sie passende Kühl- und Gefrierdichtungen für Ihr Gerät.</p>
 
   <div class="marken-grid">
     {% for marke in marken %}
-      {% if marke.item.all.count > 0 %}
-        <div class="marke-card">
-          <a href="{% url 'store:markedetails' marke.slug %}">
-            <img src="{{ marke.item.all.0.image.url }}" class="main-image" alt="{{ marke.name }} Dichtung">
-            {% if marke.markepic %}
-              <img src="{{ marke.markepic.url }}" class="logo" alt="{{ marke.name }} Logo">
-            {% endif %}
-          </a>
-          <div class="marke-card-body">
-            <h5>{{ marke.name }} – Dichtungen</h5>
-            <a href="{% url 'store:markedetails' marke.slug %}" class="marke-link">
-              Zu den Produkten <i class="fas fa-arrow-right"></i>
+      {% with product=marke_products_map.marke %}
+        {% if product.titelbild %}
+          <div class="marke-card">
+            <a href="{% url 'store:markedetails' marke.slug %}">
+              <img src="{{ product.titelbild.url }}" class="main-image" alt="{{ marke.name }} Dichtung">
+              {% if marke.markepic %}
+                <img src="{{ marke.markepic.url }}" class="logo" alt="{{ marke.name }} Logo">
+              {% endif %}
             </a>
+            <div class="marke-card-body">
+              <h5>{{ marke.name }} – Dichtungen</h5>
+              <a href="{% url 'store:markedetails' marke.slug %}" class="marke-link">
+                Zu den Produkten <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
           </div>
-        </div>
-      {% endif %}
+        {% endif %}
+      {% endwith %}
     {% endfor %}
   </div>
 </div>
+
 
 {% endif %}
 {% endblock %}
