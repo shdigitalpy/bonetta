@@ -141,26 +141,36 @@ Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig –
   <p class="text-center mb-5">Wählen Sie eine Marke und entdecken Sie passende Kühl- und Gefrierdichtungen für Ihr Gerät.</p>
 
   <div class="marken-grid">
+  
+
     {% for marke in marken %}
-      {% with product=marke_products_map.marke %}
-        {% if product.titelbild %}
-          <div class="marke-card">
-            <a href="{% url 'store:markedetails' marke.slug %}">
-              <img src="{{ product.titelbild.url }}" class="main-image" alt="{{ marke.name }} Dichtung">
-              {% if marke.markepic %}
-                <img src="{{ marke.markepic.url }}" class="logo" alt="{{ marke.name }} Logo">
-              {% endif %}
-            </a>
-            <div class="marke-card-body">
-              <h5>{{ marke.name }} – Dichtungen</h5>
-              <a href="{% url 'store:markedetails' marke.slug %}" class="marke-link">
+                {% if marke.item.all.count > 0 %}  <!-- Only display if marke has associated items -->
+
+                <div class="col-lg-5">
+                    <div class="marke-flex">
+                        {% if marke.markepic %}
+                        <a href="{% url 'store:markedetails' marke.slug %}">  <!-- Corrected URL generation -->
+                            <img class="thumbnail" src="{{ marke.markepic.url }}">
+                        </a>
+                        {% endif %}
+                        
+                        <div class="marke-element">
+                            <div class="marke-element-sub">
+                                <h4>{{ marke.name }} - Dichtungen</h4>
+
+                               <a href="{% url 'store:markedetails' marke.slug %}" class="marke-link">
                 Zu den Produkten <i class="fas fa-arrow-right"></i>
               </a>
-            </div>
-          </div>
-        {% endif %}
-      {% endwith %}
-    {% endfor %}
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% endif %}
+            {% endfor %}
+
+
   </div>
 </div>
 
