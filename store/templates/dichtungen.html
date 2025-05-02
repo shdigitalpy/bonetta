@@ -66,21 +66,7 @@
           
       
         
-        <div class="boxen-flex">
-        {% for item in cat_menu %}
-        
-        <div class="boxen-flex-item">
-          <h3 class="kategorien"><a href="{% url 'store:category' item|slugify %}">{{ item }}</a></h3>
-          <a href="{% url 'store:category' item|slugify %}">
-            {% if item.categorypic %}
-            <img loading="lazy" src="{{ item.categorypic.url }}"></a>
-            {% else %}
-            {% endif %}
-            
-        </div>
-        {% endfor %} 
-
-          </div><!-- end flex-container -->
+       
 
 
 
