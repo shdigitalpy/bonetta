@@ -22,6 +22,34 @@
   color: #fff;
   text-decoration: none;
 }
+@media (max-width: 767.98px) {
+  .gastro-layout {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+  }
+
+  .gastro-layout h1 {
+    font-size: 1.75rem !important;
+  }
+
+  .gastro-layout .lead {
+    font-size: 1rem !important;
+  }
+
+  .gastro-layout .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .rating-stars {
+    font-size: 1rem;
+  }
+
+  .gastro-layout img {
+    margin-top: 2rem;
+  }
+}
+
 
 </style>
 {% if message_kontakt %}
@@ -57,7 +85,7 @@
               <input type="text" name="message-anrede" class="form-control" placeholder="Anrede">
             </div>
             <div class="form-group col-md-6">
-              <input type="text" name="message-company" class="form-control" placeholder="Firma">
+              <input type="text" name="message-company" class="form-control" placeholder="Betrieb (optional)">
             </div>
           </div>
           <div class="form-row">

@@ -1,129 +1,186 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block title %}Magnetdichtungen Kühlschrank aller Art | gastrodichtung.ch{% endblock %}
-{% block meta_description %}Magnetdichtungen Kühlschrank: Ihr Spezialist für PVC Dichtungen{% endblock %}
-{% block keywords %}Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig - dann benötigen Sie die richtige Magnetdichtung.{% endblock %}
+{% block meta_description %}
+Magnetdichtungen Kühlschrank: Ihr Spezialist für PVC Dichtungen
+{% endblock %}
+{% block keywords %}
+Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig – dann benötigen Sie die richtige Magnetdichtung.
+{% endblock %}
 
 {% block content %}
+<style>
+
+.gastro-layout h1 {
+  font-size: 2.25rem;
+}
+
+.rating-stars {
+  font-size: 1.2rem;
+  color: #f8e570;
+}
 
 
-    <!--SENDMAIL Start--> {% if vorname %}
-            <div id="home"><div class="landing-text" style="font-size: 2.5rem"><p>Die Nachricht wurde gesendet! Zurück zur <a href="{% url 'store:home' %}">Webseite</a>.</p></div>
+
+
+.marken-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.marke-card {
+  position: relative;
+  width: 320px;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease;
+}
+
+.marke-card:hover {
+  transform: translateY(-5px);
+}
+
+.marke-card img.main-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.marke-card img.logo {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  max-height: 40px;
+  max-width: 60px;
+  opacity: 0.85;
+}
+
+.marke-card-body {
+  padding: 1rem;
+  text-align: center;
+}
+
+.marke-card-body h5 {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #29384f;
+}
+
+.marke-link {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 500;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.marke-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+.marke-link i {
+  margin-left: 6px;
+}
+</style>
+
+{% if vorname %}
+  <div id="home">
+    <div class="landing-text" style="font-size: 2.5rem">
+      <p>Die Nachricht wurde gesendet! Zurück zur <a href="{% url 'store:home' %}">Webseite</a>.</p>
+    </div>
+  </div>
+{% else %}
+
+<!-- Dichtungstypen Section (white background) -->
+<section class="gastro-layout py-5 bg-white">
+  <div class="container">
+    <div class="row align-items-center justify-content-between">
+      
+      <!-- Textblock -->
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <h1 class="font-weight-bold mb-3">Massgefertigte Dichtungen. Schnell geliefert oder montiert.</h1>
+      <p class="lead text-muted mb-4">
+  Über 2'000 Restaurants und Gastrobetriebe in der ganzen Schweiz zählen zu unseren Stammkunden.  
+  <br class="d-none d-lg-block">
+  Wir fertigen passgenaue Dichtungen auf Mass – mit Lieferung oder optionaler Montage vor Ort.
+</p>
+
+
+
+        <div class="d-flex align-items-center mb-3">
+          <div class="rating-stars text-warning mr-3">
+            ★★★★★
           </div>
-            {% else %}
-    <!--SENDMAIL End-->
-
-      <div id="home">
-        <div class="landing-text">
-          <h1>Dichtungen nach Marke</h1>
-          <br>
-          <div class="container">
-          <div class="storepreview">
-        <div class="row">
-
-            {% for marke in marken %}
-                {% if marke.item.all.count > 0 %}  <!-- Only display if marke has associated items -->
-
-                <div class="col-lg-5">
-                    <div class="marke-flex">
-                        {% if marke.markepic %}
-                        <a href="{% url 'store:markedetails' marke.slug %}">  <!-- Corrected URL generation -->
-                            <img class="thumbnail" src="{{ marke.markepic.url }}">
-                        </a>
-                        {% endif %}
-                        
-                        <div class="marke-element">
-                            <div class="marke-element-sub">
-                                <h4>{{ marke.name }} - Dichtungen</h4>
-
-                                <a class="btn btn-primary btn-sm" href="{% url 'store:markedetails' marke.slug %}">Zu den Produkten</a>
-                                <hr>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {% endif %}
-            {% endfor %}
-
-        </div><!-- row end -->
-    </div><!-- storepreview end -->
-  </div><!-- container end -->
-
-    <br>
-    <br>
-
-
-          <a id="scroll-link" href="#boxen" behavior="smooth"><i class="fas fa-caret-down"></i></a>
+          <div>
+            <strong class="text-dark h5 mb-0 d-block">2'000+</strong>
+            <small class="text-muted">Gastrokunden</small>
+          </div>
         </div>
-      
+
+        <a href="{% url 'store:kontakt' %}" class="btn btn-dark rounded-pill px-4 py-2 mt-2">Kontakt</a>
+
+
       </div>
-      
-    
-      <!--erste Reihe -->
-        <div class="padding" id="boxen">
-        <div class="container">
-          
-      
-        
-       
+
+      <!-- Bild -->
+      <div class="col-lg-6">
+        <img src="{% static 'images/gastro-dichtungen.jpg' %}" alt="Gastro Dichtungen" class="img-fluid rounded shadow">
+      </div>
+
+    </div>
+  </div>
+</section>
 
 
 
-          <h2>Unsere Dichtungstypen</h2><br>
-          <p class="p-white">Bei gastrodichtung.ch finden Sie ein breites Sortiment an Dichtungen und die Möglichkeit, Dichtungen nach Mass zu bestellen. Die Dichtungen regelmässig zu wechseln stellt sicher, dass Geräte immer funktionstüchtig bleiben. Wenn der Kühlschrank nicht mehr richtig schliesst, benötigen Sie eine <strong><a class="aspez" href="https://www.gastrodichtung.ch/dichtung/pvc-mit-magnet" title="Magnetdichtung">Magnetdichtung</a></strong> für den Kühlschrank. In unserem Online Shops finden Sie über 1000 Artikel, welche einfach und schnell online teilweise werden können. Wir sind seit über 10 Jahren ein starker Partner von Restaurants, Kälte- und Baufirmen. Aufgrund unserer Spezialiserung können wir beinahe jede Dichtung und Grösse bestellen.
-          </p>
+<!-- Markenübersicht -->
+<div class="container py-5">
+  <h1 class="text-center mb-4">Dichtungen nach Marke</h1>
+  <p class="text-center mb-5">Wählen Sie eine Marke und entdecken Sie passende Kühl- und Gefrierdichtungen für Ihr Gerät.</p>
 
-
-          </div><!-- end container -->
-          </div><!-- end boxen -->
-
-         <!--dritte Reihe -->
-        <div class="padding bgblue">
-        <div class="container" id="dichtungen">
-        <div class="row">
-
-          <div class="col-sm-6">
-          <img loading="lazy" src="{% static '/images/gastro-dichtungen.jpg' %}" class="dichtungen-img">
+  <div class="marken-grid">
+    {% for marke in marken %}
+      {% if marke.item.all.count > 0 and marke.item.all.0.image %}
+        <div class="marke-card">
+          <a href="{% url 'store:markedetails' marke.slug %}">
+            <img src="{{ marke.item.all.0.image.url }}" class="main-image" alt="{{ marke.name }} Dichtung">
+            {% if marke.markepic %}
+              <img src="{{ marke.markepic.url }}" class="logo" alt="{{ marke.name }} Logo">
+            {% endif %}
+          </a>
+          <div class="marke-card-body">
+            <h5>{{ marke.name }} – Dichtungen</h5>
+            <a href="{% url 'store:markedetails' marke.slug %}" class="marke-link">
+              Zu den Produkten <i class="fas fa-arrow-right"></i>
+            </a>
           </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
 
-          <div class="col-sm-6">
-            <br>
-          <h3>Gastrodichtungen nach Mass suchen</h3>
-          <p class="p-white">Kaufen Sie bei uns Magnetdichtungen und weitere Typen nach Mass. Mit unserem Dichtungskonfigurator können Sie jede Grösse bestellen. Suchen Sie jetzt mit unserem Suchfeld den gewünschten Dichtungstyp.</p>
-          <br><br>
-          <a href="{% url 'store:searchbar' %}" class="btn btn-warning btn-lg">Dichtungen kaufen</a>
-          </div>
-        
-          </div>
-          </div>
-          </div>
-
- 
-  
-          
-          {% endif %}
-
+{% endif %}
 {% endblock %}
 
 {% block scripts %}
 <script>
-
-$("#scroll-link").click(function() {
+  $("#scroll-link").click(function() {
     $('html, body').animate({
-        scrollTop: $("#boxen").offset().top
+      scrollTop: $("#boxen").offset().top
     }, 2000);
-});
+  });
 
-$("#scroll-link1").click(function() {
+  $("#scroll-link1").click(function() {
     $('html, body').animate({
-        scrollTop: $("#infosection").offset().top
+      scrollTop: $("#infosection").offset().top
     }, 2000);
-});
-
-     
-  </script>
-  
-  {% endblock %}
-
-    
+  });
+</script>
+{% endblock %}
