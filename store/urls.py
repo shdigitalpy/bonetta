@@ -13,7 +13,7 @@ urlpatterns = [
 	path('', views.home, name='home'),
 
 	# elemente bestellung
-    path("bestellformular/", views.bestellformular_cart, name="bestellformular_cart"),
+    path("bestellformular", views.bestellformular_cart, name="bestellformular_cart"),
     path('cms/crm/elemente-bestellungen', views.elemente_bestellungen, name='elemente_bestellungen'),
     path('cms/crm/elemente-bestellungen/detail/<int:pk>/<str:betrieb>', views.elemente_bestellung_detail, name='elemente_bestellung_detail'),
     path('cms/crm/elemente-bestellungen/delete/<int:pk>/', views.elemente_bestellung_delete, name='elemente_bestellung_delete'),
