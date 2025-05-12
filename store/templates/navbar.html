@@ -65,7 +65,7 @@
     {% else %}
     <li class="nav-item">
   {% if menuitem.name == "PVC mit Magnet" %}
-    <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">Kühlschrankdichtungen mit Magnet</a>
+    <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">Kühlschrankdichtung mit Magnet</a>
   {% elif menuitem.name == "PVC ohne Magnet" %}
     <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">Kühlschrankdichtung ohne Magnet</a>
   {% else %}
@@ -126,7 +126,7 @@
         </li>
         {% else %}
        {% if menuitem.name == "PVC mit Magnet" %}
-  <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">Kühlschrankdichtungen mit Magnet</a>
+  <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">Kühlschrankdichtung mit Magnet</a>
 {% elif menuitem.name == "PVC ohne Magnet" %}
   <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">Kühlschrankdichtung ohne Magnet</a>
 {% else %}
