@@ -12,11 +12,7 @@
   background-color: var(--blue) !important;
   color: var(--white) !important;
 }
-.top-navbar .navbar-brand img {
-  height: 38px !important;
-  width: auto !important;
-  max-width: 100% !important;
-}
+
 .top-navbar .nav-link {
   color: var(--white) !important;
   font-size: 1rem !important;

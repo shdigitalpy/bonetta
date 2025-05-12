@@ -1,15 +1,30 @@
 {% load static %}
 {% load cart_template_tags %}
 
+<style>
+
+.logo-img {
+  height: 100%;
+  width: auto;
+  max-width:80%;
+  max-height: 52px; /* maximale Höhe des Logos */
+  object-fit: contain;
+  display: block;
+}
+
+
+</style>
+
 <!-- NAVBAR: Erste Ebene -->
 <nav class="navbar navbar-expand-xl navbar-dark top-navbar py-2">
   <div class="container-fluid px-4">
     <div class="row w-100 align-items-center">
 
       <!-- Logo -->
-      <div class="col-6 col-xl-2 d-flex align-items-center">
-        <a class="navbar-brand" href="{% url 'store:home' %}">
-          <img src="{% static 'images/bonetta.png' %}" alt="Logo" style="height: 38px;">
+      <div class="col-6 col-md-5 col-lg-4 col-xl-3 d-flex align-items-center">
+
+        <a href="{% url 'store:home' %}">
+          <img src="{% static 'images/bonetta.png' %}" alt="Logo" class="logo-img">
         </a>
       </div>
 
