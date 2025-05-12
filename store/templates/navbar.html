@@ -64,8 +64,15 @@
     </li>
     {% else %}
     <li class="nav-item">
-      <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">{{ menuitem.name }}</a>
-    </li>
+  {% if menuitem.name == "PVC mit Magnet" %}
+    <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">Kühlschrankdichtungen mit Magnet</a>
+  {% elif menuitem.name == "PVC ohne Magnet" %}
+    <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">Kühlschrankdichtung ohne Magnet</a>
+  {% else %}
+    <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">{{ menuitem.name }}</a>
+  {% endif %}
+</li>
+
     {% endif %}
   {% endfor %}
 </div>
