@@ -1882,6 +1882,9 @@ def product_detail(request, slug):
         aussenbreite = request.POST.get('aussenbreite')
         aussenhöhe = request.POST.get('aussenhöhe')
         anzahl = request.POST.get('anzahl')
+        betrieb = request.POST.get('betrieb')
+        strasse = request.POST.get('strasse')
+        ort = request.POST.get('ort')
         name = request.POST.get('name')
         email = request.POST.get('email')
         telefon = request.POST.get('telefon', '')
@@ -1903,6 +1906,9 @@ def product_detail(request, slug):
             'name': name,
             'email': email,
             'telefon': telefon,
+            'ort': ort,
+            'strasse': strasse,
+            'betrieb': betrieb,
             'nachricht': nachricht,
         }
 

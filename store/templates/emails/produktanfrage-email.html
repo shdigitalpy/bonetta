@@ -108,11 +108,16 @@
     </div>
 
     <div class="section">
-      <h2>Kontaktangaben</h2>
-      <div class="row"><span class="label">Name:</span>{{ name }}</div>
-      <div class="row"><span class="label">E-Mail:</span><a href="mailto:{{ email }}">{{ email }}</a></div>
-      {% if telefon %}<div class="row"><span class="label">Telefon:</span>{{ telefon }}</div>{% endif %}
-    </div>
+  <h2>Kontaktangaben</h2>
+  <div class="row"><span class="label">Name:</span> {{ name }}</div>
+  <div class="row"><span class="label">E-Mail:</span> <a href="mailto:{{ email }}">{{ email }}</a></div>
+  {% if telefon %}<div class="row"><span class="label">Telefon:</span> {{ telefon }}</div>{% endif %}
+  {% if betrieb %}<div class="row"><span class="label">Betrieb:</span> {{ betrieb }}</div>{% endif %}
+  {% if strasse %}<div class="row"><span class="label">Strasse:</span> {{ strasse }}</div>{% endif %}
+  {% if ort %}<div class="row"><span class="label">Ort:</span> {{ ort }}</div>{% endif %}
+  
+</div>
+
 
     {% if nachricht %}
     <div class="section message-block">
