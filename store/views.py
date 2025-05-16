@@ -502,7 +502,9 @@ def bestellformular_cart(request):
                         order.save()
 
                     # ✅ Check if the element is already in the cart
-                    existing_item = ElementeCartItem.objects.filter(order=order, element_nr=element_nr).first()
+                    # existierendes Element korrekt prüfen
+                    existing_item = ElementeCartItem.objects.filter(order=order, element_nr=element).first()
+
 
                     if existing_item:
                         existing_item.anzahl += anzahl
@@ -1707,7 +1709,7 @@ def home(request):
             telefon = request.POST['message-phone']
             anrede = request.POST['message-anrede']
 
-            subject = 'Nachricht von ' + ' '+ firma + ' ' + vorname + ' ' + nachname
+            subject = 'gastrodichtung.ch Nachricht von ' + ' '+ firma + ' ' + vorname + ' ' + nachname
             template = render_to_string('shop/kontakt-email.html', {
                 'anrede' : anrede,
                 'vorname': vorname, 
