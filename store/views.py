@@ -3315,7 +3315,6 @@ def logout_user(request):
     return redirect('store:login_user')
 
 
-
 @staff_member_required
 def bestellung_erfassen_view(request):
     if request.method == 'POST':
@@ -3327,26 +3326,22 @@ def bestellung_erfassen_view(request):
         
         if not kunde:
             messages.error(request, f"Kunde mit Nummer '{kunden_nr}' wurde nicht gefunden.")
-        elif not Kunde.objects.filter(interne_nummer=kunden_nr).exists():
-            messages.error(request, f"Kunde mit Nummer '{kunden_nr}' wurde nicht gefunden.")
-        
-        # Check if the Kunde has at least one related 'Elemente' record
         elif not kunde.kunden_elemente.exists():
             messages.error(request, "Dieser Kunde hat noch keine Elemente. Eine Bestellung kann nur erfasst werden, wenn mindestens ein Element vorhanden ist.")
-        
-        # If form is valid, proceed with saving the Bestellung
+        # NEU: Prüfe, ob bereits eine offene Bestellung vorhanden ist
+        elif Elemente_Bestellungen.objects.filter(kunden_nr=kunden_nr, status="offen").exists():
+            messages.error(request, "Dieser Kunde hat bereits eine offene Bestellung. Bitte prüfen Sie die offenen Bestellungen beim Kunden.")
         elif form.is_valid():
             bestellung = form.save(commit=False)
             bestellung.kunden_nr = kunden_nr  # Kunden-Nr. manuell setzen
-            bestellung.save()  # Speichern der Bestellung
+            bestellung.save()
             messages.success(request, "Die Bestellung wurde erfolgreich erfasst.")
-            return redirect('store:elemente_bestellungen')  # Redirect after success
+            return redirect('store:elemente_bestellungen')
         else:
             messages.error(request, "Bitte überprüfen Sie Ihre Eingaben.")
     else:
         form = BestellungForm()
 
-    # Fetch list of customers excluding customers with no 'interne_nummer'
     kunden_liste = Kunde.objects.exclude(interne_nummer__isnull=True)
 
     return render(request, 'crm/bestellung_form.html', {
