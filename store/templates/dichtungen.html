@@ -184,32 +184,43 @@ Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig –
 </div>
 
 
-
-<!-- Bootstrap-Slider für Marken -->
 <div class="container py-5">
   <h2 class="text-center mb-4">Unsere Marken</h2>
-  <div id="markenCarousel" class="carousel slide" data-bs-ride="carousel">
+
+  <div id="markenCarousel" class="carousel slide" data-ride="carousel">
     <div class="carousel-inner">
+
       {% for marke in marken %}
         {% if marke.item.all.count > 0 %}
-          <div class="carousel-item {% if forloop.first %}active{% endif %}">
-            <div class="d-flex justify-content-center">
-              <a href="{% url 'store:markedetails' marke.slug %}">
-                <img src="{{ marke.markepic.url }}" class="d-block mx-auto" style="max-height: 120px;">
-              </a>
-            </div>
+          {% if forloop.counter0|divisibleby:3 %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+              <div class="row justify-content-center">
+          {% endif %}
+
+          <div class="col-4 text-center">
+            <a href="{% url 'store:markedetails' marke.slug %}">
+              <img src="{{ marke.markepic.url }}" class="img-fluid mb-3" style="max-height: 100px;">
+            </a>
           </div>
+
+          {% if forloop.counter|divisibleby:3 or forloop.last %}
+              </div>
+            </div>
+          {% endif %}
         {% endif %}
       {% endfor %}
+
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#markenCarousel" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon"></span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#markenCarousel" data-bs-slide="next">
-      <span class="carousel-control-next-icon"></span>
-    </button>
+
+    <a class="carousel-control-prev" href="#markenCarousel" role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    </a>
+    <a class="carousel-control-next" href="#markenCarousel" role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    </a>
   </div>
 </div>
+
 
 
 
