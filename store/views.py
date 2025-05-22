@@ -1881,7 +1881,7 @@ def product_detail(request, slug):
         laufmeter = request.POST.get('laufmeter')
         aussenbreite = request.POST.get('aussenbreite')
         aussenhöhe = request.POST.get('aussenhöhe')
-        anzahl = request.POST.get('anzahl')
+        anzahl = 1
         betrieb = request.POST.get('betrieb')
         strasse = request.POST.get('strasse')
         ort = request.POST.get('ort')
@@ -1891,7 +1891,7 @@ def product_detail(request, slug):
         nachricht = request.POST.get('nachricht', '')
 
         # E-Mail-Betreff
-        subject = f"Produktanfrage zu {item.kategorie} {artikelnr}"
+        subject = f"Musterbestellung zu {item.kategorie} {artikelnr}"
 
         # Template-Daten vorbereiten
         template_data = {
@@ -1902,7 +1902,7 @@ def product_detail(request, slug):
             'aussenbreite': aussenbreite,
             'aussenhöhe': aussenhöhe,
             'laufmeter': laufmeter,
-            'anzahl': anzahl,
+            
             'name': name,
             'email': email,
             'telefon': telefon,
@@ -1963,14 +1963,14 @@ def weitere_product_detail(request, slug):
         laufmeter = request.POST.get('laufmeter')
         aussenbreite = request.POST.get('aussenbreite')
         aussenhöhe = request.POST.get('aussenhöhe')
-        anzahl = request.POST.get('anzahl')
+        anzahl = 1
         name = request.POST.get('name')
         email = request.POST.get('email')
         telefon = request.POST.get('telefon', '')
         nachricht = request.POST.get('nachricht', '')
 
         # E-Mail-Betreff
-        subject = f"Produktanfrage zu {item.kategorie} {artikelnr}"
+        subject = f"Musterbestellung zu {item.kategorie} {artikelnr}"
 
         # Template-Daten
         template_data = {
@@ -2812,7 +2812,7 @@ def cms_marken(request):
     context = {
             'marken': marken,       
              }
-    return render(request, 'cms-marken.html', context)
+    return render(request, 'webshop/cms-marken.html', context)
 
 @staff_member_required
 def cms_marke_erfassen(request):
@@ -2831,7 +2831,7 @@ def cms_marke_erfassen(request):
     context = {
         'form': form,
                 }
-    return render(request, 'cms-marke-erfassen.html', context)
+    return render(request, 'webshop/cms-marke-erfassen.html', context)
 
 
 @staff_member_required
@@ -2852,7 +2852,7 @@ def cms_marke_bearbeiten(request, pk):
             'form': form,
             'marke': marke,
              }
-        return render(request, 'cms-marke-bearbeiten.html', context)
+        return render(request, 'webshop/cms-marke-bearbeiten.html', context)
 
 @staff_member_required
 def cms_marke_löschen(request, pk):
@@ -2871,7 +2871,7 @@ def cms_product_marke_overview(request, pk):
             'product': product,
             'product_marke' : product_marke,        
              }
-    return render(request, 'cms-produkt-marken.html', context)
+    return render(request, 'webshop/cms-produkt-marken.html', context)
 
 @staff_member_required
 def cms_product_marke_erfassen(request, pk):
@@ -2896,7 +2896,7 @@ def cms_product_marke_erfassen(request, pk):
         'form': form,
                 }
 
-    return render(request, 'cms-produkt-marke-erfassen.html', context)
+    return render(request, 'webshop/cms-produkt-marke-erfassen.html', context)
 
 
 @staff_member_required
@@ -2916,7 +2916,7 @@ def cms_product_marke_löschen(request, pkk, pk):
         'form': form,
                 }
 
-    return render(request, 'cms-produkt-marke-erfassen.html', context)
+    return render(request, 'webshop/cms-produkt-marke-erfassen.html', context)
 
 
 
@@ -3166,32 +3166,36 @@ def cms_produkte(request, first_cat):
         'first_cat_new' : first_cat_new,
         'current_cat' : current_cat
      }
-    return render(request, 'cms-produkte.html', context)
+    return render(request, 'webshop/cms-produkte.html', context)
 
 
 @staff_member_required
 def product_cms_create(request, cat):
+    category_obj = get_object_or_404(Category, name=cat)
+
+    # Entscheide, welches Formular verwendet wird
+    if cat in ["PVC mit Magnet", "PVC ohne Magnet"]:
+        form_class = PVCForm
+    else:
+        form_class = ProduktCreateForm
+
     if request.method == "POST":
-        form = ProduktCreateForm(request.POST or None, request.FILES or None)
+        form = form_class(request.POST, request.FILES)
         if form.is_valid():
             result = form.save(commit=False)
-            result.kategorie = get_object_or_404(Category, name=cat)
+            result.kategorie = category_obj
+            result.titel = result.artikelnr
             result.save()
             return redirect('store:cms_produkte', first_cat=cat)
         else:
-            messages.error(request, "Error")
-    else:   
-        initial_data = {
-                'kategorie': cat,
-                
-            }
-        form = ProduktCreateForm(initial=initial_data)
+            messages.error(request, "Bitte überprüfe deine Eingaben.")
+    else:
+        form = form_class(initial={'kategorie': cat})
 
-    context = {
+    return render(request, 'webshop/cms-produkte-erfassen.html', {
         'form': form,
-        'cat' : cat,
-                }
-    return render(request, 'cms-produkte-erfassen.html', context)
+        'cat': cat,
+    })
 
 
 @staff_member_required
@@ -3214,7 +3218,7 @@ def product_cms_edit(request, pk, current_cat):
         'item': item,
         'current_cat': current_cat
                 }
-    return render(request, 'cms-produkte-bearbeiten.html', context)
+    return render(request, 'webshop/cms-produkte-bearbeiten.html', context)
 
 @staff_member_required
 def cms_remove_product(request, pk, cat):

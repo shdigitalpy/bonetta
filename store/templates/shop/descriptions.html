@@ -51,7 +51,7 @@
 
       <!-- KLAPPBARES Formular -->
       <details class="form-card mt-4">
-        <summary><strong>Produktanfrage</strong></summary>
+        <summary><strong>Musterbestellung</strong></summary>
         <form method="POST" action="">
           {% csrf_token %}
 
@@ -80,6 +80,10 @@
           </div>
           {% endif %}
 
+           <div class="form-group">
+            <label for="betrieb">Betrieb / Firma (optional):</label>
+            <input type="text" class="form-control" name="betrieb" required>
+          </div>
           <div class="form-group">
             <label for="name">Ihr Name:</label>
             <input type="text" class="form-control" name="name" required>
@@ -90,9 +94,11 @@
           </div>
 
           <div class="form-group">
-            <label for="betrieb">Betrieb / Firma (optional):</label>
-            <input type="text" class="form-control" name="betrieb" required>
+            <label for="telefon">Ihre Telefon/Mobile-Nr.:</label>
+            <input type="text" class="form-control" name="telefon">
           </div>
+
+         
           <div class="form-group">
             <label for="strasse">Strasse / Nr. :</label>
             <input type="text" class="form-control" name="strasse" required>
@@ -101,10 +107,7 @@
             <label for="ort">PLZ / Ort:</label>
             <input type="text" class="form-control" name="ort" required>
           </div>
-          <div class="form-group">
-            <label for="telefon">Telefon/Mobile-Nr.:</label>
-            <input type="text" class="form-control" name="telefon">
-          </div>
+          
           <div class="form-group">
             <label for="nachricht">Nachricht:</label>
             <textarea class="form-control" name="nachricht" rows="3"></textarea>

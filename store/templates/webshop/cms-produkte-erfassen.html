@@ -1,0 +1,41 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}CMS Produkte erfassen{% endblock %}
+
+{% block content %}
+
+<style>
+   
+</style>
+
+<div class="container">
+    <div class="produkt-header">
+        <h2>Produkt erfassen – {{ cat }}</h2>
+        <button class="btn btn-exit">
+            <a href="{% url 'store:cms_produkte' cat %}">Zurück <span class="fas fa-times"></span></a>
+        </button>
+    </div>
+
+    <div class="form-group">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.media }}
+
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}<br>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="text-danger">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-save mt-3">
+                Speichern <span class="fas fa-check-circle"></span>
+            </button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

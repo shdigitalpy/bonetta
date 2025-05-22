@@ -203,7 +203,7 @@ class Item(models.Model):
 	class Meta:
 		verbose_name = 'Produkte'
 		verbose_name_plural = 'Produkte'
-		ordering = ['sortierung']
+		ordering = ['-artikelnr']
 
 	def __str__(self):
 		return str(self.kategorie) + ' ' + str(self.subkategorie) + ' ' + str(self.artikelnr)
