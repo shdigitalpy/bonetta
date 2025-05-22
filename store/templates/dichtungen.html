@@ -142,44 +142,75 @@ Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig –
 </section>
 
 
-
+<!-- Boxen-Layout "Wieso Gebo Shop" -->
 <div class="container py-5">
-  <h1 class="text-center mb-4">Dichtungen nach Marke</h1>
-  <p class="text-center mb-5">Wählen Sie eine Marke und entdecken Sie passende Kühl- und Gefrierdichtungen für Ihr Gerät.</p>
+  <h2 class="text-center mb-5">Wieso Gebo Shop</h2>
+  <div class="row text-center">
+    
+    <!-- Box 1 -->
+    <div class="col-md-4 mb-4">
+      <div class="p-4 bg-light rounded h-100 shadow-sm">
+        <h5 class="mb-3">Gastroinventar für Bestandskunden</h5>
+        <p class="text-muted mb-3">Bei der Dichtungsmontage nehmen wir ein Kühlinventar auf. So können Sie als Bestandskunde jederzeit bequem und zum Vorzugspreis nachbestellen.</p>
+      </div>
+    </div>
 
-  <div class="marken-grid">
-  
+    <!-- Box 2 -->
+    <div class="col-md-4 mb-4">
+      <div class="p-4 bg-light rounded h-100 shadow-sm">
+        <h5 class="mb-3">Musteranfrage für Dichtungen</h5>
+        <p class="text-muted mb-3">Senden Sie uns ein Foto Ihrer alten Dichtung – wir analysieren das Profil und schicken Ihnen ein passendes Muster zur Prüfung zu.</p>
+      </div>
+    </div>
 
-    {% for marke in marken %}
-                {% if marke.item.all.count > 0 %}  <!-- Only display if marke has associated items -->
-
-                <div class="col-lg-5">
-                    <div class="marke-flex">
-                        {% if marke.markepic %}
-                        <a href="{% url 'store:markedetails' marke.slug %}">  <!-- Corrected URL generation -->
-                            <img class="thumbnail" src="{{ marke.markepic.url }}">
-                        </a>
-                        {% endif %}
-                        
-                        <div class="marke-element">
-                            <div class="marke-element-sub">
-                                <h4>{{ marke.name }} - Dichtungen</h4>
-
-                               <a href="{% url 'store:markedetails' marke.slug %}" class="marke-link">
-                Zu den Produkten <i class="fas fa-arrow-right"></i>
-              </a>
-                                <hr>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {% endif %}
-            {% endfor %}
-
+    <!-- Box 3 -->
+    <div class="col-md-4 mb-4">
+      <div class="p-4 bg-light rounded h-100 shadow-sm">
+        <h5 class="mb-3">Gastro-Reparaturen</h5>
+        <p class="text-muted mb-3">Ob defekte Schubladen, Türscharniere oder Gummidichtungen – unsere Monteure reparieren rasch und zuverlässig direkt bei Ihnen vor Ort.</p>
+      </div>
+    </div>
 
   </div>
+
+  <!-- WhatsApp Kontakt -->
+  <div class="text-center mt-4">
+    <a href="https://wa.me/41793336157" target="_blank" class="btn btn-success btn-lg d-inline-flex align-items-center gap-2 px-4 py-2 rounded-pill shadow-sm">
+     <i class="fab fa-whatsapp fa-lg me-2"></i>
+      <span> WhatsApp </span>
+
+    </a>
+  </div>
 </div>
+
+
+
+<!-- Bootstrap-Slider für Marken -->
+<div class="container py-5">
+  <h2 class="text-center mb-4">Unsere Marken</h2>
+  <div id="markenCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      {% for marke in marken %}
+        {% if marke.item.all.count > 0 %}
+          <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <div class="d-flex justify-content-center">
+              <a href="{% url 'store:markedetails' marke.slug %}">
+                <img src="{{ marke.markepic.url }}" class="d-block mx-auto" style="max-height: 120px;">
+              </a>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#markenCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#markenCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </button>
+  </div>
+</div>
+
 
 
 {% endif %}
