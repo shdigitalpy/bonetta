@@ -177,47 +177,26 @@ Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig –
   <div class="text-center mt-4">
     <a href="https://wa.me/41793336157" target="_blank" class="btn btn-success btn-lg d-inline-flex align-items-center gap-2 px-4 py-2 rounded-pill shadow-sm">
      <i class="fab fa-whatsapp fa-lg me-2"></i>
-      <span> WhatsApp </span>
+      <span> WhatsApp</span>
 
     </a>
   </div>
 </div>
 
 
+
 <div class="container py-5">
   <h2 class="text-center mb-4">Unsere Marken</h2>
-
-  <div id="markenCarousel" class="carousel slide" data-ride="carousel">
-    <div class="carousel-inner">
-
-      {% for marke in marken %}
-        {% if marke.item.all.count > 0 %}
-          {% if forloop.counter0|divisibleby:3 %}
-            <div class="carousel-item {% if forloop.first %}active{% endif %}">
-              <div class="row justify-content-center">
-          {% endif %}
-
-          <div class="col-4 text-center">
-            <a href="{% url 'store:markedetails' marke.slug %}">
-              <img src="{{ marke.markepic.url }}" class="img-fluid mb-3" style="max-height: 100px;">
-            </a>
-          </div>
-
-          {% if forloop.counter|divisibleby:3 or forloop.last %}
-              </div>
-            </div>
-          {% endif %}
-        {% endif %}
-      {% endfor %}
-
-    </div>
-
-    <a class="carousel-control-prev" href="#markenCarousel" role="button" data-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    </a>
-    <a class="carousel-control-next" href="#markenCarousel" role="button" data-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    </a>
+  <div class="row justify-content-center align-items-center text-center">
+    {% for marke in marken|slice:":6" %}
+      {% if marke.item.all.count > 0 %}
+        <div class="col-6 col-sm-4 col-md-2 mb-4">
+          <a href="{% url 'store:markedetails' marke.slug %}">
+            <img src="{{ marke.markepic.url }}" alt="{{ marke.name }}" class="img-fluid" style="max-height: 80px;">
+          </a>
+        </div>
+      {% endif %}
+    {% endfor %}
   </div>
 </div>
 
