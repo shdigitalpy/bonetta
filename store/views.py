@@ -1775,6 +1775,8 @@ def firma(request):
 #Marke Übersicht
 def marke(request):
     marken = Marke.objects.all()
+    for i in marken:
+        print(i.name)
     context = { 
         'marken' : marken, 
         }
