@@ -1,9 +1,24 @@
 from django.conf import settings
 from store.models import Category, Subcategory, Item, Marke
 
+def custom_sort(cat):
+    order = {
+        "Marke": 0,
+        "PVC mit Magnet": 1,
+        "PVC ohne Magnet": 2,
+        "Gummidichtung": 3,
+        "Ofen/Steamer Dichtung": 4,  # <-- genau hier einsortiert
+        "Zubehör": 5,
+    }
+    return order.get(cat.name, 99)  # unbekannte Kategorien ans Ende
+
+
 def extras(request):
-	cat_menu = Category.objects.all()
-	return {'cat_menu': cat_menu}
+    cat_menu = list(Category.objects.all())
+    cat_menu_sorted = sorted(cat_menu, key=custom_sort)
+    return {'cat_menu': cat_menu_sorted}
+
+
 
 def sub_extras(request):
 	subcat_menu = Subcategory.objects.all()
