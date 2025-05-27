@@ -7,8 +7,10 @@ def custom_sort(cat):
         "PVC mit Magnet": 1,
         "PVC ohne Magnet": 2,
         "Gummidichtung": 3,
-        "Ofen/Steamer Dichtung": 4,  # <-- genau hier einsortiert
-        "Zubehör": 5,
+        "EPDM-Moosgummi": 4,
+        "Ofen/Steamer Dichtung": 5,  # <-- genau hier einsortiert
+        "Weitere Dichtungen": 6,
+        "Zubehör": 7,
     }
     return order.get(cat.name, 99)  # unbekannte Kategorien ans Ende
 
