@@ -28,3 +28,10 @@ def first_cat(request):
     return {'first_cat': first_cat}
 
 	
+def marken_context(request):
+    bestseller_marken = Marke.objects.filter(bestseller=True).order_by('name')
+
+    return {
+        'marken': Marke.objects.all(),
+        'bestseller_marken': bestseller_marken,
+    }

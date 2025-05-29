@@ -17,35 +17,45 @@
 			</div>
 
 			<table class="table table-striped">
+
 			  <thead>
 			    <tr>
 			      <th scope="col">Name</th>
 			      <th scope="col">Bild</th>
 			      <th scope="col">Bearbeiten</th>
+			      <th scope="col">Bestseller</th>
 			      <th scope="col">Löschen</th>
-			     
-			      
-			      
-
 			    </tr>
 			  </thead>
+
 			  {% for data in marken %}
 			  <tbody>
 			    <tr>
-			      <th scope="row">{{ data.name }}</th>
-			      <td>{% if data.markepic %}
-			      	<img style="width:60px" src="{{ data.markepic.url }}">
-			      	{% else %}
-			      	{% endif %}
-			      </td>
+			        <th scope="row">{{ data.name }}</th>
+
+					<td>{% if data.markepic %}
+						<img style="width:60px" src="{{ data.markepic.url }}">
+						{% else %}
+						{% endif %}
+					</td>
 			      
-			      <td>
-			      	<a href="{% url 'store:cms_marke_bearbeiten' data.pk %}"><i style="color:var(--red)" class="far fa-edit"></i>
-					 </a>
-					 </td>
+			        <td>
+			      		<a href="{% url 'store:cms_marke_bearbeiten' data.pk %}"><i style="color:var(--red)" class="far fa-edit"></i>
+						</a>
+				    </td>
+
+					<td>
+						{% if data.bestseller %}
+							Yes
+						{% else %}
+							No
+						{% endif %}
+					</td>
+
+
   					<td>
-  					<a href="{% url 'store:cms_marke_löschen' data.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i>
-					 </a>
+  						<a href="{% url 'store:cms_marke_löschen' data.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i>
+					 	</a>
 					</td> 
 			    </tr>
 			    

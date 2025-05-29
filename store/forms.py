@@ -1526,25 +1526,29 @@ class MarkeChangeForm(forms.ModelForm):
             'slug',
             'markepic',
             'marketext',
-            )
+            'bestseller',
+        )
         widgets = {
-            
             'name': forms.TextInput(attrs={
-                'class': 'form-control col-3',
-                'placeholder':''}),
-            'markepic' : forms.FileInput(attrs={
                 'class': 'form-control',
-                }),
-            
+                'placeholder': ''
+            }),
             'slug': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': ''}),
+                'placeholder': ''
+            }),
+            'markepic': forms.FileInput(attrs={
+                'class': 'form-control'
+            }),
             'marketext': forms.Textarea(attrs={
-                'class': 'form-control col-3',
-                'placeholder':''}),
+                'class': 'form-control',
+                'placeholder': ''
+            }),
+            'bestseller': forms.CheckboxInput(attrs={
+                'class': 'form-check-input',
+                'style': 'transform: scale(1.1); cursor: pointer;'
+            }),
         }
-          
-
 
 # Bezeichnung   
 
