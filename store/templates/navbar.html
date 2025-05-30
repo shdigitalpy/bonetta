@@ -363,10 +363,7 @@
 
       <div class="collapse navbar-collapse" id="navbarResponsive">
            <ul class="navbar-nav">
-            
-
              {% if marke_menu %}
-
             <!-- <li class="nav-item dropdown show"><a class="nav-link" href="{% url 'store:marke' %}">Nach Marke</a></li>             -->
              <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="{% url 'store:marke' %}" id="markeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -393,27 +390,20 @@
             {% endif %}
 
              {% for menuitem in cat_menu %}
-              
-
-             {% if menuitem.name == 'Weitere Dichtungen' %}
-              <li class="nav-item dropdown show">
-              <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Weitere Dichtungen</a>
-              
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                {% for submenuitem in subcat_menu %}
-                <a class="dropdown-item" href="{% url 'store:subcategory' 'weitere-dichtungen' submenuitem|slugify %}">{{ submenuitem.sub_name }}</a>
-                {% endfor %}
-              </div>
-              
-            </li>
-              
-             {% else %}
-
-              <li class="nav-item"><a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">{{ menuitem.name }}</a>
-              </li>
-
-              {% endif %}
-              {% endfor %}
+                {% if menuitem.name == 'Weitere Dichtungen' %}
+                  <li class="nav-item dropdown show">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Weitere Dichtungen</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                      {% for submenuitem in subcat_menu %}
+                      <a class="dropdown-item" href="{% url 'store:subcategory' 'weitere-dichtungen' submenuitem|slugify %}">{{ submenuitem.sub_name }}</a>
+                      {% endfor %}
+                    </div>
+                  </li>
+                {% else %}
+                  <li class="nav-item"><a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">{{ menuitem.name }}</a>
+                  </li>
+                {% endif %}
+            {% endfor %}
              
               {% if request.user.is_authenticated %}
               {% if request.user.profile.firmenname %}
