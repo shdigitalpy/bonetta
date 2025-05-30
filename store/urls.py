@@ -6,6 +6,7 @@ from django.conf import settings
 from django.views.generic import TemplateView
 from django.urls import re_path
 from django.http import HttpResponsePermanentRedirect
+from urllib.parse import unquote
 
 app_name = 'store'
 
@@ -128,10 +129,11 @@ urlpatterns = [
 	path('cms/webshop/löschen/<int:pk>', views.cms_kunde_löschen, name='cms_kunde_löschen'),
 
 	#produkte
-	path('cms/produkte/<str:first_cat>', views.cms_produkte, name='cms_produkte'),
+	re_path(r'^cms/produkte/erfassen/(?P<cat>.+)$', views.product_cms_create, name='product_cms_create'),
+	re_path(r'^cms/produkte/(?P<first_cat>.+)$', views.cms_produkte, name='cms_produkte'),
+
 	path('cms/produkte/bearbeiten/<int:pk>/<str:current_cat>', views.product_cms_edit, name='cms_produkte_edit'),
 	path('cms/produkte/löschen/<int:pk>/<str:cat>', views.cms_remove_product, name='cms_remove_product'),
-	path('cms/produkte/erfassen/<str:cat>', views.product_cms_create, name='product_cms_create'),
 	path('cms/produkte-marke/<int:pk>', views.cms_product_marke_overview, name='cms_product_marke_overview'),
 	path('cms/produkte-marke/erfassen/<int:pk>', views.cms_product_marke_erfassen, name='cms_product_marke_erfassen'),
 	path('cms/produkte-marke/löschen/<int:pkk>/<int:pk>', views.cms_product_marke_löschen, name='cms_product_marke_löschen'),

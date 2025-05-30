@@ -35,6 +35,7 @@ import json
 from django.utils.html import escape
 from django.core.serializers.json import DjangoJSONEncoder
 import json
+from urllib.parse import unquote
 
 email_master = settings.EMAIL_MASTER
 
@@ -3132,49 +3133,51 @@ def cms_produkte(request, first_cat):
     category = Category.objects.all()
     filter_query = request.GET.get('category', '')
     search_query = request.GET.get('search', '')
+    first_cat = unquote(first_cat)  # ← Wichtig: URL-Parameter dekodieren
     first_cat_new = ''
-    current_cat = 'standard'
+    current_cat = first_cat
 
     if search_query:
-        produkte = Item.objects.filter(Q(titel__icontains=search_query) | Q(artikelnr__icontains=search_query) | Q(kategorie__name__icontains=search_query) | Q(subkategorie__sub_name__icontains=search_query))
-        
+        produkte = Item.objects.filter(
+            Q(titel__icontains=search_query) |
+            Q(artikelnr__icontains=search_query) |
+            Q(kategorie__name__icontains=search_query) |
+            Q(subkategorie__sub_name__icontains=search_query)
+        )
+
         if filter_query:
             produkte = produkte.filter(kategorie__name=filter_query)
             current_cat_query = get_object_or_404(Category, name=filter_query)
-            current_cat = current_cat_query.name 
+            current_cat = current_cat_query.name
             first_cat_new = current_cat
-        else:
-            pass
+
     else:
         if filter_query:
             produkte = Item.objects.filter(kategorie__name=filter_query)
             current_cat_query = get_object_or_404(Category, name=filter_query)
-            current_cat = current_cat_query.name 
+            current_cat = current_cat_query.name
             first_cat_new = current_cat
-        else: 
+        else:
             produkte = Item.objects.filter(kategorie__name=first_cat)
-            
+
     if current_cat == 'standard':
         current_cat = first_cat
-    else:
-        pass
-
 
     context = {
         'category': category,
         'produkte': produkte,
-        'first_cat_new' : first_cat_new,
-        'current_cat' : current_cat
-     }
+        'first_cat_new': first_cat_new,
+        'current_cat': current_cat,
+    }
     return render(request, 'webshop/cms-produkte.html', context)
 
 
 @staff_member_required
 def product_cms_create(request, cat):
-    category_obj = get_object_or_404(Category, name=cat)
+    cat_decoded = unquote(cat)
+    category_obj = get_object_or_404(Category, name=cat_decoded)
 
-    # Entscheide, welches Formular verwendet wird
-    if cat in ["PVC mit Magnet", "PVC ohne Magnet"]:
+    if cat_decoded in ["PVC mit Magnet", "PVC ohne Magnet"]:
         form_class = PVCForm
     else:
         form_class = ProduktCreateForm
@@ -3186,15 +3189,15 @@ def product_cms_create(request, cat):
             result.kategorie = category_obj
             result.titel = result.artikelnr
             result.save()
-            return redirect('store:cms_produkte', first_cat=cat)
+            return redirect('store:cms_produkte', first_cat=cat)  # nicht nochmal decodieren hier!
         else:
             messages.error(request, "Bitte überprüfe deine Eingaben.")
     else:
-        form = form_class(initial={'kategorie': cat})
+        form = form_class(initial={'kategorie': cat_decoded})
 
     return render(request, 'webshop/cms-produkte-erfassen.html', {
         'form': form,
-        'cat': cat,
+        'cat': cat_decoded,
     })
 
 
