@@ -1,23 +1,6 @@
 {% load static %}
 {% load cart_template_tags %}
-<!-- <style>
 
-  .custom-gray-bg {
-  background-color: #29384e !important;
-  color: white;
-}
-
-.custom-gray-bg .dropdown-item {
-  color: white !important;
-  font-size: 1.1rem; /* Adjust as needed for "large" */
-}
-
-.custom-gray-bg .dropdown-item:hover {
-  background-color: #307ced;
-  color: white;
-}
-
-</style> -->
 
 <style>
 /* Bootstrap dropdown menu customization */
@@ -153,8 +136,6 @@
     }
 }
 </style>
-
-
 <style>
 
 .logo-img {
@@ -173,15 +154,12 @@
 <nav class="navbar navbar-expand-xl navbar-dark top-navbar py-2">
   <div class="container-fluid px-4">
     <div class="row w-100 align-items-center">
-
       <!-- Logo -->
       <div class="col-6 col-md-5 col-lg-4 col-xl-3 d-flex align-items-center">
-
         <a href="{% url 'store:home' %}">
           <img src="{% static 'images/bonetta.png' %}" alt="Logo" class="logo-img">
         </a>
       </div>
-
       <!-- Suche (nur Desktop) -->
       <div class="col-xl-8 d-none d-xl-flex justify-content-center">
         <form class="form-inline w-100 justify-content-center" action="{% url 'store:searchbar' %}">
@@ -196,7 +174,6 @@
           </div>
         </form>
       </div>
-
       <!-- Burger (nur Mobile) -->
       <div class="col-6 col-xl-2 d-flex justify-content-end">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNavCollapse">
@@ -204,55 +181,46 @@
         </button>
       </div>
     </div>
-
     <!-- Collapse Bereich für Mobile -->
     <div class="collapse navbar-collapse mt-2 d-xl-none" id="mainNavCollapse">
       <ul class="navbar-nav ml-auto">
-
         <!-- Kategorien nur auf Mobile anzeigen -->
-<div class="d-xl-none w-100">
-  {% if marke_menu %}
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'store:marke' %}">Kühlschrankdichtung nach Marke</a>
-  </li>
-  {% endif %}
-
-  {% for menuitem in cat_menu %}
-    {% if menuitem.name == 'Weitere Dichtungen' %}
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" href="#" id="dropdownMoreSeals" data-toggle="dropdown">
-        Weitere Dichtungen
-      </a>
-      <div class="dropdown-menu">
-        {% for submenuitem in subcat_menu %}
-        <a class="dropdown-item" href="{% url 'store:subcategory' 'weitere-dichtungen' submenuitem|slugify %}">
-          {{ submenuitem.sub_name }}
-        </a>
-        {% endfor %}
-      </div>
-    </li>
-    {% else %}
-    <li class="nav-item">
-  {% if menuitem.name == "PVC mit Magnet" %}
-    <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">Kühlschrankdichtung mit Magnet</a>
-  {% elif menuitem.name == "PVC ohne Magnet" %}
-    <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">Kühlschrankdichtung ohne Magnet</a>
-  {% else %}
-    <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">{{ menuitem.name }}</a>
-  {% endif %}
-</li>
-
-    {% endif %}
-  {% endfor %}
-</div>
-
-
-        <!-- Weitere Links -->
-        <li class="nav-item"><a class="nav-link" href="{% url 'store:firma' %}">Montage</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'store:kontakt' %}">Kontakt</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'store:bestellformular_cart' %}">Bestellformular</a></li>
+        <div class="d-xl-none w-100">
+          <ul class="navbar-nav">
+            {% if marke_menu %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'store:marke' %}">Kühlschrankdichtung nach Marke</a>
+            </li>
+            {% endif %}
+            {% for menuitem in cat_menu %}
+              {% if menuitem.name == 'Weitere Dichtungen' %}
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="dropdownMoreSeals" data-toggle="dropdown">
+                    Weitere Dichtungen
+                  </a>
+                  <div class="dropdown-menu">
+                    {% for submenuitem in subcat_menu %}
+                      <a class="dropdown-item" href="{% url 'store:subcategory' 'weitere-dichtungen' submenuitem|slugify %}">
+                        {{ submenuitem.sub_name }}
+                      </a>
+                    {% endfor %}
+                  </div>
+                </li>
+              {% else %}
+                <li class="nav-item">
+                  {% if menuitem.name == "PVC mit Magnet" %}
+                    <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">Kühlschrankdichtung mit Magnet</a>
+                  {% elif menuitem.name == "PVC ohne Magnet" %}
+                    <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">Kühlschrankdichtung ohne Magnet</a>
+                  {% else %}
+                    <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">{{ menuitem.name }}</a>
+                  {% endif %}
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
       </ul>
-
       <!-- Suche nur Mobile -->
       <form class="form-inline d-xl-none mt-3 px-2" action="{% url 'store:searchbar' %}">
         {% csrf_token %}
@@ -270,183 +238,64 @@
 </nav>
 
 <!-- NAVBAR: Zweite Ebene (nur Desktop) -->
-<nav class="navbar second-navbar d-none d-xl-flex">
-  <div class="container-fluid justify-content-center">
-    <ul class="navbar-nav flex-row">
+<nav class="navbar navbar-expand-xl navbar-light sticky-top product-nav" role="navigation">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">    
+      <span class="navbar-toggler-icon"></span>
+    </button> 
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+    <ul class="navbar-nav">
       {% if marke_menu %}
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'store:marke' %}">Kühlschrankdichtung nach Marke</a>
-      </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="{% url 'store:marke' %}" id="markeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Kühlschrankdichtung nach Marke
+          </a>
+          <ul class="dropdown-menu p-3 custom-gray-bg" aria-labelledby="markeDropdown" style="min-width: 400px;">
+            <div class="row">
+              {% for marke in marken %}
+                {% if forloop.counter0|divisibleby:10 and not forloop.first %}
+                  </div><div class="col-md-4">
+                {% elif forloop.first %}
+                  <div class="col-md-4">
+                {% endif %}
+                  <li><a class="dropdown-item" href="{% url 'store:marke' %}">{{ marke.name }}</a></li>
+                {% if forloop.last %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </ul>
+        </li>
       {% endif %}
 
       {% for menuitem in cat_menu %}
         {% if menuitem.name == 'Weitere Dichtungen' %}
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="dropdownMoreSeals2" data-toggle="dropdown">
-            Weitere Dichtungen
-          </a>
-          <div class="dropdown-menu">
-            {% for submenuitem in subcat_menu %}
-            <a class="dropdown-item" href="{% url 'store:subcategory' 'weitere-dichtungen' submenuitem|slugify %}">
-              {{ submenuitem.sub_name }}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="markeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              Weitere Dichtungen
             </a>
-            {% endfor %}
-          </div>
-        </li>
-        {% else %}
-       {% if menuitem.name == "PVC mit Magnet" %}
-  <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">Kühlschrankdichtung mit Magnet</a>
-{% elif menuitem.name == "PVC ohne Magnet" %}
-  <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">Kühlschrankdichtung ohne Magnet</a>
-{% else %}
-  <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">{{ menuitem.name }}</a>
-{% endif %}
-
-      <!--Navbar 2 Level MOBILE -->
-<nav class="navbar navbar-expand-xl navbar-light sticky-top product-nav-mobile d-xl-none" role="navigation">
-<div class="container-fluid">
-
-  
-  <button class="navbar-toggler"  type="button" data-toggle="collapse" data-target="#navbarResponsive">    
-                <span class="navbar-toggler-icon"></span>
-    </button>     
-
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-           <ul class="navbar-nav">
-
-            {% if marke_menu %}
-
-            <!-- <li class="nav-item dropdown show"><a class="nav-link" href="{% url 'store:marke' %}">Nach Marke</a></li>             -->
-             <li class="nav-item dropdown show">
-              <a class="nav-link dropdown-toggle" href="#" id="markeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Nach Marke
+            <div class="dropdown-menu">
+              {% for submenuitem in subcat_menu %}
+              <a class="dropdown-item" href="{% url 'store:subcategory' 'weitere-dichtungen' submenuitem|slugify %}">
+                {{ submenuitem.sub_name }}
               </a>
-              <ul class="dropdown-menu" aria-labelledby="markeDropdown">
-                {% for marke in marken %}
-                  <li><a class="dropdown-item" href="{% url 'store:marke' %}">{{ marke.name }}</a></li>
-                {% endfor %}
-              </ul>
-            </li>
-
-
-
-            {% endif %}
-
-
-             {% for menuitem in cat_menu %}
-             {% if menuitem.name == 'Weitere Dichtungen' %}
-              <li class="nav-item dropdown show">
-              <a class="nav-link dropdown-toggle" href="{% url 'store:marke' %}" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Weitere Dichtungen</a>
-              
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                {% for submenuitem in subcat_menu %}
-                <a class="dropdown-item" href="{% url 'store:subcategory' 'weitere-dichtungen' submenuitem|slugify %}">{{ submenuitem.sub_name }}</a>
-                {% endfor %}
-              </div>
-              
-            </li>
-              
-             {% else %}
-              <li class="nav-item"><a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">{{ menuitem.name }}</a>
-              </li>
-
-              {% endif %}
-
               {% endfor %}
+            </div>
+          </li>
 
+        {% elif menuitem.name == "PVC mit Magnet" %}
+          <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">Kühlschrankdichtung mit Magnet</a>
+        {% elif menuitem.name == "PVC ohne Magnet" %}
+          <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">Kühlschrankdichtung ohne Magnet</a>
+        {% else %}
+          <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">{{ menuitem.name }}</a>
+        {% endif %}
+    {% endfor %}
 
-              
-              <!-- <li class="nav-item"><a class="nav-link" href="">EPDM/Moosgummi</a></li>-->
-              {% if request.user.is_authenticated %}
-              {% if request.user.profile.firmenname %}
-              <li class="nav-item"><a class="nav-link btn btn-outline-warning " href="{% url 'store:mydichtungen' %}">Inventar</a>
-              </li>
-                {% else %}
-                {% endif %}
-                {% else %}
-              {% endif %}
-
-
-             
-         </ul>       
-      </div>  
-      
-       </div>
-              
+    </ul>
+  </div>
 </nav>
-<!-- Navbar END --> 
 
-
-
-<!--Navbar 2 Level -->
-<nav class="navbar navbar-expand-xl navbar-light sticky-top product-nav" role="navigation">
-<div class="container-fluid">
-
-  
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">    
-                <span class="navbar-toggler-icon"></span>
-    </button>     
-
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-           <ul class="navbar-nav">
-             {% if marke_menu %}
-            <!-- <li class="nav-item dropdown show"><a class="nav-link" href="{% url 'store:marke' %}">Nach Marke</a></li>             -->
-             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="{% url 'store:marke' %}" id="markeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Nach Marke
-              </a>
-
-              <ul class="dropdown-menu p-3 custom-gray-bg" aria-labelledby="markeDropdown" style="min-width: 400px;">
-                <div class="row">
-                  {% for marke in marken %}
-                    {% if forloop.counter0|divisibleby:10 and not forloop.first %}
-                      </div><div class="col-md-4">
-                    {% elif forloop.first %}
-                      <div class="col-md-4">
-                    {% endif %}
-                      <li><a class="dropdown-item" href="{% url 'store:marke' %}">{{ marke.name }}</a></li>
-                    {% if forloop.last %}
-                      </div>
-                    {% endif %}
-                  {% endfor %}
-                </div>
-              </ul>
-            </li>
-
-            {% endif %}
-
-             {% for menuitem in cat_menu %}
-                {% if menuitem.name == 'Weitere Dichtungen' %}
-                  <li class="nav-item dropdown show">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Weitere Dichtungen</a>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                      {% for submenuitem in subcat_menu %}
-                      <a class="dropdown-item" href="{% url 'store:subcategory' 'weitere-dichtungen' submenuitem|slugify %}">{{ submenuitem.sub_name }}</a>
-                      {% endfor %}
-                    </div>
-                  </li>
-                {% else %}
-                  <li class="nav-item"><a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">{{ menuitem.name }}</a>
-                  </li>
-                {% endif %}
-            {% endfor %}
-             
-              {% if request.user.is_authenticated %}
-              {% if request.user.profile.firmenname %}
-              <li class="nav-item"><a class="nav-link btn btn-outline-warning " href="{% url 'store:mydichtungen' %}">Inventar</a>
-              </li>
-                {% else %}
-                {% endif %}
-                {% else %}
-              {% endif %}
-
-         </ul>       
-      </div>  
-      
-       </div>
-              
-</nav>
-<!-- Navbar END --> 
 
 <!-- Bootstrap CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">

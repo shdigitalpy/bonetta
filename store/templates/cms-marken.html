@@ -34,8 +34,10 @@
 			        <th scope="row">{{ data.name }}</th>
 
 					<td>{% if data.markepic %}
-						<img style="width:60px" src="{{ data.markepic.url }}">
+						<p>yes</p>
+						<img class="img-fluid mb-2 width:60px" src="{% static 'images/' %}{{ data.markepic }}">
 						{% else %}
+						<p>no</p>
 						{% endif %}
 					</td>
 			      
