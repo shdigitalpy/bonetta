@@ -1,0 +1,70 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}CMS Marken{% endblock %}
+
+{% block content %}
+
+		
+			<div class="flexbox">
+				<div class="h2">Marken</div>
+				
+			</div>
+
+			<p>Erfassen Sie die Marken für die Produkte.</p>
+
+			<div class="flexbox">
+				<a class="btn btn-secondary btn-sm" href="{% url 'store:cms_marke_erfassen' %}">Erfassen</a>
+			</div>
+
+			<table class="table table-striped">
+
+			  <thead>
+			    <tr>
+			      <th scope="col">Name</th>
+			      <th scope="col">Bild</th>
+			      <th scope="col">Bearbeiten</th>
+			      <th scope="col">Bestseller</th>
+			      <th scope="col">Löschen</th>
+			    </tr>
+			  </thead>
+
+			  {% for data in marken %}
+			  <tbody>
+			    <tr>
+			        <th scope="row">{{ data.name }}</th>
+
+					<td>{% if data.markepic %}
+						<p>yes</p>
+						<img class="img-fluid mb-2 width:60px" src="{% static 'images/' %}{{ data.markepic }}">
+						{% else %}
+						<p>no</p>
+						{% endif %}
+					</td>
+			      
+			        <td>
+			      		<a href="{% url 'store:cms_marke_bearbeiten' data.pk %}"><i style="color:var(--red)" class="far fa-edit"></i>
+						</a>
+				    </td>
+
+					<td>
+						{% if data.bestseller %}
+							Yes
+						{% else %}
+							No
+						{% endif %}
+					</td>
+
+
+  					<td>
+  						<a href="{% url 'store:cms_marke_löschen' data.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i>
+					 	</a>
+					</td> 
+			    </tr>
+			    
+			  </tbody>
+			  {% endfor %}
+
+			</table>
+
+ {% endblock %}
+
