@@ -6,7 +6,6 @@ from django.conf import settings
 from django.views.generic import TemplateView
 from django.urls import re_path
 from django.http import HttpResponsePermanentRedirect
-from urllib.parse import unquote
 
 app_name = 'store'
 
