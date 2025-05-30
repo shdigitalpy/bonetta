@@ -394,7 +394,7 @@ class CRMLastService(forms.ModelForm):
 class CRMKundeForm(forms.ModelForm):
     class Meta:
         model = Kunde
-        fields = ['interne_nummer','firmenname', 'zusatz']
+        fields = ['interne_nummer','firmenname', 'zusatz','done']
         labels = {
             'interne_nummer': "Interne Nummer",
             'firmenname': "Betrieb/Firma",
@@ -414,8 +414,8 @@ class CRMKundeForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={'class': 'form-control col-6'}),
             'zusatz': forms.TextInput(attrs={'class': 'form-control col-6'}),
             'done': forms.CheckboxInput(attrs={'class': 'form-check-input', 'style': 'margin-left: 10px; margin-top: 7px;'}),
-
         }
+
 # updated form for part-3
 class CRMKundenForm(forms.ModelForm):
 
