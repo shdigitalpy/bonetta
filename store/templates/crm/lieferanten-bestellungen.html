@@ -62,11 +62,13 @@
     .search-box{
       margin-right: 250px;
     }
+
+    td a { text-decoration:underline }
   </style>
 
 
     <div class="flexbox">
-        <div class="h2">Bestellung Lieferant</div>
+        <div class="h2">Bestellung Lieferanten</div>
     </div>
 
     <div class="flexbox flexbox-header" style="display: flex; justify-content: space-between; align-items: center;">
@@ -99,9 +101,9 @@
         <thead>
             <tr>
                 <th>Datum</th>
+                <th>Auftrag</th>
+                <th>Bestellung</th>
                 <th>Lieferant</th>
-                <th>Artikel</th> <!-- Artikel Modal Trigger Column -->
-                <th>Aktueller Status</th> 
                 <th>Status</th> 
             </tr>
         </thead>
@@ -109,34 +111,43 @@
             {% for x in lieferanten_bestellungen %}
             <tr>
                 <td>{{ x.start_date|date:"d.m.Y" }}</td>
-                <td>{{ x.lieferant.name }}</td>
+               
 
-                <!-- Artikel Modal Trigger -->
                 <td>
-                    <a href="#" 
-                       data-toggle="modal" 
-                       data-target="#artikelModal"
-                       class="artikel-link"
-                       data-artikel='[{% for artikel in x.artikel_bestellungen.all %}{"artikel_nr": "{{ artikel.artikel.artikelnr }}", "anzahl": "{{ artikel.anzahl }}"}{% if not forloop.last %},{% endif %}{% endfor %}]'>
-                        Artikel ansehen
-                    </a>
+                            
+
+           <script>
+  const elementeBestellungen = {{ elemente_data_json|safe }};
+</script>
+
+<!-- Beispiel in der Tabelle -->
+<a href="#"
+   data-toggle="modal"
+   data-target="#artikelModal"
+   class="artikel-link"
+   data-bestellung-id="{{ x.id }}">
+   {{ x.auftrag.id }}
+</a>
+
+
+
+
+
+
                 </td>
+
                 
                 <!-- Latest Status with Modal Trigger -->
                 <td>
-                    {% with x.status.all|dictsortreversed:"date"|first as latest_status %}
-                        <a href="#" data-toggle="modal" data-target="#statusModal"
-                           class="status-link"
-                           data-status='[{% for status in x.status.all|dictsortreversed:"date" %}{"date": "{{ status.date|date:"d.m.Y H:i" }}", "name": "{{ status.name }}"}{% if not forloop.last %},{% endif %}{% endfor %}]'>
-                            {{ latest_status.name }}
-                        </a>
-                    {% endwith %}
+                  {{x.id}}
                 </td>
 
-                <!-- Status Update Button -->
-                <td>
-                    <a href="{% url 'store:update_lieferanten_status' x.pk %}" class="btn btn-primary">Status aktualisieren</a>
-                </td>
+                 <td>{{ x.lieferant.name }}</td>
+
+                 <td>
+                   {{x.bestellungen_status.name}}
+             </td>
+                
             </tr>
             {% empty %}
             <tr>
@@ -147,64 +158,71 @@
     </table>
 
     <!-- Artikel History Modal (Placed Outside the Loop) -->
-    <div class="modal fade" id="artikelModal" tabindex="-1" role="dialog" aria-labelledby="artikelModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="artikelModalLabel">Bestellte Artikel</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Schließen">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Artikel-Nr.</th>
-                                <th>Anzahl</th>
-                            </tr>
-                        </thead>
-                        <tbody id="artikelHistory">
-                            <!-- Artikel history will be injected here -->
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
-                </div>
-            </div>
-        </div>
+  <div class="modal fade" id="artikelModal" tabindex="-1" role="dialog" aria-labelledby="artikelModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="artikelModalLabel">Bestellte Artikel</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Schliessen">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Element-Nr.</th>
+              <th>Stk.-Zahl</th>
+              <th>Artikel</th>
+              <th>Masse</th>
+            </tr>
+          </thead>
+          <tbody id="artikelHistory">
+            <!-- Inhalte per JS -->
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Schliessen</button>
+      </div>
     </div>
+  </div>
+</div>
 
-    <!-- Status History Modal (Placed Outside the Loop) -->
-    <div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="statusModalLabel">Statusverlauf</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Schließen">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Datum</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="statusHistory">
-                            <!-- Status history will be injected here -->
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
+
 
     
 {% endblock %}
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const modal = document.getElementById('artikelModal');
+  const tbody = document.getElementById('artikelHistory');
+
+  document.querySelectorAll('.artikel-link').forEach(link => {
+    link.addEventListener('click', function () {
+      const bestellId = this.dataset.bestellungId;
+      const artikelList = elementeBestellungen[bestellId] || [];
+
+      tbody.innerHTML = '';
+
+      artikelList.forEach(entry => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${entry.element_nr}</td>
+          <td>${entry.anzahl}</td>
+          <td>${entry.artikel}</td>
+          <td>${entry.masse}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    });
+  });
+});
+
+
+</script>
+
+

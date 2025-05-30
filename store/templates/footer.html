@@ -13,16 +13,23 @@
 		</div>
 		
 		<div class="flex-item">
-		<h4>Mein Konto</h4>
+		<h4>Mehr</h4>
 		<ul>
-		<li><a style="color:var(--white)" href="{% url 'account_login' %}">Anmelden</a></li>
-		<li><a style="color:var(--white)" href="{% url 'account_signup' %}">Registrieren</a></li>
-		<li><a style="color:var(--white)" href="{% url 'account_reset_password' %}">Passwort vergessen</a></li>
+	{% for menuitem in cat_menu %}
+    
+    <li >
+      <a style="color:var(--white)" href="{% url 'store:category' menuitem|slugify %}">{{ menuitem.name }}</a>
+    </li>
+    {% endfor %}
+		
 		</ul>
 		
-         <small>© <span id="year"></span> Gastrodichtungen.ch</small>
+      <a style="color:var(--white)" href="{% url 'store:impressum' %}">Impressum</a>
 		<br><a style="color:var(--white)" href="{% url 'store:cms' %}">CMS-Login</a>
-		<a style="color:var(--white);" href="{% url 'store:impressum' %}">Impressum</a> <a style="color:var(--white);" href="">Datenschutz</a>
+
+		<br>
+		<br>
+		<small>© <span id="year"></span> Gastrodichtungen.ch</small>
 		</div>
 
 

@@ -1,0 +1,112 @@
+{% extends 'base-cms.html' %}
+{% load static %}
+{% block title %}CMS Marken{% endblock %}
+
+{% block content %}
+
+<style>
+  .flexbox {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 40px;
+  }
+  .price-code-btn {
+    background-color: #29384f;
+    border-color: #29384f;
+    border-width: 2px;
+    font-weight: 600;
+    padding: .375rem .75rem;
+    font-size: 18px;
+    color: #fff;
+    transition: .3s all;
+    border-radius: 10px;
+  }
+  .price-code-btn:hover {
+    background-color: #fff;
+    border-color: #29384f;
+    color: #29384f;
+  }
+  .flexbox-header {
+    padding: 40px 20px;
+    background-color: #e4e3e8;
+  }
+  .h2 {
+    color: #29384f;
+    font-weight: 800;
+  }
+</style>
+
+<div class="flexbox">
+  <div class="h2">Marken</div>
+</div>
+
+<div class="flexbox flexbox-header">
+  <a class="btn btn-sm price-code-btn" href="{% url 'store:cms_marke_erfassen' %}">Marke erfassen</a>
+</div>
+
+<p>Erfassen Sie die Marken für die Produkte.</p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Bild</th>
+      <th scope="col">Bearbeiten</th>
+      <th scope="col">Löschen</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for data in marken %}
+    <tr>
+      <th scope="row">{{ data.name }}</th>
+      <td>
+        {% if data.markepic %}
+        <img style="width:60px" src="{{ data.markepic.url }}">
+        {% endif %}
+      </td>
+      <td>
+        <a href="{% url 'store:cms_marke_bearbeiten' data.pk %}">
+          <i class="far fa-edit" style="color: #29384f; font-size: 18px;"></i>
+        </a>
+      </td>
+      <td>
+        <!-- Trigger Button -->
+        <a href="#" data-toggle="modal" data-target="#deleteModal_{{ data.pk }}">
+          <i class="far fa-trash-alt" style="color: red; font-size: 18px;"></i>
+        </a>
+
+        <!-- Modal -->
+        <div class="modal fade" id="deleteModal_{{ data.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel_{{ data.pk }}" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <form method="post" action="{% url 'store:cms_marke_löschen' data.pk %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                  <h5 class="modal-title" id="deleteModalLabel_{{ data.pk }}">Marke löschen</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Schließen">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  Möchten Sie die Marke <strong>{{ data.name }}</strong> wirklich löschen?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                  <button type="submit" class="btn btn-danger">Löschen</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<!-- jQuery & Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}

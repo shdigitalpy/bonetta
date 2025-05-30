@@ -1,167 +1,179 @@
 {% extends 'base.html' %}
 {% load custom_filters %}
 
+
+
 {% block content %}
+
+<style>
+ .price-code-btn{
+      background-color: #29384f;
+      border-color: #29384f;
+      border-width: 2px;
+      font-weight: 600 !important;
+      padding: .375rem .75rem;
+      font-size: 18px;
+      color: #fff;
+      transition: .3s all;
+      border-radius: 10px;
+    }
+.price-code-btn:hover {
+  background-color: #1f2c3f;
+  border-color: #1f2c3f;
+  color: #fff;
+  text-decoration: none;
+}
+
+</style>
+
 <div class="container mt-4">
+  <div class="card bg-light rounded p-4 border-0 shadow-sm">
+    
     <h1 class="mb-4">Bestellformular</h1>
 
-    <!-- Message Info -->
     {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        {% endfor %}
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
     {% endif %}
-    <!-- Message Info End -->
 
-    <!-- Kunden-Nr. Section -->
     <form method="POST">
-        {% csrf_token %}
-        {% if not kunden_nr %}
-            <div class="form-group">
-                <label for="kunden-nr">Kunden-Nr.</label>
-                {{ kunden_nr_form.kunden_nr }}
-            </div>
-            <button type="submit" name="set_kunden_nr" class="btn btn-primary">Kunden-Nr. bestätigen</button>
-        {% else %}
-            <p><strong>Kunden-Nr.:</strong> {{ kunden_nr }}</p>
+      {% csrf_token %}
+      {% if not kunden_nr %}
+        <div class="form-row align-items-end">
+          <div class="col-md-6">
+            <label for="kunden-nr">Kunden-Nr.</label>
+            {{ kunden_nr_form.kunden_nr }}
+          </div>
+          <div class="col-auto">
+            <button type="submit" name="set_kunden_nr" class="price-code-btn">Bestätigen</button>
+          </div>
+        </div>
+      {% else %}
+        <p><strong>Kunden-Nr.:</strong> {{ kunden_nr }}</p>
 
-            {% if kunde_details %}
-            <p><strong>Kunde:</strong> 
-                {% if kunde_details.firmenname %}
-                    {{ kunde_details.firmenname|anonymize_name:2 }}
-                {% else %}
-                    {{ kunde_details.vorname|anonymize_name }} {{ kunde_details.nachname|anonymize_name }}
-                {% endif %}
-            </p>
-            {% endif %}
-            
-            <!-- Reset Kunden-Nr. Button -->
-            <button type="submit" name="reset_kunden_nr" class="btn btn-warning">Kunden-Nr. zurücksetzen</button>
+        {% if kunde_details %}
+        <p><strong>Kunde:</strong>
+          {% if kunde_details.firmenname %}
+            {{ kunde_details.firmenname|anonymize_name:2 }}
+          {% else %}
+            {{ kunde_details.vorname|anonymize_name }} {{ kunde_details.nachname|anonymize_name }}
+          {% endif %}
+        </p>
         {% endif %}
+        
+        <button type="submit" name="reset_kunden_nr" class="price-code-btn">Zurücksetzen</button>
+      {% endif %}
     </form>
 
-    <hr>
-
-    <!-- Add Item to Cart Section -->
     {% if kunde_details %}
+    <hr class="my-4">
+
     <form method="POST">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="element-nr">Element-Nr.</label>
-            {{ form.element_nr }}
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="col-md-6">
+          <label>Element-Nr.</label>
+          {{ form.element_nr }}
         </div>
-        <div class="form-group">
-            <label for="anzahl">Anzahl</label>
-            {{ form.anzahl }}
+        <div class="col-md-3">
+          <label>Anzahl</label>
+          {{ form.anzahl }}
         </div>
-        <button type="submit" name="add_to_cart" class="btn btn-primary">Hinzufügen</button>
+        <div class="col-md-3 d-flex align-items-end">
+          <button type="submit" name="add_to_cart" class="price-code-btn w-100">Hinzufügen</button>
+        </div>
+      </div>
     </form>
     {% endif %}
 
-    <hr>
+    <hr class="my-4">
 
-    <!-- Cart Table -->
-    <h2 class="mt-4">Warenkorb</h2>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Element-Nr.</th>
-                <th>Stk.-Zahl</th>
-                <th>Kühlposition</th>
-                <th>Bezeichnung</th>
-                <th>Aktion</th>
-            </tr>
+    <h4 class="mb-3">Warenkorb</h4>
+
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead class="thead-dark">
+          <tr>
+            <th>Element-Nr.</th>
+            <th>Stk.-Zahl</th>
+            <th>Kühlposition</th>
+            <th>Bezeichnung</th>
+            <th>Aktion</th>
+          </tr>
         </thead>
         <tbody>
-            {% if cart_items_with_details %}
-                {% for item in cart_items_with_details %}
-                <tr>
-                    <td>{{ item.element_nr }}</td>
-                    <td>{{ item.anzahl }}</td>
-                    <td>
-                        {% if item.kuehlposition %}
-                            {{ item.kuehlposition }}
-                        {% else %}
-                            
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if item.bezeichnung %}
-                            {{ item.bezeichnung }}
-                        {% else %}
-                            
-                        {% endif %}
-                    </td>
-                    <td>
-                        <form method="POST">
-                            {% csrf_token %}
-                            <input type="hidden" name="delete_item_id" value="{{ item.id }}">
-                            <button type="submit" name="delete_item" class="btn btn-danger btn-sm">Löschen</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="5" class="text-center">Der Warenkorb ist leer.</td>
-                </tr>
-            {% endif %}
+          {% if cart_items_with_details %}
+            {% for item in cart_items_with_details %}
+            <tr>
+              <td>{{ item.element_nr }}</td>
+              <td>{{ item.anzahl }}</td>
+              <td>{{ item.kuehlposition }}</td>
+              <td>{{ item.bezeichnung }}</td>
+              <td>
+                <form method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" name="delete_item_id" value="{{ item.id }}">
+                  <button type="submit" name="delete_item" class="btn btn-sm btn-danger">Löschen</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="5" class="text-center text-muted">Der Warenkorb ist leer.</td>
+            </tr>
+          {% endif %}
         </tbody>
-    </table>
+      </table>
+    </div>
 
-    <!-- Checkout Form (Now Includes Montage) -->
     <form method="POST">
-        {% csrf_token %}
+      {% csrf_token %}
 
-        <!-- Montage Selection (Now Inside Form) -->
-        <div class="form-group">
-            <label for="montage">Montage:</label>
-            <select name="montage" id="montage" class="form-control" required>
-                <option value="Ja">Mit Montage</option>
-                <option value="Nein">Ohne Montage</option>
-            </select>
-        </div>
+      <div class="form-group mt-3">
+        <label for="montage">Montage:</label>
+        <select name="montage" id="montage" class="form-control" required>
+          <option value="Ja">Mit Montage</option>
+          <option value="Nein">Ohne Montage</option>
+        </select>
+      </div>
 
-        <!-- Order Confirmation Modal Trigger -->
-        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#confirmCheckoutModal" {% if not cart_items_with_details %} disabled {% endif %}>
-            Bestellen
-        </button>
+      <button type="button" class="price-code-btn" data-toggle="modal" data-target="#confirmCheckoutModal" {% if not cart_items_with_details %} disabled {% endif %}>
+        Bestellung abschicken
+      </button>
 
-        <!-- Modal for Checkout Confirmation -->
-        <div class="modal fade" id="confirmCheckoutModal" tabindex="-1" role="dialog" aria-labelledby="confirmCheckoutModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="confirmCheckoutModalLabel">Bestellung abschicken</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        Wollen Sie die Bestellung wirklich abschicken?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
-                        <button type="submit" name="checkout" class="btn btn-success">Bestellung abschicken</button>
-                    </div>
-                </div>
+      <div class="modal fade" id="confirmCheckoutModal" tabindex="-1" role="dialog" aria-labelledby="confirmCheckoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Bestellung bestätigen</h5>
+              <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
             </div>
+            <div class="modal-body">
+              Möchten Sie die Bestellung wirklich absenden?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+              <button type="submit" name="checkout" class="btn btn-success">Bestätigen</button>
+            </div>
+          </div>
         </div>
+      </div>
     </form>
 
+  </div>
 </div>
 
 <script>
-    // Ensure Montage Value is Set Correctly Before Checkout
-    $('#confirmCheckoutModal').on('show.bs.modal', function () {
-        let montageValue = document.getElementById("montage").value;
-        document.querySelector('button[name="checkout"]').setAttribute("data-montage", montageValue);
-    });
+  $('#confirmCheckoutModal').on('show.bs.modal', function () {
+    let montageValue = document.getElementById("montage").value;
+    document.querySelector('button[name="checkout"]').setAttribute("data-montage", montageValue);
+  });
 </script>
-
 {% endblock %}

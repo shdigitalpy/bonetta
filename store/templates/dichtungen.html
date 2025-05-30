@@ -1,10 +1,26 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block title %}Magnetdichtungen Kühlschrank aller Art | gastrodichtung.ch{% endblock %}
-{% block meta_description %}Magnetdichtungen Kühlschrank: Ihr Spezialist für PVC Dichtungen{% endblock %}
-{% block keywords %}Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig - dann benötigen Sie die richtige Magnetdichtung.{% endblock %}
+{% block meta_description %}
+Magnetdichtungen Kühlschrank: Ihr Spezialist für PVC Dichtungen
+{% endblock %}
+{% block keywords %}
+Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig – dann benötigen Sie die richtige Magnetdichtung.
+{% endblock %}
 
 {% block content %}
+<style>
+
+.gastro-layout h1 {
+  font-size: 2.25rem;
+}
+
+@media (max-width: 576px) {
+  .gastro-layout h1 {
+    font-size: 1.5rem;
+  }
+}
 
 <style>
   .bestseller {
@@ -100,252 +116,65 @@
   </div>
       
     
-      <!--erste Reihe -->
-        <div class="padding" id="boxen">
-        <div class="container">
-          
-      
-        
-        <div class="boxen-flex">
-        {% for item in cat_menu %}
-        
-        <div class="boxen-flex-item">
-          <h3 class="kategorien"><a href="{% url 'store:category' item|slugify %}">{{ item }}</a></h3>
-          <a href="{% url 'store:category' item|slugify %}">
-            {% if item.categorypic %}
-            <img loading="lazy" src="{{ item.categorypic.url }}"></a>
-            {% else %}
-            {% endif %}
-            
+    <!-- Box 1 -->
+    <div class="col-md-4 mb-4">
+      <div class="p-4 bg-light rounded h-100 shadow-sm">
+        <h5 class="mb-3">Gastroinventar für Bestandskunden</h5>
+        <p class="text-muted mb-3">Bei der Dichtungsmontage nehmen wir ein Kühlinventar auf. So können Sie als Bestandskunde jederzeit bequem und zum Vorzugspreis nachbestellen.</p>
+      </div>
+    </div>
+
+    <!-- Box 2 -->
+    <div class="col-md-4 mb-4">
+      <div class="p-4 bg-light rounded h-100 shadow-sm">
+        <h5 class="mb-3">Musteranfrage für Dichtungen</h5>
+        <p class="text-muted mb-3">Senden Sie uns ein Foto Ihrer alten Dichtung – wir analysieren das Profil und schicken Ihnen ein passendes Muster zur Prüfung zu.</p>
+      </div>
+    </div>
+
+    <!-- Box 3 -->
+    <div class="col-md-4 mb-4">
+      <div class="p-4 bg-light rounded h-100 shadow-sm">
+        <h5 class="mb-3">Montage und Reparaturen</h5>
+        <p class="text-muted mb-3">Ob defekte Schubladen, Türscharniere oder Gummidichtungen – unsere Monteure reparieren rasch und zuverlässig direkt bei Ihnen vor Ort.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- WhatsApp Kontakt -->
+  <div class="text-center mt-4">
+    <a href="https://wa.me/41793336157" target="_blank" class="btn btn-success btn-lg d-inline-flex align-items-center gap-2 px-4 py-2 rounded-pill shadow-sm">
+     <i class="fab fa-whatsapp fa-lg me-2"></i>
+      <span> WhatsApp</span>
+
+    </a>
+  </div>
+</div>
+
+<br><br>
+
+<div class="container py-5">
+  <h2 class="text-center mb-4">Bestseller</h2>
+  <div class="row justify-content-center align-items-center text-center">
+    {% for marke in marken|slice:":6" %}
+      {% if marke.item.all.count > 0 %}
+        <div class="col-6 col-sm-4 col-md-2 mb-4">
+          <a href="{% url 'store:markedetails' marke.slug %}">
+            <img src="{{ marke.markepic.url }}" alt="{{ marke.name }}" class="img-fluid" style="max-height: 80px;">
+          </a>
         </div>
-        {% endfor %} 
-
-          </div><!-- end flex-container -->
-
-
-
-          <h2>Unsere Dichtungstypen</h2><br>
-          <p class="p-white">Bei gastrodichtung.ch finden Sie ein breites Sortiment an Dichtungen und die Möglichkeit, Dichtungen nach Mass zu bestellen. Die Dichtungen regelmässig zu wechseln stellt sicher, dass Geräte immer funktionstüchtig bleiben. Wenn der Kühlschrank nicht mehr richtig schliesst, benötigen Sie eine <strong><a class="aspez" href="https://www.gastrodichtung.ch/dichtung/pvc-mit-magnet" title="Magnetdichtung">Magnetdichtung</a></strong> für den Kühlschrank. In unserem Online Shops finden Sie über 1000 Artikel, welche einfach und schnell online teilweise werden können. Wir sind seit über 10 Jahren ein starker Partner von Restaurants, Kälte- und Baufirmen. Aufgrund unserer Spezialiserung können wir beinahe jede Dichtung und Grösse bestellen.
-          </p>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
 
 
-          </div><!-- end container -->
-          </div><!-- end boxen -->
-
-         <!--dritte Reihe -->
-        <div class="padding bgblue">
-        <div class="container" id="dichtungen">
-        <div class="row">
-
-          <div class="col-sm-6">
-          <img loading="lazy" src="{% static '/images/gastro-dichtungen.jpg' %}" class="dichtungen-img">
-          </div>
-
-          <div class="col-sm-6">
-            <br>
-          <h3>Gastrodichtungen nach Mass suchen</h3>
-          <p class="p-white">Kaufen Sie bei uns Magnetdichtungen und weitere Typen nach Mass. Mit unserem Dichtungskonfigurator können Sie jede Grösse bestellen. Suchen Sie jetzt mit unserem Suchfeld den gewünschten Dichtungstyp.</p>
-          <br><br>
-          <a href="{% url 'store:searchbar' %}" class="btn btn-warning btn-lg">Dichtungen kaufen</a>
-          </div>
-        
-          </div>
-          </div>
-          </div>
-
-           <!--vierte Reihe -->
-          
-          <div class="padding" id="ersatzteile">
-          <div class="container">
 
 
-          <div class="row">
-
-          <div class="col-sm-6" id="gastromarkt">
-          <h3>Gastro Markt</h3>
-          <p class="p-white">Weitere Dichtungen, CNS Möbel und Ersatzteile für die Gastronomie finden Sie im Online Shop. Wir sind der Spezialist für sämtliche Anliegen rund um die Wartung Ihres Inventars.</p>
-          <br>
-          
-            
-           <a href="https://gastrosortiment.ch/" target="__blank" class="btn btn-warning btn-lg">Zum Online Shop</a>
-
-          </div>
-
-           
-          </div>
-          
-          </div>
-          <div class="btnlink-flex">
-            <div class="btnlink-flex-item">
-           <a id="scroll-link1" href="#infosection" behavior="smooth">
-            <p>Weiter</p>
-            <i class="fas fa-caret-down"></i></a>
-          </div>
-          </div>
-          </div>   
-
-
-        <div class="container-fluid infosection" id="infosection">
-          <div class="container info-flex">
-
-            <div class="info-flex-item">
-            <a href="{% url 'store:searchbar' %}"><img  loading="lazy" alt="Kältedichtung" src="{% static '/images/kaeltedichtung.webp' %}"></a>
-            </div>
-
-            <div class="info-flex-item">
-              <h3>Kältedichtungen mit individuellen Maßen</h3>
-
-              <p>In unserem Online-Shop können Sie Ihre individuelle PVC Kältedichtung schnell und einfach selbst konfigurieren und bestellen. Innert 7 Tagen stellen wir per Rechnung zu.
-              Jetzt Dichtung auswählen und konfigurieren.
-              </p>
-
-
-            </div>
-          
-        
-
-        </div>
-        </div>
-
-        <!--CONTACT FORM Start-->
-          <div id="contact-form" class="padding">
-          <div class="container formcontainer">
-              <h3>Kontakt</h3>
-               <p>Senden Sie uns eine unverbindliche Anfrage, dazu füllen Sie bitte nachfolgendes Formular aus. Wir werden uns so schnell wie möglich mit Ihnen in Verbindung setzen.</p>
-                <br>
-                  
-                   <form id="contact-form" method="POST" action="{% url 'store:home' %}">
-                    {% csrf_token %}
-
-
-                  <div class="contact-flex">
-
-
-                            <div class="contact-flex-label">
-                              Anrede
-                            </div>
-
-                            <div class="contact-flex-item">
-                             <input id="form_anrede" type="text" name="message-anrede" class="form-control" placeholder="Anrede" required="required" data-error="Anrede muss eingegeben werden.">
-                              <div class="help-block with-errors">
-                              <br>
-                            </div>
-                            </div>
-                            
-
-                            <div class="contact-flex-label">
-                              Firmenname
-                            </div>
-
-                            <div class="contact-flex-item">
-                             <input id="form_firma" type="text" name="message-firma" class="form-control" placeholder="Firmenname" required="required" data-error="Firmenname muss eingegeben werden.">
-                              <br>
-                            </div>
-                           
-
-                            <div class="contact-flex-label">
-                              E-Mail
-                            </div>
-
-                            <div class="contact-flex-item">
-                             <input id="form_email" type="email" name="message-email" class="form-control" placeholder="E-Mail" required="required" data-error="Eine gültige E-Mail muss eingegeben werden.">
-                              <div class="help-block with-errors">
-                              <br>
-                            </div>
-                            </div>
-
-                            <div class="contact-flex-label">
-                              Vorname
-                            </div>
-
-                            <div class="contact-flex-item">
-                             <input id="form_vorname" type="text" name="message-vorname" class="form-control" placeholder="Vorname" required="required" data-error="Vorname muss eingegeben werden.">
-                              <div class="help-block with-errors">
-                              <br>
-                            </div>
-                            </div>
-
-                             <div class="contact-flex-label">
-                              Nachname
-                            </div>
-
-                            <div class="contact-flex-item">
-                             <input id="form_name" type="text" name="message-name" class="form-control" placeholder="Nachname" required="required" data-error="Nachname muss eingegeben werden.">
-                              <div class="help-block with-errors">
-                              <br>
-                            </div>
-                          </div>
-
-                            <div class="contact-flex-label">
-                              Telefon
-                            </div>
-
-                            <div class="contact-flex-item">
-                             <input id="form_phone" type="tel" name="message-phone" class="form-control" placeholder="Telefon">
-                              <div class="help-block with-errors">
-                              <br>
-                            </div>
-                          </div>
-
-                            <div class="contact-flex-label">
-                              Nachricht
-                            </div>
-
-                            <div class="contact-flex-item">
-                             <textarea id="form_message" name="message" class="form-control" placeholder="Nachricht" rows="4" required data-error="Bitte eine Nachricht schreiben."></textarea>
-                              <div class="help-block with-errors"></div>
-                              <br>
-                            </div>
-
-
-                          <div class="contact-flex-label">
-                              
-                            </div>
-
-                            <div class="contact-flex-item">
-                               <input type="submit" class="btn btn-warning btn-md btn-send" value="Anfrage senden">
-                              <br>
-                            </div>
-
-                          
-                         
-                        
-                 </div><!-- end flex container -->
-                   
-
-                  </form>
-
-              </div>
-
-            </div>
-            </div>
-         </div>
-        <!--CONTACT FORM End--> 
-
-  
-          
-          {% endif %}
-
+{% endif %}
 {% endblock %}
 
 {% block scripts %}
-<script>
 
-$("#scroll-link").click(function() {
-    $('html, body').animate({
-        scrollTop: $("#boxen").offset().top
-    }, 2000);
-});
-
-$("#scroll-link1").click(function() {
-    $('html, body').animate({
-        scrollTop: $("#infosection").offset().top
-    }, 2000);
-});
-
-     
-  </script>
-  
-  {% endblock %}
-
-    
+{% endblock %}

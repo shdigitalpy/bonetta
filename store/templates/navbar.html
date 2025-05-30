@@ -155,126 +155,152 @@
 </style>
 
 
-<div class="nav-container" id="nav-container">
-  <!--Navbar 1 Level -->
-<nav class="navbar navbar-dark default-color main-nav" role="navigation" id="main-nav">
+<style>
 
-  <!-- Logo -->
-  <a class="navbar-brand" href="{% url 'store:home' %}">
-    <img src="{% static 'images/bonetta.png' %}" class="d-inline-block align-top" alt="Gastrodichtungen.ch Logo">
-  </a>
-    
-    <div class="nav-buttons">
-    
+.logo-img {
+  height: 100%;
+  width: auto;
+  max-width:80%;
+  max-height: 52px; /* maximale Höhe des Logos */
+  object-fit: contain;
+  display: block;
+}
 
-  
+
+</style>
+
+<!-- NAVBAR: Erste Ebene -->
+<nav class="navbar navbar-expand-xl navbar-dark top-navbar py-2">
+  <div class="container-fluid px-4">
+    <div class="row w-100 align-items-center">
+
+      <!-- Logo -->
+      <div class="col-6 col-md-5 col-lg-4 col-xl-3 d-flex align-items-center">
+
+        <a href="{% url 'store:home' %}">
+          <img src="{% static 'images/bonetta.png' %}" alt="Logo" class="logo-img">
+        </a>
+      </div>
+
+      <!-- Suche (nur Desktop) -->
+      <div class="col-xl-8 d-none d-xl-flex justify-content-center">
+        <form class="form-inline w-100 justify-content-center" action="{% url 'store:searchbar' %}">
+          {% csrf_token %}
+          <div class="input-group searchbar-wrapper">
+            <input type="text" name="search" class="form-control" placeholder="Suche">
+            <div class="input-group-append">
+              <button class="btn btn-outline-light" type="submit">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Burger (nur Mobile) -->
+      <div class="col-6 col-xl-2 d-flex justify-content-end">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNavCollapse">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
     </div>
 
-    <!-- Topnav -->
-    <ul class="nav justify-content-end topnav">
+    <!-- Collapse Bereich für Mobile -->
+    <div class="collapse navbar-collapse mt-2 d-xl-none" id="mainNavCollapse">
+      <ul class="navbar-nav ml-auto">
 
-      <li class="nav-item">
-      <a class="nav-link" href="{% url 'store:bestellformular_cart' %}">Bestellformular</a>
-      </li>
+        <!-- Kategorien nur auf Mobile anzeigen -->
+<div class="d-xl-none w-100">
+  {% if marke_menu %}
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'store:marke' %}">Kühlschrankdichtung nach Marke</a>
+  </li>
+  {% endif %}
 
-      <li class="nav-item">
-      <a class="nav-link" href="{% url 'store:anleitung_videos' %}">Anleitungen</a>
-      </li>
+  {% for menuitem in cat_menu %}
+    {% if menuitem.name == 'Weitere Dichtungen' %}
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="dropdownMoreSeals" data-toggle="dropdown">
+        Weitere Dichtungen
+      </a>
+      <div class="dropdown-menu">
+        {% for submenuitem in subcat_menu %}
+        <a class="dropdown-item" href="{% url 'store:subcategory' 'weitere-dichtungen' submenuitem|slugify %}">
+          {{ submenuitem.sub_name }}
+        </a>
+        {% endfor %}
+      </div>
+    </li>
+    {% else %}
+    <li class="nav-item">
+  {% if menuitem.name == "PVC mit Magnet" %}
+    <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">Kühlschrankdichtung mit Magnet</a>
+  {% elif menuitem.name == "PVC ohne Magnet" %}
+    <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">Kühlschrankdichtung ohne Magnet</a>
+  {% else %}
+    <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">{{ menuitem.name }}</a>
+  {% endif %}
+</li>
 
-      
-      <li class="nav-item">
-      <a class="nav-link" href="{% url 'store:kontakt' %}">Kontakt</a>
-      </li>
+    {% endif %}
+  {% endfor %}
+</div>
 
-      <li class="nav-item">
-      <a class="nav-link" href="{% url 'store:firma' %}">Montage</a>
-      </li>
-        
-    </ul>
 
-  <!-- Search form -->
-  <div class="suchform">
-  <form class="form-inline d-flex justify-content-center" action="{% url 'store:searchbar' %}">
-  {% csrf_token %}
-  
-  <button type="submit" class="bg-transparent" style="border: none;">
-    <i class="fas fa-search" style="color:var(--white)"></i>
-  </button>
-  
-  <input class="form-control form-control-sm searchbar" type="text" placeholder="Suche"
-    aria-label="Search" name="search">
+        <!-- Weitere Links -->
+        <li class="nav-item"><a class="nav-link" href="{% url 'store:firma' %}">Montage</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'store:kontakt' %}">Kontakt</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'store:bestellformular_cart' %}">Bestellformular</a></li>
+      </ul>
 
-  </form>
+      <!-- Suche nur Mobile -->
+      <form class="form-inline d-xl-none mt-3 px-2" action="{% url 'store:searchbar' %}">
+        {% csrf_token %}
+        <div class="input-group searchbar-wrapper">
+          <input type="text" name="search" class="form-control" placeholder="Suche">
+          <div class="input-group-append">
+            <button class="btn btn-outline-light" type="submit">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
+</nav>
 
-  
-
-  {% if request.user.is_authenticated %}   
-      <!-- Bestellungen Login Logout -->
-    
-    <div id="divider" class="divider">
-      <a href="{% url 'store:order_summary' %}" class="btn btn-outline-warning warenkorb">
-        <i id="cart-icon" class="fas fa-shopping-cart"></i>Warenkorb <span id="cart-total">{{ request.user|cart_item_count}}</span></a>
-      </div>
-
-      <div id="divider-mobile" class="divider-mobile">
-      <a href="{% url 'store:order_summary' %}" class="btn btn-outline-warning warenkorb">
-        <i id="cart-icon" class="fas fa-shopping-cart"></i><span id="cart-total">{{ request.user|cart_item_count}}</span></a>
-      </div>
-
- 
-      <!--- Sidebar Start --->
-       <nav class="navbar navbar-expand-lg navbar-light">
-    
-      <button type="button" id="sidebarCollapse" class="btn btn-outline-warning btn-desktop">
-        <i class="fas fa-arrow-circle-down"></i>
-        Mein Konto</button>
-   
-        </nav>
-
-          <div class="wrapper" id="wrapper">
-          <nav class="sidebar" id="sidebar">
-          
-          <ul class="components">
-
-          <li>
-            <a href="{% url 'store:einstellungen' %}">Profil bearbeiten</a>
-            </li> 
-        
-            <li>
-              <a href="{% url 'store:bestellungen' %}">Bestellungen</a>
-            </li>
-            <li>
-              <a href="{% url 'account_logout' %}">Abmelden</a>
-            </li>
-
-          </ul>
-         
-       </nav>
-      </div>
-       <!--- Sidebar End --->
-      
-      {% else %}
-
-      <!-- Warenkorb Bestellungen Login Logout -->
-     
-      <div id="divider" class="divider">
-      <a href="{% url 'store:order_summary' %}" class="btn btn-outline-warning warenkorb">
-        <i id="cart-icon" class="fas fa-shopping-cart"></i>Warenkorb <span id="cart-total">{{ request.user|cart_item_count}}</span></a>
-      </div>
-
-      <div id="divider-mobile" class="divider-mobile">
-
-      <a href="{% url 'store:order_summary' %}" class="btn btn-outline-warning warenkorb">
-        <i id="cart-icon" class="fas fa-shopping-cart"></i><span id="cart-total">{{ request.user|cart_item_count}}</span></a>
-      </div>
-
-      <a href="{% url 'account_login' %}" class="btn btn-outline-warning">Kunden-Login</a>
-      
+<!-- NAVBAR: Zweite Ebene (nur Desktop) -->
+<nav class="navbar second-navbar d-none d-xl-flex">
+  <div class="container-fluid justify-content-center">
+    <ul class="navbar-nav flex-row">
+      {% if marke_menu %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'store:marke' %}">Kühlschrankdichtung nach Marke</a>
+      </li>
       {% endif %}
 
-      <!-- Navbar END --> 
-      </nav>
+      {% for menuitem in cat_menu %}
+        {% if menuitem.name == 'Weitere Dichtungen' %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="dropdownMoreSeals2" data-toggle="dropdown">
+            Weitere Dichtungen
+          </a>
+          <div class="dropdown-menu">
+            {% for submenuitem in subcat_menu %}
+            <a class="dropdown-item" href="{% url 'store:subcategory' 'weitere-dichtungen' submenuitem|slugify %}">
+              {{ submenuitem.sub_name }}
+            </a>
+            {% endfor %}
+          </div>
+        </li>
+        {% else %}
+       {% if menuitem.name == "PVC mit Magnet" %}
+  <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">Kühlschrankdichtung mit Magnet</a>
+{% elif menuitem.name == "PVC ohne Magnet" %}
+  <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">Kühlschrankdichtung ohne Magnet</a>
+{% else %}
+  <a class="nav-link" href="{% url 'store:category' menuitem|slugify %}">{{ menuitem.name }}</a>
+{% endif %}
 
       <!--Navbar 2 Level MOBILE -->
 <nav class="navbar navbar-expand-xl navbar-light sticky-top product-nav-mobile d-xl-none" role="navigation">

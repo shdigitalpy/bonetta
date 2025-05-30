@@ -5,27 +5,33 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.views.generic import TemplateView
 from django.urls import re_path
+from django.http import HttpResponsePermanentRedirect
 
 app_name = 'store'
+
+
+def redirect_bestellformular(request):
+    return HttpResponsePermanentRedirect('/bestellformular')
 
 urlpatterns = [
 
 	path('', views.home, name='home'),
 
-	#aktuell elemente warenkorb
-    path("bestellformular/", views.bestellformular_cart, name="bestellformular_cart"),
+	# elemente bestellung
+    path("bestellformular", views.bestellformular_cart, name="bestellformular_cart"),
+    path("bestellformular/", redirect_bestellformular),
     path('cms/crm/elemente-bestellungen', views.elemente_bestellungen, name='elemente_bestellungen'),
     path('cms/crm/elemente-bestellungen/detail/<int:pk>/<str:betrieb>', views.elemente_bestellung_detail, name='elemente_bestellung_detail'),
-    path('cms/crm/elemente-bestellungen/delete/<int:pk>/<str:betrieb>/', views.elemente_bestellung_delete, name='elemente_bestellung_delete'),
-    path(
-    'cms/crm/elemente-bestellungen-full/delete/<int:pk>/',
-    views.delete_elemente_bestellungen,
-    name='delete_elemente_bestellungen'
-	),
-    path('cms/crm/lieferanten_bestellungen', views.lieferanten_bestellungen,name="lieferanten_bestellungen"),
-    path('cms/crm/elemente-bestellungen/edit/<int:element_nr>/<int:bestellung_id>', views.elemente_bestellung_edit, name='elemente_bestellung_edit'),
-    path('cms/crm/elemente-bestellungen/delete/<int:element_nr>/<int:bestellung_id>', views.elemente_bestellung_delete, name='elemente_bestellung_delete'),
-    path('cms/crm/lieferant_update_status/<int:pk>', views.update_lieferanten_status,name="update_lieferanten_status"),
+    path('cms/crm/elemente-bestellungen/delete/<int:pk>/', views.elemente_bestellung_delete, name='elemente_bestellung_delete'),
+
+    #elemente items warenkorb
+    path('cms/crm/elemente-bestellungen/edit/<int:pk>/<int:bestellung_id>', views.elemente_bestellung_detail_edit, name='elemente_bestellung_detail_edit'),
+    path('cms/crm/elemente-bestellungen/delete/<int:pk>/<int:bestellung_id>', views.bestellung_elemente_detail_delete, name='bestellung_elemente_detail_delete'),
+
+
+    #elemente lieferant
+    path('cms/crm/lieferanten-bestellungen', views.lieferanten_bestellungen,name="lieferanten_bestellungen"),
+    path('cms/crm/lieferant-update-status/<int:pk>', views.update_lieferanten_status,name="update_lieferanten_status"),
     
 	# Bezeichnung
 	path('bezeichnung/', views.bezeichnung_list, name='bezeichnung_list'),
@@ -122,10 +128,11 @@ urlpatterns = [
 	path('cms/webshop/löschen/<int:pk>', views.cms_kunde_löschen, name='cms_kunde_löschen'),
 
 	#produkte
-	path('cms/produkte/<str:first_cat>', views.cms_produkte, name='cms_produkte'),
+	re_path(r'^cms/produkte/erfassen/(?P<cat>.+)$', views.product_cms_create, name='product_cms_create'),
+	re_path(r'^cms/produkte/(?P<first_cat>.+)$', views.cms_produkte, name='cms_produkte'),
+
 	path('cms/produkte/bearbeiten/<int:pk>/<str:current_cat>', views.product_cms_edit, name='cms_produkte_edit'),
 	path('cms/produkte/löschen/<int:pk>/<str:cat>', views.cms_remove_product, name='cms_remove_product'),
-	path('cms/produkte/erfassen/<str:cat>', views.product_cms_create, name='product_cms_create'),
 	path('cms/produkte-marke/<int:pk>', views.cms_product_marke_overview, name='cms_product_marke_overview'),
 	path('cms/produkte-marke/erfassen/<int:pk>', views.cms_product_marke_erfassen, name='cms_product_marke_erfassen'),
 	path('cms/produkte-marke/löschen/<int:pkk>/<int:pk>', views.cms_product_marke_löschen, name='cms_product_marke_löschen'),

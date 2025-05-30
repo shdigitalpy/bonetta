@@ -23,7 +23,7 @@ if config('STAGE') == 'dev':
                 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
             }
         }
-    EMAIL_MASTER = ["sandro@sh-digital.ch"]
+    EMAIL_MASTER = ["livio.bonetta@geboshop.ch","sandro@sh-digital.ch"]
 
     #end
 

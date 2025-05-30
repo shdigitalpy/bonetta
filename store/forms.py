@@ -281,7 +281,7 @@ class LieferantenForm(forms.ModelForm):
                 'placeholder': ''
             }),
             'our_kundennumber': forms.TextInput(attrs={
-                'class': 'form-control col-12',
+                'class': 'form-control col-6',
                 'placeholder': ''
             }),
             'name': forms.TextInput(attrs={
@@ -394,7 +394,7 @@ class CRMLastService(forms.ModelForm):
 class CRMKundeForm(forms.ModelForm):
     class Meta:
         model = Kunde
-        fields = ['interne_nummer','firmenname', 'zusatz']
+        fields = ['interne_nummer','firmenname', 'zusatz','done']
         labels = {
             'interne_nummer': "Interne Nummer",
             'firmenname': "Betrieb/Firma",
@@ -414,8 +414,8 @@ class CRMKundeForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={'class': 'form-control col-6'}),
             'zusatz': forms.TextInput(attrs={'class': 'form-control col-6'}),
             'done': forms.CheckboxInput(attrs={'class': 'form-check-input', 'style': 'margin-left: 10px; margin-top: 7px;'}),
-
         }
+
 # updated form for part-3
 class CRMKundenForm(forms.ModelForm):
 
@@ -1324,7 +1324,106 @@ class ProduktCreateForm(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder':''}),
         }
-        
+
+
+class PVCForm(forms.ModelForm):
+    class Meta:
+        model = Item
+        fields = (
+            
+            
+            'artikelnr',
+            'montage',
+            'lieferung',
+            'farbe',
+            'preis', 
+            'preis2', 
+            'preis3', 
+            
+            'beschreibung',
+            'titelbild', 
+            'slug',
+            'material', 
+            
+            'hersteller',
+
+            
+            
+            )
+
+        labels = {
+            
+            
+            'artikelnr' : "Artikel-Nr z.B. 100",
+            'lieferung' : "Lieferung",
+            'montage' : "Typ z.B. geschraubt",
+            'farbe' : "Farbe",
+            'preis': "Preis 1 (bis 2m)", 
+            'preis2': "Preis 2 (ab 2m)", 
+            'preis3': "Preis 3 (ab 4m)", 
+            'beschreibung' : "Bemerkung",
+            'slug': "URL/Webadresse",
+            'material': "Material z.B. PVC:",
+            'hersteller': "Hersteller:",
+        }
+
+        widgets = {
+            
+       
+            'kategorie': forms.Select(attrs={
+                'class': 'form-control',
+                }),
+            'subkategorie': forms.Select(attrs={
+                'class': 'form-control',
+                }),
+
+            'artikelnr': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'lieferung': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'montage': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'farbe': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'preis': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'preis2': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            'preis3': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+
+            
+            'beschreibung': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+
+            'titelbild' : forms.FileInput(attrs={
+                'class': 'form-control',
+                }),
+            
+            'slug': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': ''}),
+
+          
+
+            'material': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+            
+            'hersteller': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder':''}),
+        }
+
+
 
 class ProduktEditForm(forms.ModelForm):
     class Meta:

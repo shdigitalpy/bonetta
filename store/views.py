@@ -33,7 +33,9 @@ import boto3
 from django.http import JsonResponse
 import json
 from django.utils.html import escape
-
+from django.core.serializers.json import DjangoJSONEncoder
+import json
+from urllib.parse import unquote
 
 email_master = settings.EMAIL_MASTER
 
@@ -62,10 +64,32 @@ def update_lieferanten_status(request, pk):
 
 @staff_member_required
 def lieferanten_bestellungen(request):
-    lieferanten_bestellungen = LieferantenBestellungen.objects.all().order_by('-start_date')
-    
-    return render(request, 'crm/lieferanten-bestellungen.html', {'lieferanten_bestellungen': lieferanten_bestellungen})
+    bestellungen = LieferantenBestellungen.objects.select_related('auftrag').prefetch_related(
+        'artikel_bestellungen',
+        'auftrag__elementeitems_bestellung__element_nr',
+        'auftrag__elementeitems_bestellung__artikel',
+    ).order_by('-start_date')
 
+    # Dictionary: bestellungs_id → Liste der Cart-Items
+    elemente_data = {}
+
+    for bestellung in bestellungen:
+        if bestellung.auftrag:
+            elemente_items = bestellung.auftrag.elementeitems_bestellung.all()
+            elemente_data[bestellung.id] = [
+                {
+                    "element_nr": item.element_nr.elementnr if item.element_nr else "–",
+                    "anzahl": item.anzahl,
+                    "artikel": item.artikel.artikelnr if item.artikel else "–",
+                    "masse": f"{item.element_nr.aussenbreite}mm x {item.element_nr.aussenhöhe}mm" if item.element_nr else "–"
+                }
+                for item in elemente_items
+            ]
+
+    return render(request, 'crm/lieferanten-bestellungen.html', {
+        'lieferanten_bestellungen': bestellungen,
+        'elemente_data_json': json.dumps(elemente_data, cls=DjangoJSONEncoder)
+    })
 
 
 @staff_member_required
@@ -134,16 +158,21 @@ def elemente_bestellung_detail(request, pk, betrieb):
     # Fetch all Lieferanten (suppliers)
     lieferanten = Lieferanten.objects.all()
 
-    def get_dichtungstyp(element_input):
+    kunde = Kunde.objects.get(firmenname=betrieb)
+
+    def get_dichtungstyp(element_input, kunde=None):
         if isinstance(element_input, Elemente):
             element = element_input
         else:
             try:
                 element_nr = int(element_input)
-                element = Elemente.objects.filter(elementnr=element_nr).first()
+                queryset = Elemente.objects.filter(elementnr=element_nr)
+                if kunde:
+                    queryset = queryset.filter(kunde=kunde)
+                element = queryset.first()
             except (ValueError, TypeError):
                 return "Unbekannt"
-        
+
         return element.bemerkung if element and element.bemerkung else "Unbekannt"
 
     # Create list of elements with additional details from `ElementeCartItem` model
@@ -152,7 +181,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
 
     for item in cart_items:
         artikel = item.artikel
-        dichtungstyp = get_dichtungstyp(item.element_nr)
+        dichtungstyp = get_dichtungstyp(item.element_nr_id)
 
         artikel_data = {
             "id": artikel.id if artikel else None,
@@ -168,8 +197,11 @@ def elemente_bestellung_detail(request, pk, betrieb):
         if artikel and artikel.lieferantenartikel:
             show_lieferantenartikel = True
 
+        cart_items_nr = cart_items.get(order=bestellung,element_nr=item.element_nr_id)
+
         elemente_list.append({
-            "element_nr": item.element_nr,
+            'id': item.id,
+            "element_nr": cart_items_nr.element_nr,
             "dichtungstyp": dichtungstyp,
             "artikel": artikel_data,
             "masse": f"{artikel.aussenbreite}mm x {artikel.aussenhöhe}mm" if artikel else "Unbekannt",
@@ -198,7 +230,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
 
             if lieferant and bestellung_artikel_list:
                 try:
-                    lieferanten_bestellung = LieferantenBestellungen.objects.create(lieferant=lieferant)
+                    lieferanten_bestellung = LieferantenBestellungen.objects.create(lieferant=lieferant, auftrag=bestellung)
                     status = LieferantenStatus.objects.create(order=lieferanten_bestellung, name="Versendet")
                     lieferanten_bestellung.status.set([status])
 
@@ -212,6 +244,10 @@ def elemente_bestellung_detail(request, pk, betrieb):
                             artikel=bestell_artikel["artikel"],
                             anzahl=bestell_artikel["anzahl"]
                         )
+
+                    bestellung.status = "Versendet"
+                    bestellung.wer = "Lieferant"
+                    bestellung.save()
 
                     # ✅ Send Email
                     if lieferant.email:
@@ -236,7 +272,7 @@ def elemente_bestellung_detail(request, pk, betrieb):
                     else:
                         messages.error(request, "Keine gültige E-Mail-Adresse für diesen Lieferanten verfügbar.")
 
-                    return redirect("store:lieferanten_bestellungen")
+                    return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
 
                 except Exception as e:
                     messages.error(request, f"Fehler beim Speichern der Bestellung: {str(e)}")
@@ -250,21 +286,29 @@ def elemente_bestellung_detail(request, pk, betrieb):
             element_nr = request.POST["element_nr"]
             anzahl = int(request.POST["anzahl"])
 
+           
+
             # Check if element exists in `Elemente` model
-            element = Elemente.objects.filter(elementnr=element_nr).first()
+            try:
+                element = Elemente.objects.get(elementnr=element_nr, kunde=kunde)
+            except Elemente.DoesNotExist:
+                messages.error(request, "Dieses Element existiert nicht für den Kunden.")
+                return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
+            except Elemente.MultipleObjectsReturned:
+                messages.error(request, "Mehrere Elemente mit derselben Nummer gefunden – bitte prüfen Sie die Daten.")
+                return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
+
             if not element:
                 error_message = "Das eingegebene Element existiert nicht."
             else:
                 artikel = element.artikel
-                existing_item = ElementeCartItem.objects.filter(order=bestellung, element_nr=element).first()
+                existing_item = ElementeCartItem.objects.filter(order=bestellung, element_nr=element.id).first()
 
                 if existing_item:
                     existing_item.anzahl += anzahl
                     existing_item.save()
                     messages.success(request, "Menge erfolgreich aktualisiert.")
-                else:
-                    element = Elemente.objects.filter(id=element_nr).first()
-                    
+                else:    
                     ElementeCartItem.objects.create(order=bestellung, element_nr=element, artikel=artikel, anzahl=anzahl)
                     messages.success(request, "Position erfolgreich hinzugefügt.")
 
@@ -292,35 +336,38 @@ def elemente_bestellung_detail(request, pk, betrieb):
         "betrieb": betrieb,
         "show_lieferantenartikel": show_lieferantenartikel,
         "error_message": error_message,
+        "cart_items":cart_items,
     }
 
     return render(request, "crm/cms-elemente-bestellungen-detail.html", context)
 
 
-
-
-
 @staff_member_required
-def elemente_bestellung_delete(request, pk, betrieb):
-    bestellung = get_object_or_404(Elemente_Bestellungen, id=pk)
-    kunde = get_object_or_404(Kunde, interne_nummer=bestellung.kunden_nr)
-
-    eintraege = ElementeCartItem.objects.filter(order=bestellung)
-    if not eintraege.exists():
-        messages.error(request, "Keine Positionen vorhanden.")
-        return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
-
-    eintraege.delete()
-    messages.info(request, "Alle Positionen wurden gelöscht.")
-    return redirect("store:elemente_bestellung_detail", pk=pk, betrieb=betrieb)
-
-
-@staff_member_required
-def elemente_bestellung_edit(request, element_nr, bestellung_id):
+def bestellung_elemente_detail_delete(request, pk, bestellung_id):
+    # ✅ Bestellung & Kunde laden
     bestellung = get_object_or_404(Elemente_Bestellungen, id=bestellung_id)
     kunde = get_object_or_404(Kunde, interne_nummer=bestellung.kunden_nr)
     betrieb = kunde.firmenname
-    item = get_object_or_404(ElementeCartItem, order=bestellung, element_nr=element_nr)
+
+    # ✅ Zu löschendes Item holen
+    item = ElementeCartItem.objects.filter(id=pk, order=bestellung).first()
+
+    if not item:
+        messages.error(request, "Diese Position existiert nicht oder gehört nicht zur Bestellung.")
+        return redirect("store:elemente_bestellung_detail", pk=bestellung.id, betrieb=betrieb)
+
+    # ✅ Löschen
+    item.delete()
+    messages.info(request, "Die Position wurde gelöscht.")
+    return redirect("store:elemente_bestellung_detail", pk=bestellung.id, betrieb=betrieb)
+
+
+@staff_member_required
+def elemente_bestellung_detail_edit(request, pk, bestellung_id):
+    bestellung = get_object_or_404(Elemente_Bestellungen, id=bestellung_id)
+    kunde = get_object_or_404(Kunde, interne_nummer=bestellung.kunden_nr)
+    betrieb = kunde.firmenname
+    item = get_object_or_404(ElementeCartItem, order=bestellung, id=pk)
 
     if request.method == "POST":
         form = ElementeCartItemEditForm(request.POST)
@@ -339,7 +386,7 @@ def elemente_bestellung_edit(request, element_nr, bestellung_id):
 
 
 @staff_member_required
-def delete_elemente_bestellungen(request, pk):
+def elemente_bestellung_delete(request, pk):
     bestellung = get_object_or_404(Elemente_Bestellungen, pk=pk)
     bestellung.delete()
     messages.success(request, f"Bestellung #{pk} wurde gelöscht.")
@@ -456,7 +503,9 @@ def bestellformular_cart(request):
                         order.save()
 
                     # ✅ Check if the element is already in the cart
-                    existing_item = ElementeCartItem.objects.filter(order=order, element_nr=element_nr).first()
+                    # existierendes Element korrekt prüfen
+                    existing_item = ElementeCartItem.objects.filter(order=order, element_nr=element).first()
+
 
                     if existing_item:
                         existing_item.anzahl += anzahl
@@ -496,7 +545,7 @@ def bestellformular_cart(request):
 
             # ✅ Update `montage` and set status to "teilweise"
             order.montage = montage
-            order.status = "teilweise"
+            order.status = "offen"
             order.save(update_fields=["montage", "status"])  # ✅ Ensure fields are stored in the database
 
             # ✅ Fetch customer details
@@ -1661,7 +1710,7 @@ def home(request):
             telefon = request.POST['message-phone']
             anrede = request.POST['message-anrede']
 
-            subject = 'Nachricht von ' + ' '+ firma + ' ' + vorname + ' ' + nachname
+            subject = 'gastrodichtung.ch Nachricht von ' + ' '+ firma + ' ' + vorname + ' ' + nachname
             template = render_to_string('shop/kontakt-email.html', {
                 'anrede' : anrede,
                 'vorname': vorname, 
@@ -1830,14 +1879,17 @@ def product_detail(request, slug):
         laufmeter = request.POST.get('laufmeter')
         aussenbreite = request.POST.get('aussenbreite')
         aussenhöhe = request.POST.get('aussenhöhe')
-        anzahl = request.POST.get('anzahl')
+        anzahl = 1
+        betrieb = request.POST.get('betrieb')
+        strasse = request.POST.get('strasse')
+        ort = request.POST.get('ort')
         name = request.POST.get('name')
         email = request.POST.get('email')
         telefon = request.POST.get('telefon', '')
         nachricht = request.POST.get('nachricht', '')
 
         # E-Mail-Betreff
-        subject = f"Produktanfrage zu {item.kategorie} {artikelnr}"
+        subject = f"Musterbestellung zu {item.kategorie} {artikelnr}"
 
         # Template-Daten vorbereiten
         template_data = {
@@ -1848,10 +1900,13 @@ def product_detail(request, slug):
             'aussenbreite': aussenbreite,
             'aussenhöhe': aussenhöhe,
             'laufmeter': laufmeter,
-            'anzahl': anzahl,
+            
             'name': name,
             'email': email,
             'telefon': telefon,
+            'ort': ort,
+            'strasse': strasse,
+            'betrieb': betrieb,
             'nachricht': nachricht,
         }
 
@@ -1861,7 +1916,7 @@ def product_detail(request, slug):
         email_message = EmailMessage(
             subject,
             template,
-            email,
+            settings.EMAIL_HOST_USER,
             email_master,
         )
         email_message.fail_silently = False
@@ -1906,14 +1961,14 @@ def weitere_product_detail(request, slug):
         laufmeter = request.POST.get('laufmeter')
         aussenbreite = request.POST.get('aussenbreite')
         aussenhöhe = request.POST.get('aussenhöhe')
-        anzahl = request.POST.get('anzahl')
+        anzahl = 1
         name = request.POST.get('name')
         email = request.POST.get('email')
         telefon = request.POST.get('telefon', '')
         nachricht = request.POST.get('nachricht', '')
 
         # E-Mail-Betreff
-        subject = f"Produktanfrage zu {item.kategorie} {artikelnr}"
+        subject = f"Musterbestellung zu {item.kategorie} {artikelnr}"
 
         # Template-Daten
         template_data = {
@@ -1938,7 +1993,7 @@ def weitere_product_detail(request, slug):
         email_message = EmailMessage(
             subject,
             template,
-            email,
+            settings.EMAIL_HOST_USER,
             email_master,
         )
         email_message.fail_silently = False
@@ -2755,7 +2810,7 @@ def cms_marken(request):
     context = {
             'marken': marken,       
              }
-    return render(request, 'cms-marken.html', context)
+    return render(request, 'webshop/cms-marken.html', context)
 
 @staff_member_required
 def cms_marke_erfassen(request):
@@ -2774,7 +2829,7 @@ def cms_marke_erfassen(request):
     context = {
         'form': form,
                 }
-    return render(request, 'cms-marke-erfassen.html', context)
+    return render(request, 'webshop/cms-marke-erfassen.html', context)
 
 
 @staff_member_required
@@ -2795,7 +2850,7 @@ def cms_marke_bearbeiten(request, pk):
             'form': form,
             'marke': marke,
              }
-        return render(request, 'cms-marke-bearbeiten.html', context)
+        return render(request, 'webshop/cms-marke-bearbeiten.html', context)
 
 @staff_member_required
 def cms_marke_löschen(request, pk):
@@ -2814,7 +2869,7 @@ def cms_product_marke_overview(request, pk):
             'product': product,
             'product_marke' : product_marke,        
              }
-    return render(request, 'cms-produkt-marken.html', context)
+    return render(request, 'webshop/cms-produkt-marken.html', context)
 
 @staff_member_required
 def cms_product_marke_erfassen(request, pk):
@@ -2839,7 +2894,7 @@ def cms_product_marke_erfassen(request, pk):
         'form': form,
                 }
 
-    return render(request, 'cms-produkt-marke-erfassen.html', context)
+    return render(request, 'webshop/cms-produkt-marke-erfassen.html', context)
 
 
 @staff_member_required
@@ -2859,7 +2914,7 @@ def cms_product_marke_löschen(request, pkk, pk):
         'form': form,
                 }
 
-    return render(request, 'cms-produkt-marke-erfassen.html', context)
+    return render(request, 'webshop/cms-produkt-marke-erfassen.html', context)
 
 
 
@@ -3075,66 +3130,72 @@ def cms_produkte(request, first_cat):
     category = Category.objects.all()
     filter_query = request.GET.get('category', '')
     search_query = request.GET.get('search', '')
+    first_cat = unquote(first_cat)  # ← Wichtig: URL-Parameter dekodieren
     first_cat_new = ''
-    current_cat = 'standard'
+    current_cat = first_cat
 
     if search_query:
-        produkte = Item.objects.filter(Q(titel__icontains=search_query) | Q(artikelnr__icontains=search_query) | Q(kategorie__name__icontains=search_query) | Q(subkategorie__sub_name__icontains=search_query))
-        
+        produkte = Item.objects.filter(
+            Q(titel__icontains=search_query) |
+            Q(artikelnr__icontains=search_query) |
+            Q(kategorie__name__icontains=search_query) |
+            Q(subkategorie__sub_name__icontains=search_query)
+        )
+
         if filter_query:
             produkte = produkte.filter(kategorie__name=filter_query)
             current_cat_query = get_object_or_404(Category, name=filter_query)
-            current_cat = current_cat_query.name 
+            current_cat = current_cat_query.name
             first_cat_new = current_cat
-        else:
-            pass
+
     else:
         if filter_query:
             produkte = Item.objects.filter(kategorie__name=filter_query)
             current_cat_query = get_object_or_404(Category, name=filter_query)
-            current_cat = current_cat_query.name 
+            current_cat = current_cat_query.name
             first_cat_new = current_cat
-        else: 
+        else:
             produkte = Item.objects.filter(kategorie__name=first_cat)
-            
+
     if current_cat == 'standard':
         current_cat = first_cat
-    else:
-        pass
-
 
     context = {
         'category': category,
         'produkte': produkte,
-        'first_cat_new' : first_cat_new,
-        'current_cat' : current_cat
-     }
-    return render(request, 'cms-produkte.html', context)
+        'first_cat_new': first_cat_new,
+        'current_cat': current_cat,
+    }
+    return render(request, 'webshop/cms-produkte.html', context)
 
 
 @staff_member_required
 def product_cms_create(request, cat):
+    cat_decoded = unquote(cat)
+    category_obj = get_object_or_404(Category, name=cat_decoded)
+
+    if cat_decoded in ["PVC mit Magnet", "PVC ohne Magnet"]:
+        form_class = PVCForm
+    else:
+        form_class = ProduktCreateForm
+
     if request.method == "POST":
-        form = ProduktCreateForm(request.POST or None, request.FILES or None)
+        form = form_class(request.POST, request.FILES)
         if form.is_valid():
             result = form.save(commit=False)
-            result.kategorie = get_object_or_404(Category, name=cat)
+            result.kategorie = category_obj
+            result.titel = result.artikelnr
             result.save()
-            return redirect('store:cms_produkte', first_cat=cat)
+            return redirect('store:cms_produkte', first_cat=cat)  # nicht nochmal decodieren hier!
         else:
-            messages.error(request, "Error")
-    else:   
-        initial_data = {
-                'kategorie': cat,
-                
-            }
-        form = ProduktCreateForm(initial=initial_data)
+            messages.error(request, "Bitte überprüfe deine Eingaben.")
+    else:
+        form = form_class(initial={'kategorie': cat_decoded})
 
-    context = {
+    return render(request, 'webshop/cms-produkte-erfassen.html', {
         'form': form,
-        'cat' : cat,
-                }
-    return render(request, 'cms-produkte-erfassen.html', context)
+        'cat': cat_decoded,
+    })
 
 
 @staff_member_required
@@ -3157,7 +3218,7 @@ def product_cms_edit(request, pk, current_cat):
         'item': item,
         'current_cat': current_cat
                 }
-    return render(request, 'cms-produkte-bearbeiten.html', context)
+    return render(request, 'webshop/cms-produkte-bearbeiten.html', context)
 
 @staff_member_required
 def cms_remove_product(request, pk, cat):
@@ -3258,7 +3319,6 @@ def logout_user(request):
     return redirect('store:login_user')
 
 
-
 @staff_member_required
 def bestellung_erfassen_view(request):
     if request.method == 'POST':
@@ -3270,26 +3330,22 @@ def bestellung_erfassen_view(request):
         
         if not kunde:
             messages.error(request, f"Kunde mit Nummer '{kunden_nr}' wurde nicht gefunden.")
-        elif not Kunde.objects.filter(interne_nummer=kunden_nr).exists():
-            messages.error(request, f"Kunde mit Nummer '{kunden_nr}' wurde nicht gefunden.")
-        
-        # Check if the Kunde has at least one related 'Elemente' record
         elif not kunde.kunden_elemente.exists():
             messages.error(request, "Dieser Kunde hat noch keine Elemente. Eine Bestellung kann nur erfasst werden, wenn mindestens ein Element vorhanden ist.")
-        
-        # If form is valid, proceed with saving the Bestellung
+        # NEU: Prüfe, ob bereits eine offene Bestellung vorhanden ist
+        elif Elemente_Bestellungen.objects.filter(kunden_nr=kunden_nr, status="offen").exists():
+            messages.error(request, "Dieser Kunde hat bereits eine offene Bestellung. Bitte prüfen Sie die offenen Bestellungen beim Kunden.")
         elif form.is_valid():
             bestellung = form.save(commit=False)
             bestellung.kunden_nr = kunden_nr  # Kunden-Nr. manuell setzen
-            bestellung.save()  # Speichern der Bestellung
+            bestellung.save()
             messages.success(request, "Die Bestellung wurde erfolgreich erfasst.")
-            return redirect('store:elemente_bestellungen')  # Redirect after success
+            return redirect('store:elemente_bestellungen')
         else:
             messages.error(request, "Bitte überprüfen Sie Ihre Eingaben.")
     else:
         form = BestellungForm()
 
-    # Fetch list of customers excluding customers with no 'interne_nummer'
     kunden_liste = Kunde.objects.exclude(interne_nummer__isnull=True)
 
     return render(request, 'crm/bestellung_form.html', {

@@ -79,7 +79,8 @@ class LieferantenBestellungen(models.Model):
     kunden_nr = models.CharField(max_length=255, null=True, blank=True)
     status = models.ManyToManyField(LieferantenStatus, related_name='bestellungen_status', blank=True)
     lieferant = models.ForeignKey("Lieferanten", on_delete=models.CASCADE, null=True, blank=True, related_name="lieferanten_id")
-    
+    auftrag = models.ForeignKey("Elemente_Bestellungen", on_delete=models.CASCADE, null=True, blank=True, related_name="auftrag")
+
     class Meta:
         ordering = ['id']
         verbose_name = 'Lieferanten-Bestellung'
@@ -98,12 +99,7 @@ class LieferantenBestellungenArtikel(models.Model):
         return f"Artikel {self.artikel.id} - Anzahl: {self.anzahl}"
 
 
-STATUS_CHOICES = [
-        ("offen", "offen"),
-        ("bestellt", "bestellt"),
-        ("bei Lieferant", "bei Lieferant"),
-        ("erledigt", "erledigt"),
-    ]
+
 
 WER_CHOICES = [
     ('lager', 'Lager'),
@@ -115,7 +111,7 @@ class Elemente_Bestellungen(models.Model):
     start_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     kunden_nr = models.CharField(max_length=255, null=True, blank=True)
     montage = models.CharField(max_length=255, null=True, blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="offen", verbose_name="Status")
+    status = models.CharField(max_length=20, default="offen", verbose_name="Status")
     notizfeld = models.CharField(max_length=500, null=True, blank=True, verbose_name="Notizfeld")
     wer = models.CharField(max_length=50, choices=WER_CHOICES, null=True, blank=True,default="lager", verbose_name="Zuständigkeit")
   
@@ -136,13 +132,13 @@ class ElementeCartItem(models.Model):
 
     def get_artikel(self):
         """ Fetch the related Artikel object through Elemente """
-        element = Elemente.objects.filter(elementnr=self.element_nr).select_related("artikel").first()
+        element = Elemente.objects.filter(elementnr=self.element_nr_id).select_related("artikel").first()
         return element.artikel if element and element.artikel else None
 
     def __str__(self):
         artikel = self.get_artikel()
         artikelnr = artikel.artikelnr if artikel else "Kein Artikel"
-        return f"Item {self.id} - Element-Nr.: {self.element_nr}, Bezeichnung: {self.bezeichnung}, Artikel-Nr.: {artikelnr}, Anzahl: {self.anzahl}"
+        return f"Item {self.id} - Element-Nr.: {self.element_nr.elementnr}, Bezeichnung: {self.element_nr.bezeichnung}, Artikel-Nr.: {artikelnr}, Anzahl: {self.anzahl}"
 
 
 class Subcategory(models.Model):
@@ -207,7 +203,7 @@ class Item(models.Model):
 	class Meta:
 		verbose_name = 'Produkte'
 		verbose_name_plural = 'Produkte'
-		ordering = ['sortierung']
+		ordering = ['-artikelnr']
 
 	def __str__(self):
 		return str(self.kategorie) + ' ' + str(self.subkategorie) + ' ' + str(self.artikelnr)

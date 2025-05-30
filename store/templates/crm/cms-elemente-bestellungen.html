@@ -193,7 +193,7 @@
               </td>
 
               <td>
-  <form method="post" action="{% url 'store:delete_elemente_bestellungen' bestellung.id %}" onsubmit="return confirm('Möchten Sie diese Bestellung wirklich löschen?');">
+  <form method="post" action="{% url 'store:elemente_bestellung_delete' bestellung.id %}" onsubmit="return confirm('Möchten Sie diese Bestellung wirklich löschen?');">
     {% csrf_token %}
     <button type="submit" class="btn btn-sm btn-outline-danger" title="Bestellung löschen">
       <i class="fas fa-trash-alt"></i>

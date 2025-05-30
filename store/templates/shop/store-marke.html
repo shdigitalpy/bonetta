@@ -24,7 +24,10 @@
                             <div class="marke-element-sub">
                                 <h4>{{ marke.name }} - Dichtungen</h4>
 
-                                <a class="btn btn-primary btn-sm" href="{% url 'store:markedetails' marke.slug %}">Zu den Produkten</a>
+                        
+                                <a href="{% url 'store:markedetails' marke.slug %}" class="marke-link">
+                Zu den Produkten <i class="fas fa-arrow-right"></i>
+              </a>
                                 <hr>
                             </div>
                         </div>
