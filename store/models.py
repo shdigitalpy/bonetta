@@ -219,7 +219,6 @@ class Marke(models.Model):
 	slug = models.SlugField(max_length=255)
 	markepic = models.ImageField(null=True, blank=True, upload_to="markebilder/")
 	marketext = models.TextField(blank=True)
-	bestseller = models.BooleanField(default=False)
 	item = models.ManyToManyField(Item, related_name='item_marken', blank=True)
 
 	class Meta:

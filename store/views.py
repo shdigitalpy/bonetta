@@ -1732,17 +1732,22 @@ def home(request):
             email.fail_silently=False
             email.content_subtype = "html"
             email.send()
+
+
+
             context = {
                 'items': items,
                 'vorname' : vorname,
             }
             return render(request, 'dichtungen.html', context)
         else:
+            marken = Marke.objects.all()
             context = {
                 'items': items,
+                'marken' : marken, 
             }
             return render(request, 'dichtungen.html', context)
-        
+
     return render(request, 'dichtungen.html', context)
 
 def searchbar(request):
@@ -1819,8 +1824,6 @@ def firma(request):
 #Marke Übersicht
 def marke(request):
     marken = Marke.objects.all()
-    for i in marken:
-        print(i.name)
     context = { 
         'marken' : marken, 
         }
@@ -2718,7 +2721,7 @@ def cms(request):
     cat = Category.objects.first()
 
     context = {
-    'cat' : cat,
+    'cat' : cat
      }
     return render(request, 'cms.html', context)
 

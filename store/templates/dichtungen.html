@@ -22,129 +22,188 @@ Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig –
   }
 }
 
-<style>
-  .bestseller {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    width: 200px;
-    height: 60px;
-    
-    background-color: #29384e;
-    color: white;
-    font-weight: bold;
-    border-radius: 8px;
-    font-size: 1.2rem;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
-  }
 
+.rating-stars {
+  font-size: 1.2rem;
+  color: #f8e570;
+}
+
+.marken-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.marke-card {
+  position: relative;
+  width: 320px;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease;
+}
+
+.marke-card:hover {
+  transform: translateY(-5px);
+}
+
+.marke-card img.main-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.marke-card img.logo {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  max-height: 40px;
+  max-width: 60px;
+  opacity: 0.85;
+}
+
+.marke-card-body {
+  padding: 1rem;
+  text-align: center;
+}
+
+.marke-card-body h5 {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #29384f;
+}
+
+.marke-link {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 500;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.marke-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+.marke-link i {
+  margin-left: 6px;
+}
 </style>
 
+{% if vorname %}
+  <div id="home">
+    <div class="landing-text" style="font-size: 2.5rem">
+      <p>Die Nachricht wurde gesendet! Zurück zur <a href="{% url 'store:home' %}">Webseite</a>.</p>
+    </div>
+  </div>
+{% else %}
 
-    <!--SENDMAIL Start--> 
-    {% if vorname %}
-      <div id="home"><div class="landing-text" style="font-size: 2.5rem"><p>Die Nachricht wurde gesendet! Zurück zur <a href="{% url 'store:home' %}">Webseite</a>.</p></div>
-      </div>
-    {% else %}
-        <!--SENDMAIL End-->
+<!-- Dichtungstypen Section (white background) -->
+<section class="gastro-layout py-5 bg-white">
+  <div class="container">
+    <div class="row align-items-center justify-content-between px-3 px-md-0">
+      
+      <!-- Textblock -->
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <h1 class="font-weight-bold mb-3">Massgefertigte Kühlschrankdichtungen. Schnell geliefert oder montiert.</h1>
+      <p class="lead text-muted mb-4">
+  Über 4'000 Restaurants, Hotels und Gastrobetriebe in der ganzen Schweiz zählen zu unseren Kunden.  
+  <br class="d-none d-lg-block">
+  Wir fertigen passgenaue Kühlschrankdichtungen auf Mass – mit Lieferung oder optionaler Montage vor Ort.
+</p>
 
-          <div id="home">
-            <div class="landing-text position-relative">
-              <h1>Dichtungen nach Marke</h1>
-              <br>
 
-              <div class="container">
-                    <div class="storepreview">
-                      
-                      <div class="row">
 
-                          {% for marke in marken %}
-                              {% if marke.item.all.count > 0 %}  <!-- Only display if marke has associated items -->
-
-                              <div class="col-lg-5">
-                                  <div class="marke-flex">
-                                      {% if marke.markepic %}
-                                      <a href="{% url 'store:markedetails' marke.slug %}">  <!-- Corrected URL generation -->
-                                          <img class="thumbnail" src="{{ marke.markepic.url }}">
-                                      </a>
-                                      {% endif %}
-                                      
-                                      <div class="marke-element">
-                                          <div class="marke-element-sub">
-                                              <h4>{{ marke.name }} - Dichtungen</h4>
-                                              <a class="btn btn-primary btn-sm" href="{% url 'store:markedetails' marke.slug %}">Zu den Produkten</a>
-                                              <hr>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-
-                              {% endif %}
-                          {% endfor %}
-
-                      </div><!-- row end -->
-                  </div><!-- storepreview end -->
-              </div><!-- container end -->
-              <br><br>
-              <a id="scroll-link" href="#boxen" behavior="smooth"><i class="fas fa-caret-down"></i></a>
-        </div>
-      </div>
-        <!-- Box 1 -->
-        <div class="col-md-4 mb-4">
-          <div class="p-4 bg-light rounded h-100 shadow-sm">
-            <h5 class="mb-3">Gastroinventar für Bestandskunden</h5>
-            <p class="text-muted mb-3">Bei der Dichtungsmontage nehmen wir ein Kühlinventar auf. So können Sie als Bestandskunde jederzeit bequem und zum Vorzugspreis nachbestellen.</p>
+        <div class="d-flex align-items-center mb-3">
+          <div class="rating-stars text-warning mr-3">
+            ★★★★★
+          </div>
+          <div>
+            <strong class="text-dark h5 mb-0 d-block">4'000+</strong>
+            <small class="text-muted">Gastrokunden</small>
           </div>
         </div>
-        <!-- Box 2 -->
-        <div class="col-md-4 mb-4">
-          <div class="p-4 bg-light rounded h-100 shadow-sm">
-            <h5 class="mb-3">Musteranfrage für Dichtungen</h5>
-            <p class="text-muted mb-3">Senden Sie uns ein Foto Ihrer alten Dichtung – wir analysieren das Profil und schicken Ihnen ein passendes Muster zur Prüfung zu.</p>
-          </div>
-        </div>
-        <!-- Box 3 -->
-        <div class="col-md-4 mb-4">
-          <div class="p-4 bg-light rounded h-100 shadow-sm">
-            <h5 class="mb-3">Montage und Reparaturen</h5>
-            <p class="text-muted mb-3">Ob defekte Schubladen, Türscharniere oder Gummidichtungen – unsere Monteure reparieren rasch und zuverlässig direkt bei Ihnen vor Ort.</p>
-          </div>
-        </div>
+
+        <a href="{% url 'store:kontakt' %}" class="btn btn-dark rounded-pill px-4 py-2 mt-2">Kontakt</a>
+
+
       </div>
 
-      <!-- WhatsApp Kontakt -->
-      <div class="text-center mt-4">
-        <a href="https://wa.me/41793336157" target="_blank" class="btn btn-success btn-lg d-inline-flex align-items-center gap-2 px-4 py-2 rounded-pill shadow-sm">
-        <i class="fab fa-whatsapp fa-lg me-2"></i>
-          <span> WhatsApp</span>
-        </a>
+      <!-- Bild -->
+      <div class="col-lg-6">
+        <img src="{% static 'images/gastro-dichtungen.jpg' %}" alt="Gastro Dichtungen" class="img-fluid rounded shadow">
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- Boxen-Layout "Wieso Gebo Shop" -->
+<div class="container py-5">
+  <h2 class="text-center mb-5">Das tönt interessant</h2>
+  <div class="row text-center">
+    
+    <!-- Box 1 -->
+    <div class="col-md-4 mb-4">
+      <div class="p-4 bg-light rounded h-100 shadow-sm">
+        <h5 class="mb-3">Gastroinventar für Bestandskunden</h5>
+        <p class="text-muted mb-3">Bei der Dichtungsmontage nehmen wir ein Kühlinventar auf. So können Sie als Bestandskunde jederzeit bequem und zum Vorzugspreis nachbestellen.</p>
       </div>
     </div>
 
-    <br><br>
-
-    <div class="container py-5">
-      <h2 class="text-center mb-4">Bestseller</h2>
-      <div class="row justify-content-center align-items-center text-center">
-        {% for marke in bestseller_marken %}
-            <div class="col-2 d-flex flex-column align-items-center mb-4">
-                {% if marke.markepic %}
-                    <a href="{% url 'store:marke' %}">
-                        <img class="img-fluid mb-2" src="{% static 'images/' %}{{ marke.markepic }}" style="height: 100px; object-fit: contain;">
-                    </a>
-                {% endif %}
-                <strong class="text-dark">{{ marke.name }}</strong>
-            </div>
-        {% endfor %}
+    <!-- Box 2 -->
+    <div class="col-md-4 mb-4">
+      <div class="p-4 bg-light rounded h-100 shadow-sm">
+        <h5 class="mb-3">Musteranfrage für Dichtungen</h5>
+        <p class="text-muted mb-3">Senden Sie uns ein Foto Ihrer alten Dichtung – wir analysieren das Profil und schicken Ihnen ein passendes Muster zur Prüfung zu.</p>
       </div>
     </div>
-  {% endif %}
+
+    <!-- Box 3 -->
+    <div class="col-md-4 mb-4">
+      <div class="p-4 bg-light rounded h-100 shadow-sm">
+        <h5 class="mb-3">Montage und Reparaturen</h5>
+        <p class="text-muted mb-3">Ob defekte Schubladen, Türscharniere oder Gummidichtungen – unsere Monteure reparieren rasch und zuverlässig direkt bei Ihnen vor Ort.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- WhatsApp Kontakt -->
+  <div class="text-center mt-4">
+    <a href="https://wa.me/41793336157" target="_blank" class="btn btn-success btn-lg d-inline-flex align-items-center gap-2 px-4 py-2 rounded-pill shadow-sm">
+     <i class="fab fa-whatsapp fa-lg me-2"></i>
+      <span> WhatsApp</span>
+
+    </a>
+  </div>
+</div>
+
+<br><br>
+
+<div class="container py-5">
+  <h2 class="text-center mb-4">Bestseller</h2>
+  <div class="row justify-content-center align-items-center text-center">
+    {% for marke in marken|slice:":6" %}
+      {% if marke.item.all.count > 0 %}
+        <div class="col-6 col-sm-4 col-md-2 mb-4">
+          <a href="{% url 'store:markedetails' marke.slug %}">
+            <img src="{{ marke.markepic.url }}" alt="{{ marke.name }}" class="img-fluid" style="max-height: 80px;">
+          </a>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+
+
+
+{% endif %}
 {% endblock %}
 
 {% block scripts %}
