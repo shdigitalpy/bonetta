@@ -11,11 +11,9 @@ Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig –
 
 {% block content %}
 <style>
-
 .gastro-layout h1 {
   font-size: 2.25rem;
 }
-
 @media (max-width: 576px) {
   .gastro-layout h1 {
     font-size: 1.5rem;
@@ -144,9 +142,13 @@ Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig –
         {% endfor %}
       </div>
     </div>
+
   {% endif %}
+
 {% endblock %}
 
 {% block scripts %}
-
+<!-- Bootstrap 4 JS (falls nicht schon in base.html) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 {% endblock %}
