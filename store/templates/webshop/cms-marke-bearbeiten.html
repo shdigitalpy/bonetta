@@ -13,12 +13,59 @@
 			<div class="form-group">
 		    
 		    <form method="POST" enctype="multipart/form-data">
-		      {% csrf_token %}
-		      {{ form.as_p }}
-		      <button class="btn btn-warning ml-4">Speichern</button>
-		      <button class="btn btn-secondary btn-md ml-4"><a href="{% url 'store:cms_marken' %}">Zurück</a></button>
-			   </form>
-			   </div>
+				{% csrf_token %}
+				{{ form.media }}
+
+				<!-- Name -->
+				<div class="mb-3 row">
+					<label for="{{ form.name.id_for_label }}" class="col-sm-2 col-form-label">Name der Marke</label>
+					<div class="col-sm-6">
+					{{ form.name }}
+					</div>
+				</div>
+
+				<!-- Slug -->
+				<div class="mb-3 row">
+					<label for="{{ form.slug.id_for_label }}" class="col-sm-2 col-form-label">Webadresse Marke</label>
+					<div class="col-sm-6">
+					{{ form.slug }}
+					</div>
+				</div>
+
+				<!-- Marke Pic -->
+				<div class="mb-3 row">
+					<label for="{{ form.markepic.id_for_label }}" class="col-sm-2 col-form-label">Bild</label>
+					<div class="col-sm-6">
+					{{ form.markepic }}
+					</div>
+				</div>
+
+				<!-- Marketext -->
+				<div class="mb-3 row">
+					<label for="{{ form.marketext.id_for_label }}" class="col-sm-2 col-form-label">Beschreibung</label>
+					<div class="col-sm-6">
+					{{ form.marketext }}
+					</div>
+				</div>
+
+				<!-- Bestseller -->
+				<div class="mb-3 row align-items-center">
+					<label for="{{ form.bestseller.id_for_label }}" class="col-sm-2 col-form-label">Bestseller Ja oder Nein</label>
+					<div class="col-sm-6 d-flex align-items-center">
+					{{ form.bestseller }}
+					</div>
+				</div>
+
+				<div class="mb-3 row">
+					<div class="col-sm-6 offset-sm-2">
+					<button type="submit" class="btn btn-success">Speichern</button>
+					</div>
+				</div>
+			</form>
+
+
+		      
+  		</div>
 
 
  {% endblock %}

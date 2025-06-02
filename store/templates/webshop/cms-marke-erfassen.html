@@ -18,15 +18,13 @@
 			<h2>Marke erfassen</h2><button class="btn btn-danger btn-exit"><a href="{% url 'store:cms_marken' %}">Zurück <span class="fas fa-times"></span></a></button>
 		</div>
 		<br>
-		<div class="form-group">
-		    
-		    <form method="POST" enctype="multipart/form-data">
+		 <form method="POST" enctype="multipart/form-data">
 				{% csrf_token %}
 				{{ form.media }}
 
 				<!-- Name -->
 				<div class="mb-3 row">
-					<label for="{{ form.name.id_for_label }}" class="col-sm-2 col-form-label">Name</label>
+					<label for="{{ form.name.id_for_label }}" class="col-sm-2 col-form-label">Name der Marke</label>
 					<div class="col-sm-6">
 					{{ form.name }}
 					</div>
@@ -34,7 +32,7 @@
 
 				<!-- Slug -->
 				<div class="mb-3 row">
-					<label for="{{ form.slug.id_for_label }}" class="col-sm-2 col-form-label">Slug</label>
+					<label for="{{ form.slug.id_for_label }}" class="col-sm-2 col-form-label">Webadresse Marke</label>
 					<div class="col-sm-6">
 					{{ form.slug }}
 					</div>
@@ -58,7 +56,7 @@
 
 				<!-- Bestseller -->
 				<div class="mb-3 row align-items-center">
-					<label for="{{ form.bestseller.id_for_label }}" class="col-sm-2 col-form-label">Bestseller</label>
+					<label for="{{ form.bestseller.id_for_label }}" class="col-sm-2 col-form-label">Bestseller Ja oder Nein</label>
 					<div class="col-sm-6 d-flex align-items-center">
 					{{ form.bestseller }}
 					</div>
@@ -70,7 +68,6 @@
 					</div>
 				</div>
 			</form>
-
 
 		      
   		</div>
