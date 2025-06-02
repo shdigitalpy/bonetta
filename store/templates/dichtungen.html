@@ -11,30 +11,24 @@ Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig –
 
 {% block content %}
 <style>
-
 .gastro-layout h1 {
   font-size: 2.25rem;
 }
-
 @media (max-width: 576px) {
   .gastro-layout h1 {
     font-size: 1.5rem;
   }
 }
-
-
 .rating-stars {
   font-size: 1.2rem;
   color: #f8e570;
 }
-
 .marken-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
   justify-content: center;
 }
-
 .marke-card {
   position: relative;
   width: 320px;
@@ -44,17 +38,14 @@ Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig –
   box-shadow: 0 0 20px rgba(0,0,0,0.05);
   transition: transform 0.3s ease;
 }
-
 .marke-card:hover {
   transform: translateY(-5px);
 }
-
 .marke-card img.main-image {
   width: 100%;
   height: 200px;
   object-fit: cover;
 }
-
 .marke-card img.logo {
   position: absolute;
   bottom: 10px;
@@ -63,18 +54,15 @@ Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig –
   max-width: 60px;
   opacity: 0.85;
 }
-
 .marke-card-body {
   padding: 1rem;
   text-align: center;
 }
-
 .marke-card-body h5 {
   margin-bottom: 0.5rem;
   font-weight: 600;
   color: #29384f;
 }
-
 .marke-link {
   display: inline-flex;
   align-items: center;
@@ -82,12 +70,10 @@ Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig –
   color: #007bff;
   text-decoration: none;
 }
-
 .marke-link:hover {
   color: #0056b3;
   text-decoration: underline;
 }
-
 .marke-link i {
   margin-left: 6px;
 }
@@ -101,57 +87,45 @@ Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig –
   </div>
 {% else %}
 
-<!-- Dichtungstypen Section (white background) -->
 <section class="gastro-layout py-5 bg-white">
   <div class="container">
     <div class="row align-items-center justify-content-between px-3 px-md-0">
-      
-      <!-- Textblock -->
       <div class="col-lg-6 mb-4 mb-lg-0">
         <h1 class="font-weight-bold mb-3">Massgefertigte Kühlschrankdichtungen. Schnell geliefert oder montiert.</h1>
-      <p class="lead text-muted mb-4">
-  Über 4'000 Restaurants, Hotels und Gastrobetriebe in der ganzen Schweiz zählen zu unseren Kunden.  
-  <br class="d-none d-lg-block">
-  Wir fertigen passgenaue Kühlschrankdichtungen auf Mass – mit Lieferung oder optionaler Montage vor Ort.
-</p>
-
-
-
+        <p class="lead text-muted mb-4">
+          Über 4'000 Restaurants, Hotels und Gastrobetriebe in der ganzen Schweiz zählen zu unseren Kunden.  
+          <br class="d-none d-lg-block">
+          Wir fertigen passgenaue Kühlschrankdichtungen auf Mass – mit Lieferung oder optionaler Montage vor Ort. Unsere Dichtungen sind HACCP-konform.
+        </p>
         <div class="d-flex align-items-center mb-3">
-          <div class="rating-stars text-warning mr-3">
-            ★★★★★
-          </div>
+          <div class="rating-stars text-warning mr-3">★★★★★</div>
           <div>
             <strong class="text-dark h5 mb-0 d-block">4'000+</strong>
             <small class="text-muted">Gastrokunden</small>
           </div>
         </div>
-
         <a href="{% url 'store:kontakt' %}" class="btn btn-dark rounded-pill px-4 py-2 mt-2">Kontakt</a>
-
-
       </div>
-
-      <!-- Bild -->
       <div class="col-lg-6">
         <img src="{% static 'images/gastro-dichtungen.jpg' %}" alt="Gastro Dichtungen" class="img-fluid rounded shadow">
       </div>
-
     </div>
   </div>
 </section>
 
-
-<!-- Boxen-Layout "Wieso Gebo Shop" -->
 <div class="container py-5">
   <h2 class="text-center mb-5">Das tönt interessant</h2>
   <div class="row text-center">
-    
     <!-- Box 1 -->
     <div class="col-md-4 mb-4">
       <div class="p-4 bg-light rounded h-100 shadow-sm">
-        <h5 class="mb-3">Gastroinventar für Bestandskunden</h5>
-        <p class="text-muted mb-3">Bei der Dichtungsmontage nehmen wir ein Kühlinventar auf. So können Sie als Bestandskunde jederzeit bequem und zum Vorzugspreis nachbestellen.</p>
+        <h5 class="mb-3">Profitieren Sie als Kunde</h5>
+        <p class="text-muted mb-3">
+          Kennzeichnung und Nachbestellung von Dichtungen leicht gemacht – mit dem Gebo Shop Bonetta System.
+        </p>
+        <button class="btn btn-dark rounded-pill px-4 py-2 mt-2" data-toggle="modal" data-target="#infoModal">
+          Weitere Informationen
+        </button>
       </div>
     </div>
 
@@ -170,15 +144,13 @@ Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig –
         <p class="text-muted mb-3">Ob defekte Schubladen, Türscharniere oder Gummidichtungen – unsere Monteure reparieren rasch und zuverlässig direkt bei Ihnen vor Ort.</p>
       </div>
     </div>
-
   </div>
 
   <!-- WhatsApp Kontakt -->
   <div class="text-center mt-4">
     <a href="https://wa.me/41793336157" target="_blank" class="btn btn-success btn-lg d-inline-flex align-items-center gap-2 px-4 py-2 rounded-pill shadow-sm">
-     <i class="fab fa-whatsapp fa-lg me-2"></i>
+      <i class="fab fa-whatsapp fa-lg me-2"></i>
       <span> WhatsApp</span>
-
     </a>
   </div>
 </div>
@@ -200,12 +172,41 @@ Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig –
   </div>
 </div>
 
-
-
+<!-- Modal für Box 1 (Bootstrap 4 Version) -->
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="infoModalLabel">So funktioniert’s</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Schliessen">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <ul>
+          <li>Jedes Kühlmöbel und jede Schublade werden mit einer individuellen Nummer gekennzeichnet.</li>
+          <li>Bei zukünftigen Bestellungen scannen Sie einfach den QR-Code, der direkt am Möbel angebracht ist.</li>
+          <li>Mit der Eingabe der Elementnummer werden Sie automatisch zum passenden Dichtungsprofil in unserem Bestell-Shop weitergeleitet.</li>
+          <li>Jede Dichtung wird bei der Zustellung exakt beschriftet – klar erkennbar, für welches Möbelstück und welche Schublade die Dichtung bestimmt ist.</li>
+          <li>Zusätzlich erhalten Sie 5 % Rabatt auf Ihre nächste Bestellung – als Dank für die Nutzung unseres Systems.</li>
+        </ul>
+        <p class="mt-4">
+          <strong>Jetzt testen:</strong> 
+          <span class="text-primary">Probieren Sie unser System unverbindlich aus – als Testkunde „25000“ mit den Elementen 1 bis 10.</span>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Schliessen</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endif %}
 {% endblock %}
 
 {% block scripts %}
-
+<!-- Bootstrap 4 JS (falls nicht schon in base.html) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 {% endblock %}
