@@ -23,15 +23,15 @@ def extras(request):
 
 
 def sub_extras(request):
-	subcat_menu = Subcategory.objects.all()
+    subcat_menu = Subcategory.objects.all()
 
-	return {
-		'subcat_menu': subcat_menu,
-		}
+    return {
+        'subcat_menu': subcat_menu,
+        }
 
 def extras_marke(request):
-	marke_menu = Marke.objects.all().count()
-	return {'marke_menu': marke_menu}
+    marke_menu = Marke.objects.all().count()
+    return {'marke_menu': marke_menu}
 
 
 def first_cat(request):
@@ -44,4 +44,11 @@ def first_cat(request):
     
     return {'first_cat': first_cat}
 
-	
+    
+def marken_context(request):
+    bestseller_marken = Marke.objects.filter(bestseller=True).order_by('name')
+
+    return {
+        'marken': Marke.objects.all(),
+        'bestseller_marken': bestseller_marken,
+    }
