@@ -1733,8 +1733,6 @@ def home(request):
             email.content_subtype = "html"
             email.send()
 
-
-
             context = {
                 'items': items,
                 'vorname' : vorname,
@@ -1749,6 +1747,15 @@ def home(request):
             return render(request, 'dichtungen.html', context)
 
     return render(request, 'dichtungen.html', context)
+
+#Marke Übersicht
+def marke(request):
+    marken = Marke.objects.all()
+    for i in marken:
+        print(i.name)
+    context = { 
+        'marken' : marken, 
+        }
 
 def searchbar(request):
     search_query = request.GET.get('search', '')
@@ -2710,8 +2717,6 @@ def create_lieferadresse(request):
         'form': form,
                 }
     return render(request, 'shop/lieferadresse-erfassen.html', context)
-
-
 
 
 #CMS related fields --- only for staff available

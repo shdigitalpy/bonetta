@@ -19,64 +19,29 @@ Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig –
     font-size: 1.5rem;
   }
 }
-.rating-stars {
-  font-size: 1.2rem;
-  color: #f8e570;
-}
-.marken-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  justify-content: center;
-}
-.marke-card {
-  position: relative;
-  width: 320px;
-  background: #fff;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 0 20px rgba(0,0,0,0.05);
-  transition: transform 0.3s ease;
-}
-.marke-card:hover {
-  transform: translateY(-5px);
-}
-.marke-card img.main-image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
-.marke-card img.logo {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  max-height: 40px;
-  max-width: 60px;
-  opacity: 0.85;
-}
-.marke-card-body {
-  padding: 1rem;
-  text-align: center;
-}
-.marke-card-body h5 {
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: #29384f;
-}
-.marke-link {
-  display: inline-flex;
-  align-items: center;
-  font-weight: 500;
-  color: #007bff;
-  text-decoration: none;
-}
-.marke-link:hover {
-  color: #0056b3;
-  text-decoration: underline;
-}
-.marke-link i {
-  margin-left: 6px;
-}
+
+
+ .bestseller {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 200px;
+    height: 60px;
+
+    background-color: #29384e;
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  }
+
 </style>
 
 {% if vorname %}
@@ -158,19 +123,20 @@ Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig –
 <br><br>
 
 <div class="container py-5">
-  <h2 class="text-center mb-4">Bestseller</h2>
-  <div class="row justify-content-center align-items-center text-center">
-    {% for marke in marken|slice:":6" %}
-      {% if marke.item.all.count > 0 %}
-        <div class="col-6 col-sm-4 col-md-2 mb-4">
-          <a href="{% url 'store:markedetails' marke.slug %}">
-            <img src="{{ marke.markepic.url }}" alt="{{ marke.name }}" class="img-fluid" style="max-height: 80px;">
-          </a>
-        </div>
-      {% endif %}
-    {% endfor %}
-  </div>
-</div>
+      <h2 class="text-center mb-4">Bestseller</h2>
+      <div class="row justify-content-center align-items-center text-center">
+        {% for marke in bestseller_marken %}
+            <div class="col-2 d-flex flex-column align-items-center mb-4">
+                {% if marke.markepic %}
+                    <a href="{% url 'store:marke' %}">
+                        <img class="img-fluid mb-2" src="{% static 'images/' %}{{ marke.markepic }}" style="height: 100px; object-fit: contain;">
+                    </a>
+                {% endif %}
+                <strong class="text-dark">{{ marke.name }}</strong>
+            </div>
+        {% endfor %}
+      </div>
+    </div>
 
 <!-- Modal für Box 1 (Bootstrap 4 Version) -->
 <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
@@ -206,7 +172,5 @@ Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig –
 {% endblock %}
 
 {% block scripts %}
-<!-- Bootstrap 4 JS (falls nicht schon in base.html) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
 {% endblock %}

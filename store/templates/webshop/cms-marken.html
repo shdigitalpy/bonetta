@@ -53,6 +53,7 @@
       <th scope="col">Name</th>
       <th scope="col">Bild</th>
       <th scope="col">Bearbeiten</th>
+      <th scope="col">Bestseller</th>
       <th scope="col">Löschen</th>
     </tr>
   </thead>
@@ -69,6 +70,13 @@
         <a href="{% url 'store:cms_marke_bearbeiten' data.pk %}">
           <i class="far fa-edit" style="color: #29384f; font-size: 18px;"></i>
         </a>
+      </td>
+      <td>
+          {% if data.bestseller %}
+            Ja
+          {% else %}
+            Nein
+          {% endif %}
       </td>
       <td>
         <!-- Trigger Button -->
