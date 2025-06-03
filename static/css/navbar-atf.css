@@ -64,7 +64,7 @@
 }
 
 /* Basislinie: nicht sichtbar */
-.top-navbar .nav-link::after,
+/* .top-navbar .nav-link::after,
 .second-navbar .nav-link::after {
   content: "" !important;
   position: absolute !important;
@@ -75,15 +75,15 @@
   background-color: currentColor !important;
   transition: all 0.3s ease-in-out !important;
   transform: translateX(-50%) !important;
-}
+} */
 
 /* Sichtbarer Hover/Active-Zustand */
-.top-navbar .nav-link:hover::after,
+/* .top-navbar .nav-link:hover::after,
 .top-navbar .nav-link.active::after,
 .second-navbar .nav-link:hover::after,
 .second-navbar .nav-link.active::after {
   width: 50% !important;
-}
+} */
 
 
 /* ============================================= */
@@ -95,7 +95,7 @@
   transition: color 0.2s ease-in-out;
 }
 
-.second-navbar .nav-link::after {
+/* .second-navbar .nav-link::after {
   content: "" !important;
   position: absolute !important;
   bottom: 0 !important;
@@ -105,12 +105,12 @@
   background-color: var(--blue) !important;
   transition: all 0.3s ease-in-out !important;
   transform: translateX(-50%) !important;
-}
+} */
 
-.second-navbar .nav-link:hover::after,
+/* .second-navbar .nav-link:hover::after,
 .second-navbar .nav-link.active::after {
   width: 50% !important;
-}
+} */
 
 
 /* Responsive Anpassungen */
