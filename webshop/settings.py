@@ -114,6 +114,7 @@ TEMPLATES = [
                 'store.context_processors.sub_extras', #for category display every
                 'store.context_processors.extras_marke', #for marke display every
                 'store.context_processors.first_cat',
+                'store.context_processors.marken_context',
             ],
         },
     },
