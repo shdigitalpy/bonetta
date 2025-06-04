@@ -7,24 +7,32 @@
 		<h4>Kontakt</h4>
 		<p class="p-white">Gebo Shop Bonetta<br>
 		Langmattstrasse 10, 8152 Hochfelden<br><br>
-		Tel. +41 43 508 90 60 <br>
-		E-Mail: livio.bonetta@geboshop.ch<br>
+		Tel. <a style="color:white" href="tel:+41435089060">043 508 90 60</a><br>
+		E-Mail: <a style="color:white" href="mailto:dichtung@geboshop.ch">dichtung@geboshop.ch</a><br>
 		</p>
 		</div>
 		
 		<div class="flex-item">
 		<h4>Mehr</h4>
 		<ul>
-	{% for menuitem in cat_menu %}
-    
-    <li >
-      <a style="color:var(--white)" href="{% url 'store:category' menuitem|slugify %}">{{ menuitem.name }}</a>
-    </li>
-    {% endfor %}
+{% for menuitem in cat_menu %}
+  <li>
+    <a style="color:var(--white)" href="{% url 'store:category' menuitem|slugify %}">
+      {% if menuitem.name == "PVC mit Magnet" %}
+        Kühlschrankdichtung mit Magnet
+      {% elif menuitem.name == "PVC ohne Magnet" %}
+        Kühlschrankdichtung ohne Magnet
+      {% else %}
+        {{ menuitem.name }}
+      {% endif %}
+    </a>
+  </li>
+{% endfor %}
+
 		
 		</ul>
 		
-      <a style="color:var(--white)" href="{% url 'store:impressum' %}">Impressum</a>
+      
 		<br><a style="color:var(--white)" href="{% url 'store:cms' %}">CMS-Login</a>
 
 		<br>
@@ -39,6 +47,8 @@
 			<br><br>
 			<!--Social Icons -->
 			{% include 'social-icons.html' %}
+			<br>
+			<small><a style="color:var(--white)" href="{% url 'store:impressum' %}">Impressum</a></small>
 		
 		</div>
 
