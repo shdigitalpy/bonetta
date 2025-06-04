@@ -123,20 +123,21 @@ Magnetdichtungen Kühlschrank: Schliesst der Kühlschrank nicht mehr richtig –
 <br><br>
 
 <div class="container py-5">
-      <h2 class="text-center mb-4">Bestseller</h2>
-      <div class="row justify-content-center align-items-center text-center">
-        {% for marke in bestseller_marken %}
-            <div class="col-2 d-flex flex-column align-items-center mb-4">
-                {% if marke.markepic %}
-                    <a href="{% url 'store:marke' %}">
-                        <img class="img-fluid mb-2" src="{% static 'images/' %}{{ marke.markepic }}" style="height: 100px; object-fit: contain;">
-                    </a>
-                {% endif %}
-                <strong class="text-dark">{{ marke.name }}</strong>
-            </div>
-        {% endfor %}
+  <h2 class="text-center mb-4">Bestseller</h2>
+  <div class="row justify-content-center align-items-center text-center">
+    {% for marke in bestseller_marken %}
+      <div class="col-2 d-flex flex-column align-items-center mb-4">
+        {% if marke.markepic %}
+          <a href="{% url 'store:marke_detail' marke.slug %}">
+            <img class="img-fluid mb-2" src="{{ marke.markepic.url }}" style="height: 100px; object-fit: contain;">
+          </a>
+        {% endif %}
+        <strong class="text-dark">{{ marke.name }}</strong>
       </div>
-    </div>
+    {% endfor %}
+  </div>
+</div>
+
 
 <!-- Modal für Box 1 (Bootstrap 4 Version) -->
 <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
