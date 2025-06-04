@@ -215,23 +215,24 @@ class Item(models.Model):
 		return reverse('store:remove_from_cart', kwargs={"slug": self.slug})
 
 class Marke(models.Model):
-	name = models.CharField(max_length=255)
-	slug = models.SlugField(max_length=255)
-	markepic = models.ImageField(null=True, blank=True, upload_to="markebilder/")
-	marketext = models.TextField(blank=True)
-	bestseller = models.BooleanField(default=False)
-	item = models.ManyToManyField(Item, related_name='item_marken', blank=True)
+    name = models.CharField(max_length=255, unique=True)  # <- unique hinzugefügt
+    slug = models.SlugField(max_length=255, unique=True)  # empfehlenswert auch unique
+    markepic = models.ImageField(null=True, blank=True, upload_to="markebilder/")
+    marketext = models.TextField(blank=True)
+    bestseller = models.BooleanField(default=False)
+    item = models.ManyToManyField('Item', related_name='item_marken', blank=True)
 
-	class Meta:
-		ordering = ['id']
-		verbose_name = 'Marke'
-		verbose_name_plural = 'Marken'
+    class Meta:
+        ordering = ['id']
+        verbose_name = 'Marke'
+        verbose_name_plural = 'Marken'
 
-	def __str__(self):
-		return self.name
+    def __str__(self):
+        return self.name
 
-	def get_absolute_url(self):
-		return reverse('home')
+    def get_absolute_url(self):
+        return reverse('home')
+
 		
 class OrderItem(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

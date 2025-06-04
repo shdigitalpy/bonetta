@@ -9,6 +9,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
     border-radius: 40px;
   }
   .price-code-btn {
@@ -21,6 +22,7 @@
     color: #fff;
     transition: .3s all;
     border-radius: 10px;
+    margin-right: 10px;
   }
   .price-code-btn:hover {
     background-color: #fff;
@@ -30,24 +32,43 @@
   .flexbox-header {
     padding: 40px 20px;
     background-color: #e4e3e8;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .flexbox-header .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
   }
   .h2 {
     color: #29384f;
     font-weight: 800;
   }
+ 
 </style>
 
 <div class="flexbox">
   <div class="h2">Marken</div>
 </div>
 
-<div class="flexbox flexbox-header">
+<div class="d-flex justify-content-between align-items-center" style="padding: 20px 30px; background-color: #e4e3e8; border-radius: 25px; gap: 10px;">
+  <!-- Links: Marke erfassen -->
   <a class="btn btn-sm price-code-btn" href="{% url 'store:cms_marke_erfassen' %}">Marke erfassen</a>
+
+  <!-- Mitte: Suche und Filter -->
+  <div class="d-flex align-items-center justify-content-center" style="gap: 10px;">
+    <input type="text" id="markenSearch" class="form-control" placeholder="🔍 Marke suchen..." style="max-width: 250px;">
+    <select id="bestsellerFilter" class="form-control" style="max-width: 180px;">
+      <option value="">🔽 Alle anzeigen</option>
+      <option value="Ja">✅ Bestseller</option>
+      <option value="Nein">❌ Kein Bestseller</option>
+    </select>
+  </div>
 </div>
 
-<p>Erfassen Sie die Marken für die Produkte.</p>
 
-<table class="table table-striped">
+<table class="table table-striped" id="markenTable">
   <thead>
     <tr>
       <th scope="col">Name</th>
@@ -71,15 +92,10 @@
           <i class="far fa-edit" style="color: #29384f; font-size: 18px;"></i>
         </a>
       </td>
-      <td>
-          {% if data.bestseller %}
-            Ja
-          {% else %}
-            Nein
-          {% endif %}
+      <td class="bestseller">
+        {% if data.bestseller %}Ja{% else %}Nein{% endif %}
       </td>
       <td>
-        <!-- Trigger Button -->
         <a href="#" data-toggle="modal" data-target="#deleteModal_{{ data.pk }}">
           <i class="far fa-trash-alt" style="color: red; font-size: 18px;"></i>
         </a>
@@ -116,5 +132,33 @@
 <!-- jQuery & Bootstrap -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<!-- JS: Live-Suche & Filter -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("markenSearch");
+    const filterSelect = document.getElementById("bestsellerFilter");
+    const rows = document.querySelectorAll("#markenTable tbody tr");
+
+    function filterRows() {
+      const searchValue = searchInput.value.toLowerCase();
+      const filterValue = filterSelect.value;
+
+      rows.forEach(row => {
+        const name = row.cells[0].textContent.toLowerCase();
+        const bestseller = row.cells[3].textContent.trim();  // 4. Spalte: Bestseller
+
+
+        const matchesSearch = name.includes(searchValue);
+        const matchesFilter = !filterValue || bestseller === filterValue;
+
+        row.style.display = matchesSearch && matchesFilter ? "" : "none";
+      });
+    }
+
+    searchInput.addEventListener("input", filterRows);
+    filterSelect.addEventListener("change", filterRows);
+  });
+</script>
 
 {% endblock %}
