@@ -1826,6 +1826,9 @@ def firma(request):
     context = { }
     return render(request, 'montage.html', context)
 
+def about_us(request):
+    context = { }
+    return render(request, 'ueber-uns.html', context)
 
 
 #Marke Übersicht

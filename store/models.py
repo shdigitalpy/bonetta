@@ -223,7 +223,7 @@ class Marke(models.Model):
     item = models.ManyToManyField('Item', related_name='item_marken', blank=True)
 
     class Meta:
-        ordering = ['id']
+        ordering = ['name']
         verbose_name = 'Marke'
         verbose_name_plural = 'Marken'
 

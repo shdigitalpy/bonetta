@@ -42,6 +42,7 @@ urlpatterns = [
 	#pages
 	path('kontakt', views.kontakt, name='kontakt'),
 	path('montage', views.firma, name='firma'),
+	path('ueber-uns', views.about_us, name='about_us'),
 	path('anleitungen', views.anleitung_videos, name='anleitung_videos'),
 	path('impressum', views.impressum, name='impressum'),
 	path('danke', views.danke, name='danke'),
