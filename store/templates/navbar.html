@@ -307,7 +307,8 @@
                 {% if forloop.first or forloop.counter0|divisibleby:11 %}
                   <div class="dropdown-column">
                 {% endif %}
-                    <a class="dropdown-item" href="{% url 'store:marke' %}">{{ marke.name }}</a>
+                <a class="dropdown-item" href="{% url 'store:markedetails' marke.slug %}">
+                   {{ marke.name }}</a>
                 {% if forloop.counter|divisibleby:11 or forloop.last %}
                   </div>
                 {% endif %}
