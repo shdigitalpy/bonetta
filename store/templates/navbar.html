@@ -267,7 +267,7 @@
           </a>
           <ul class="dropdown-menu p-3" aria-labelledby="markeDropdown">
             {% for marke in marken %}
-              <a class="dropdown-item" href="{% url 'store:marke' %}">{{ marke.name }}</a>
+              <a class="dropdown-item" href="{% url 'store:markedetails' marke.slug %}">{{ marke.name }}</a>
             {% endfor %}
           </ul>
         </li>
