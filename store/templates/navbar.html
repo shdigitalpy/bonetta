@@ -308,12 +308,12 @@
           <ul class="dropdown-menu p-3 marken-dropdown" aria-labelledby="markeDropdown">
             <div class="dropdown-columns">
               {% for marke in marken %}
-                {% if forloop.first or forloop.counter0|divisibleby:100 %}
+                {% if forloop.first or forloop.counter0|divisibleby:60 %}
                   <div class="dropdown-column">
                 {% endif %}
                 <a class="dropdown-item" href="{% url 'store:markedetails' marke.slug %}">
                    {{ marke.name }}</a>
-                {% if forloop.counter|divisibleby:100 or forloop.last %}
+                {% if forloop.counter|divisibleby:60 or forloop.last %}
                   </div>
                 {% endif %}
               {% endfor %}
