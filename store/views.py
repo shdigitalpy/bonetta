@@ -1760,10 +1760,15 @@ def marke(request):
 def searchbar(request):
     search_query = request.GET.get('search', '')
     if search_query:
-        items = Item.objects.filter(Q(titel__icontains=search_query) | Q(artikelnr__icontains=search_query) | Q(kategorie__name__icontains=search_query) | Q(subkategorie__sub_name__icontains=search_query))
+        items = Item.objects.filter(
+            Q(titel__icontains=search_query) |
+            Q(artikelnr__icontains=search_query) |
+            Q(kategorie__name__icontains=search_query) |
+            Q(subkategorie__sub_name__icontains=search_query) |
+            Q(item_marken__name__icontains=search_query)  # <--- Hier nach Markenname suchen
+        ).distinct()  # distinct, um doppelte Einträge zu vermeiden, falls mehrere Marken matchen
     else:
         items = Item.objects.all()
-
 
     context = {'items': items}
     return render(request, 'shop/searchbar.html', context)
