@@ -5,14 +5,18 @@
 {% block head_title %}{% trans "Signup" %}{% endblock %}
 
 {% block content %}
-
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  .form{
+    color: #000;
+  }
+</style>
 <div class="container">
-<div class="row padding storepreview form">
-  <div class="col-sm-10 bggrey">
-<h1>{% trans "Registrieren" %}</h1>
-<p>{% blocktrans %}Haben Sie bereits ein Konto? Dann melden Sie sich hier an <a href="{{ login_url }}">Anmelden</a>.{% endblocktrans %}</p>
-<br>
+    <h1 class="mt-5">{% trans "Registrieren" %}</h1>
+    <div class="row padding storepreview form">
+    <div class="col-sm-10 bggrey">
+    <p>{% blocktrans %}Haben Sie bereits ein Konto? Dann melden Sie sich hier an <a href="{{ login_url }}">Anmelden</a>.{% endblocktrans %}</p>
+    <br>
 	<form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
   	{% csrf_token %}
   			
@@ -21,7 +25,7 @@
 
   			<!-- register flex item 1 -->
             <div class="register-flex-label">
-             User *
+             Username *
             </div>
             <div class="register-flex-item">
              {{ form.username }}
@@ -38,7 +42,7 @@
 
              <!-- register flex item 2 -->
             <div class="register-flex-label">
-             E-Mail *
+             E-Mail Address *
             </div>
             <div class="register-flex-item">
              {{ form.email }}
@@ -91,11 +95,265 @@
              <br>
              <h3>Meine Angaben</h3>
              <br>
+
+             <!-- Static Selection Potions -->
+                    <style>
+                      
+                        .selection-option-area {
+                          width: 70%;
+                          background-color: #fff;
+                          padding: 20px;
+                          border-radius: 10px;
+                        }
+                        .selection-flex {
+                            border: 1px solid #e0e0e0;
+                            padding: 20px;
+                            border-radius: 8px;
+                            background-color: #f9f9f9;
+                        }
+                        
+                        .selection-label {
+                            margin-bottom: 15px;
+                        }
+                        
+                        .option-item {
+                            margin-right: 20px;
+                        }
+                        
+                        .option-item input[type="radio"] {
+                            margin-right: 8px;
+                        }
+                        
+                        .conditional-content {
+                            margin-top: 20px;
+                            padding: 15px;
+                            border-radius: 6px;
+                            transition: all 0.3s ease;
+                        }
+                        
+                        .hint-box {
+                            background-color: #e7f3ff;
+                            border-left: 4px solid #007bff;
+                            color: #004085;
+                        }
+                        
+                        .upload-section {
+                            background-color: #f8f9fa;
+                            border: 1px dashed #6c757d;
+                        }
+                        
+                        .form-group label {
+                            font-weight: 500;
+                        }
+                        
+                        .btn-custom {
+                            background-color: #007bff;
+                            color: white;
+                            border: none;
+                            padding: 8px 16px;
+                            border-radius: 4px;
+                            cursor: pointer;
+                        }
+                        
+                        .btn-custom:hover {
+                            background-color: #0056b3;
+                        }
+                        
+                        .file-upload-area {
+                            border: 2px dashed #007bff;
+                            padding: 30px;
+                            text-align: center;
+                            border-radius: 6px;
+                            background-color: #f8f9ff;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                        }
+                        
+                        .file-upload-area:hover {
+                            background-color: #e7f3ff;
+                        }
+                        
+                        .hidden {
+                            display: none;
+                        }
+                    </style>
+
+                    <!-- Static Selection Options -->
+                      <div class="d-flex justify-content-between  mb-3">
+
+                          <div class="selection-label">
+                              Select an option *
+                          </div>
+
+                          <div class="selection-option-area">
+                              <div class="selection-flex d-flex flex-column mb-5">
+                                  
+                                  <div class="selection-item d-flex justify-content-start">
+                                      <div class="option-item">
+                                          <input type="radio" name="customerType" value="Business Customer" id="business">
+                                          <label for="business">Business Customer</label>
+                                      </div>
+                                      <div class="option-item">
+                                          <input type="radio" name="customerType" value="Reseller" id="reseller">
+                                          <label for="reseller">Reseller</label>
+                                      </div>
+                                      <div class="option-item">
+                                          <input type="radio" name="customerType" value="Private Customer" id="private">
+                                          <label for="private">Private Customer</label>
+                                      </div>
+                                  </div>
+                              </div>
+
+                              <!-- Conditional Content Areas -->
+                              
+                              <!-- Business Customer Hint -->
+                              <div id="businessHint" class="conditional-content hint-box hidden">
+                                  <h5>Business Customer Access</h5>
+                                  <p>As a business customer, you can request access to our GummiDirekt system for streamlined ordering and account management.</p>
+                                  <button type="button" class="btn btn-custom mt-3">Request GummiDirekt Access</button>
+                              </div>
+
+                              <!-- Reseller Upload Section -->
+                              <div id="resellerUpload" class="conditional-content upload-section hidden">
+                                  <h5>Commercial Register Excerpt Required</h5>
+                                  <p>Please provide a copy of your commercial register excerpt to verify your reseller status.</p>
+                                  
+                                  <div class="row">
+                                      <div class="col-md-12 my-3">
+                                          <div class="file-upload-area" onclick="document.getElementById('fileInput').click()">
+                                              <div id="uploadText">
+                                                  <strong>📁 Click to Upload File</strong><br>
+                                                  <small>Drag and drop or click to select</small>
+                                              </div>
+                                              <input type="file" id="fileInput" class="hidden" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+                                          </div>
+                                      </div>
+                                      <div class="col-md-12">
+                                          <div class="form-group">
+                                              <label for="emailAddress">Or Email Address:</label>
+                                              <input type="email" class="form-control" id="emailAddress" placeholder="your@email.com">
+                                              <small class="form-text text-muted">We'll send you instructions on how to submit your documents via email.</small>
+                                          </div>
+                                          <button type="button" class="btn btn-custom">Send Email Instructions</button>
+                                      </div>
+                                  </div>
+                              </div>
+
+                              <!-- Form Fields -->
+                              <div class="mt-4">
+                                  <!-- Company Field (hidden for private customers) -->
+                                  <div class="form-group" id="companyField">
+                                      <label for="company">Company Name *</label>
+                                      <input type="text" class="form-control" id="company" placeholder="Enter company name">
+                                  </div>
+
+                                  <!-- Address Field (shown for private customers) -->
+                                  <div class="form-group hidden" id="addressField">
+                                      <label for="address">Address *</label>
+                                      <textarea class="form-control" id="address" rows="3" placeholder="Enter your full address"></textarea>
+                                  </div>
+
+                                  <!-- Common Fields -->
+                                  <div class="form-group">
+                                      <label for="contactName">Contact Name *</label>
+                                      <input type="text" class="form-control" id="contactName" placeholder="Enter contact name">
+                                  </div>
+
+                                  <div class="form-group">
+                                      <label for="email">Email Address *</label>
+                                      <input type="email" class="form-control" id="email" placeholder="Enter email address">
+                                  </div>
+
+                                  <div class="form-group">
+                                      <label for="phone">Phone Number</label>
+                                      <input type="tel" class="form-control" id="phone" placeholder="Enter phone number">
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+
+                    <script>
+                        // Get all radio buttons
+                        const radioButtons = document.querySelectorAll('input[name="customerType"]');
+                        const businessHint = document.getElementById('businessHint');
+                        const resellerUpload = document.getElementById('resellerUpload');
+                        const companyField = document.getElementById('companyField');
+                        const addressField = document.getElementById('addressField');
+                        const fileInput = document.getElementById('fileInput');
+                        const uploadText = document.getElementById('uploadText');
+
+                        // Add event listeners to radio buttons
+                        radioButtons.forEach(radio => {
+                            radio.addEventListener('change', handleSelectionChange);
+                        });
+
+                        function handleSelectionChange() {
+                            // Hide all conditional content
+                            businessHint.classList.add('hidden');
+                            resellerUpload.classList.add('hidden');
+                            
+                            // Reset form field visibility
+                            companyField.classList.remove('hidden');
+                            addressField.classList.add('hidden');
+
+                            // Get selected value
+                            const selectedValue = document.querySelector('input[name="customerType"]:checked').value;
+
+                            // Show appropriate content based on selection
+                            switch(selectedValue) {
+                                case 'Business Customer':
+                                    businessHint.classList.remove('hidden');
+                                    break;
+                                    
+                                case 'Reseller':
+                                    resellerUpload.classList.remove('hidden');
+                                    break;
+                                    
+                                case 'Private Customer':
+                                    companyField.classList.add('hidden');
+                                    addressField.classList.remove('hidden');
+                                    break;
+                            }
+                        }
+
+                        // File upload handling
+                        fileInput.addEventListener('change', function(e) {
+                            if (e.target.files.length > 0) {
+                                const fileName = e.target.files[0].name;
+                                uploadText.innerHTML = `<strong>✅ File Selected:</strong><br><small>${fileName}</small>`;
+                            }
+                        });
+
+                        // Drag and drop functionality
+                        const uploadArea = document.querySelector('.file-upload-area');
+                        
+                        uploadArea.addEventListener('dragover', function(e) {
+                            e.preventDefault();
+                            uploadArea.style.backgroundColor = '#e7f3ff';
+                        });
+
+                        uploadArea.addEventListener('dragleave', function(e) {
+                            e.preventDefault();
+                            uploadArea.style.backgroundColor = '#f8f9ff';
+                        });
+
+                        uploadArea.addEventListener('drop', function(e) {
+                            e.preventDefault();
+                            uploadArea.style.backgroundColor = '#f8f9ff';
+                            
+                            const files = e.dataTransfer.files;
+                            if (files.length > 0) {
+                                fileInput.files = files;
+                                uploadText.innerHTML = `<strong>✅ File Selected:</strong><br><small>${files[0].name}</small>`;
+                            }
+                        });
+                    </script>
+
              <div class="register-flex">
 
              <!-- register flex item 5 -->
             <div class="register-flex-label">
-              Firma 
+              Unternehmen / Geschäft 
             </div>
             <div class="register-flex-item">
              {{ form.firmenname }}
@@ -108,15 +366,125 @@
               Vorname * 
             </div>
             <div class="register-flex-item">
-             {{ form.first_name }}
-             {% if form.first_name.errors %}
-			    <ol style="padding:0">
-			    {% for error in form.first_name.errors %}
-			    <small style="color:var(--red)">{{ error|escape }}</small>
-			    {% endfor %}
-			    </ol>
-			{% endif %}
-            <br>
+             <style>
+              .customer-selection-container {
+                 background-color: #fff;
+                 padding: 20px;
+                 border-radius: 10px;
+              }
+              
+                .customer-selection-flex {
+                    border: 1px solid #e0e0e0;
+                    padding: 20px;
+                    border-radius: 8px;
+                    background-color: #f9f9f9;
+                }
+                
+                .customer-selection-label {
+                    font-weight: bold;
+                    margin-bottom: 15px;
+                }
+                
+                .customer-option-item {
+                    margin-right: 20px;
+                }
+                
+                .customer-option-item input[type="radio"] {
+                    margin-right: 8px;
+                }
+                
+                .customer-conditional-content {
+                    margin-top: 20px;
+                    padding: 15px;
+                    border-radius: 6px;
+                    transition: all 0.3s ease;
+                }
+                
+                .customer-form-group label {
+                    font-weight: 500;
+                }
+                
+                .customer-hidden {
+                    display: none;
+                }
+            </style>
+                    <!-- Static Selection Options -->
+                    <div class="customer-selection-container mb-3">
+                        <div class="customer-selection-flex d-flex flex-column">
+                            <div class="selection-item d-flex justify-content-start">
+
+                              <div class="customer-option-item">
+                                    <input type="radio" name="customerSelectionType" value="Address" id="customerAddress">
+                                    <label for="customerAddress">Address</label>
+                              </div>
+
+                                <div class="customer-option-item">
+                                    <input type="radio" name="customerSelectionType" value="Private Customer" id="customerPrivate">
+                                    <label for="customerPrivate">Private Customer</label>
+                                </div>
+                                
+                            </div>
+                        </div>
+
+                        <!-- Form Fields -->
+                        <div class="mt-4">
+                            <!-- Company Field (hidden for private customers) -->
+                            <div class="customer-form-group form-group" id="customerCompanyField">
+                                <label for="customerCompany">Company Name *</label>
+                                <input type="text" class="form-control" id="customerCompany" placeholder="Enter company name">
+                            </div>
+
+                            <!-- Address Field (shown for private customers) -->
+                            <div class="customer-form-group form-group customer-hidden" id="customerAddressField">
+                                <label for="customerAddressInput">Address *</label>
+                                <textarea class="form-control" id="customerAddressInput" rows="3" placeholder="Enter your full address"></textarea>
+                            </div>
+
+                            <!-- Common Fields -->
+                            <div class="customer-form-group form-group">
+                                <label for="customerContactName">Contact Name *</label>
+                                <input type="text" class="form-control" id="customerContactName" placeholder="Enter contact name">
+                            </div>
+
+                            <div class="customer-form-group form-group">
+                                <label for="customerEmail">Email Address *</label>
+                                <input type="email" class="form-control" id="customerEmail" placeholder="Enter email address">
+                            </div>
+
+                            <div class="customer-form-group form-group">
+                                <label for="customerPhone">Phone Number</label>
+                                <input type="tel" class="form-control" id="customerPhone" placeholder="Enter phone number">
+                            </div>
+                        </div>
+                      </div>
+
+            <script>
+                // Get all radio buttons with the correct name
+                const clientTypeRadioInputs = document.querySelectorAll('input[name="customerSelectionType"]');
+                const businessCompanyFieldContainer = document.getElementById('customerCompanyField');
+                const personalAddressFieldContainer = document.getElementById('customerAddressField');
+
+                // Add event listeners to radio buttons
+                clientTypeRadioInputs.forEach(radioInput => {
+                    radioInput.addEventListener('change', processClientTypeSelection);
+                });
+
+                function processClientTypeSelection() {
+                    // Get selected value
+                    const currentSelectedClientType = document.querySelector('input[name="customerSelectionType"]:checked').value;
+
+                    // Show appropriate fields based on selection
+                    if (currentSelectedClientType === 'Private Customer') {
+                        // For Private Customer: hide Company, show Address
+                        businessCompanyFieldContainer.classList.add('customer-hidden');
+                        personalAddressFieldContainer.classList.remove('customer-hidden');
+                    } else if (currentSelectedClientType === 'Address') {
+                        // For Address option: show Company, hide Address
+                        businessCompanyFieldContainer.classList.remove('customer-hidden');
+                        personalAddressFieldContainer.classList.add('customer-hidden');
+                    }
+                }
+            </script>
              </div>
              <!-- register flex item end 6 -->
 
@@ -201,23 +569,7 @@
 			    {% endfor %}
 			    </ol>
 			{% endif %}
-            <br>
-             </div>
-             <!-- register flex item end 11 -->
-
-             <!-- register flex item 12 -->
-            <div class="register-flex-label">
-              Land * 
-            </div>
-            <div class="register-flex-item">
-             {{ form.land }}
-             {% if form.land.errors %}
-			    <ol style="padding:0">
-			    {% for error in form.land.errors %}
-			    <small style="color:var(--red)">{{ error|escape }}</small>
-			    {% endfor %}
-			    </ol>
-			{% endif %}
+       
             <br>
              </div>
              <!-- register flex item end 12 -->
@@ -256,22 +608,19 @@
              <!-- register flex item bottom -->
             <div class="register-flex-label">
               <small>* Pflichtfelder</small>
-
             </div>
-            <div class="register-flex-item">
-              <button class="btn btn-primary" type="submit">{% trans "Registrieren" %} &raquo;</button>
-            <br>
-             </div>
 
-             
-               <br><br><br><br>
-              <p>Die Lieferadresse kann bei der Bestellung angegeben werden.</p>
-           
+            <div class="register-flex-item">
+              <button class="btn btn-success" type="submit">{% trans "Registrieren" %} &raquo;</button>
+            <br>
+            </div>
+
+            <p class="mt-5">Die Lieferadresse kann bei der Bestellung angegeben werden.</p>
+             <br>
              
              <!-- register flex item end bottom -->
 
 			</div><!-- end register-flex -->
- 
 
   {% if redirect_field_value %}
   <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
@@ -283,6 +632,57 @@
 </div>
 </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const passwordFields = document.querySelectorAll('input[type="password"]');
+
+    passwordFields.forEach(function (passwordInput) {
+      // Create wrapper
+      const wrapper = document.createElement("div");
+      wrapper.style.position = "relative";
+
+      // Insert wrapper before the input and move the input inside it
+      passwordInput.parentNode.insertBefore(wrapper, passwordInput);
+      wrapper.appendChild(passwordInput);
+
+      // Add padding for eye icon
+      passwordInput.style.paddingRight = "30px";
+
+      // Create the eye icon (initially hidden)
+      const toggleIcon = document.createElement("i");
+      toggleIcon.className = "fa-solid fa-eye";
+      toggleIcon.style.position = "absolute";
+      toggleIcon.style.right = "10px";
+      toggleIcon.style.top = "50%";
+      toggleIcon.style.transform = "translateY(-50%)";
+      toggleIcon.style.cursor = "pointer";
+      toggleIcon.style.display = "none"; // hidden by default
+
+      wrapper.appendChild(toggleIcon);
+
+      // Show/hide password logic
+      toggleIcon.addEventListener("click", function () {
+        const type = passwordInput.type === "password" ? "text" : "password";
+        passwordInput.type = type;
+        this.classList.toggle("fa-eye");
+        this.classList.toggle("fa-eye-slash");
+      });
+
+      // Show icon only when user types
+      passwordInput.addEventListener("input", function () {
+        if (this.value.length > 0) {
+          toggleIcon.style.display = "block";
+        } else {
+          toggleIcon.style.display = "none";
+          passwordInput.type = "password"; // Reset back to hidden
+          toggleIcon.classList.remove("fa-eye-slash");
+          toggleIcon.classList.add("fa-eye");
+        }
+      });
+    });
+  });
+</script>
 
 
 {% endblock %}
