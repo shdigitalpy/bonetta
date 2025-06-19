@@ -6,14 +6,18 @@
 {% block head_title %}{% trans "Online Shop Anmeldung" %}{% endblock %}
 
 {% block content %}
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  .form{
+    color: #000;
+  }
+</style>
 
 <div class="container">
+ 
 <div class="row padding storepreview form ">
-  <div class="col-sm-10 bggrey">
-
-<h1>{% trans "Anmelden" %}</h1>
-
+<div class="col-sm-10 bggrey">
+   <h1 class="text-black">{% trans "Anmelden" %}</h1>
 {% get_providers as socialaccount_providers %}
 
 {% if socialaccount_providers %}
@@ -38,7 +42,7 @@ for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
 {% endblocktrans %}</p>
 {% endif %}
 
-<form class="login" method="POST" action="{% url 'account_login' %}">
+<form class="login mt-4" method="POST" action="{% url 'account_login' %}">
   {% csrf_token %}
   {{ form|crispy }}
   {% if redirect_field_value %}
@@ -48,7 +52,7 @@ for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
   
   <a class="btn btn-md btn-secondary" href="{% url 'account_reset_password' %}">{% trans "Passwort vergessen" %}</a>
 
-  <a class="btn btn-md btn-danger" href="{{ signup_url }}">{% trans "Registrieren" %}</a>
+  <a class="btn btn-md btn-success" href="{{ signup_url }}">{% trans "Registrieren" %}</a>
 </form>
 
 </div>
@@ -56,5 +60,58 @@ for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
 </div><!-- end container -->
 
 <br><br><br><br>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const passwordInput = document.querySelector('input[type="password"]');
+
+    if (passwordInput) {
+      // Create wrapper
+      const wrapper = document.createElement("div");
+      wrapper.style.position = "relative";
+
+      // Insert wrapper before the password field and move the input inside it
+      passwordInput.parentNode.insertBefore(wrapper, passwordInput);
+      wrapper.appendChild(passwordInput);
+
+      // Style the input
+      passwordInput.style.paddingRight = "30px";
+
+      // Create eye icon (initially hidden)
+      const toggleIcon = document.createElement("i");
+      toggleIcon.className = "fa-solid fa-eye";
+      toggleIcon.style.position = "absolute";
+      toggleIcon.style.right = "10px";
+      toggleIcon.style.top = "50%";
+      toggleIcon.style.transform = "translateY(-50%)";
+      toggleIcon.style.cursor = "pointer";
+      toggleIcon.style.display = "none"; // hidden by default
+
+      wrapper.appendChild(toggleIcon);
+
+      // Toggle password visibility
+      toggleIcon.addEventListener("click", function () {
+        const type = passwordInput.type === "password" ? "text" : "password";
+        passwordInput.type = type;
+        this.classList.toggle("fa-eye");
+        this.classList.toggle("fa-eye-slash");
+      });
+
+      // Show icon when user types
+      passwordInput.addEventListener("input", function () {
+        if (this.value.length > 0) {
+          toggleIcon.style.display = "block";
+        } else {
+          toggleIcon.style.display = "none";
+          passwordInput.type = "password"; // Reset to hidden
+          toggleIcon.classList.remove("fa-eye-slash");
+          toggleIcon.classList.add("fa-eye");
+        }
+      });
+    }
+  });
+</script>
+
+
 
 {% endblock %}

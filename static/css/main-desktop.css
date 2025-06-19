@@ -641,9 +641,11 @@ a[aria-expanded="true"] {
 }
 
 .bggrey {
-	padding: 12%;
-	border: 1px solid var(--blue);
+	padding-top: 2rem;
+	padding-bottom: 2rem;
+	border: 2px solid #29384f;
 	background-color: var(--grey);
+	border-radius: 10px;
 }
 
 /*Kontakt */
@@ -857,5 +859,4 @@ footer .flex-item {
 	width: 50%;
 	margin: 0 auto;
 }
-
 

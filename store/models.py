@@ -509,6 +509,13 @@ class Kunde(models.Model):
 	last_service = models.DateTimeField(null=True, blank=True)
 	zusatz = models.CharField(max_length=255, null=True, blank=True)
 	done = models.BooleanField(default=False)
+	# Neu hinzugefügt:
+	customer_type = models.CharField(max_length=10, choices=[
+        ('privat', 'Privatkunde'),
+        ('geschaeft', 'Geschäftskunde'),
+        ('wieder', 'Wiederverkäufer'),
+    ], default='privat')
+	hr_auszug = models.FileField(upload_to='hr_auszuege/', blank=True, null=True)
 
 	class Meta:
 		ordering = ['id']

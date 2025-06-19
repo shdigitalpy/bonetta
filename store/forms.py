@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django_countries.fields import CountryField
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string, get_template
-
+from django.core.validators import FileExtensionValidator
 
 PAYMENT_CHOICES = (
     ('R', 'Rechnung*'),
@@ -737,143 +737,109 @@ class PaymentForm(forms.Form):
 
 
 class RegistrationForm(SignupForm):
+    # KEINE Definition von 'password1' oder 'password2' hier! Allauth macht das.
+
     username = forms.CharField(
-        max_length=500,
-        required=True,
-        label="",
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Benutzername',
-            'class': 'form-control',
-        }),
+        max_length=500, required=True, label="",
+        widget=forms.TextInput(attrs={'placeholder': 'Benutzername', 'class': 'form-control'}),
         help_text='Bitte einen gültigen Benutzernamen eingeben'
     )
-
     first_name = forms.CharField(
-        max_length=500,
-        required=True,
-        label="",
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Vorname',
-            'class': 'form-control',
-        }),
+        max_length=500, required=True, label="",
+        widget=forms.TextInput(attrs={'placeholder': 'Vorname', 'class': 'form-control'}),
         help_text='Bitte einen gültigen Vornamen eingeben'
     )
-
     last_name = forms.CharField(
-        max_length=500,
-        required=True,
-        label="",
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Nachname',
-            'class': 'form-control',
-        }),
+        max_length=500, required=True, label="",
+        widget=forms.TextInput(attrs={'placeholder': 'Nachname', 'class': 'form-control'}),
         help_text='Bitte einen gültigen Nachnamen eingeben'
     )
-
-    email = forms.EmailField(
-        max_length=500,
-        required=True,
-        label="",
-        widget=forms.EmailInput(attrs={
-            'placeholder': 'E-Mail Adresse',
-            'class': 'form-control',
-            'type': 'email'
-        }),
+    email = forms.EmailField( # Lassen Sie diese Definition, wenn Sie das label="" beibehalten wollen
+        max_length=500, required=True, label="",
+        widget=forms.EmailInput(attrs={'placeholder': 'E-Mail Adresse', 'class': 'form-control', 'type': 'email'}),
         help_text='Bitte eine gültige E-Mail Adresse eingeben'
     )
-
     firmenname = forms.CharField(
-        max_length=500,
-        required=False,
-        label="",
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Firmenname',
-            'class': 'form-control',
-        })
+        max_length=500, required=False, label="",
+        widget=forms.TextInput(attrs={'placeholder': 'Firmenname', 'class': 'form-control'})
     )
-
     strasse = forms.CharField(
-        max_length=500,
-        required=True,
-        label="Adresse",
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Strasse',
-            'class': 'form-control',
-        }),
+        max_length=500, required=True, label="Adresse",
+        widget=forms.TextInput(attrs={'placeholder': 'Strasse', 'class': 'form-control'}),
         help_text='Bitte eine gültige Strasse eingeben'
     )
-
     nr = forms.CharField(
-        max_length=500,
-        required=True,
-        label="",
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Nr.',
-            'class': 'form-control',
-        }),
+        max_length=500, required=True, label="",
+        widget=forms.TextInput(attrs={'placeholder': 'Nr.', 'class': 'form-control'}),
         help_text='Bitte eine gültige Strassen-Nr. eingeben'
     )
-
     plz = forms.CharField(
-        max_length=500,
-        required=True,
-        label="",
-        widget=forms.TextInput(attrs={
-            'placeholder': 'PLZ',
-            'class': 'form-control',
-        })
+        max_length=500, required=True, label="",
+        widget=forms.TextInput(attrs={'placeholder': 'PLZ', 'class': 'form-control'})
     )
-
     ort = forms.CharField(
-        max_length=500,
-        required=True,
-        label="",
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Ort',
-            'class': 'form-control',
-        }),
+        max_length=500, required=True, label="",
+        widget=forms.TextInput(attrs={'placeholder': 'Ort', 'class': 'form-control'}),
         help_text='Bitte einen gültigen Ort eingeben'
     )
-
     phone = forms.CharField(
-        max_length=500,
-        required=True,
-        label="",
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Telefon- oder Mobile-Nr.',
-            'class': 'form-control',
-        }),
+        max_length=500, required=True, label="",
+        widget=forms.TextInput(attrs={'placeholder': 'Telefon- oder Mobile-Nr.', 'class': 'form-control'}),
         help_text='Bitte eine gültige Telefon-Nr. eingeben'
     )
-
     mobile = forms.CharField(
-        max_length=500,
-        required=False,
-        label="",
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Mobile-Nr.',
-            'class': 'form-control',
-        })
+        max_length=500, required=False, label="",
+        widget=forms.TextInput(attrs={'placeholder': 'Mobile-Nr.', 'class': 'form-control'})
     )
-
     land = CountryField().formfield(
-        widget=forms.Select(attrs={
-            'class': 'form-control',
-        }),
+        required=True, # War im HTML als required markiert
+        widget=forms.Select(attrs={'class': 'form-control'}),
         help_text='Bitte ein gültiges Land auswählen'
     )
+    newsletter = forms.BooleanField(required=False, label="Newsletter")
 
-    newsletter = forms.BooleanField(required=False)
+    # NEU hinzugefügt, falls Sie diese verwenden wollen:
+    CUSTOMER_TYPE_CHOICES = [
+        ('privat', 'Privatkunde'),
+        ('geschaeft', 'Geschäftskunde'),
+        ('wieder', 'Wiederverkäufer'),
+    ]
+    customer_type = forms.ChoiceField(
+        choices=CUSTOMER_TYPE_CHOICES,
+        widget=forms.RadioSelect,
+        label="Kundentyp *",
+        required=True
+    )
+
+    hr_auszug = forms.FileField(
+        label="Handelsregisterauszug hochladen",
+        required=False,
+        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'jpg', 'png'])],
+        help_text="Nur PDF-, JPG- oder PNG-Dateien erlaubt."
+    )
+
 
     def __init__(self, *args, **kwargs):
         super(RegistrationForm, self).__init__(*args, **kwargs)
         self.fields['email'].label = ""
-        self.fields['password1'].label = "Passwort:"
-        self.fields['password2'].label = "Passwort (wiederholen):"
-        self.fields['password1'].widget = forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Passwort'})
-        self.fields['password2'].widget = forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Passwort wiederholen'})
+        
+        # ANPASSUNG: Hier verwenden wir wieder 'password1' und 'password2'
+        if 'password1' in self.fields:
+            self.fields['password1'].label = "Passwort:"
+            self.fields['password1'].widget = forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Passwort'})
+        
+        if 'password2' in self.fields:
+            self.fields['password2'].label = "Passwort (wiederholen):"
+            self.fields['password2'].widget = forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Passwort wiederholen'})
+
+        # Initialisieren Sie hier auch die Platzhalter und Klassen für andere Felder,
+        # falls dies nicht bereits in ihrer Definition geschieht und Sie es einheitlich möchten
+        # Beispiel:
+        # self.fields['username'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Benutzername'})
+        # ... für alle anderen Felder, die Sie so anpassen möchten
 
     def signup(self, request, user):
+        # ANPASSUNG: Hier die cleaned_data['password1'] verwenden
         user.username = self.cleaned_data['username']
         user.email = self.cleaned_data['email']
         user.set_password(self.cleaned_data['password1'])
@@ -882,66 +848,67 @@ class RegistrationForm(SignupForm):
 
     def save(self, request):
         user = super().save(request)
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        user.save() # User speichern, nachdem first/last_name gesetzt wurden
+
         try:
             kunde, created = Kunde.objects.get_or_create(user=user)
-            kunde.firmenname = self.cleaned_data.get('firmenname') or 'Privatperson'
+            kunde.firmenname = self.cleaned_data.get('firmenname', '') or 'Privatperson'
             kunde.newsletter = self.cleaned_data.get('newsletter', False)
             kunde.phone = self.cleaned_data['phone']
             kunde.mobile = self.cleaned_data.get('mobile', '')
-            kunde.vorname = self.cleaned_data['first_name']
-            kunde.nachname = self.cleaned_data['last_name']
-            kunde.email = self.cleaned_data['email']
+            kunde.vorname = self.cleaned_data['first_name'] # Redundant, aber wenn Sie es brauchen
+            kunde.nachname = self.cleaned_data['last_name'] # Redundant, aber wenn Sie es brauchen
+            kunde.email = self.cleaned_data['email'] # Redundant, aber wenn Sie es brauchen
             kunde.rabatt = 0
+            kunde.customer_type = self.cleaned_data['customer_type'] # Speichern des Kundentyps
+            hr_auszug_file = self.cleaned_data.get('hr_auszug')
+            if hr_auszug_file:
+                kunde.hr_auszug = hr_auszug_file
             kunde.save()
 
-            address, created = Address.objects.get_or_create(user=user)
-            address.user.first_name = self.cleaned_data['first_name']
-            address.user.last_name = self.cleaned_data['last_name']
-            address.rechnung_strasse = self.cleaned_data['strasse']
-            address.rechnung_nr = self.cleaned_data['nr']
-            address.rechnung_ort = self.cleaned_data['ort']
-            address.rechnung_land = self.cleaned_data['land']
-            address.rechnung_plz = self.cleaned_data['plz']
-            address.address_type = "B"
+            address = Address.objects.create(
+                user=user,
+                rechnung_strasse=self.cleaned_data['strasse'],
+                rechnung_nr=self.cleaned_data['nr'],
+                rechnung_ort=self.cleaned_data['ort'],
+                rechnung_land=self.cleaned_data['land'],
+                rechnung_plz=self.cleaned_data['plz'],
+                address_type="B"
+            )
             address.save()
 
-            firmenname = self.cleaned_data.get('firmenname', '')
-            username = user.username
-            phone = self.cleaned_data['phone']
-            mobile = self.cleaned_data.get('mobile', '')
-            plz = self.cleaned_data['plz']
-            ort = self.cleaned_data['ort']
-            email_address = self.cleaned_data['email']
-            strasse = self.cleaned_data['strasse']
-            nr = self.cleaned_data['nr']
-            land = self.cleaned_data['land']
-            first_name = self.cleaned_data['first_name']
-            last_name = self.cleaned_data['last_name']
-
+            # E-Mail Versand-Logik (wie gehabt)
+            # ...
             subject = 'Registration Neuer Kunde'
             template = render_to_string('shop/registration-email.html', {
-                'firmenname': firmenname,
-                'username': username,
-                'phone': phone,
-                'mobile': mobile,
-                'plz': plz,
-                'ort': ort,
-                'email': email_address,
-                'strasse': strasse,
-                'nr': nr,
-                'land': land,
-                'first_name':first_name,
-                'last_name':last_name,
-
+                'firmenname': kunde.firmenname,
+                'username': user.username, # Oder user.get_username()
+                'phone': kunde.phone,
+                'mobile': kunde.mobile,
+                'plz': address.rechnung_plz,
+                'ort': address.rechnung_ort,
+                'email': user.email,
+                'strasse': address.rechnung_strasse,
+                'nr': address.rechnung_nr,
+                'land': address.rechnung_land.name,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'customer_type': kunde.get_customer_type_display(), # Wichtig: get_customer_type_display() für den lesbaren Wert
+                'hr_auszug_filename': kunde.hr_auszug.name if kunde.hr_auszug else None,
+                'hr_auszug_url': kunde.hr_auszug.url if kunde.hr_auszug else None,
             })
 
-            email = ''  # Initialize email variable
+            to_emails = ['livio.bonetta@geboshop.ch']
+            bcc_emails = ['sandro@sh-digital.ch']
+
             email = EmailMessage(
                 subject,
                 template,
-                email,
-                to=['livio.bonetta@geboshop.ch'],
-                bcc=['sandro@sh-digital.ch']
+                'noreply@ihredomain.ch',
+                to=to_emails,
+                bcc=bcc_emails
             )
             email.content_subtype = "html"
             email.fail_silently = False
@@ -949,8 +916,10 @@ class RegistrationForm(SignupForm):
 
         except Exception as e:
             print(f"Error processing registration: {e}")
+            raise
 
         return user
+
 
 
 

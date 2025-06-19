@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neue Registration</title>
-     <style>
+      <style>
       body {
         font-family: 'Raleway', sans-serif;
         background-color: #e6e6e6;
@@ -81,23 +81,23 @@
   </head>
   <body>
     <div class="container">
-      <!-- Header Section -->
       <div class="header">
         <img style="max-width:100px" src="https://www.gastrodichtung.ch/static/images/bonetta-icon.png" class="d-inline-block align-top" alt="Gastrodichtungen.ch Logo">
         <h1>Neue Registration {{ first_name }} {{ last_name }}</h1>
       </div>
 
-      <!-- Content Section -->
       <div class="content">
         <p><strong>Seite eingesendet am:</strong> <a href="https://www.gastrodichtung.ch/accounts/signup/">gastrodichtung.ch/accounts/signup/</a></p>
       </div>
 
-      <!-- Details Section -->
       <div class="details">
         <p><strong>Vorname:</strong> {{ first_name }}</p>
         <p><strong>Nachname:</strong> {{ last_name }}</p>
         <p><strong>User:</strong> {{ username }}</p>
         <p><strong>E-Mail:</strong> {{ email }}</p>
+        
+        {# NEU: Kundentyp hinzufügen #}
+        <p><strong>Kundentyp:</strong> {{ customer_type|default:"Nicht angegeben" }}</p>
 
         <br><br>
         <p><strong>Firma / Betrieb:</strong> {{ firmenname }}</p>
@@ -106,9 +106,14 @@
         <br><br>
         <p><strong>Telefon / Mobile:</strong> {{ phone }} / {{ mobile }}</p>
         
+        {# NEU: Handelsregisterauszug hinzufügen #}
+        {% if hr_auszug_url %}
+            <p><strong>Handelsregisterauszug:</strong> <a href="{{ hr_auszug_url }}" target="_blank">{{ hr_auszug_filename|default:"Dokument" }}</a></p>
+        {% else %}
+            <p><strong>Handelsregisterauszug:</strong> Nicht hochgeladen</p>
+        {% endif %}
       </div>
 
-      <!-- Footer Section -->
       <div class="footer">
         <p>© 2025 Gebo Shop Bonetta. Alle Rechte vorbehalten.</p>
         

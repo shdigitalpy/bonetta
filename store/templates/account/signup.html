@@ -1,288 +1,244 @@
 {% extends "account/base.html" %}
-
 {% load i18n %}
 
 {% block head_title %}{% trans "Signup" %}{% endblock %}
 
 {% block content %}
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  .hidden { display: none; }
+  .form-group label { font-weight: 500; }
+  /* !important ist hier wichtig, da allauth eigene Styles haben könnte */
+  input, select, textarea { border: 1px solid #000 !important; }
+  h1 { color: #000; }
+  .errorlist { color: red; margin: 5px 0 0 0; padding-left: 0; list-style: none; font-size: 0.9rem; }
+</style>
 
 <div class="container">
-<div class="row padding storepreview form">
-  <div class="col-sm-10 bggrey">
-<h1>{% trans "Registrieren" %}</h1>
-<p>{% blocktrans %}Haben Sie bereits ein Konto? Dann melden Sie sich hier an <a href="{{ login_url }}">Anmelden</a>.{% endblocktrans %}</p>
-<br>
-	<form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
-  	{% csrf_token %}
-  			
+  <div class="row padding storepreview">
+    <div class="col-sm-10 bggrey">
 
-  			<div class="register-flex">
+      <h1>{% trans "Registrieren" %}</h1>
+      <p>{% blocktrans %}Haben Sie bereits ein Konto? Dann melden Sie sich hier an <a href="{{ login_url }}">Anmelden</a>.{% endblocktrans %}</p>
+      <br>
 
-  			<!-- register flex item 1 -->
-            <div class="register-flex-label">
-             User *
-            </div>
-            <div class="register-flex-item">
-             {{ form.username }}
-             {% if form.username.errors %}
-			    <ol style="padding:0">
-			    {% for error in form.username.errors %}
-			    <small style="color:var(--red)">{{ error|escape }}</small>
-			    {% endfor %}
-			    </ol>
-			{% endif %}
-            <br>
-             </div>
-             <!-- register flex item end 1 -->
+      <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}" enctype="multipart/form-data">
+        {% csrf_token %}
 
-             <!-- register flex item 2 -->
-            <div class="register-flex-label">
-             E-Mail *
-            </div>
-            <div class="register-flex-item">
-             {{ form.email }}
-             {% if form.email.errors %}
-			    <ol style="padding:0">
-			    {% for error in form.email.errors %}
-			    <small style="color:var(--red)">{{ error|escape }}</small>
-			    {% endfor %}
-			    </ol>
-			{% endif %}
-            <br>
-             </div>
-             <!-- register flex item end 2 -->
+        <div class="form-group">
+          <label><strong>Kundentyp *</strong></label><br>
+          {{ form.customer_type }} {# KORREKT: Nutzen Sie das Django-Formularfeld #}
+          {{ form.customer_type.errors }}
+        </div>
 
-             <!-- register flex item 3 -->
-            <div class="register-flex-label">
-            Passwort *
-            </div>
-            <div class="register-flex-item">
-             {{ form.password1 }}
-             {% if form.password1.errors %}
-			    <ol style="padding:0">
-			    {% for error in form.password1.errors %}
-			    <small style="color:var(--red)">{{ error|escape }}</small>
-			    {% endfor %}
-			    </ol>
-			{% endif %}
-            <br>
-             </div>
-             <!-- register flex item end 3 -->
+        <br>
 
-             <!-- register flex item 4 -->
-            <div class="register-flex-label">
-             Passwort wiederholen *
-            </div>
-            <div class="register-flex-item">
-             {{ form.password2 }}
-             {% if form.password2.errors %}
-			    <ol style="padding:0">
-			    {% for error in form.password2.errors %}
-			    <small style="color:var(--red)">{{ error|escape }}</small>
-			    {% endfor %}
-			    </ol>
-			{% endif %}
-            <br>
-             </div>
-             <!-- register flex item end 4 -->
+        <div class="form-group">
+          <label for="id_username">Benutzername *</label> {# Korrigiert: id_username #}
+          {{ form.username }}
+          {{ form.username.errors }}
+        </div>
 
-             </div><!-- end register-flex -->
-             <br>
-             <h3>Meine Angaben</h3>
-             <br>
-             <div class="register-flex">
+        <div class="form-group">
+          <label for="id_email">E-Mail Adresse *</label> {# Korrigiert: id_email #}
+          {{ form.email }}
+          {{ form.email.errors }}
+        </div>
 
-             <!-- register flex item 5 -->
-            <div class="register-flex-label">
-              Firma 
-            </div>
-            <div class="register-flex-item">
-             {{ form.firmenname }}
-            <br>
-             </div>
-             <!-- register flex item end 5 -->
+        <div class="form-group">
+          <label for="id_password1">Passwort *</label> {# **KORRIGIERT: id_password1** #}
+          {{ form.password1 }} {# Beibehalten: form.password1 #}
+          {{ form.password1.errors }}
+        </div>
 
-             <!-- register flex item 6 -->
-            <div class="register-flex-label">
-              Vorname * 
-            </div>
-            <div class="register-flex-item">
-             {{ form.first_name }}
-             {% if form.first_name.errors %}
-			    <ol style="padding:0">
-			    {% for error in form.first_name.errors %}
-			    <small style="color:var(--red)">{{ error|escape }}</small>
-			    {% endfor %}
-			    </ol>
-			{% endif %}
-            <br>
-             </div>
-             <!-- register flex item end 6 -->
+        <div class="form-group">
+          <label for="id_password2">Passwort wiederholen *</label> {# KORRIGIERT: id_password2 #}
+          {{ form.password2 }} {# Beibehalten: form.password2 #}
+          {{ form.password2.errors }}
+        </div>
 
-             <!-- register flex item 7 -->
-            <div class="register-flex-label">
-              Nachname * 
-            </div>
-            <div class="register-flex-item">
-             {{ form.last_name }}
-             {% if form.last_name.errors %}
-			    <ol style="padding:0">
-			    {% for error in form.last_name.errors %}
-			    <small style="color:var(--red)">{{ error|escape }}</small>
-			    {% endfor %}
-			    </ol>
-			{% endif %}
-            <br>
-             </div>
-             <!-- register flex item end 7 -->
 
-              <!-- register flex item 8 -->
-            <div class="register-flex-label">
-              Strasse * 
-            </div>
-            <div class="register-flex-item">
-             {{ form.strasse }}
-             {% if form.strasse.errors %}
-			    <ol style="padding:0">
-			    {% for error in form.strasse.errors %}
-			    <small style="color:var(--red)">{{ error|escape }}</small>
-			    {% endfor %}
-			    </ol>
-			{% endif %}
-            <br>
-             </div>
-             <!-- register flex item end 8 -->
 
-              <!-- register flex item 9 -->
-            <div class="register-flex-label">
-              Nr. * 
-            </div>
-            <div class="register-flex-item">
-             {{ form.nr }}
-             {% if form.nr.errors %}
-			    <ol style="padding:0">
-			    {% for error in form.nr.errors %}
-			    <small style="color:var(--red)">{{ error|escape }}</small>
-			    {% endfor %}
-			    </ol>
-			{% endif %}
-            <br>
-             </div>
-             <!-- register flex item end 9 -->
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            const passwordFields = document.querySelectorAll('input[type="password"]');
 
-             <!-- register flex item 10 -->
-            <div class="register-flex-label">
-              PLZ * 
-            </div>
-            <div class="register-flex-item">
-             {{ form.plz }}
-             {% if form.plz.errors %}
-			    <ol style="padding:0">
-			    {% for error in form.plz.errors %}
-			    <small style="color:var(--red)">{{ error|escape }}</small>
-			    {% endfor %}
-			    </ol>
-			{% endif %}
-            <br>
-             </div>
-             <!-- register flex item end 10 -->
+            passwordFields.forEach(function (passwordInput) {
+              if (!passwordInput || !passwordInput.parentNode) {
+                console.warn("Skipping password input due to missing element or parent:", passwordInput);
+                return;
+              }
 
-             <!-- register flex item 11 -->
-            <div class="register-flex-label">
-              Ort * 
-            </div>
-            <div class="register-flex-item">
-             {{ form.ort }}
-             {% if form.ort.errors %}
-			    <ol style="padding:0">
-			    {% for error in form.ort.errors %}
-			    <small style="color:var(--red)">{{ error|escape }}</small>
-			    {% endfor %}
-			    </ol>
-			{% endif %}
-            <br>
-             </div>
-             <!-- register flex item end 11 -->
+              const wrapper = document.createElement("div");
+              wrapper.style.position = "relative";
+              
+              // Wichtig: Insert before und append child in dieser Reihenfolge
+              passwordInput.parentNode.insertBefore(wrapper, passwordInput);
+              wrapper.appendChild(passwordInput);
 
-             <!-- register flex item 12 -->
-            <div class="register-flex-label">
-              Land * 
-            </div>
-            <div class="register-flex-item">
-             {{ form.land }}
-             {% if form.land.errors %}
-			    <ol style="padding:0">
-			    {% for error in form.land.errors %}
-			    <small style="color:var(--red)">{{ error|escape }}</small>
-			    {% endfor %}
-			    </ol>
-			{% endif %}
-            <br>
-             </div>
-             <!-- register flex item end 12 -->
+              passwordInput.style.paddingRight = "30px";
+              const toggleIcon = document.createElement("i");
+              toggleIcon.className = "fa-solid fa-eye";
+              toggleIcon.style.position = "absolute";
+              toggleIcon.style.right = "10px";
+              toggleIcon.style.top = "50%";
+              toggleIcon.style.transform = "translateY(-50%)";
+              toggleIcon.style.cursor = "pointer";
+              toggleIcon.style.display = "none";
+              wrapper.appendChild(toggleIcon);
 
-             <!-- register flex item 13 -->
-            <div class="register-flex-label">
-              Telefon / Mobile * 
-            </div>
-            <div class="register-flex-item">
-             {{ form.phone }}
-             {% if form.phone.errors %}
-			    <ol style="padding:0">
-			    {% for error in form.phone.errors %}
-			    <small style="color:var(--red)">{{ error|escape }}</small>
-			    {% endfor %}
-			    </ol>
-			{% endif %}
-            <br>
-             </div>
-             <!-- register flex item end 13 -->
+              toggleIcon.addEventListener("click", function () {
+                const type = passwordInput.type === "password" ? "text" : "password";
+                passwordInput.type = type;
+                this.classList.toggle("fa-eye");
+                this.classList.toggle("fa-eye-slash");
+              });
 
-             
-             <div class="register-flex">
+              passwordInput.addEventListener("input", function () {
+                if (this.value.length > 0) {
+                  toggleIcon.style.display = "block";
+                } else {
+                  toggleIcon.style.display = "none";
+                  passwordInput.type = "password";
+                  toggleIcon.classList.remove("fa-eye-slash");
+                  toggleIcon.classList.add("fa-eye");
+                }
+              });
+            });
+          });
+        </script>
 
-             	 <!-- register flex item 14 -->
-            <div class="register-flex-label">
-              Newsletter  
-            </div>
-            <div class="register-flex-item">
-             {{ form.newsletter }}
-            <br>
-             </div>
-             <!-- register flex item end 14 -->
+        <br><br>
 
-             <br><br>
-             <!-- register flex item bottom -->
-            <div class="register-flex-label">
-              <small>* Pflichtfelder</small>
+        <div id="form-gemeinsam">
+          <div id="firmenfeld" class="form-group">
+            <label for="id_firmenname">Firma / Betrieb *</label> {# KORREKT: id_firmenname #}
+            {{ form.firmenname }}
+            {{ form.firmenname.errors }}
+          </div>
+          <div class="form-group">
+            <label for="id_first_name">Vorname *</label> {# KORREKT: id_first_name #}
+            {{ form.first_name }}
+            {{ form.first_name.errors }}
+          </div>
+          <div class="form-group">
+            <label for="id_last_name">Nachname *</label> {# KORREKT: id_last_name #}
+            {{ form.last_name }}
+            {{ form.last_name.errors }}
+          </div>
+          <div class="form-group">
+            <label for="id_strasse">Strasse *</label> {# KORREKT: id_strasse #}
+            {{ form.strasse }}
+            {{ form.strasse.errors }}
+          </div>
+          <div class="form-group">
+            <label for="id_nr">Nr. *</label> {# KORREKT: id_nr #}
+            {{ form.nr }}
+            {{ form.nr.errors }}
+          </div>
+          <div class="form-group">
+            <label for="id_plz">PLZ *</label> {# KORREKT: id_plz #}
+            {{ form.plz }}
+            {{ form.plz.errors }}
+          </div>
+          <div class="form-group">
+            <label for="id_ort">Ort *</label> {# KORREKT: id_ort #}
+            {{ form.ort }}
+            {{ form.ort.errors }}
+          </div>
+          <div class="form-group">
+            <label for="id_phone">Telefon / Mobile *</label> {# KORREKT: id_phone #}
+            {{ form.phone }}
+            {{ form.phone.errors }}
+          </div>
+          <div class="form-group">
+            <label for="id_land">Land *</label> {# KORREKT: id_land #}
+            {{ form.land }}
+            {{ form.land.errors }}
+          </div>
+         
+        </div>
 
-            </div>
-            <div class="register-flex-item">
-              <button class="btn btn-primary" type="submit">{% trans "Registrieren" %} &raquo;</button>
-            <br>
-             </div>
+        <div id="hinweis-geschaeft" class="kundenformular hidden">
+          <div class="alert alert-info">
+            Hinweis: Sie können auf Wunsch Zugang zum GummiDirekt-System erhalten.
+          </div>
+        </div>
 
-             
-               <br><br><br><br>
-              <p>Die Lieferadresse kann bei der Bestellung angegeben werden.</p>
-           
-             
-             <!-- register flex item end bottom -->
+        <div id="hinweis-wieder" class="kundenformular hidden">
+          <div class="form-group">
+            <label for="id_hr_auszug">Handelsregisterauszug hochladen oder senden an <a href="mailto:dichtung@geboshop.ch">dichtung@geboshop.ch</a></label> {# KORREKT: id_hr_auszug #}
+            {{ form.hr_auszug }} {# KORREKT: form.hr_auszug #}
+            {{ form.hr_auszug.errors }}
+          </div>
+        </div>
 
-			</div><!-- end register-flex -->
- 
+        <div class="form-group">
+          <label for="id_newsletter">Newsletter</label> {# KORREKT: id_newsletter #}
+          {{ form.newsletter }}
+          {{ form.newsletter.errors }}
+        </div>
 
-  {% if redirect_field_value %}
-  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-  {% endif %}
- 
+        <div class="form-group">
+          <button type="submit" class="btn btn-success">{% trans "Registrieren" %}</button>
+        </div>
 
-</form>
+        {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+        {% endif %}
+      </form>
 
-</div>
-</div>
+    </div>
+  </div>
 </div>
 
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const radios = document.querySelectorAll('input[name="customer_type"]'); // KORREKT: name="customer_type"
+    const firmenfeld = document.getElementById('firmenfeld');
+    const hinweisGeschaeft = document.getElementById('hinweis-geschaeft');
+    const hinweisWieder = document.getElementById('hinweis-wieder');
 
+    // Initialen Zustand setzen, basierend auf dem Wert, der vom Backend kommt (falls Formular ungültig war und neu geladen wurde)
+    let initialCustomerType = null;
+    radios.forEach(radio => {
+        if (radio.checked) {
+            initialCustomerType = radio.value;
+        }
+    });
+
+    if (!initialCustomerType) {
+        const privatRadio = document.getElementById('privat');
+        if (privatRadio) {
+            privatRadio.checked = true;
+            initialCustomerType = 'privat';
+            privatRadio.dispatchEvent(new Event('change'));
+        }
+    } else {
+        if (initialCustomerType === 'privat') {
+            firmenfeld.classList.add('hidden');
+        } else if (initialCustomerType === 'geschaeft') {
+            hinweisGeschaeft.classList.remove('hidden');
+        } else if (initialCustomerType === 'wieder') {
+            hinweisWieder.classList.remove('hidden');
+        }
+    }
+
+    radios.forEach(radio => {
+      radio.addEventListener('change', function () {
+        hinweisGeschaeft.classList.add('hidden');
+        hinweisWieder.classList.add('hidden');
+        firmenfeld.classList.remove('hidden');
+
+        if (this.value === 'privat') {
+          firmenfeld.classList.add('hidden');
+        } else if (this.value === 'geschaeft') {
+          hinweisGeschaeft.classList.remove('hidden');
+        } else if (this.value === 'wieder') {
+          hinweisWieder.classList.remove('hidden');
+        }
+      });
+    });
+  });
+</script>
 {% endblock %}

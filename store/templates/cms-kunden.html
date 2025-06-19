@@ -8,7 +8,6 @@
     </div>
 
     <div class="flexbox" style="align-items:start;">
-        <!-- Search form -->
         <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="{% url 'store:cms_kunden' %}">
             {% csrf_token %}
             <div style="display: flex">
@@ -35,47 +34,46 @@
                 <th scope="col">Webshop<br>Kunden-Nr.</th>
                 <th scope="col">Betrieb/Firma</th>
                 <th scope="col">Ansprechpartner</th>
+                <th scope="col">Kundentyp</th> {# NEU: Spalte für Kundentyp #}
                 <th scope="col">Telefon</th>
-                
                 <th scope="col">Rabatt</th>
                 <th scope="col">Newsletter</th>
+                <th scope="col">Handelsregisterauszug</th>
                 <th scope="col">Firmendaten<br> bearbeiten</th>
                 <th scope="col">Kunde löschen</th>
                 <th scope="col">Webshop zu CRM</th>
             </tr>
         </thead>
         <tbody>
-            <!-- Loop over Users -->
             {% for user in users %}
                 <tr>
                     <th scope="row">{{ user.pk }}</th>
                     <td>
-                       
                         {% if user.profile.firmenname or user.address.all %}
-                        {% if user.profile.firmenname %}
-                            {{ user.profile.firmenname }} <br>
-                        {% endif %}
-                        {% for x in user.address.all %}
-                            {% if x.rechnung_strasse or x.rechnung_nr or x.rechnung_plz or x.rechnung_ort %}
-                                {{ x.rechnung_strasse }} {{ x.rechnung_nr }}<br>
-                                {{ x.rechnung_plz }} {{ x.rechnung_ort }}<br>
-                                <br>
+                            {% if user.profile.firmenname %}
+                                {{ user.profile.firmenname }} <br>
                             {% endif %}
-                        {% endfor %}
-                    {% endif %}
-
-                        
+                            {% for x in user.address.all %}
+                                {% if x.rechnung_strasse or x.rechnung_nr or x.rechnung_plz or x.rechnung_ort %}
+                                    {{ x.rechnung_strasse }} {{ x.rechnung_nr }}<br>
+                                    {{ x.rechnung_plz }} {{ x.rechnung_ort }}<br>
+                                    <br>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
                     </td>
-                    
-                        <td>
-
-                           
+                    <td>
                         {{ user.profile.vorname|default:"" }} {{ user.profile.nachname|default:"" }}<br>
                         Tel: {{ user.profile.phone|default:"" }} {{ user.profile.mobile|default:"" }}<br>
                         {{ user.profile.email|default:"" }}
-
-                       
-                    
+                    </td>
+                    {# NEU: Zelle für Kundentyp #}
+                    <td>
+                        {% if user.profile.customer_type %}
+                            {{ user.profile.get_customer_type_display }}
+                        {% else %}
+                            Nicht angegeben
+                        {% endif %}
                     </td>
                     <td>{% if user.profile.phone %}{{ user.profile.phone }}{% endif %}</td>
                     <td>{{ user.profile.rabatt }}%</td>
@@ -86,11 +84,18 @@
                             <p>Nein</p>
                         {% endif %}
                     </td>
-
+                    <td>
+                        {% if user.profile.hr_auszug %}
+                            <a href="{{ user.profile.hr_auszug.url }}" target="_blank">
+                                <i class="fas fa-file-pdf"></i> Auszug ansehen
+                            </a>
+                        {% else %}
+                            <p>Nicht vorhanden</p>
+                        {% endif %}
+                    </td>
                     <td><a href="{{ user.profile.get_absolute_url }}"><i class="fas fa-edit"></i></a></td>
                     <td><a href="{% url 'store:cms_kunde_löschen' user.pk %}"><i style="color:var(--red)" class="far fa-trash-alt"></i></a></td>
                     <td>
-                        <!-- Check if the user has a related Kunde profile before accessing its properties -->
                         {% if user.profile %}
                             <a href="{% url 'store:delete_kunde_user_relationship' user.profile.pk %}" class="btn btn-danger btn-sm">
                                 <i class="fas fa-unlink"></i> Ins CRM übernehmen ({{ user.profile.elemente_count }} Elemente)
