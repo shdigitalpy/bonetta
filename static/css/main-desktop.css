@@ -641,9 +641,11 @@ a[aria-expanded="true"] {
 }
 
 .bggrey {
-	padding: 12%;
-	border: 1px solid var(--blue);
+	padding-top: 8%;
+	padding-bottom: 8%;
+	border: 2px solid #29384f;
 	background-color: var(--grey);
+	border-radius: 10px;
 }
 
 /*Kontakt */
